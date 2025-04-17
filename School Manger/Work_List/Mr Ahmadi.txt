@@ -1,0 +1,34 @@
+﻿School web 
+
+=========Parent Section ============
+1-Login Page ✔️ Done
+2-OTP Page ✔️ Done
+3-Rigster Page ✔️ Done
+4-User Info Page ✔️ Done
+5-User Pannel ✔️ Done
+6-Location Selector ✔️ Done
+7-child Manger ✔️ Done
+8-Treaty Page
+9-Report Pannel
+====================================
+=============Admin Section==========
+1-Admin Pannel
+2-Permission
+3-Price Manger
+4-Child Manger
+5-Parent Manger 
+6-User Manger
+7-Driver manger
+8-Treaty Manger
+9-Price Manger
+10-Log Pannel
+11-Report Pannel
+===============Driver Section ======
+1-Login Page ✔️ Done
+2-Driver Page
+3-Passanger Page
+4-Destions Page
+5-Income Page
+6-Treaty Page
+7-Report Page
+====================================
