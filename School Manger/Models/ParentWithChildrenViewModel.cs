@@ -1,0 +1,34 @@
+﻿namespace School_Manger.Models
+{
+    public class ParentWithChildrenViewModel
+    {
+        public string ParentFirstName { get; set; }
+        public string ParentLastName { get; set; }
+        public string ParentNationalCode { get; set; }
+        public List<ChildInfo> Children { get; set; }
+        public long TotalPrice
+        {
+            get
+            {
+                long temp = 0;
+                foreach(ChildInfo child in Children)
+                {
+                    if(!child.HasPaid)
+                        temp += child.Price;
+                }
+                return temp;
+            }
+        }
+    }
+
+    public class ChildInfo
+    {
+        public string Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string NationalCode { get; set; }
+        public DateTime BirthDate { get; set; }
+        public bool HasPaid { get; set; }
+        public long Price { get; set; }
+    }
+}

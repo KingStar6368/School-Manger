@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "ورود به سیستم";
+}
+
+<div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-dark">
+    <div class="card bg-black text-white border-secondary" style="width: 100%; max-width: 400px;border-radius:20px">
+        <div class="card-body p-4">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold text-white">ورود به سیستم</h2>
+                <p class="text-white-50">لطفا شماره موبایل خود را وارد کنید</p>
+            </div>
+
+            <form asp-action="SignIn" method="post">
+                <div class="mb-3">
+                    <label for="phoneNumber" class="form-label text-white">شماره موبایل</label>
+                    <div class="input-group">
+                        <input type="tel"
+                               class="form-control bg-dark text-white border-secondary"
+                               id="phoneNumber"
+                               name="phoneNumber"
+                               placeholder="9123456789"
+                               pattern="[0-9]{10}"
+                               required>
+                        <span class="input-group-text bg-dark text-white border-secondary">98+</span>
+                    </div>
+                    <div class="form-text text-white-50">مثال: 9123456789</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2">دریافت کد تایید</button>
+            </form>
+
+            <div class="text-center mt-3">
+                <a asp-action="Login" class="text-decoration-none text-info">ورود با رمز عبور</a>
+            </div>
+        </div>
+    </div>
+</div>

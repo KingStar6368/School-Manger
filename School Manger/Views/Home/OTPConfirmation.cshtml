@@ -1,0 +1,118 @@
+﻿@{
+    ViewData["Title"] = "تایید کد یکبار مصرف";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-dark" dir="rtl">
+    <div class="card bg-black text-white border-secondary" style="width: 100%; max-width: 500px;border-radius:20px">
+        <div class="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
+            <a href="@Url.Action("PreviousStep", "Auth")" class="btn btn-outline-light">
+                <i class="bi bi-arrow-right"></i> بازگشت
+            </a>
+            <h5 class="m-0">تایید شماره موبایل</h5>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="text-center mb-4">
+                <p class="text-white-50">کد یکبار مصرف ارسال شده به شماره *******0912 را وارد کنید</p>
+            </div>
+
+            <form asp-action="VerifyOtp" method="post" id="otpForm">
+                <div class="d-flex justify-content-center mb-4 gap-2 flex-row-reverse">
+                    @for (int i = 5; i >= 0; i--)
+                    {
+                        <input type="text"
+                               class="form-control bg-dark text-white text-center border-secondary otp-input"
+                               style="width: 45px; height: 60px; font-size: 24px;"
+                               maxlength="1"
+                               data-index="@i"
+                               oninput="moveToNext(this)"
+                               onkeydown="moveToPrevious(event, this)">
+                    }
+                    <input type="hidden" id="fullOtp" name="otpCode">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2">تایید کد</button>
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="#" class="text-decoration-none text-info">ارسال مجدد کد (60 ثانیه)</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Auto-focus first input (right-most box) on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.otp-input[data-index="0"]').focus();
+        });
+
+        // Move to next input (left direction) when current is filled
+        function moveToNext(input) {
+            const index = parseInt(input.dataset.index);
+            if (input.value.length === 1 && index > 0) {
+                document.querySelector(`.otp-input[data-index="${index - 1}"]`).focus();
+            }
+            updateFullOtp();
+        }
+
+        // Move to previous input (right direction) on backspace
+        function moveToPrevious(event, input) {
+            const index = parseInt(input.dataset.index);
+            if (event.key === 'Backspace' && input.value.length === 0 && index < 5) {
+                document.querySelector(`.otp-input[data-index="${index + 1}"]`).focus();
+            }
+            updateFullOtp();
+        }
+
+        // Update hidden field with complete OTP (from right to left)
+        function updateFullOtp() {
+            let otp = '';
+            const inputs = Array.from(document.querySelectorAll('.otp-input')).reverse();
+            inputs.forEach(input => {
+                otp += input.value;
+            });
+            document.getElementById('fullOtp').value = otp;
+        }
+
+        // Only allow numeric input
+        document.querySelectorAll('.otp-input').forEach(input => {
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        });
+    </script>
+}
+
+<style>
+    /* Persian font and RTL support */
+    body {
+        font-family: 'B Nazanin', 'Nazanin', 'Tahoma', sans-serif;
+    }
+
+    /* OTP input styling */
+    .otp-input {
+        caret-color: transparent;
+    }
+
+        .otp-input:focus {
+            border-color: #0d6efd !important;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+        }
+
+    /* Dark theme enhancements */
+    .bg-black {
+        background-color: #000000;
+    }
+
+    .border-secondary {
+        border-color: #444 !important;
+    }
+
+    /* Back button icon flip for RTL */
+    .bi-arrow-right {
+        transform: scaleX(-1);
+    }
+</style>

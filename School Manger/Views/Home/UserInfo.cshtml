@@ -1,0 +1,171 @@
+﻿@{
+    ViewData["Title"] = "تکمیل اطلاعات کاربری";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-dark" dir="rtl">
+    <div class="card bg-black text-white border-secondary" style="width: 100%; max-width: 500px;border-radius:20px">
+        <div class="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
+            <a href="@Url.Action("OtpVerification", "Auth")" class="btn btn-outline-light">
+                <i class="bi bi-arrow-right"></i> بازگشت
+            </a>
+            <h5 class="m-0">تکمیل اطلاعات کاربری</h5>
+        </div>
+
+        <div class="card-body p-4">
+            <form asp-action="CompleteProfile" method="post" id="profileForm">
+                <div class="mb-3">
+                    <label for="nationalCode" class="form-label">کد ملی</label>
+                    <input type="text"
+                           class="form-control bg-dark text-white border-secondary"
+                           id="nationalCode"
+                           name="nationalCode"
+                           placeholder="۰۱۲۳۴۵۶۷۸۹"
+                           maxlength="10"
+                           required
+                           onkeypress="return isNumberKey(event)">
+                    <div id="nationalCodeFeedback" class="form-text"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="firstName" class="form-label">نام</label>
+                    <input type="text"
+                           class="form-control bg-dark text-white border-secondary"
+                           id="firstName"
+                           name="firstName"
+                           placeholder="محمد"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="lastName" class="form-label">نام خانوادگی</label>
+                    <input type="text"
+                           class="form-control bg-dark text-white border-secondary"
+                           id="lastName"
+                           name="lastName"
+                           placeholder="محمدی"
+                           required>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2">تایید و ادامه</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Only allow number input
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            return !(charCode > 31 && (charCode < 48 || charCode > 57));
+        }
+
+        // Convert Persian numbers to English
+        function convertToEnglish(str) {
+            return str.replace(/[۰-۹]/g, function(d) {
+                return String.fromCharCode(d.charCodeAt(0) - 1728);
+            });
+        }
+
+        // National code validation function (fixed version)
+        function checkCodeMeli(code) {
+            if (!code || code.length !== 10 || !/^\d+$/.test(code))
+                return false;
+
+            // Check for all identical digits
+            if (/^(\d)\1{9}$/.test(code))
+                return false;
+
+            var sum = 0;
+            for (var i = 0; i < 9; i++) {
+                sum += parseInt(code.charAt(i)) * (10 - i);
+            }
+
+            var remainder = sum % 11;
+            var controlDigit = parseInt(code.charAt(9));
+
+            return (remainder < 2 && controlDigit === remainder) ||
+                   (remainder >= 2 && controlDigit === (11 - remainder));
+        }
+
+        // Validate national code on input
+        document.getElementById('nationalCode').addEventListener('input', function(e) {
+            // Convert Persian numbers to English
+            this.value = this.value.replace(/[^۰-۹0-9]/g, '');
+
+            const feedbackEl = document.getElementById('nationalCodeFeedback');
+            const englishCode = convertToEnglish(this.value);
+
+            if (englishCode.length === 10) {
+                const isValid = checkCodeMeli(englishCode);
+
+                if (isValid) {
+                    this.classList.remove('border-danger', 'is-invalid');
+                    this.classList.add('border-success', 'is-valid');
+                    feedbackEl.textContent = 'کد ملی معتبر است';
+                    feedbackEl.className = 'form-text text-success';
+                } else {
+                    this.classList.remove('border-success', 'is-valid');
+                    this.classList.add('border-danger', 'is-invalid');
+                    feedbackEl.textContent = 'کد ملی نامعتبر است';
+                    feedbackEl.className = 'form-text text-danger';
+                }
+            } else {
+                this.classList.remove('border-success', 'border-danger', 'is-valid', 'is-invalid');
+                feedbackEl.textContent = 'کد ملی ۱۰ رقمی خود را وارد کنید';
+                feedbackEl.className = 'form-text text-white-50';
+            }
+        });
+
+        // Prevent form submission if national code is invalid
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            const nationalCodeInput = document.getElementById('nationalCode');
+            const englishCode = convertToEnglish(nationalCodeInput.value);
+
+            if (englishCode.length !== 10 || !checkCodeMeli(englishCode)) {
+                e.preventDefault();
+                nationalCodeInput.classList.add('border-danger', 'is-invalid');
+                document.getElementById('nationalCodeFeedback').textContent = 'لطفاً کد ملی معتبر وارد کنید';
+                document.getElementById('nationalCodeFeedback').className = 'form-text text-danger';
+                nationalCodeInput.focus();
+            }
+        });
+    </script>
+}
+
+<style>
+    /* Persian font support */
+    body {
+        font-family: 'B Nazanin', 'Nazanin', 'Tahoma', sans-serif;
+    }
+
+    /* Validation states */
+    .is-valid {
+        border-color: #28a745 !important;
+    }
+
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    .text-success {
+        color: #28a745 !important;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+    }
+
+    /* Input focus styling */
+    .form-control:focus {
+        background-color: #222;
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(100, 100, 100, 0.25);
+    }
+
+    /* Back button icon flip for RTL */
+    .bi-arrow-right {
+        transform: scaleX(-1);
+    }
+</style>
