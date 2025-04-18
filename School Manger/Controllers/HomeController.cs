@@ -46,7 +46,7 @@ namespace School_Manger.Controllers
                         NationalCode = "0521744407",
                         BirthDate = DateTime.Now,
                         HasPaid = true,
-                        Id = "1",
+                        Id = 1,
                         Price = 2000,
                     },
                       new ChildInfo()
@@ -56,7 +56,7 @@ namespace School_Manger.Controllers
                         NationalCode = "0521744407",
                         BirthDate = DateTime.Now,
                         HasPaid = false,
-                        Id = "2",
+                        Id = 2,
                         Price = 100000
                     }
                 },

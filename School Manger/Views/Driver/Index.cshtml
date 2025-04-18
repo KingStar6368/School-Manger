@@ -1,0 +1,167 @@
+﻿@{
+    ViewData["Title"] = "ورود به سامانه رانندگان";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-dark" dir="rtl">
+    <div class="card bg-black text-white border-secondary" style="width: 100%; max-width: 500px;">
+        <div class="card-header bg-dark border-secondary text-center">
+            <h3 class="m-0">ورود به سامانه رانندگان</h3>
+        </div>
+
+        <div class="card-body p-4">
+            <form asp-action="Login" method="post" id="loginForm">
+                <div class="mb-4">
+                    <label for="nationalCode" class="form-label">کد ملی</label>
+                    <input type="text"
+                           class="form-control bg-dark text-white border-secondary"
+                           id="nationalCode"
+                           name="nationalCode"
+                           placeholder="۰۱۲۳۴۵۶۷۸۹"
+                           maxlength="10"
+                           required
+                           onkeypress="return isNumberKey(event)">
+                    <div id="nationalCodeFeedback" class="form-text"></div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label">رمز عبور</label>
+                    <input type="password"
+                           class="form-control bg-dark text-white border-secondary"
+                           id="password"
+                           name="password"
+                           placeholder="رمز عبور خود را وارد کنید"
+                           required
+                           minlength="6">
+                    <div class="form-text text-white-50">حداقل ۶ کاراکتر</div>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">مرا به خاطر بسپار</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 mb-3">ورود</button>
+
+                <div class="text-center">
+                    <a href="#" class="text-decoration-none text-info">رمز عبور خود را فراموش کرده‌اید؟</a>
+                </div>
+                <br />
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Only allow number input for national code
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            return !(charCode > 31 && (charCode < 48 || charCode > 57));
+        }
+
+        // Convert Persian numbers to English
+        function convertToEnglish(str) {
+            return str.replace(/[۰-۹]/g, function(d) {
+                return String.fromCharCode(d.charCodeAt(0) - 1728);
+            });
+        }
+
+        // National code validation
+        function checkCodeMeli(code) {
+            if (!code || code.length !== 10 || !/^\d+$/.test(code))
+                return false;
+            if (/^(\d)\1{9}$/.test(code))
+                return false;
+
+            var sum = 0;
+            for (var i = 0; i < 9; i++)
+                sum += parseInt(code.charAt(i)) * (10 - i);
+
+            var remainder = sum % 11;
+            var controlDigit = parseInt(code.charAt(9));
+
+            return (remainder < 2 && controlDigit === remainder) ||
+                   (remainder >= 2 && controlDigit === (11 - remainder));
+        }
+
+        // Validate national code on input
+        document.getElementById('nationalCode').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^۰-۹0-9]/g, '');
+            const feedbackEl = document.getElementById('nationalCodeFeedback');
+            const englishCode = convertToEnglish(this.value);
+
+            if (englishCode.length === 10) {
+                if (checkCodeMeli(englishCode)) {
+                    this.classList.remove('border-danger', 'is-invalid');
+                    this.classList.add('border-success', 'is-valid');
+                    feedbackEl.textContent = 'کد ملی معتبر است';
+                    feedbackEl.className = 'form-text text-success';
+                } else {
+                    this.classList.remove('border-success', 'is-valid');
+                    this.classList.add('border-danger', 'is-invalid');
+                    feedbackEl.textContent = 'کد ملی نامعتبر است';
+                    feedbackEl.className = 'form-text text-danger';
+                }
+            } else {
+                this.classList.remove('border-success', 'border-danger', 'is-valid', 'is-invalid');
+                feedbackEl.textContent = 'کد ملی ۱۰ رقمی خود را وارد کنید';
+                feedbackEl.className = 'form-text text-white-50';
+            }
+        });
+
+        // Form submission validation
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const nationalCode = document.getElementById('nationalCode');
+            const englishCode = convertToEnglish(nationalCode.value);
+
+            if (!checkCodeMeli(englishCode)) {
+                e.preventDefault();
+                nationalCode.classList.add('border-danger', 'is-invalid');
+                document.getElementById('nationalCodeFeedback').textContent = 'لطفاً کد ملی معتبر وارد کنید';
+                document.getElementById('nationalCodeFeedback').className = 'form-text text-danger';
+                nationalCode.focus();
+            }
+        });
+    </script>
+}
+
+<style>
+    /* Persian font support */
+    body {
+        font-family: 'B Nazanin', 'Nazanin', 'Tahoma', sans-serif;
+    }
+
+    /* Validation states */
+    .is-valid {
+        border-color: #28a745 !important;
+    }
+
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    .text-success {
+        color: #28a745 !important;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+    }
+
+    /* Input focus styling */
+    .form-control:focus {
+        background-color: #222;
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(100, 100, 100, 0.25);
+    }
+
+    /* Password toggle (optional) */
+    .password-toggle {
+        cursor: pointer;
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+</style>

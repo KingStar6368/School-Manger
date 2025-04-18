@@ -23,12 +23,14 @@
 
     public class ChildInfo
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string NationalCode { get; set; }
         public DateTime BirthDate { get; set; }
+        public string Class { get; set; }
         public bool HasPaid { get; set; }
         public long Price { get; set; }
+        public LocationPairModel Path { get; set; }
     }
 }

@@ -1,0 +1,124 @@
+﻿@model School_Manger.Models.Driver
+@{
+    ViewData["Title"] = "پنل راننده";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid bg-dark text-white" dir="rtl">
+    <!-- Header Section -->
+    <div class="row py-4 bg-black">
+        <div class="col-12 text-center">
+            <h3>اطلاعات راننده</h3>
+            <div class="d-flex justify-content-center gap-5 mt-3">
+                <div>
+                    <span class="fs-5">نام:</span>
+                    <span class="fs-3">@Model.Name</span>
+                </div>
+                <div>
+                    <span class="fs-5 text-light">نام خانوادگی:</span>
+                    <span class="fs-3">@Model.LastName</span>
+                </div>
+                <div>
+                    <span class="fs-5 text-light">خودرو:</span>
+                    <span class="fs-3">@Model.Car.Name (@Model.Car.PlateNumber)</span>
+                </div>
+                <div>
+                    <span class="fs-5 text-light">صندلی‌های خالی:</span>
+                    <span class="fs-3">@Model.Car.AvailableSeats</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transport List -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card bg-secondary">
+                <div class="card-header bg-info">
+                    <h4 class="mb-0">لیست مسافران</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ردیف</th>
+                                    <th>نام مسافر</th>
+                                    <th>محل سوار شدن</th>
+                                    <th>مقصد</th>
+                                    <th>زمان رفت</th>
+                                    <th>زمان بازگشت</th>
+                                    <th>عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var child in Model.Passanger)
+                                {
+                                    <tr>
+                                        <td>@(Model.Passanger.IndexOf(child) + 1)</td>
+                                        <td>@child.FirstName @child.LastName</td>
+                                        <td>@child.Path.Location1.Address</td>
+                                        <td>@child.Path.Location2.Address</td>
+                                        <td>@child.Path.PickTime1</td>
+                                        <td>@child.Path.PickTime2</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Mark as picked up
+            $('.mark-picked-up').click(function() {
+                const childId = $(this).data('child-id');
+
+                $.post('/Driver/MarkAsPickedUp', { childId: childId }, function() {
+                    location.reload();
+                }).fail(function() {
+                    alert('خطا در ثبت اطلاعات');
+                });
+            });
+        });
+    </script>
+}
+
+<style>
+    /* Custom styles matching your parent panel */
+    .table {
+        border-color: #444;
+    }
+
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.35em 0.65em;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .d-flex.justify-content-center {
+            flex-direction: column;
+            gap: 1rem !important;
+        }
+    }
+</style>
