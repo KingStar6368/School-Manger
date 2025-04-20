@@ -1,0 +1,33 @@
+﻿@using School_Manger.Models
+@model Driver
+@{
+    ViewData["Title"] = "جزئیات راننده";
+    Layout = "_AdminLayout";
+}
+
+<div class="card bg-dark text-white">
+    <div class="card-header bg-info">
+        <h4 class="mb-0">@ViewData["Title"]</h4>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <h5>اطلاعات راننده:</h5>
+                    <p><strong>نام کامل:</strong> @Model.Name @Model.LastName</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <h5>اطلاعات خودرو:</h5>
+                    <p><strong>مدل:</strong> @Model.Car.Name</p>
+                    <p><strong>پلاک:</strong> @Model.Car.PlateNumber</p>
+                    <p><strong>صندلی خالی:</strong> @Model.Car.AvailableSeats</p>
+                </div>
+            </div>
+        </div>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-right"></i> بازگشت به لیست
+        </a>
+    </div>
+</div>

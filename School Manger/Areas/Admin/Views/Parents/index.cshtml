@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "مدیریت والدین";
+    Layout = "_AdminLayout";
+}
+
+<div class="card bg-dark text-white">
+    <div class="card-header bg-primary">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">لیست والدین</h4>
+            <a href="/Admin/Parent/Create" class="btn btn-success">
+                <i class="bi bi-plus-circle me-2"></i> والد جدید +
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th>ردیف</th>
+                        <th>نام</th>
+                        <th>نام خانوادگی</th>
+                        <th>کد ملی</th>
+                        <th>تعداد فرزندان</th>
+                        <th>وضعیت</th>
+                        <th>وضعیت پرداختی</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>محمد</td>
+                        <td>رضایی</td>
+                        <td>1234567890</td>
+                        <td>2</td>
+                        <td><span class="badge bg-success">فعال</span></td>
+                        <td><span class="badge bg-danger">10000</span></td>
+                        <td>
+                            <a href="/Admin/Parent/Info/1" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil">نمایش</i>
+                            </a>
+                            <a href="/Admin/Parent/Edit/1" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil">تغییر</i>
+                            </a>
+                            <button class="btn btn-sm btn-danger">
+                                <i class="bi bi-trash">حذف</i>
+                            </button>
+                        </td>
+                    </tr>
+                    <!-- More rows will be generated dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section PageScripts {
+    <script>
+        $(document).ready(function() {
+            // Parent-specific scripts here
+        });
+    </script>
+}
