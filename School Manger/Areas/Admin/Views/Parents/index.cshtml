@@ -1,4 +1,6 @@
-﻿@{
+﻿@using School_Manger.Models
+@model List<ParentWithChildrenViewModel>
+@{
     ViewData["Title"] = "مدیریت والدین";
     Layout = "_AdminLayout";
 }
@@ -28,27 +30,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>محمد</td>
-                        <td>رضایی</td>
-                        <td>1234567890</td>
-                        <td>2</td>
-                        <td><span class="badge bg-success">فعال</span></td>
-                        <td><span class="badge bg-danger">10000</span></td>
-                        <td>
-                            <a href="/Admin/Parent/Info/1" class="btn btn-sm btn-primary">
-                                <i class="bi bi-pencil">نمایش</i>
-                            </a>
-                            <a href="/Admin/Parent/Edit/1" class="btn btn-sm btn-warning">
-                                <i class="bi bi-pencil">تغییر</i>
-                            </a>
-                            <button class="btn btn-sm btn-danger">
-                                <i class="bi bi-trash">حذف</i>
-                            </button>
-                        </td>
-                    </tr>
-                    <!-- More rows will be generated dynamically -->
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@Model[i].ParentFirstName</td>
+                            <td>@Model[i].ParentLastName</td>
+                            <td>@Model[i].ParentNationalCode</td>
+                            <td>@Model[i].Children.Count</td>
+                            <td><span class="badge bg-success">@Model[i].Active? فعال:غیرفعال</span></td>
+                            <td><span class="badge bg-danger">@Model[i].TotalPrice</span></td>
+                            <td>
+                                <a asp-action="Details" asp-controller="Parents" asp-route-id="@Model[i].Id" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-pencil">نمایش</i>
+                                </a>
+                                <a href="/Admin/Parent/Edit/1" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-pencil">تغییر</i>
+                                </a>
+                                <button class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash">حذف</i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>

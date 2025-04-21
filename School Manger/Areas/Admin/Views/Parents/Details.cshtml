@@ -1,0 +1,142 @@
+﻿@using School_Manger.Models
+@model ParentWithChildrenViewModel
+@{
+    ViewData["Title"] = "جزئیات والدین";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid bg-dark text-white" dir="rtl">
+    <!-- Parent Information Card -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h3>اطلاعات والدین</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <p><strong>نام:</strong> @Model.ParentFirstName</p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>نام خانوادگی:</strong> @Model.ParentLastName</p>
+                </div>
+                <div class="col-md-4">
+                    <p><strong>کد ملی:</strong> @Model.ParentNationalCode</p>
+                </div>
+            </div>
+            <div class="mt-3">
+                <h5>جمع مبالغ پرداخت نشده:</h5>
+                @if (Model.TotalPrice <= 0)
+                {
+                    <span class="badge bg-success fs-6">همه پرداخت ها انجام شده است</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger fs-6">@Model.TotalPrice.ToString("N0") تومان</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Children Information Card -->
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h3>لیست فرزندان</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>ردیف</th>
+                            <th>نام فرزند</th>
+                            <th>کد ملی</th>
+                            <th>تاریخ تولد</th>
+                            <th>پایه تحصیلی</th>
+                            <th>وضعیت پرداخت</th>
+                            <th>مسیر سرویس</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var child in Model.Children.Select((c, i) => new { Index = i + 1, Child = c }))
+                        {
+                            <tr>
+                                <td>@child.Index</td>
+                                <td>@child.Child.FirstName @child.Child.LastName</td>
+                                <td>@child.Child.NationalCode</td>
+                                <td>@child.Child.BirthDate</td>
+                                <td>@child.Child.Class</td>
+                                <td>
+                                    @if (child.Child.HasPaid)
+                                    {
+                                        <span class="badge bg-success">پرداخت شده</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">@child.Child.Price.ToString("N0") تومان</span>
+                                    }
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary view-route"
+                                            data-pickup="@child.Child.Path.Location1.Address"
+                                            data-destination="@child.Child.Path.Location2.Address">
+                                        <i class="bi bi-geo-alt"></i> مشاهده مسیر
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="mt-3">
+        <a asp-action="Index" asp-controller="Parent" asp-area="Admin" class="btn btn-secondary">
+            <i class="bi bi-arrow-right"></i> بازگشت به لیست
+        </a>
+    </div>
+</div>
+
+<!-- Route Modal -->
+<div class="modal fade" id="routeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title">مسیر سرویس</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <h6>محل سوار شدن:</h6>
+                    <p id="pickupLocation"></p>
+                </div>
+                <div class="mb-3">
+                    <h6>مقصد:</h6>
+                    <p id="destinationLocation"></p>
+                </div>
+                <!-- You could add a simple map here if needed -->
+                <div class="bg-secondary p-3 rounded text-center">
+                    <i class="bi bi-map fs-1"></i>
+                    <p class="mt-2">نمایش نقشه مسیر</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Route viewer modal
+            $('.view-route').click(function() {
+                $('#pickupLocation').text($(this).data('pickup'));
+                $('#destinationLocation').text($(this).data('destination'));
+                $('#routeModal').modal('show');
+            });
+        });
+    </script>
+}

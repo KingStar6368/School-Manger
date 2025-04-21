@@ -2,23 +2,25 @@
 {
     public class ParentWithChildrenViewModel
     {
+        public int Id { get; set; }
         public string ParentFirstName { get; set; }
         public string ParentLastName { get; set; }
         public string ParentNationalCode { get; set; }
+        public bool Active { get; set; }
         public List<ChildInfo> Children { get; set; }
-        public long TotalPrice
-        {
-            get
-            {
-                long temp = 0;
-                foreach(ChildInfo child in Children)
-                {
-                    if(!child.HasPaid)
-                        temp += child.Price;
-                }
-                return temp;
-            }
-        }
+        public long TotalPrice { get; set; }
+        //{
+        //    get
+        //    {
+        //        long temp = 0;
+        //        foreach(ChildInfo child in Children)
+        //        {
+        //            if(!child.HasPaid)
+        //                temp += child.Price;
+        //        }
+        //        return temp;
+        //    }
+        //}
     }
 
     public class ChildInfo

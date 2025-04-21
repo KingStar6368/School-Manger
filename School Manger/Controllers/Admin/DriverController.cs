@@ -8,12 +8,12 @@ namespace School_Manger.Controllers.Admin
     {
         // Mock data - no database needed
         private List<Driver> _drivers = new List<Driver>
-    {
+        {
         new Driver { Id = 1, Name = "رضا", LastName = "محمدی",
                     Car = new CarInfo { Name = "پراید", PlateNumber = "12ب12345", AvailableSeats = 3 } },
         new Driver { Id = 2, Name = "علی", LastName = "کریمی",
                     Car = new CarInfo { Name = "پژو", PlateNumber = "34الف123", AvailableSeats = 4 } }
-    };
+        };
 
         public IActionResult Index()
         {
