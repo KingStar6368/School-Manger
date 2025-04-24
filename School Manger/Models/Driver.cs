@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
+        public string NationCode { get; set; }
         public List<ChildInfo> Passanger { get; set; }
         public CarInfo Car { get; set; }
     }
@@ -14,5 +15,6 @@
         public string Name { get; set; }
         public string PlateNumber { get; set; }
         public int AvailableSeats { get; set; }
+        public int SeatNumber { get; set; }
     }
 }

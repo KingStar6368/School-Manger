@@ -1,6 +1,6 @@
 ﻿namespace School_Manger.Models
 {
-    public class ParentWithChildrenViewModel
+    public class Parent
     {
         public int Id { get; set; }
         public string ParentFirstName { get; set; }

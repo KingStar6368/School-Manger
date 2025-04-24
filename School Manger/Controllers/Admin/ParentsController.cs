@@ -7,9 +7,9 @@ namespace School_Manger.Controllers.Admin
     [Area("Admin")]
     public class ParentsController : Controller
     {
-        List<ParentWithChildrenViewModel> TestModel = new List<ParentWithChildrenViewModel>()
+        List<Parent> TestModel = new List<Parent>()
 {
-    new ParentWithChildrenViewModel()
+    new Parent()
     {
         Id = 1,
         ParentFirstName = "محمد",
@@ -41,7 +41,7 @@ namespace School_Manger.Controllers.Admin
             }
         }
     },
-    new ParentWithChildrenViewModel()
+    new Parent()
     {
         Id = 2,
         ParentFirstName = "فاطمه",

@@ -1,0 +1,97 @@
+﻿@model string  // Expecting plate number like "12الف12345" or "12ت12345"
+
+@{
+    // Extract parts considering variable-length Persian characters
+    var firstPart = "";
+    var charPart = "";
+    var middlePart = "";
+    var lastPart = "";
+
+    if (!string.IsNullOrEmpty(Model))
+    {
+        // First 2 digits (always numeric)
+        firstPart = Model.Length >= 2 ? Model.Substring(0, 2) : "";
+
+        // Find where Persian character ends
+        int charEndIndex = 2;
+        while (charEndIndex < Model.Length && !char.IsDigit(Model[charEndIndex]))
+        {
+            charEndIndex++;
+        }
+
+        // Get Persian character(s)
+        charPart = Model.Substring(2, charEndIndex - 2);
+
+        // Remaining parts
+        var remaining = Model.Substring(charEndIndex);
+        middlePart = remaining.Length >= 3 ? remaining.Substring(0, 3) : "";
+        lastPart = remaining.Length >= 5 ? remaining.Substring(3, 2) : "";
+    }
+}
+
+<style>
+    .license-plate {
+        font-family: 'B Titr', 'B Nazanin', 'Arial', sans-serif;
+        font-weight: bold;
+        background-color: white;
+        color: black;
+        border: 2px solid #d1d5db;
+        border-radius: 5px;
+        display: inline-flex;
+        overflow: hidden;
+        direction: rtl;
+        height: 40px;
+        line-height: 1;
+    }
+
+    .plate-section {
+        padding: 0 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-left: 1px solid #d1d5db;
+        min-width: 30px;
+    }
+
+    .plate-char {
+        font-size: 18px;
+        padding: 0 6px;
+        min-width: max-content;
+    }
+
+    .iran-section {
+        background-color: #1e3a8a;
+        color: white;
+        flex-direction: column;
+        padding: 0 8px;
+        min-width: 35px;
+        border-left: none;
+    }
+
+    .iran-text {
+        font-size: 10px;
+        margin-top: 2px;
+    }
+
+    .last-digits {
+        font-size: 16px;
+        margin-bottom: 2px;
+    }
+</style>
+
+<div class="license-plate">
+    <!-- Iran section with blue background (leftmost in display) -->
+    <div class="plate-section iran-section">
+        <div class="iran-text">ایران</div>
+        <div class="last-digits">@lastPart</div>
+    </div>
+    <!-- Middle 3 digits -->
+    <div class="plate-section">@middlePart</div>
+
+    <!-- Persian character(s) -->
+    <div class="plate-section plate-char">@charPart</div>
+
+    <!-- First 2 digits (rightmost in display) -->
+    <div class="plate-section" style="border-left: none;">@firstPart</div>
+
+</div>
