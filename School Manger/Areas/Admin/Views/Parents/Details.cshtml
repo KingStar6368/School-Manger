@@ -1,9 +1,24 @@
 ﻿@using School_Manger.Models
-@model ParentWithChildrenViewModel
+@model Parent
 @{
     ViewData["Title"] = "جزئیات والدین";
     Layout = "_AdminLayout";
 }
+
+<!-- Add these to your _AdminLayout.cshtml head section -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    #routeMap {
+        height: 400px;
+        width: 100%;
+        border-radius: 5px;
+        margin-top: 15px;
+    }
+
+    .leaflet-container {
+        font-family: inherit;
+    }
+</style>
 
 <div class="container-fluid bg-dark text-white" dir="rtl">
     <!-- Parent Information Card -->
@@ -63,7 +78,7 @@
                                 <td>@child.Index</td>
                                 <td>@child.Child.FirstName @child.Child.LastName</td>
                                 <td>@child.Child.NationalCode</td>
-                                <td>@child.Child.BirthDate</td>
+                                <td>@child.Child.BirthDate.ToShortDateString()</td>
                                 <td>@child.Child.Class</td>
                                 <td>
                                     @if (child.Child.HasPaid)
@@ -78,7 +93,11 @@
                                 <td>
                                     <button class="btn btn-sm btn-outline-primary view-route"
                                             data-pickup="@child.Child.Path.Location1.Address"
-                                            data-destination="@child.Child.Path.Location2.Address">
+                                            data-destination="@child.Child.Path.Location2.Address"
+                                            data-pickup-lat="@child.Child.Path.Location1.Latitude"
+                                            data-pickup-lng="@child.Child.Path.Location1.Longitude"
+                                            data-dest-lat="@child.Child.Path.Location2.Latitude"
+                                            data-dest-lng="@child.Child.Path.Location2.Longitude">
                                         <i class="bi bi-geo-alt"></i> مشاهده مسیر
                                     </button>
                                 </td>
@@ -107,19 +126,23 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="mb-3">
-                    <h6>محل سوار شدن:</h6>
-                    <p id="pickupLocation"></p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <h6>محل سوار شدن:</h6>
+                            <p id="pickupLocation"></p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <h6>مقصد:</h6>
+                            <p id="destinationLocation"></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <h6>مقصد:</h6>
-                    <p id="destinationLocation"></p>
-                </div>
-                <!-- You could add a simple map here if needed -->
-                <div class="bg-secondary p-3 rounded text-center">
-                    <i class="bi bi-map fs-1"></i>
-                    <p class="mt-2">نمایش نقشه مسیر</p>
-                </div>
+
+                <!-- Map Container -->
+                <div id="routeMap"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
@@ -129,13 +152,75 @@
 </div>
 
 @section Scripts {
+    <!-- Add to your _AdminLayout.cshtml before </body> -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         $(document).ready(function() {
-            // Route viewer modal
+            var map;
+            var pickupMarker, destinationMarker;
+
             $('.view-route').click(function() {
+                // Update address text
                 $('#pickupLocation').text($(this).data('pickup'));
                 $('#destinationLocation').text($(this).data('destination'));
+
+                // Get coordinates from data attributes
+                var pickupLat = parseFloat($(this).data('pickup-lat'));
+                var pickupLng = parseFloat($(this).data('pickup-lng'));
+                var destLat = parseFloat($(this).data('dest-lat'));
+                var destLng = parseFloat($(this).data('dest-lng'));
+
+                // Initialize or reuse map
+                if (!map) {
+                    map = L.map('routeMap').setView([pickupLat, pickupLng], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                    }).addTo(map);
+                }
+
+                // Clear existing markers
+                if (pickupMarker) map.removeLayer(pickupMarker);
+                if (destinationMarker) map.removeLayer(destinationMarker);
+
+                // Add new markers
+                pickupMarker = L.marker([pickupLat, pickupLng], {
+                    icon: L.divIcon({
+                        html: '<i class="bi bi-geo-alt-fill text-danger fs-4"></i>',
+                        className: 'd-flex justify-content-center align-items-center',
+                        iconSize: [30, 30]
+                    })
+                }).addTo(map).bindPopup("محل سوار شدن");
+
+                destinationMarker = L.marker([destLat, destLng], {
+                    icon: L.divIcon({
+                        html: '<i class="bi bi-geo-alt-fill text-success fs-4"></i>',
+                        className: 'd-flex justify-content-center align-items-center',
+                        iconSize: [30, 30]
+                    })
+                }).addTo(map).bindPopup("مقصد");
+
+                // Add line between points
+                var routeLine = L.polyline(
+                    [[pickupLat, pickupLng], [destLat, destLng]],
+                    {color: 'blue', dashArray: '5, 5'}
+                ).addTo(map);
+
+                // Fit map to show both markers
+                var bounds = L.latLngBounds([
+                    [pickupLat, pickupLng],
+                    [destLat, destLng]
+                ]);
+                map.fitBounds(bounds, { padding: [50, 50] });
+
                 $('#routeModal').modal('show');
+            });
+
+            // Clear map when modal closes
+            $('#routeModal').on('hidden.bs.modal', function () {
+                if (map) {
+                    map.remove();
+                    map = null;
+                }
             });
         });
     </script>

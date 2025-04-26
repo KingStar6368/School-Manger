@@ -35,7 +35,7 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult CompleteProfile()
         {
-            return View("ParentMenu", new ParentWithChildrenViewModel()
+            return View("ParentMenu", new Parent()
             {
                 Children = new List<ChildInfo>()
                 {

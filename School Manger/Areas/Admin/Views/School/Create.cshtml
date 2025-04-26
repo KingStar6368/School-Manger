@@ -1,0 +1,80 @@
+﻿@using School_Manger.Models
+@model School
+@{
+    ViewData["Title"] = "مدرسه جدید";
+    Layout = "_AdminLayout";
+}
+
+<div class="card bg-dark text-white">
+    <div class="card-header bg-primary">
+        <h4>@ViewData["Title"]</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="ManagerName" class="control-label"></label>
+                        <input asp-for="ManagerName" class="form-control" />
+                        <span asp-validation-for="ManagerName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Rate" class="control-label"></label>
+                        <select asp-for="Rate" class="form-control">
+                            <option value="0">0 ستاره</option>
+                            <option value="1">1 ستاره</option>
+                            <option value="2">2 ستاره</option>
+                            <option value="3">3 ستاره</option>
+                            <option value="4">4 ستاره</option>
+                            <option value="5">5 ستاره</option>
+                        </select>
+                        <span asp-validation-for="Rate" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group mb-3">
+                        <label asp-for="Address.Address" class="control-label"></label>
+                        <textarea asp-for="Address.Address" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Address.Address" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Address.Latitude" class="control-label"></label>
+                                <input asp-for="Address.Latitude" class="form-control" />
+                                <span asp-validation-for="Address.Latitude" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="Address.Longitude" class="control-label"></label>
+                                <input asp-for="Address.Longitude" class="form-control" />
+                                <span asp-validation-for="Address.Longitude" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary">ذخیره</button>
+                <a asp-action="Index" class="btn btn-secondary">انصراف</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

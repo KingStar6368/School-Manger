@@ -1,5 +1,5 @@
 ﻿@using School_Manger.Models
-@model List<ParentWithChildrenViewModel>
+@model List<Parent>
 @{
     ViewData["Title"] = "مدیریت والدین";
     Layout = "_AdminLayout";
@@ -38,7 +38,7 @@
                             <td>@Model[i].ParentLastName</td>
                             <td>@Model[i].ParentNationalCode</td>
                             <td>@Model[i].Children.Count</td>
-                            <td><span class="badge bg-success">@Model[i].Active? فعال:غیرفعال</span></td>
+                            <td><span class="badge bg-success">@{string Active = Model[i].Active ? "فعال" : "غیرفعال";}@Active</span></td>
                             <td><span class="badge bg-danger">@Model[i].TotalPrice</span></td>
                             <td>
                                 <a asp-action="Details" asp-controller="Parents" asp-route-id="@Model[i].Id" class="btn btn-sm btn-primary">

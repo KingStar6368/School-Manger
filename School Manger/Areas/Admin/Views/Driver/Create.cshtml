@@ -1,0 +1,90 @@
+﻿@using School_Manger.Models
+@model Driver
+@{
+    ViewData["Title"] = "راننده جدید";
+    Layout = "_AdminLayout";
+}
+
+<div class="card bg-dark text-white">
+    <div class="card-header bg-primary">
+        <h4 class="mb-0">@ViewData["Title"]</h4>
+    </div>
+    <div class="card-body">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+                <!-- Driver Information -->
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-header bg-info">
+                            <h5>اطلاعات راننده</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group mb-3">
+                                <label asp-for="Name" class="control-label"></label>
+                                <input asp-for="Name" class="form-control" placeholder="نام راننده" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="LastName" class="control-label"></label>
+                                <input asp-for="LastName" class="form-control" placeholder="نام خانوادگی" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="NationCode" class="control-label"></label>
+                                <input asp-for="NationCode" class="form-control" placeholder="کد ملی" />
+                                <span asp-validation-for="NationCode" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car Information -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header bg-info">
+                            <h5>اطلاعات خودرو</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group mb-3">
+                                <label asp-for="Car.Name" class="control-label"></label>
+                                <input asp-for="Car.Name" class="form-control" placeholder="مدل خودرو" />
+                                <span asp-validation-for="Car.Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="Car.PlateNumber" class="control-label"></label>
+                                <input asp-for="Car.PlateNumber" class="form-control" placeholder="شماره پلاک" />
+                                <span asp-validation-for="Car.PlateNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="Car.SeatNumber" class="control-label"></label>
+                                <input asp-for="Car.SeatNumber" type="number" class="form-control" placeholder="تعداد صندلی" />
+                                <span asp-validation-for="Car.SeatNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-circle"></i> ثبت اطلاعات
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> انصراف
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
