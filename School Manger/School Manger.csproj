@@ -7,4 +7,9 @@
     <RootNamespace>School_Manger</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\School Manager.Core\School Manager.Core.csproj" />
+    <ProjectReference Include="..\School Manager.IOC\School Manager.IOC.csproj" />
+  </ItemGroup>
+
 </Project>
