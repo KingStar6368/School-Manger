@@ -35,7 +35,9 @@ namespace School_Manager.IOC
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRawMaterialService, RawMaterialService>();
-            services.AddScoped<ILookupService,LookupService>();
+            services.AddScoped<ILookupService,LookupService>(); 
+            services.AddMemoryCache();
+            services.AddScoped<ICachService, CachService>();
         }
     }
 }

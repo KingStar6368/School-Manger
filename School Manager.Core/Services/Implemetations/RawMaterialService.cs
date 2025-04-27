@@ -9,17 +9,23 @@ using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.RawMaterial;
 using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Operation;
+using School_Manager.Core.Events;
+using MediatR;
 
 namespace School_Manager.Core.Services.Implemetations
 {
     public class RawMaterialService : IRawMaterialService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICachService _cachService;
         private readonly IMapper _mapper;
-        public RawMaterialService(IUnitOfWork unitOfWork,IMapper mapper)
+        private readonly IMediator _mediator;
+        public RawMaterialService(IUnitOfWork unitOfWork,IMapper mapper, ICachService cachService, IMediator mediator)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _cachService = cachService;
+            _mediator = mediator;
         }
 
         //public double CheckRemain(int MaterialId,int warehouseId,int TransferId)
@@ -228,7 +234,13 @@ namespace School_Manager.Core.Services.Implemetations
 
         public async Task<List<RawMaterialCombo>> GetRawMaterialCombosAsync()
         {
-            var ds = await _unitOfWork.GetRepository<RawMaterial>().GetAllAsync();
+            var ds = await _cachService.GetOrSetAsync
+                (
+                new { CacheKey = "RawMaterial" },
+                async () => await _unitOfWork.GetRepository<RawMaterial>().GetAllAsync(),
+                absoluteExpireTime: TimeSpan.FromMinutes(10),
+                slidingExpireTime: TimeSpan.FromMinutes(2)
+                );
             return _mapper.Map<List<RawMaterialCombo>>(ds);
         }
 
@@ -286,7 +298,9 @@ namespace School_Manager.Core.Services.Implemetations
             }
             _mapper.Map(rawMaterialDTO, material);
             _unitOfWork.GetRepository<RawMaterial>().Update(material);
-            return _unitOfWork.SaveChanges() > 0;
+             var res =   _unitOfWork.SaveChanges() > 0;
+            _mediator.Publish(new RawMaterialUpdatedEvent { RawMaterialId = rawMaterialDTO.Id });
+            return res;
         }
     }
 }
