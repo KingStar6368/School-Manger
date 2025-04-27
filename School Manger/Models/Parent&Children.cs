@@ -9,18 +9,6 @@
         public bool Active { get; set; }
         public List<ChildInfo> Children { get; set; }
         public long TotalPrice { get; set; }
-        //{
-        //    get
-        //    {
-        //        long temp = 0;
-        //        foreach(ChildInfo child in Children)
-        //        {
-        //            if(!child.HasPaid)
-        //                temp += child.Price;
-        //        }
-        //        return temp;
-        //    }
-        //}
     }
 
     public class ChildInfo
