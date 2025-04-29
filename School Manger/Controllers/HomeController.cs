@@ -13,6 +13,7 @@ namespace School_Manger.Controllers
             _logger = logger;
         }
 
+        #region Login&SignIn
         public IActionResult Index()
         {
             return View();
@@ -31,7 +32,9 @@ namespace School_Manger.Controllers
         public IActionResult Login()
         {
             return View("Login");
-        }
+        } 
+        #endregion
+        #region AfterLogin
         [HttpPost]
         public IActionResult CompleteProfile()
         {
@@ -76,6 +79,7 @@ namespace School_Manger.Controllers
         {
             //Add Child And Show Menu Again
             return View("ParentMenu");
-        }
+        } 
+        #endregion
     }
 }
