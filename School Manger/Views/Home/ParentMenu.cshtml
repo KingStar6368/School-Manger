@@ -25,15 +25,15 @@
                 </div>
                 <div>
                     @{
-                        if(Model.TotalPrice <= 0)
-                        {
+                        // if(Model.TotalPrice <= 0)
+                        // {
                             <span class="badge bg-success fs-3 text-light">حساب شما تصویه است</span>
-                        }
-                        else
-                        {
-                            <span class="fs-5 text-light">مبالغ پرداخت نشده:</span>
-                            <span class="badge bg-danger fs-3">@Model.TotalPrice</span>
-                        }
+                        // }
+                        // else
+                        // {
+                        //     <span class="fs-5 text-light">مبالغ پرداخت نشده:</span>
+                        //     <span class="badge bg-danger fs-3">@Model.TotalPrice</span>
+                        // }
                     }
                 </div>
             </div>
@@ -75,14 +75,14 @@
                                 <td>@child.NationalCode</td>
                                 <td>@child.BirthDate</td>
                                 <td>
-                                    @if (child.HasPaid)
-                                    {
+                                  @*   @if (child.HasPaid)
+                                    { *@
                                         <span class="badge bg-success">پرداخت شده</span>
-                                    }
+                        @*             }
                                     else
                                     {
                                         <span class="badge bg-danger">@child.Price پرداخت نشده</span>
-                                    }
+                                    } *@
                                 </td>
                                 <td>
                                     <button class="btn btn-sm btn-outline-warning"
