@@ -50,7 +50,6 @@ namespace School_Manger.Controllers
                         BirthDate = DateTime.Now,
                         HasPaid = true,
                         Id = 1,
-                        Price = 2000,
                     },
                       new ChildInfo()
                     {
@@ -60,7 +59,6 @@ namespace School_Manger.Controllers
                         BirthDate = DateTime.Now,
                         HasPaid = false,
                         Id = 2,
-                        Price = 100000
                     }
                 },
                 ParentFirstName = "اقای تست",
