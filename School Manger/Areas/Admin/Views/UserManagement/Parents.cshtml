@@ -1,0 +1,49 @@
+﻿@using School_Manger.Models
+@model List<LoginUser>
+@{
+    ViewData["Title"] = "مدیریت کاربران والدین";
+    Layout = "_AdminLayout";
+}
+
+<div class="card bg-dark text-white">
+    <div class="card-header bg-primary">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">لیست والدین</h4>
+            <a asp-action="Create" asp-route-type="Parent" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> کاربر جدید
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th>ردیف</th>
+                        <th>نام کاربری</th>
+                        <th>شماره تماس</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Select((u, i) => new { User = u, Index = i + 1 }))
+                    {
+                        <tr>
+                            <td>@user.Index</td>
+                            <td>@user.User.UserName</td>
+                            <td>@user.User.PhoneNumber</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@user.User.Id" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@user.User.Id" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

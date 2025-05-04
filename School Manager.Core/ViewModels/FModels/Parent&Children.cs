@@ -9,7 +9,6 @@
         public string Address { get; set; }
         public bool Active { get; set; }
         public List<ChildInfo> Children { get; set; }
-        public long TotalPrice { get; set; }
     }
 
     public class ChildInfo
@@ -21,7 +20,6 @@
         public DateTime BirthDate { get; set; }
         public string Class { get; set; }
         public bool HasPaid { get; set; }
-        public long Price { get; set; }
         public LocationPairModel Path { get; set; }
     }
 }

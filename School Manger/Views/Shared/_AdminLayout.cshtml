@@ -82,12 +82,14 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "ParentUser" ? "active" : "")" href="/Admin/ParentUser">
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/ParentUser") ? "active" : "")"
+                       asp-area="Admin" asp-controller="UserManagement" asp-action="Parents">
                         <i class="bi bi-person-vcard me-2"></i> یوزر والدین
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "DriverUser" ? "active" : "")" href="/Admin/DriverUser">
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/DriverUser") ? "active" : "")"
+                       asp-area="Admin" asp-controller="UserManagement" asp-action="Drivers">
                         <i class="bi bi-person-vcard me-2"></i> یوزر رانندگان
                     </a>
                 </li>
