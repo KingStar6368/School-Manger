@@ -9,8 +9,8 @@
 
     public class LocationPairModel
     {
-        public int Id { get; set; }
-        public int ChildId { get; set; }
+        public long Id { get; set; }
+        public long ChildId { get; set; }
         public DateTime PickTime1 { get; set; }
         public DateTime PickTime2 { get; set; }
         public LocationData Location1 { get; set; }

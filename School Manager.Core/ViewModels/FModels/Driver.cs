@@ -9,7 +9,7 @@
     }
     public class Driver
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
         public string FutherName { get; set; }
@@ -26,7 +26,7 @@
     }
     public class CarInfo
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string PlateNumber { get; set; }
         public string Color { get;set; }
