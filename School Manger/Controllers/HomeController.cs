@@ -13,6 +13,7 @@ namespace School_Manger.Controllers
             _logger = logger;
         }
 
+        #region Login&SignIn
         public IActionResult Index()
         {
             return View();
@@ -31,7 +32,9 @@ namespace School_Manger.Controllers
         public IActionResult Login()
         {
             return View("Login");
-        }
+        } 
+        #endregion
+        #region AfterLogin
         [HttpPost]
         public IActionResult CompleteProfile()
         {
@@ -47,7 +50,6 @@ namespace School_Manger.Controllers
                         BirthDate = DateTime.Now,
                         HasPaid = true,
                         Id = 1,
-                        Price = 2000,
                     },
                       new ChildInfo()
                     {
@@ -57,7 +59,6 @@ namespace School_Manger.Controllers
                         BirthDate = DateTime.Now,
                         HasPaid = false,
                         Id = 2,
-                        Price = 100000
                     }
                 },
                 ParentFirstName = "اقای تست",
@@ -76,6 +77,7 @@ namespace School_Manger.Controllers
         {
             //Add Child And Show Menu Again
             return View("ParentMenu");
-        }
+        } 
+        #endregion
     }
 }

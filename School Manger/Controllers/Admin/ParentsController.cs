@@ -26,7 +26,6 @@ namespace School_Manger.Controllers.Admin
                 BirthDate = new DateTime(2015, 3, 10),
                 Class = "اول دبستان",
                 HasPaid = true,
-                Price = 500000,
                 Path = new LocationPairModel
                 {
                     Location1 = new LocationData
@@ -58,7 +57,6 @@ namespace School_Manger.Controllers.Admin
                 BirthDate = new DateTime(2013, 7, 15),
                 Class = "سوم دبستان",
                 HasPaid = true,
-                Price = 600000,
                 Path = new LocationPairModel
                 {
                     Location1 = new LocationData
@@ -80,7 +78,6 @@ namespace School_Manger.Controllers.Admin
                 BirthDate = new DateTime(2017, 11, 5),
                 Class = "پیش دبستانی",
                 HasPaid = false,
-                Price = 450000,
                 Path = new LocationPairModel
                 {
                     Location1 = new LocationData

@@ -33,7 +33,6 @@ namespace School_Manger.Controllers
                         FirstName = "تست",
                         LastName = "تست",
                         NationalCode = "52123",
-                        Price = 0,
                         Path = new LocationPairModel()
                         {
                             ChildId = 1,

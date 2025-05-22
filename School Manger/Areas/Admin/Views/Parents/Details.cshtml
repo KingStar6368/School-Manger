@@ -40,14 +40,14 @@
             </div>
             <div class="mt-3">
                 <h5>جمع مبالغ پرداخت نشده:</h5>
-                @if (Model.TotalPrice <= 0)
-                {
+               @*  @if (Model.TotalPrice <= 0)
+                { *@
                     <span class="badge bg-success fs-6">همه پرداخت ها انجام شده است</span>
-                }
+                @* }
                 else
                 {
                     <span class="badge bg-danger fs-6">@Model.TotalPrice.ToString("N0") تومان</span>
-                }
+                } *@
             </div>
         </div>
     </div>
@@ -81,14 +81,14 @@
                                 <td>@child.Child.BirthDate.ToShortDateString()</td>
                                 <td>@child.Child.Class</td>
                                 <td>
-                                    @if (child.Child.HasPaid)
-                                    {
+                                    @* @if (child.Child.HasPaid)
+                                    { *@
                                         <span class="badge bg-success">پرداخت شده</span>
-                                    }
+                                   @*  }
                                     else
                                     {
                                         <span class="badge bg-danger">@child.Child.Price.ToString("N0") تومان</span>
-                                    }
+                                    } *@
                                 </td>
                                 <td>
                                     <button class="btn btn-sm btn-outline-primary view-route"

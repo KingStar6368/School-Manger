@@ -1,0 +1,21 @@
+﻿@using School_Manger.Models
+@model List<LoginUser>
+@{
+    ViewData["Title"] = "مدیریت کاربران رانندگان";
+    Layout = "_AdminLayout";
+}
+
+<div class="card bg-dark text-white">
+    <div class="card-header bg-info">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">لیست رانندگان</h4>
+            <a asp-action="Create" asp-route-type="Driver" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> کاربر جدید
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- Same table structure as Parents view -->
+        @await Html.PartialAsync("_UsersTable", Model)
+    </div>
+</div>

@@ -15,19 +15,19 @@
 1-Admin Pannel
 2-Permission
 3-Price Manger
-4-Child Manger
-5-Parent Manger 
+4-Child Manger ✔️ Done
+5-Parent Manger ✔️ Done
 6-User Manger
-7-Driver manger
+7-Driver manger✔️ Done
 8-Treaty Manger
 9-Price Manger
 10-Log Pannel
 11-Report Pannel
 ===============Driver Section ======
 1-Login Page ✔️ Done
-2-Driver Page
-3-Passanger Page
-4-Destions Page
+2-Driver Page✔️ Done
+3-Passanger Page✔️ Done
+4-Destions Page✔️ Done
 5-Income Page
 6-Treaty Page
 7-Report Page
