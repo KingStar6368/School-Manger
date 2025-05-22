@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace School_Manager.Core.ViewModels.Lookup
+namespace School_Manager.Core.ViewModels.FModels
 {
     public class LookupComboViewModel
     {

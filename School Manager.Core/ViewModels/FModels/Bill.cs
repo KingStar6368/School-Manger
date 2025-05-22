@@ -1,6 +1,6 @@
-﻿namespace School_Manger.Models
+﻿namespace School_Manager.Core.ViewModels.FModels
 {
-    public class Bill
+    public class BillDto
     {
         public long Id { get; set; }
         public long ContractId { get; set; }

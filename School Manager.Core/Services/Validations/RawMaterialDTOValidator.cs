@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using School_Manager.Core.ViewModels.RawMaterial;
+using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Operation;
 using System;

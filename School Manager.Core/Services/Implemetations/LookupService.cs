@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using School_Manager.Core.Services.Interfaces;
-using School_Manager.Core.ViewModels.Lookup;
+using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Operation;
 

@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using School_Manager.Core.Services.Interfaces;
-using School_Manager.Core.ViewModels.RawMaterial;
 using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Operation;
 using School_Manager.Core.Events;
 using MediatR;
 using School_Manager.Core.Services.Validations;
 using FluentValidation;
+using School_Manager.Core.ViewModels.FModels;
 
 namespace School_Manager.Core.Services.Implemetations
 {

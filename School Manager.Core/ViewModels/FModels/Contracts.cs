@@ -1,6 +1,6 @@
-﻿namespace School_Manger.Models
+﻿namespace School_Manager.Core.ViewModels.FModels
 {
-    public class DriverContract
+    public class DriverContractDto
     {
         public long Id { get; set; }
         public int DriverId { get; set; }
@@ -9,7 +9,7 @@
         public long CheckId { get; set; }
         public byte[] SignatureImage { get; set; }
     }
-    public class ParentContract
+    public class ParentContractDto
     {
         public long Id { get; set; }
         public long ParentId { get; set; }
@@ -20,7 +20,7 @@
         public DateTime EndTime { get; set; }
         public byte[] SignatureImage { get; set; }
     }
-    public class ServiesContract
+    public class ServiesContractDto
     {
         public long Id { get; set; }
         public long ParentId { get; set; }
@@ -29,7 +29,7 @@
         public DateTime EndTime { get; set; }
         public byte[] SignatureImage { get; set; }
     }
-    public class Check
+    public class CheckDto
     {
         public long Id { get; set; }
         public long ContractId { get; set; }

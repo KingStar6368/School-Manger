@@ -1,4 +1,4 @@
-﻿namespace School_Manger.Models
+﻿namespace School_Manager.Core.ViewModels.FModels
 {
     public class Parent
     {
@@ -9,17 +9,5 @@
         public string Address { get; set; }
         public bool Active { get; set; }
         public List<ChildInfo> Children { get; set; }
-    }
-
-    public class ChildInfo
-    {
-        public long Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string NationalCode { get; set; }
-        public DateTime BirthDate { get; set; }
-        public string Class { get; set; }
-        public bool HasPaid { get; set; }
-        public LocationPairModel Path { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace School_Manger.Models
+﻿using School_Manager.Domain.Entities.Catalog.Enums;
+
+namespace School_Manager.Core.ViewModels.FModels
 {
     public class LoginUser
     {
@@ -7,11 +9,5 @@
         public string Password { get; set; }
         public string PhoneNumber { get; set; }
         public UserType Type { get; set; }
-    }
-    public enum UserType
-    {
-        Parent,
-        Driver,
-        Admin
     }
 }

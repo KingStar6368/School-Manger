@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using School_Manager.Core.ViewModels.RawMaterial;
+using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Entities.Catalog.Operation;
 
 namespace School_Manager.Core.Services.Interfaces

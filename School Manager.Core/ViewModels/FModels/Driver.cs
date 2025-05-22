@@ -1,13 +1,9 @@
-﻿namespace School_Manger.Models
+﻿using School_Manager.Domain.Entities.Catalog.Enums;
+
+namespace School_Manager.Core.ViewModels.FModels
 {
-    public enum CarType
-    {
-        Personal,
-        Taxi,
-        Van,
-        Bus
-    }
-    public class Driver
+    
+    public class DriverDto
     {
         public long Id { get; set; }
         public string Name { get; set; }
@@ -22,15 +18,6 @@
         public string BankNumber { get; set; }
         public string NationCode { get; set; }
         public List<ChildInfo> Passanger { get; set; }
-        public CarInfo Car { get; set; }
-    }
-    public class CarInfo
-    {
-        public long Id { get; set; }
-        public string Name { get; set; }
-        public string PlateNumber { get; set; }
-        public string Color { get;set; }
-        public int AvailableSeats { get; set; }
-        public int SeatNumber { get; set; }
+        public CarInfoDto Car { get; set; }
     }
 }

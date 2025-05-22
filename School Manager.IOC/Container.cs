@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.Services.Validations;
-using School_Manager.Core.ViewModels.RawMaterial;
+using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Data.Repositories;
 using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Operation;
@@ -40,6 +40,7 @@ namespace School_Manager.IOC
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRawMaterialService, RawMaterialService>();
             services.AddScoped<ILookupService,LookupService>();
+            services.AddScoped<ISchoolService,SchoolService>();
             //services.AddScoped<IDateTimeService,SystemDateTimeService>();
             services.AddMemoryCache();
             services.AddScoped<ICachService, CachService>(); 
