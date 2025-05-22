@@ -3,7 +3,7 @@
     public class DriverContract
     {
         public long Id { get; set; }
-        public int DriverId { get; set; }
+        public Driver DriverId { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public long CheckId { get; set; }
@@ -12,8 +12,8 @@
     public class ParentContract
     {
         public long Id { get; set; }
-        public long ParentId { get; set; }
-        public long ChildId { get; set; }
+        public Parent ParentId { get; set; }
+        public ChildInfo ChildId { get; set; }
         public long TotalPrice { get; set; }
         public long MonthPrice { get; set; }
         public DateTime StartTime { get; set; }
