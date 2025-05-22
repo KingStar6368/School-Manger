@@ -11,6 +11,8 @@ using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Operation;
 using School_Manager.Core.Events;
 using MediatR;
+using School_Manager.Core.Services.Validations;
+using FluentValidation;
 
 namespace School_Manager.Core.Services.Implemetations
 {
@@ -20,12 +22,14 @@ namespace School_Manager.Core.Services.Implemetations
         private readonly ICachService _cachService;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
-        public RawMaterialService(IUnitOfWork unitOfWork,IMapper mapper, ICachService cachService, IMediator mediator)
+        private readonly IValidator<RawMaterialDTO> _validator;
+        public RawMaterialService(IUnitOfWork unitOfWork,IMapper mapper, ICachService cachService, IMediator mediator, IValidator<RawMaterialDTO> validator)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _cachService = cachService;
             _mediator = mediator;
+            _validator = validator;
         }
 
         //public double CheckRemain(int MaterialId,int warehouseId,int TransferId)
@@ -283,9 +287,14 @@ namespace School_Manager.Core.Services.Implemetations
 
         public bool Save(RawMaterialDTO rawMaterialDTO)
         {
+            var validationResult = _validator.Validate(rawMaterialDTO);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
+                throw new ValidationException(errors);
+            }
             var material = _mapper.Map<RawMaterial>(rawMaterialDTO);
             _unitOfWork.GetRepository<RawMaterial>().Add(material);
-
             return _unitOfWork.SaveChanges() > 0;
         }
 

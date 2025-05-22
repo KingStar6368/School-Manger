@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
+using School_Manager.Core.Services.Validations;
+using School_Manager.Core.ViewModels.RawMaterial;
 using School_Manager.Data.Repositories;
 using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Operation;
@@ -9,10 +12,10 @@ namespace School_Manager.IOC
 {
     public class Container
     {
-        private static ServiceCollection _services;
+        private static IServiceCollection _services;
         private static ServiceProvider ServiceProvider;
 
-        public ServiceProvider Register(ServiceCollection services = null)
+        public ServiceProvider Register(IServiceCollection services = null)
         {
             if (_services == null)
                 _services = new ServiceCollection();
@@ -29,15 +32,18 @@ namespace School_Manager.IOC
         private static void ConfigureServices(IServiceCollection services)
         {
             // Add Services
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddSingleton<IDateTimeService, SystemDateTimeService>();
-
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
             //Add Repositories
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRawMaterialService, RawMaterialService>();
-            services.AddScoped<ILookupService,LookupService>(); 
+            services.AddScoped<ILookupService,LookupService>();
+            //services.AddScoped<IDateTimeService,SystemDateTimeService>();
             services.AddMemoryCache();
-            services.AddScoped<ICachService, CachService>();
+            services.AddScoped<ICachService, CachService>(); 
+            services.AddScoped<IValidator<RawMaterialDTO>, RawMaterialDTOValidator>();
         }
     }
 }

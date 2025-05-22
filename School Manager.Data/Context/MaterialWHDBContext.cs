@@ -23,7 +23,7 @@ namespace School_Manager.Data.Context
 		//}
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlServer(@"Password=Developers@Gamarak;Persist Security Info=True;User ID=sa;Initial Catalog=SchMSDB;Data Source=ARK-SQL-SRV\ENT2019;TrustServerCertificate=True;MultipleActiveResultSets=True;");
+			optionsBuilder.UseSqlServer(@"Password=Developers@Gamarak;Persist Security Info=True;User ID=sa;Initial Catalog=SchMSDB;Data Source=DESKTOP-DRLAEKC\SQLSERVERDEV3;TrustServerCertificate=True;MultipleActiveResultSets=True;");
 		}
 
 		#region -> [-- DBSETS Identity --]
