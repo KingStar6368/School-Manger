@@ -1,6 +1,6 @@
-﻿namespace School_Manger.Models
+﻿namespace School_Manager.Core.ViewModels.FModels
 {
-    public class LocationData
+    public class LocationDataDto
     {
         public double Latitude { get; set; }
         public double Longitude { get; set; }
@@ -13,7 +13,7 @@
         public long ChildId { get; set; }
         public DateTime PickTime1 { get; set; }
         public DateTime PickTime2 { get; set; }
-        public LocationData Location1 { get; set; }
-        public LocationData Location2 { get; set; }
+        public LocationDataDto Location1 { get; set; }
+        public LocationDataDto Location2 { get; set; }
     }
 }

@@ -3,13 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using School_Manager.Domain.Entities.Catalog.Operation;
 
-namespace School_Manager.Core.ViewModels.RawMaterial
+namespace School_Manager.Core.ViewModels.FModels
 {
+    public class RawMaterialDTO
+    {
+        public int Id { get; set; }
+        public string MaterialCode { get; set; }
+        public string Name { get; set; }
+        public string TechnicalSpecification { get; set; }
+        public int MajorUnitRef { get; set; }
+        public int CategoryRef { get; set; }
+        public int MaterialNature { get; set; }
+        public int? SecondaryUnitRef { get; set; }
+        public double? UnitConversion { get; set; }
+    }
     public class RawMaterialCombo
     {
-        public string DisplayMember {  get; set; }
+        public string DisplayMember { get; set; }
         public int RawMaterialId { get; set; }
         public string MaterialCode { get; set; }
         public string Name { get; set; }
@@ -34,11 +45,10 @@ namespace School_Manager.Core.ViewModels.RawMaterial
         public int MajorUnitRef { get; set; }
         public double? UnitConversion { get; set; }
         public double RemainMajor { get; set; }
-        public double RemainMinor { get; set; } 
-        public string TechnicalSpecification {  get; set; }
+        public double RemainMinor { get; set; }
+        public string TechnicalSpecification { get; set; }
         //public UnitViewModel PrimaryUnit { get; set; }
         //public UnitViewModel SecondaryUnit { get; set; }
         //public List<UnitViewModel> Units { get; set; }
     }
-
 }

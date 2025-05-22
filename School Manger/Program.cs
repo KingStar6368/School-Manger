@@ -1,8 +1,12 @@
+using School_Manager.IOC;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var container = new Container();
+container.Register(builder.Services);
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

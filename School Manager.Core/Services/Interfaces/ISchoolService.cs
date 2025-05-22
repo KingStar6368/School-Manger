@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace School_Manager.Core.Services.Interfaces
 {
-    public interface ILookupService
+    public interface ISchoolService
     {
-        List<LookupComboViewModel> GetLookupCombo(string Type);
+        List<SchoolDriverDto> GetDrivers();
     }
 }

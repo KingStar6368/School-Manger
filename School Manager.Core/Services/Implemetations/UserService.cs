@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.Utilities.Values;
-using School_Manager.Core.ViewModels.Users;
+using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Identity;
 using School_Manager.Domain.Entities.Catalog.Operation;
