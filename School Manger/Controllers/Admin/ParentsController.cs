@@ -25,7 +25,6 @@ namespace School_Manger.Controllers.Admin
                 NationalCode = "1234567891",
                 BirthDate = new DateTime(2015, 3, 10),
                 Class = "اول دبستان",
-                HasPaid = true,
                 Path = new LocationPairModel
                 {
                     Location1 = new LocationData
@@ -56,7 +55,6 @@ namespace School_Manger.Controllers.Admin
                 NationalCode = "0987654322",
                 BirthDate = new DateTime(2013, 7, 15),
                 Class = "سوم دبستان",
-                HasPaid = true,
                 Path = new LocationPairModel
                 {
                     Location1 = new LocationData
@@ -77,7 +75,6 @@ namespace School_Manger.Controllers.Admin
                 NationalCode = "0987654323",
                 BirthDate = new DateTime(2017, 11, 5),
                 Class = "پیش دبستانی",
-                HasPaid = false,
                 Path = new LocationPairModel
                 {
                     Location1 = new LocationData

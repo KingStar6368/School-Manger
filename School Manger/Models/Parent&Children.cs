@@ -19,7 +19,11 @@
         public string NationalCode { get; set; }
         public DateTime BirthDate { get; set; }
         public string Class { get; set; }
-        public bool HasPaid { get; set; }
+        public bool HasPaid
+        {
+            get => Bills != null && Bills.All(x => x.HasPaId);
+        }
         public LocationPairModel Path { get; set; }
+        public List<Bill> Bills { get; set; }
     }
 }

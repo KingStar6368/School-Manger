@@ -26,7 +26,6 @@ namespace School_Manger.Controllers
                 {
                     new ChildInfo()
                     {
-                        HasPaid = true,
                         BirthDate = DateTime.Now,
                         Class = "دوم",
                         Id = 1,

@@ -32,7 +32,7 @@ namespace School_Manger.Controllers
         public IActionResult Login()
         {
             return View("Login");
-        } 
+        }
         #endregion
         #region AfterLogin
         [HttpPost]
@@ -48,17 +48,48 @@ namespace School_Manger.Controllers
                         LastName = "test",
                         NationalCode = "0521744407",
                         BirthDate = DateTime.Now,
-                        HasPaid = true,
                         Id = 1,
+                        Bills = new List<Bill>()
+                        {
+                            new Bill()
+                            {
+                                Id = 3,
+                                ContractId = 1,
+                                HasPaId = false,
+                                PaidPrice = 10,
+                                PaidTime = DateTime.Now,
+                                TotalPrice = 100
+                            },
+                            new Bill()
+                            {
+                                Id = 3,
+                                ContractId = 1,
+                                HasPaId = false,
+                                PaidPrice = 10,
+                                PaidTime = DateTime.Now,
+                                TotalPrice = 100
+                            }
+                        }
                     },
-                      new ChildInfo()
+                    new ChildInfo()
                     {
                         FirstName = "تست",
                         LastName = "test",
                         NationalCode = "0521744407",
                         BirthDate = DateTime.Now,
-                        HasPaid = false,
                         Id = 2,
+                        Bills = new List<Bill>()
+                        {
+                            new Bill()
+                            {
+                                Id = 3,
+                                ContractId = 1,
+                                HasPaId = true,
+                                PaidPrice = 100,
+                                PaidTime = DateTime.Now,
+                                TotalPrice = 100
+                            }
+                        }
                     }
                 },
                 ParentFirstName = "اقای تست",
@@ -77,7 +108,7 @@ namespace School_Manger.Controllers
         {
             //Add Child And Show Menu Again
             return View("ParentMenu");
-        } 
+        }
         #endregion
     }
 }
