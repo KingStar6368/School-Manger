@@ -83,6 +83,38 @@
                 this.value = this.value.replace(/[^0-9]/g, '');
             });
         });
+        document.getElementById('otpForm').addEventListener('submit', function (e) {
+             const inputs = document.querySelectorAll('.otp-input');
+             let allFilled = true;
+
+             inputs.forEach(input => {
+                 // Check if input is empty
+                 if (input.value.trim() === '') {
+                     allFilled = false;
+                     input.classList.add('is-invalid');
+                 } else {
+                     input.classList.remove('is-invalid');
+                 }
+             });
+
+             const errorDiv = document.getElementById('otpError');
+
+             if (!allFilled) {
+                 e.preventDefault(); // Stop form submission
+                 errorDiv.style.display = 'block'; // Show error message
+             } else {
+                 errorDiv.style.display = 'none'; // Hide error message
+             }
+         });
+
+         // Remove error state when user types
+         document.querySelectorAll('.otp-input').forEach(input => {
+             input.addEventListener('input', function () {
+                 if (this.value.trim() !== '') {
+                     this.classList.remove('is-invalid');
+                 }
+             });
+         });
     </script>
 }
 
@@ -114,5 +146,10 @@
     /* Back button icon flip for RTL */
     .bi-arrow-right {
         transform: scaleX(-1);
+    }
+
+    .otp-input.is-invalid {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
     }
 </style>
