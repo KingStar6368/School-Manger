@@ -23,6 +23,7 @@
                         <tr>
                             <th>ردیف</th>
                             <th>شناسه قرارداد</th>
+                            <th>نام قبض</th>
                             <th>مبلغ کل</th>
                             <th>مبلغ پرداخت شده</th>
                             <th>وضعیت</th>
@@ -37,6 +38,7 @@
                             <tr>
                                 <td>@(i + 1)</td>
                                 <td>@bill.ContractId</td>
+                                <td>@bill.Name</td>
                                 <td>@bill.TotalPrice</td>
                                 <td>@bill.PaidPrice</td>
                                 <td>
@@ -46,7 +48,7 @@
                                     }
                                     else
                                     {
-                                        <span class="badge bg-danger">پرداخت نشده</span>
+                                        <span class="badge bg-danger">@bill.Status</span>
                                     }
                                 </td>
                                 <td>@(bill.HasPaId ? bill.PaidTime.ToString("yyyy/MM/dd HH:mm") : "-")</td>

@@ -35,7 +35,67 @@ namespace School_Manger.Controllers
             return View("Login");
         }
         #endregion
+
         #region AfterLogin
+        public IActionResult ParentMenu()
+        {
+            return View(new Parent()
+            {
+                Children = new List<ChildInfo>()
+                {
+                    new ChildInfo()
+                    {
+                        FirstName = "تست",
+                        LastName = "test",
+                        NationalCode = "0521744407",
+                        BirthDate = DateTime.Now,
+                        Id = 1,
+                        Bills = new List<Bill>()
+                        {
+                            new Bill()
+                            {
+                                Id = 3,
+                                ContractId = 1,
+                                PaidPrice = 10,
+                                PaidTime = DateTime.Now,
+                                TotalPrice = 100
+                            },
+                            new Bill()
+                            {
+                                Id = 3,
+                                ContractId = 1,
+                                PaidPrice = 10,
+                                PaidTime = DateTime.Now,
+                                TotalPrice = 100
+                            }
+                        }
+                    },
+                    new ChildInfo()
+                    {
+                        FirstName = "تست",
+                        LastName = "test",
+                        NationalCode = "0521744407",
+                        BirthDate = DateTime.Now,
+                        Id = 2,
+                        Bills = new List<Bill>()
+                        {
+                            new Bill()
+                            {
+                                Id = 3,
+                                ContractId = 1,
+                                PaidPrice = 100,
+                                PaidTime = DateTime.Now,
+                                TotalPrice = 100
+                            }
+                        }
+                    }
+                },
+                ParentFirstName = "اقای تست",
+                ParentNationalCode = "0521744407",
+                ParentLastName = "تست"
+
+            });
+        }
         [HttpPost]
         public IActionResult CompleteProfile()
         {
@@ -56,7 +116,6 @@ namespace School_Manger.Controllers
                             {
                                 Id = 3,
                                 ContractId = 1,
-                                HasPaId = false,
                                 PaidPrice = 10,
                                 PaidTime = DateTime.Now,
                                 TotalPrice = 100
@@ -65,7 +124,6 @@ namespace School_Manger.Controllers
                             {
                                 Id = 3,
                                 ContractId = 1,
-                                HasPaId = false,
                                 PaidPrice = 10,
                                 PaidTime = DateTime.Now,
                                 TotalPrice = 100
@@ -85,7 +143,6 @@ namespace School_Manger.Controllers
                             {
                                 Id = 3,
                                 ContractId = 1,
-                                HasPaId = true,
                                 PaidPrice = 100,
                                 PaidTime = DateTime.Now,
                                 TotalPrice = 100
@@ -111,6 +168,7 @@ namespace School_Manger.Controllers
             return View("ParentMenu");
         }
         #endregion
+
         public IActionResult Bills()
         {
             List<Bill> bills = new List<Bill>()
@@ -118,19 +176,38 @@ namespace School_Manger.Controllers
                 new Bill()
                 {
                     Id = 3,
+                    Name = "مهر",
                     ContractId = 1,
-                    HasPaId = true,
                     PaidPrice = 100,
                     PaidTime = DateTime.Now,
+                    BillExpiredTime = DateTime.Now,
                     TotalPrice = 100
                 },
                 new Bill()
                 {
                     Id = 3,
+                    Name = "آبان",
                     ContractId = 1,
-                    HasPaId = false,
                     PaidPrice = 10,
-                    PaidTime = DateTime.Now,
+                    BillExpiredTime = DateTime.Now.AddMonths(-1),
+                    TotalPrice = 100
+                },
+                new Bill()
+                {
+                    Id = 3,
+                    Name = "آذر",
+                    ContractId = 1,
+                    PaidPrice = 10,
+                    BillExpiredTime = DateTime.Now.AddDays(1),
+                    TotalPrice = 100
+                },
+                new Bill()
+                {
+                    Id = 3,
+                    Name = "دی",
+                    ContractId = 1,
+                    PaidPrice = 10,
+                    BillExpiredTime = DateTime.Now.AddMonths(1),
                     TotalPrice = 100
                 }
             };
@@ -148,7 +225,6 @@ namespace School_Manger.Controllers
                 {
                     Id = 3,
                     ContractId = 1,
-                    HasPaId = true,
                     PaidPrice = 100,
                     PaidTime = DateTime.Now,
                     TotalPrice = 100
@@ -157,7 +233,6 @@ namespace School_Manger.Controllers
                 {
                     Id = 3,
                     ContractId = 1,
-                    HasPaId = false,
                     PaidPrice = 10,
                     PaidTime = DateTime.Now,
                     TotalPrice = 100
