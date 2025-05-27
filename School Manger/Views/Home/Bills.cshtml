@@ -1,0 +1,118 @@
+﻿@using School_Manger.Models.ParentViews
+@{
+    ViewData["Title"] = "مدیریت صورتحساب‌ها";
+    Layout = "_Layout";
+}
+
+@model BillDashbord
+
+<div class="container-fluid bg-dark text-white" dir="rtl">
+    <!-- Header -->
+    <div class="row py-4 bg-black">
+        <div class="col-12 text-center">
+            <h3>مدیریت صورتحساب‌ها</h3>
+        </div>
+    </div>
+
+    <!-- Bills Table -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>ردیف</th>
+                            <th>شناسه قرارداد</th>
+                            <th>مبلغ کل</th>
+                            <th>مبلغ پرداخت شده</th>
+                            <th>وضعیت</th>
+                            <th>زمان پرداخت</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.bills.Count; i++)
+                        {
+                            var bill = Model.bills[i];
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td>@bill.ContractId</td>
+                                <td>@bill.TotalPrice</td>
+                                <td>@bill.PaidPrice</td>
+                                <td>
+                                    @if (bill.HasPaId)
+                                    {
+                                        <span class="badge bg-success">پرداخت شده</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">پرداخت نشده</span>
+                                    }
+                                </td>
+                                <td>@(bill.HasPaId ? bill.PaidTime.ToString("yyyy/MM/dd HH:mm") : "-")</td>
+                                <td>
+                                    @if (!bill.HasPaId)
+                                    {
+                                        <button class="btn btn-sm btn-outline-primary" onclick="payBill('@bill.Id')">
+                                            <i class="bi bi-credit-card"></i> پرداخت
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="ShowBillPDF">
+                                            <button class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-credit-card"></i> مشاهد
+                                            </button>
+                                            <input style="display:none" asp-for="PDFInfoIndex" value="@Model.bills[i].Id"/>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function payBill(billId) {
+            alert("پرداخت صورتحساب با شناسه: " + billId);
+            // Redirect or show modal for payment logic
+        }
+
+        function deleteBill(billId) {
+            if (confirm("آیا از حذف این صورتحساب مطمئن هستید؟")) {
+                fetch(`/Bill/Delete/${billId}`, {
+                    method: 'DELETE'
+                }).then(res => {
+                    if (res.ok) {
+                        location.reload();
+                    } else {
+                        alert("خطا در حذف صورتحساب");
+                    }
+                });
+            }
+        }
+    </script>
+}
+
+<style>
+    .table th, .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.35em 0.65em;
+    }
+
+    @@media (max-width: 768px) {
+        .table-responsive {
+            overflow-x: auto;
+        }
+    }
+</style>

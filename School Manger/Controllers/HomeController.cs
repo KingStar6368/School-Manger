@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using School_Manger.Models;
+using School_Manger.Models.ParentViews;
 
 namespace School_Manger.Controllers
 {
@@ -110,5 +111,61 @@ namespace School_Manger.Controllers
             return View("ParentMenu");
         }
         #endregion
+        public IActionResult Bills()
+        {
+            List<Bill> bills = new List<Bill>()
+            {
+                new Bill()
+                {
+                    Id = 3,
+                    ContractId = 1,
+                    HasPaId = true,
+                    PaidPrice = 100,
+                    PaidTime = DateTime.Now,
+                    TotalPrice = 100
+                },
+                new Bill()
+                {
+                    Id = 3,
+                    ContractId = 1,
+                    HasPaId = false,
+                    PaidPrice = 10,
+                    PaidTime = DateTime.Now,
+                    TotalPrice = 100
+                }
+            };
+            BillDashbord dashbord = new BillDashbord()
+            {
+                bills = bills,
+            };
+            return View(dashbord);
+        }
+        public IActionResult ShowBillPDF(BillDashbord index)
+        {
+            List<Bill> bills = new List<Bill>()
+            {
+                new Bill()
+                {
+                    Id = 3,
+                    ContractId = 1,
+                    HasPaId = true,
+                    PaidPrice = 100,
+                    PaidTime = DateTime.Now,
+                    TotalPrice = 100
+                },
+                new Bill()
+                {
+                    Id = 3,
+                    ContractId = 1,
+                    HasPaId = false,
+                    PaidPrice = 10,
+                    PaidTime = DateTime.Now,
+                    TotalPrice = 100
+                }
+            };
+
+            Bill bill = bills.FirstOrDefault(x => x.Id == index.PDFInfoIndex);
+            return View(bill);
+        }
     }
 }
