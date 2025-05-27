@@ -1,5 +1,8 @@
 ﻿using System.Diagnostics;
+using iText.Layout.Element;
+using iText.Layout.Properties;
 using Microsoft.AspNetCore.Mvc;
+using School_Manger.Class;
 using School_Manger.Models;
 using School_Manger.Models.ParentViews;
 
@@ -221,26 +224,65 @@ namespace School_Manger.Controllers
         {
             List<Bill> bills = new List<Bill>()
             {
-                new Bill()
+                  new Bill()
                 {
                     Id = 3,
+                    Name = "مهر",
                     ContractId = 1,
                     PaidPrice = 100,
                     PaidTime = DateTime.Now,
+                    BillExpiredTime = DateTime.Now,
                     TotalPrice = 100
                 },
                 new Bill()
                 {
                     Id = 3,
+                    Name = "آبان",
                     ContractId = 1,
                     PaidPrice = 10,
-                    PaidTime = DateTime.Now,
+                    BillExpiredTime = DateTime.Now.AddMonths(-1),
+                    TotalPrice = 100
+                },
+                new Bill()
+                {
+                    Id = 3,
+                    Name = "آذر",
+                    ContractId = 1,
+                    PaidPrice = 10,
+                    BillExpiredTime = DateTime.Now.AddDays(1),
+                    TotalPrice = 100
+                },
+                new Bill()
+                {
+                    Id = 3,
+                    Name = "دی",
+                    ContractId = 1,
+                    PaidPrice = 10,
+                    BillExpiredTime = DateTime.Now.AddMonths(1),
                     TotalPrice = 100
                 }
             };
 
             Bill bill = bills.FirstOrDefault(x => x.Id == index.PDFInfoIndex);
-            return View(bill);
+            PDFGenerator PDF = new PDFGenerator();
+            PDF.TitlesPer = new List<Paragraph>()
+            {
+                new Paragraph("نمایش قبض")
+                .SetTextAlignment(TextAlignment.CENTER)
+                .SetFontSize(24),
+            };
+            PDF.Tbl = new List<PDFTable>()
+            {
+                new PDFTable(2,60,HorizontalAlignment.CENTER)
+                .AddRow("ID :",bill.Id)
+                .AddRow("Title :",bill.Name)
+                .AddRow("PaidPrice :",bill.PaidPrice)
+                .AddRow("TotalPrice :",bill.TotalPrice)
+                .AddRow("Is PaidFully :",bill.HasPaId)
+                .AddRow("Status :",bill.HasPaId)
+                .AddRow("Paid Time :",bill.PaidTime)
+            };
+            return File(PDF.Generate(), "application/pdf");
         }
     }
 }
