@@ -45,6 +45,8 @@ namespace School_Manager.IOC
             services.AddMemoryCache();
             services.AddScoped<ICachService, CachService>(); 
             services.AddScoped<IValidator<RawMaterialDTO>, RawMaterialDTOValidator>();
+            services.AddScoped<IValidator<UserCreateDTO>, UserCreateDTOValidator>();
+            services.AddScoped<IValidator<UserEditDTO>, UserEditDTOValidator>();
         }
     }
 }

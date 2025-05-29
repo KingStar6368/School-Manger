@@ -20,7 +20,7 @@ namespace School_Manager.Core.ViewModels.FModels
             get => _passwordHash;
             set => _passwordHash = value;
         }
-        public required string Email { get; set; }
+        public required string Mobile { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public bool IsActive { get; set; }
@@ -40,7 +40,6 @@ namespace School_Manager.Core.ViewModels.FModels
             get => _passwordHash;
             set => _passwordHash = value;
         }
-        public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FullName { get; set; }
@@ -53,7 +52,7 @@ namespace School_Manager.Core.ViewModels.FModels
         public int Id { get; set; }
         public required string UserName { get; set; }
 
-        private string _passwordHash;
+        private string _passwordHash; 
         public string Password
         {
             get => Utilities.Values.EntityHelper.Decrypt(_passwordHash);
@@ -64,7 +63,7 @@ namespace School_Manager.Core.ViewModels.FModels
             get => _passwordHash;
             set => _passwordHash = value;
         }
-        public string Email { get; set; }
+        public string Mobile { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool IsActive { get; set; }
@@ -74,7 +73,6 @@ namespace School_Manager.Core.ViewModels.FModels
         public int Id { get; set; }
         public string UserName { get; set; }
         public string PasswordHash { get; set; }
-        public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool IsActive { get; set; }
