@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using School_Manger.Models;
+using School_Manger.Models.ParentViews;
 
 namespace School_Manger.Controllers
 {
@@ -32,9 +33,69 @@ namespace School_Manger.Controllers
         public IActionResult Login()
         {
             return View("Login");
-        } 
+        }
         #endregion
+
         #region AfterLogin
+        public IActionResult ParentMenu()
+        {
+            return View(new Parent()
+            {
+                Children = new List<ChildInfo>()
+                {
+                    new ChildInfo()
+                    {
+                        FirstName = "تست",
+                        LastName = "test",
+                        NationalCode = "0521744407",
+                        BirthDate = DateTime.Now,
+                        Id = 1,
+                        Bills = new List<Bill>()
+                        {
+                            new Bill()
+                            {
+                                Id = 3,
+                                ContractId = 1,
+                                PaidPrice = 10,
+                                PaidTime = DateTime.Now,
+                                TotalPrice = 100
+                            },
+                            new Bill()
+                            {
+                                Id = 3,
+                                ContractId = 1,
+                                PaidPrice = 10,
+                                PaidTime = DateTime.Now,
+                                TotalPrice = 100
+                            }
+                        }
+                    },
+                    new ChildInfo()
+                    {
+                        FirstName = "تست",
+                        LastName = "test",
+                        NationalCode = "0521744407",
+                        BirthDate = DateTime.Now,
+                        Id = 2,
+                        Bills = new List<Bill>()
+                        {
+                            new Bill()
+                            {
+                                Id = 3,
+                                ContractId = 1,
+                                PaidPrice = 100,
+                                PaidTime = DateTime.Now,
+                                TotalPrice = 100
+                            }
+                        }
+                    }
+                },
+                ParentFirstName = "اقای تست",
+                ParentNationalCode = "0521744407",
+                ParentLastName = "تست"
+
+            });
+        }
         [HttpPost]
         public IActionResult CompleteProfile()
         {
@@ -48,17 +109,45 @@ namespace School_Manger.Controllers
                         LastName = "test",
                         NationalCode = "0521744407",
                         BirthDate = DateTime.Now,
-                        HasPaid = true,
                         Id = 1,
+                        Bills = new List<Bill>()
+                        {
+                            new Bill()
+                            {
+                                Id = 3,
+                                ContractId = 1,
+                                PaidPrice = 10,
+                                PaidTime = DateTime.Now,
+                                TotalPrice = 100
+                            },
+                            new Bill()
+                            {
+                                Id = 3,
+                                ContractId = 1,
+                                PaidPrice = 10,
+                                PaidTime = DateTime.Now,
+                                TotalPrice = 100
+                            }
+                        }
                     },
-                      new ChildInfo()
+                    new ChildInfo()
                     {
                         FirstName = "تست",
                         LastName = "test",
                         NationalCode = "0521744407",
                         BirthDate = DateTime.Now,
-                        HasPaid = false,
                         Id = 2,
+                        Bills = new List<Bill>()
+                        {
+                            new Bill()
+                            {
+                                Id = 3,
+                                ContractId = 1,
+                                PaidPrice = 100,
+                                PaidTime = DateTime.Now,
+                                TotalPrice = 100
+                            }
+                        }
                     }
                 },
                 ParentFirstName = "اقای تست",
@@ -77,7 +166,81 @@ namespace School_Manger.Controllers
         {
             //Add Child And Show Menu Again
             return View("ParentMenu");
-        } 
+        }
         #endregion
+
+        public IActionResult Bills()
+        {
+            List<Bill> bills = new List<Bill>()
+            {
+                new Bill()
+                {
+                    Id = 3,
+                    Name = "مهر",
+                    ContractId = 1,
+                    PaidPrice = 100,
+                    PaidTime = DateTime.Now,
+                    BillExpiredTime = DateTime.Now,
+                    TotalPrice = 100
+                },
+                new Bill()
+                {
+                    Id = 3,
+                    Name = "آبان",
+                    ContractId = 1,
+                    PaidPrice = 10,
+                    BillExpiredTime = DateTime.Now.AddMonths(-1),
+                    TotalPrice = 100
+                },
+                new Bill()
+                {
+                    Id = 3,
+                    Name = "آذر",
+                    ContractId = 1,
+                    PaidPrice = 10,
+                    BillExpiredTime = DateTime.Now.AddDays(1),
+                    TotalPrice = 100
+                },
+                new Bill()
+                {
+                    Id = 3,
+                    Name = "دی",
+                    ContractId = 1,
+                    PaidPrice = 10,
+                    BillExpiredTime = DateTime.Now.AddMonths(1),
+                    TotalPrice = 100
+                }
+            };
+            BillDashbord dashbord = new BillDashbord()
+            {
+                bills = bills,
+            };
+            return View(dashbord);
+        }
+        public IActionResult ShowBillPDF(BillDashbord index)
+        {
+            List<Bill> bills = new List<Bill>()
+            {
+                new Bill()
+                {
+                    Id = 3,
+                    ContractId = 1,
+                    PaidPrice = 100,
+                    PaidTime = DateTime.Now,
+                    TotalPrice = 100
+                },
+                new Bill()
+                {
+                    Id = 3,
+                    ContractId = 1,
+                    PaidPrice = 10,
+                    PaidTime = DateTime.Now,
+                    TotalPrice = 100
+                }
+            };
+
+            Bill bill = bills.FirstOrDefault(x => x.Id == index.PDFInfoIndex);
+            return View(bill);
+        }
     }
 }

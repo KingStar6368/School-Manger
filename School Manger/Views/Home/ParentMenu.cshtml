@@ -25,15 +25,17 @@
                 </div>
                 <div>
                     @{
-                        // if(Model.TotalPrice <= 0)
-                        // {
+                        if(Model.Children.All(x=>x.HasPaid))
+                        {
                             <span class="badge bg-success fs-3 text-light">حساب شما تصویه است</span>
-                        // }
-                        // else
-                        // {
-                        //     <span class="fs-5 text-light">مبالغ پرداخت نشده:</span>
-                        //     <span class="badge bg-danger fs-3">@Model.TotalPrice</span>
-                        // }
+                        }
+                        else
+                        {
+                            <span class="fs-5 text-light">مبالغ پرداخت نشده:</span>
+                            <span class="badge bg-danger fs-3">
+                            @Model.Children.Sum(x=>x.Bills.Where(b=>!b.HasPaId).Sum(b=>b.TotalPrice - b.PaidPrice))
+                            </span>
+                        }
                     }
                 </div>
             </div>
@@ -75,14 +77,16 @@
                                 <td>@child.NationalCode</td>
                                 <td>@child.BirthDate</td>
                                 <td>
-                                  @*   @if (child.HasPaid)
-                                    { *@
+                                    @if (child.HasPaid)
+                                    {
                                         <span class="badge bg-success">پرداخت شده</span>
-                        @*             }
+                                    }
                                     else
                                     {
-                                        <span class="badge bg-danger">@child.Price پرداخت نشده</span>
-                                    } *@
+                                        <span class="badge bg-danger">
+                                            @child.Bills.Where(x=>!x.HasPaId).Sum(x=>x.TotalPrice - x.PaidPrice) پرداخت نشده
+                                            </span>
+                                    }
                                 </td>
                                 <td>
                                     <button class="btn btn-sm btn-outline-warning"
