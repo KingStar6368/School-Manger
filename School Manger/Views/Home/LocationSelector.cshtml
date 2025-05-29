@@ -1,7 +1,9 @@
-﻿@{
+﻿@using School_Manger.Models.ParentViews
+@{
     ViewData["Title"] = "انتخاب دو موقعیت مکانی";
     Layout = "_Layout";
 }
+@model ParentDashbordView
 
 <div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-dark" dir="rtl">
     <div class="card bg-black text-white border-secondary" style="width: 100%;height:auto">
@@ -12,57 +14,67 @@
             <h5 class="m-0">انتخاب دو موقعیت روی نقشه</h5>
         </div>
 
-        <div class="card-body p-4">
-            <div class="row">
-                <div class="col-md-8 mb-4 mb-md-0">
-                    <!-- Map Container -->
-                    <div id="map" style="height: 500px; width: 100%; border-radius: 8px;"></div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label for="locationSearch" class="form-label">جستجوی آدرس</label>
-                        <div class="input-group">
-                            <input type="text"
-                                   class="form-control bg-dark text-white border-secondary"
-                                   id="locationSearch"
-                                   placeholder="آدرس یا نام مکان">
-                            <button class="btn btn-outline-secondary" type="button" id="searchButton">
-                                <i class="bi bi-search"></i>
-                            </button>
-                        </div>
+        <form asp-action="AddChild" method="post">
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-8 mb-4 mb-md-0">
+                        <!-- Map Container -->
+                        <div id="map" style="height: 500px; width: 100%; border-radius: 8px;"></div>
                     </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="locationSearch" class="form-label">جستجوی آدرس</label>
+                                <div class="input-group">
+                                    <input type="text"
+                                           class="form-control bg-dark text-white border-secondary"
+                                           id="locationSearch"
+                                           placeholder="آدرس یا نام مکان">
+                                    <button class="btn btn-outline-secondary" type="button" id="searchButton">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">موقعیت اول:</label>
-                        <div id="location1Info" class="p-3 bg-success rounded mb-2" style="min-height: 100px;">
-                            <p class="text-muted mb-1">موقعیت اول انتخاب نشده است</p>
+                            <div class="mb-3">
+                                <label class="form-label">موقعیت اول:</label>
+                                <div id="location1Info" class="p-3 bg-success rounded mb-2" style="min-height: 100px;">
+                                    <p class="text-muted mb-1">موقعیت اول انتخاب نشده است</p>
+                                </div>
+
+                                <label class="form-label">موقعیت دوم:</label>
+                                <div id="location2Info" class="p-3 bg-danger rounded mb-3" style="min-height: 100px;">
+                                    <p class="text-muted mb-1">موقعیت دوم انتخاب نشده است</p>
+                                </div>
+
+                                @* Data *@
+                                <input asp-for="SelectedChild.Path.Location1.Latitude" type="hidden" id="location1Lat">
+                                <input asp-for="SelectedChild.Path.Location1.Longitude" type="hidden" id="location1Lng">
+                                <input asp-for="SelectedChild.Path.Location1.Address" type="hidden" id="location1Address">
+
+                                <input asp-for="SelectedChild.Path.Location2.Latitude" type="hidden" id="location2Lat">
+                                <input asp-for="SelectedChild.Path.Location2.Longitude" type="hidden" id="location2Lng">
+                                <input asp-for="SelectedChild.Path.Location2.Address" type="hidden" id="location2Address">
+
+                                <input asp-for="SelectedChild.FirstName" value="@Model.SelectedChild.FirstName" type="hidden" />
+                                <input asp-for="SelectedChild.LastName" value="@Model.SelectedChild.LastName" type="hidden"/>
+                                <input asp-for="SelectedChild.NationalCode" value="@Model.SelectedChild.NationalCode" type="hidden"/>
+                                <input asp-for="SelectedChild.BirthDate" value="@Model.SelectedChild.BirthDate" type="hidden"/>
+                                <input asp-for="SelectedChild.Path.PickTime1" value="@Model.SelectedChild.Path.PickTime1" type="hidden"/>
+                                <input asp-for="SelectedChild.Path.PickTime2" value="@Model.SelectedChild.Path.PickTime2" type="hidden"/>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" id="confirmLocations" class="btn btn-primary py-2" disabled>
+                                    <i class="bi bi-check-circle"></i> تایید موقعیت‌ها
+                                </button>
+                                <button id="clearLocations" class="btn btn-outline-danger py-2">
+                                    <i class="bi bi-x-circle"></i> پاک کردن انتخاب‌ها
+                                </button>
+                            </div>
                         </div>
-
-                        <label class="form-label">موقعیت دوم:</label>
-                        <div id="location2Info" class="p-3 bg-danger rounded mb-3" style="min-height: 100px;">
-                            <p class="text-muted mb-1">موقعیت دوم انتخاب نشده است</p>
-                        </div>
-
-                        <input type="hidden" id="location1Lat" name="location1Lat">
-                        <input type="hidden" id="location1Lng" name="location1Lng">
-                        <input type="hidden" id="location1Address" name="location1Address">
-
-                        <input type="hidden" id="location2Lat" name="location2Lat">
-                        <input type="hidden" id="location2Lng" name="location2Lng">
-                        <input type="hidden" id="location2Address" name="location2Address">
-                    </div>
-
-                    <div class="d-grid gap-2">
-                        <button id="confirmLocations" class="btn btn-primary py-2" disabled>
-                            <i class="bi bi-check-circle"></i> تایید موقعیت‌ها
-                        </button>
-                        <button id="clearLocations" class="btn btn-outline-danger py-2">
-                            <i class="bi bi-x-circle"></i> پاک کردن انتخاب‌ها
-                        </button>
-                    </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -316,40 +328,12 @@
 
         // Confirm locations button
               // Confirm locations button - Updated version
-                document.getElementById('confirmLocations').addEventListener('click', function() {
+        document.getElementById('confirmLocations').addEventListener('click', function() {
             // Check if both locations are selected
             if (!location1 || !location2) {
                 alert("لطفاً هر دو موقعیت را انتخاب کنید");
-                return;
+                event.preventDefault();
             }
-
-            // Create a form element
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/Home/AddChild';
-
-            // Helper function to add hidden fields
-            function addField(name, value) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = name;
-                input.value = value;
-                form.appendChild(input);
-            }
-
-            // Add location 1 data
-            addField('Location1.Latitude', location1.lat);
-            addField('Location1.Longitude', location1.lng);
-            addField('Location1.Address', location1.address);
-
-            // Add location 2 data
-            addField('Location2.Latitude', location2.lat);
-            addField('Location2.Longitude', location2.lng);
-            addField('Location2.Address', location2.address);
-
-            // Submit the form
-            document.body.appendChild(form);
-            form.submit();
         });
     </script>
 }

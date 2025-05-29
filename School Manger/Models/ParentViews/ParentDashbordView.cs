@@ -3,6 +3,7 @@
     public class ParentDashbordView
     {
         public Parent Parent { get; set; }
-        public List<ChildInfo> Children { get; set; }
+        public ChildInfo SelectedChild { get; set; }
+        public List<School> Schools { get; set; }
     }
 }

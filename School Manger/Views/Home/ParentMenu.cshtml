@@ -1,9 +1,10 @@
-﻿@{
+﻿@using School_Manger.Models.ParentViews
+@{
     ViewData["Title"] = "مدیریت فرزندان";
     Layout = "_Layout";
 }
 
-@model Parent 
+@model ParentDashbordView
 
 <div class="container-fluid bg-dark text-white" dir="rtl">
     <!-- Header Section -->
@@ -13,19 +14,19 @@
             <div class="d-flex justify-content-center gap-5 mt-3">
                 <div>
                     <span class="fs-5">نام:</span>
-                    <span class="fs-3">@Model.ParentFirstName</span>
+                    <span class="fs-3">@Model.Parent.ParentFirstName</span>
                 </div>
                 <div>
                     <span class="fs-5 text-light">نام خانوادگی:</span>
-                    <span class="fs-3">@Model.ParentLastName</span>
+                    <span class="fs-3">@Model.Parent.ParentLastName</span>
                 </div>
                 <div>
                     <span class="fs-5 text-light">کد ملی:</span>
-                    <span class="fs-3">@Model.ParentNationalCode</span>
+                    <span class="fs-3">@Model.Parent.ParentNationalCode</span>
                 </div>
                 <div>
                     @{
-                        if(Model.Children.All(x=>x.HasPaid))
+                        if (Model.Parent.Children.All(x => x.HasPaid))
                         {
                             <span class="badge bg-success fs-3 text-light">حساب شما تصویه است</span>
                         }
@@ -33,7 +34,7 @@
                         {
                             <span class="fs-5 text-light">مبالغ پرداخت نشده:</span>
                             <span class="badge bg-danger fs-3">
-                            @Model.Children.Sum(x=>x.Bills.Where(b=>!b.HasPaId).Sum(b=>b.TotalPrice - b.PaidPrice))
+                                @Model.Parent.Children.Sum(x=>x.Bills.Where(b=>!b.HasPaId).Sum(b=>b.TotalPrice - b.PaidPrice))
                             </span>
                         }
                     }
@@ -46,7 +47,7 @@
     <div class="row mt-4">
         <div class="col-12 text-center">
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addChildModal">
-                <i class="bi bi-plus-circle"></i> افزودن فرزند
+                <i class="bi bi-plus-circle"></i> +افزودن فرزند
             </button>
         </div>
     </div>
@@ -68,10 +69,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var child in Model.Children)
+                        @foreach (var child in Model.Parent.Children)
                         {
                             <tr>
-                                <td>@(Model.Children.IndexOf(child) + 1)</td>
+                                <td>@(Model.Parent.Children.IndexOf(child) + 1)</td>
                                 <td>@child.FirstName</td>
                                 <td>@child.LastName</td>
                                 <td>@child.NationalCode</td>
@@ -85,25 +86,32 @@
                                     {
                                         <span class="badge bg-danger">
                                             @child.Bills.Where(x=>!x.HasPaId).Sum(x=>x.TotalPrice - x.PaidPrice) پرداخت نشده
-                                            </span>
+                                        </span>
                                     }
                                 </td>
                                 <td>
                                     <button class="btn btn-sm btn-outline-warning"
-                                            onclick="editChild('@child.Id')">
+                                    onclick="editChild('@child.Id')">
                                         <i class="bi bi-pencil"></i> ویرایش
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger"
-                                            onclick="deleteChild('@child.Id')">
-                                        <i class="bi bi-trash"></i> حذف
-                                    </button>
-                                    @if (!child.HasPaid)
-                                    {
-                                        <button class="btn btn-sm btn-outline-primary"
-                                                onclick="payForChild('@child.Id')">
-                                            <i class="bi bi-credit-card"></i> پرداخت
+                                    <form asp-action="RemoveChild" method="post">
+                                        @* it must be ID !!!!!*@
+                                        <input style="display:none" value="@child.NationalCode" asp-for="@Model.SelectedChild.NationalCode" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i> حذف
                                         </button>
-                                    }
+                                    </form>
+                                    <form asp-action="Bills">
+                                        <input style="display:none" asp-for="@Model.SelectedChild.Id" value="@child.Id"/>
+                                        @if (!child.HasPaid)
+                                        {
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">پرداخت</button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">مشاهد قبض ها</button>
+                                        }
+                                    </form>
                                 </td>
                             </tr>
                         }
@@ -125,29 +133,29 @@
             <form asp-action="LocationSelector" method="post">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="childFirstName" class="form-label">نام فرزند</label>
-                        <input type="text" class="form-control bg-secondary text-white" id="childFirstName" name="FirstName" required>
+                        <label  class="form-label">نام فرزند</label>
+                        <input asp-for="SelectedChild.FirstName" type="text" class="form-control bg-secondary text-white" id="childFirstName" required>
                     </div>
                     <div class="mb-3">
-                        <label for="childLastName" class="form-label">نام خانوادگی</label>
-                        <input type="text" class="form-control bg-secondary text-white" id="childLastName" name="LastName" required>
+                        <label class="form-label">نام خانوادگی</label>
+                        <input asp-for="SelectedChild.LastName" type="text" class="form-control bg-secondary text-white" id="childLastName" required>
                     </div>
                     <div class="mb-3">
-                        <label for="childNationalCode" class="form-label">کد ملی</label>
-                        <input type="text" class="form-control bg-secondary text-white" id="childNationalCode" name="NationalCode"
+                        <label class="form-label">کد ملی</label>
+                        <input asp-for="SelectedChild.NationalCode" type="text" class="form-control bg-secondary text-white" id="childNationalCode"
                                pattern="\d{10}" maxlength="10" required>
                     </div>
                     <div class="mb-3">
-                        <label for="childBirthDate" class="form-label">تاریخ تولد</label>
-                        <input type="date" class="form-control bg-secondary text-white" id="childBirthDate" name="BirthDate" required>
+                        <label  class="form-label">تاریخ تولد</label>
+                        <input asp-for ="SelectedChild.BirthDate" type="date" class="form-control bg-secondary text-white" id="childBirthDate" required>
                     </div>
                     <div class="mb-3">
-                        <label for="picktime1" class="form-label">زمان رفت</label>
-                        <input type="time" class="form-control bg-secondary text-white" id="picktime1" name="picktime1" required>
+                        <label class="form-label">زمان رفت</label>
+                        <input asp-for="SelectedChild.Path.PickTime1" type="time" class="form-control bg-secondary text-white" id="picktime1" required>
                     </div>
                     <div class="mb-3">
-                        <label for="picktime2" class="form-label">زمان بازگشت</label>
-                        <input type="time" class="form-control bg-secondary text-white" id="picktime2" name="picktime2" required>
+                        <label class="form-label">زمان بازگشت</label>
+                        <input asp-for="SelectedChild.Path.PickTime2" type="time" class="form-control bg-secondary text-white" id="picktime2" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -161,37 +169,6 @@
 
 @section Scripts {
     <script>
-        // Edit child function
-        function editChild(childId) {
-            // Implement edit functionality
-            alert('ویرایش فرزند با شناسه: ' + childId);
-            // You would typically open a modal or redirect to edit page
-        }
-
-        // Delete child function
-        function deleteChild(childId) {
-            if (confirm('آیا از حذف این فرزند مطمئن هستید؟')) {
-                // Implement delete functionality
-                fetch(`/Parent/DeleteChild/${childId}`, {
-                    method: 'DELETE'
-                })
-                .then(response => {
-                    if (response.ok) {
-                        location.reload();
-                    } else {
-                        alert('خطا در حذف فرزند');
-                    }
-                });
-            }
-        }
-
-        // Pay for child function
-        function payForChild(childId) {
-            // Implement payment functionality
-            alert('پرداخت برای فرزند با شناسه: ' + childId);
-            // You would typically redirect to payment page
-        }
-
         // Initialize Persian date picker if needed
         $(document).ready(function() {
             // This would initialize a Persian date picker if you include the library
