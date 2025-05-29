@@ -76,61 +76,51 @@ namespace School_Manager.Core.Services.Implemetations
 		}
 
 
-		//public int SaveUser(UserCreateDTO User, List<UserRoleCreateDTO> UserRoles)
-		//{
-		//	try
-		//	{	
-		//		_unitOfWork.BeginTransaction();
-		//		var newUser = _mapper.Map<User>(User);
-		//		_unitOfWork.GetRepository<User>().Add(newUser);
-		//		_unitOfWork.SaveChanges();
-		//		UserRoles.ForEach(x => x.UserRef = newUser.Id);
-		//		_unitOfWork.GetRepository<UserRole>().AddRange(_mapper.Map<List<UserRole>>(UserRoles));
-		//		_unitOfWork.SaveChanges();
-		//		_unitOfWork.Commit();
-		//		return newUser.Id;
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		_unitOfWork.Rollback();
-		//		throw;
-		//	}
-		//}
+		public int SaveUser(UserCreateDTO User)
+		{
+			try
+			{
+				_unitOfWork.BeginTransaction();
+				var newUser = _mapper.Map<User>(User);
+				_unitOfWork.GetRepository<User>().Add(newUser);
+				_unitOfWork.SaveChanges();
+				_unitOfWork.SaveChanges();
+				_unitOfWork.Commit();
+				return newUser.Id;
+			}
+			catch (Exception ex)
+			{
+				_unitOfWork.Rollback();
+				throw;
+			}
+		}
 
 
-		//public bool Update(UserEditDTO User, List<UserRoleCreateDTO> UserRoles)
-		//{
-		//	try
-		//	{
-		//		_unitOfWork.BeginTransaction();
-		
-		//		var existingUser = _unitOfWork.GetRepository<User>().GetById(User.Id);
-		//		if (existingUser == null)
-		//		{
-		//			return false;
-		//		}
-		//		// بروزرسانی اطلاعات کاربر
-		//		_mapper.Map(User, existingUser);
-		//		_unitOfWork.GetRepository<User>().Update(existingUser);
+		public bool Update(UserEditDTO User)
+		{
+			try
+			{
+				_unitOfWork.BeginTransaction();
 
-		//		// حذف نقش‌های قبلی کاربر و اضافه کردن نقش‌های جدید
-		//		var existingRoles = _unitOfWork.GetRepository<UserRole>().Query(r => r.UserRef == User.Id).ToList();
-		//		_unitOfWork.GetRepository<UserRole>().RemoveRange(existingRoles);
+				var existingUser = _unitOfWork.GetRepository<User>().GetById(User.Id);
+				if (existingUser == null)
+				{
+					return false;
+				}
+				// بروزرسانی اطلاعات کاربر
+				_mapper.Map(User, existingUser);
+				_unitOfWork.GetRepository<User>().Update(existingUser);
 
-		//		// اضافه کردن نقش‌های جدید
-		//		UserRoles.ForEach(x => x.UserRef = existingUser.Id);
-		//		_unitOfWork.GetRepository<UserRole>().AddRange(_mapper.Map<List<UserRole>>(UserRoles));
-
-		//		_unitOfWork.SaveChanges();
-		//		_unitOfWork.Commit();
-		//		return true; 
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		_unitOfWork.Rollback();
-		//		throw;
-		//	}
-		//}
+				_unitOfWork.SaveChanges();
+				_unitOfWork.Commit();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				_unitOfWork.Rollback();
+				throw;
+			}
+		}
 
 		public bool Delete(int UserId)
 		{
@@ -161,7 +151,12 @@ namespace School_Manager.Core.Services.Implemetations
 			}
 		}
 
-
-
-	}
+        public bool IsMobileRegistered(string Mobile)
+        {
+            var ds =  _unitOfWork.GetRepository<User>().Query(
+                predicate: p => p.Mobile == Mobile
+                ).Any();
+			return ds;
+        }
+    }
 }

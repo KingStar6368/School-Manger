@@ -18,5 +18,6 @@ namespace School_Manager.Core.Services.Interfaces
 		//int SaveUser(UserCreateDTO User, List<UserRoleCreateDTO> UserRoles);
 		//bool Update(UserEditDTO User, List<UserRoleCreateDTO> UserRoles);
 		bool Delete(int UserId);
+        bool IsMobileRegistered(string Mobile);
 	}
 }
