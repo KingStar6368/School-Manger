@@ -181,8 +181,7 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult RemoveChild(ParentDashbordView model)
         {
-            //it must be ID !!!!!!!!!
-            Static_Parent.Parent.Children.Remove(Static_Parent.Parent.Children.FirstOrDefault(x => x.NationalCode == model.SelectedChild.NationalCode));
+            Static_Parent.Parent.Children.Remove(Static_Parent.Parent.Children.FirstOrDefault(x => x.Id == model.SelectedChild.Id));
             return ParentMenu();
         }
         #endregion
