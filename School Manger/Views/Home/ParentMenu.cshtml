@@ -95,8 +95,7 @@
                                         <i class="bi bi-pencil"></i> ویرایش
                                     </button>
                                     <form asp-action="RemoveChild" method="post">
-                                        @* it must be ID !!!!!*@
-                                        <input style="display:none" value="@child.NationalCode" asp-for="@Model.SelectedChild.NationalCode" />
+                                        <input style="display:none" value="@child.Id" asp-for="@Model.SelectedChild.Id" />
                                         <button type="submit" class="btn btn-sm btn-outline-danger">
                                             <i class="bi bi-trash"></i> حذف
                                         </button>
