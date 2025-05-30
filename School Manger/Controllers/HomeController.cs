@@ -181,7 +181,7 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult RemoveChild(ParentDashbordView model)
         {
-            Static_Parent.Parent.Children.Remove(Static_Parent.Parent.Children.FirstOrDefault(x => x.Id == model.SelectedChild.Id));
+            Static_Parent.Parent.Children.Remove(Static_Parent.Parent.Children.FirstOrDefault(x => x.NationalCode == model.SelectedChild.NationalCode));
             return ParentMenu();
         }
         #endregion
