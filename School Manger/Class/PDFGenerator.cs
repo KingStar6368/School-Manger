@@ -4,6 +4,7 @@ using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using PersianTextShaper;
 
 namespace School_Manger.Class
 {
@@ -30,15 +31,13 @@ namespace School_Manger.Class
                     string fontPath = Path.Combine(Environment.CurrentDirectory,"wwwroot", "fonts", "B-NAZANIN.ttf");
                     PdfFont font = PdfFontFactory.CreateFont(fontPath,PdfEncodings.IDENTITY_H);
                     var document = new Document(pdf);
-
                     foreach(Paragraph gra in Titles)
                     {
                         document.Add(gra);
                     }
                     foreach(Paragraph gra in TitlesPer)
                     {
-                        gra.SetBaseDirection(BaseDirection.RIGHT_TO_LEFT)
-                           .SetFont(font);
+                        gra.SetFont(font).SetBaseDirection(BaseDirection.RIGHT_TO_LEFT);
                         document.Add(gra);
                     }
 
@@ -94,8 +93,8 @@ namespace School_Manger.Class
         }
         public PDFTable AddRow(string Title,object Value)
         {
-            Table.AddCell(new Cell().Add(new Paragraph(Title)).SetTextAlignment(TextAlignment.CENTER));
-            Table.AddCell(new Cell().Add(new Paragraph(Value.ToString())).SetTextAlignment(TextAlignment.CENTER));
+            Table.AddCell(new Cell().Add(new Paragraph(Title.Fix())).SetTextAlignment(TextAlignment.CENTER));
+            Table.AddCell(new Cell().Add(new Paragraph(Value.ToString().Fix())).SetTextAlignment(TextAlignment.CENTER));
             return this;
         }
     }

@@ -1,8 +1,11 @@
 ﻿using System.Diagnostics;
+using DNTPersianUtils.Core;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using Microsoft.AspNetCore.Mvc;
+using PersianTextShaper;
 using School_Manger.Class;
+using School_Manger.Extension;
 using School_Manger.Models;
 using School_Manger.Models.ParentViews;
 
@@ -28,8 +31,9 @@ namespace School_Manger.Controllers
                             Id = 1,
                             FirstName = "حسین",
                             LastName = "بنیادی",
+                            Class = "اول ابتدایی",
                             NationalCode = "0521234567",
-                            BirthDate = DateTime.Now,
+                            BirthDate = DateTime.Now.AddYears(-7).ToPersain(),
                             Bills = new List<Bill>()
                             {
                                 new Bill()
@@ -48,6 +52,7 @@ namespace School_Manger.Controllers
                                     Name = "آبان",
                                     ContractId = 1,
                                     PaidPrice = 100,
+                                    PaidTime = DateTime.Now,
                                     BillExpiredTime = DateTime.Now.AddMonths(-1),
                                     TotalPrice = 100
                                 },
@@ -57,6 +62,7 @@ namespace School_Manger.Controllers
                                     Name = "آذر",
                                     ContractId = 1,
                                     PaidPrice = 100,
+                                    PaidTime = DateTime.Now,
                                     BillExpiredTime = DateTime.Now.AddDays(1),
                                     TotalPrice = 100
                                 },
@@ -66,6 +72,7 @@ namespace School_Manger.Controllers
                                     Name = "دی",
                                     ContractId = 1,
                                     PaidPrice = 100,
+                                    PaidTime = DateTime.Now,
                                     BillExpiredTime = DateTime.Now.AddMonths(1),
                                     TotalPrice = 100
                                 }
@@ -76,8 +83,9 @@ namespace School_Manger.Controllers
                             Id = 2,
                             FirstName = "محمد",
                             LastName = "بنیادی",
+                            Class = "چهارم ابتدایی",
                             NationalCode = "0521234567",
-                            BirthDate = DateTime.Now,
+                            BirthDate = DateTime.Now.AddYears(-11).ToPersain(),
                             Bills = new List<Bill>()
                             {
                                 new Bill()
@@ -282,24 +290,24 @@ namespace School_Manger.Controllers
                 }
             };
 
-            Bill bill = bills.FirstOrDefault(x => x.Id == index.PDFInfoIndex);
+            Bill bill = bills.FirstOrDefault();
             PDFGenerator PDF = new PDFGenerator();
             PDF.TitlesPer = new List<Paragraph>()
             {
-                new Paragraph("نمایش قبض")
+                new Paragraph("نمایش قبض".Fix())
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFontSize(24),
             };
-            PDF.Tbl = new List<PDFTable>()
+            PDF.TblPer = new List<PDFTable>()
             {
                 new PDFTable(2,60,HorizontalAlignment.CENTER)
-                .AddRow("ID :",bill.Id)
-                .AddRow("Title :",bill.Name)
-                .AddRow("PaidPrice :",bill.PaidPrice)
-                .AddRow("TotalPrice :",bill.TotalPrice)
-                .AddRow("Is PaidFully :",bill.HasPaId)
-                .AddRow("Status :",bill.HasPaId)
-                .AddRow("Paid Time :",bill.PaidTime)
+                .AddRow("شمار قبض :",bill.Id)
+                .AddRow("عنوان :",bill.Name)
+                .AddRow("مبلق پرداخت شده :",bill.PaidPrice)
+                .AddRow("مبلغ کل :",bill.TotalPrice)
+                .AddRow("کامل پرداخت شده :",bill.HasPaId)
+                .AddRow("وضعیت :",bill.HasPaId)
+                .AddRow("تاریخ پرداخت :",bill.PaidTime)
             };
             return File(PDF.Generate(), "application/pdf");
         }

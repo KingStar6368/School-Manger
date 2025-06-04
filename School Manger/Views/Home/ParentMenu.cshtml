@@ -62,6 +62,7 @@
                             <th>ردیف</th>
                             <th>نام</th>
                             <th>نام خانوادگی</th>
+                            <th>مقطع تحصیلی</th>
                             <th>کد ملی</th>
                             <th>تاریخ تولد</th>
                             <th>وضعیت پرداخت</th>
@@ -75,8 +76,9 @@
                                 <td>@(Model.Parent.Children.IndexOf(child) + 1)</td>
                                 <td>@child.FirstName</td>
                                 <td>@child.LastName</td>
+                                <td>@child.Class</td>
                                 <td>@child.NationalCode</td>
-                                <td>@child.BirthDate</td>
+                                <td>@child.BirthDate.ToString("yyyy/MM/dd")</td>
                                 <td>
                                     @if (child.HasPaid)
                                     {
@@ -143,6 +145,10 @@
                         <label class="form-label">کد ملی</label>
                         <input asp-for="SelectedChild.NationalCode" type="text" class="form-control bg-secondary text-white" id="childNationalCode"
                                pattern="\d{10}" maxlength="10" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">مقطع تحصیلی</label>
+                        <input asp-for="SelectedChild.Class" type="text" class="form-control bg-secondary text-white" id="childLastName" required>
                     </div>
                     <div class="mb-3">
                         <label  class="form-label">تاریخ تولد</label>
