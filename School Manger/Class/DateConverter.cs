@@ -1,8 +1,21 @@
 ﻿using System;
 using System.Globalization;
+using System.Text;
+using System.Text.Json;
 
 namespace School_Manger.Extension
 {
+    public static class DataEncripter
+    {
+        public static T DeCript<T>(this string Data)
+        {
+            return JsonSerializer.Deserialize<T>(Encoding.UTF8.GetString(Convert.FromBase64String(Data)));
+        }
+        public static string EnCript<T>(this T obj)
+        {
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(obj)));
+        }
+    }
     public static class DateConverter
     {
         private static readonly PersianCalendar PersianCal = new PersianCalendar();

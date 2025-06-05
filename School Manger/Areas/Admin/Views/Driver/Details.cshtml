@@ -1,11 +1,11 @@
-﻿@using School_Manger.Models
-@model Driver
+﻿@using School_Manger.Models.PageView
+@model AdminDriver
 @{
     ViewData["Title"] = "جزئیات راننده";
     Layout = "_AdminLayout";
 }
 
-<div class="card bg-dark text-white">
+<div class="card bg-dark text-white mb-3">
     <div class="card-header bg-info">
         <h4 class="mb-0">@ViewData["Title"]</h4>
     </div>
@@ -14,20 +14,52 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <h5>اطلاعات راننده:</h5>
-                    <p><strong>نام کامل:</strong> @Model.Name @Model.LastName</p>
+                    <p><strong>نام کامل:</strong> @Model.Driver.Name @Model.Driver.LastName</p>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
                     <h5>اطلاعات خودرو:</h5>
-                    <p><strong>مدل:</strong> @Model.Car.Name</p>
-                    <p><strong>پلاک:</strong> @Model.Car.PlateNumber</p>
-                    <p><strong>صندلی خالی:</strong> @Model.Car.AvailableSeats</p>
+                    <p><strong>مدل:</strong>@Model.Driver.Car.Name</p>
+                    <p><strong>پلاک:</strong>@Html.Partial("_CarPlate", Model.Driver.Car.PlateNumber)</p>
+                    <p><strong>صندلی خالی:</strong> @Model.Driver.Car.AvailableSeats</p>
                 </div>
             </div>
         </div>
         <a asp-action="Index" class="btn btn-secondary">
             <i class="bi bi-arrow-right"></i> بازگشت به لیست
         </a>
+    </div>
+</div>
+<div class="card bg-dark">
+    <div class="card-header bg-secondary text-white">
+        <h4>لیست مسافرین</h4>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover table-dark">
+            <thead>
+                <tr>
+                    <th>شناسه</th>
+                    <th>نام</th>
+                    <th>نام خانوادگی</th>
+                    <th>سال تحصیلی</th>
+                    <th>آدرس رفت</th>
+                    <th>آدرس برگشت</th>
+                </tr>
+            </thead>
+            <tbody>
+                    @foreach (var Passanger in Model.Passanger)
+                    {
+                        <tr>
+                            <td>@Passanger.Id</td>
+                            <td>@Passanger.FirstName</td>
+                            <td>@Passanger.LastName</td>
+                            <td>@Passanger.Class</td>
+                            <td>@Passanger.Path.Location1.Address</td>
+                            <td>@Passanger.Path.Location2.Address</td>
+                        </tr>
+                    }
+            </tbody>
+        </table>
     </div>
 </div>

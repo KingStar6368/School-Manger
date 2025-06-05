@@ -24,6 +24,7 @@
                         <th>نام خانوادگی</th>
                         <th>خودرو</th>
                         <th>شماره پلاک</th>
+                        <th>اخطار</th>
                         <th>عملیات</th>
                     </tr>
                 </thead>
@@ -36,6 +37,7 @@
                                 <td>@Model[i].LastName</td>
                                 <td>@Model[i].Car.Name</td>
                                 <td>@Html.Partial("_CarPlate",@Model[i].Car.PlateNumber)</td>
+                                <td><i class="badge bg-warning text-black">@Model[i].Warnning</i></td>
                                 <td>
                                 <a asp-action="Details" asp-controller="Driver" asp-area="Admin" asp-route-id="@Model[i].Id"
                                    class="btn btn-sm btn-info">

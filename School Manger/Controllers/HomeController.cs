@@ -7,7 +7,7 @@ using PersianTextShaper;
 using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models;
-using School_Manger.Models.ParentViews;
+using School_Manger.Models.PageView;
 
 namespace School_Manger.Controllers
 {

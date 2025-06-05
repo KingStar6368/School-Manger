@@ -7,6 +7,7 @@
         Van,
         Bus
     }
+    //Done
     public class Driver
     {
         public long Id { get; set; }
@@ -21,7 +22,9 @@
         public string BankAccount { get; set; }
         public string BankNumber { get; set; }
         public string NationCode { get; set; }
-        public List<ChildInfo> Passanger { get; set; }
+        public int Rate { get; set; }
+        public int Warnning { get; set; }
+        public List<long> Passanger { get; set; }
         public CarInfo Car { get; set; }
     }
     public class CarInfo

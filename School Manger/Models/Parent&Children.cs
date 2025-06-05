@@ -1,5 +1,6 @@
 ﻿namespace School_Manger.Models
 {
+    //Done
     public class Parent
     {
         public long Id { get; set; }
@@ -11,6 +12,7 @@
         public List<ChildInfo> Children { get; set; }
     }
 
+    //Done
     public class ChildInfo
     {
         public long Id { get; set; }
@@ -19,6 +21,8 @@
         public string NationalCode { get; set; }
         public DateTime BirthDate { get; set; }
         public string Class { get; set; }
+        public long DriverId { get; set; }
+        public long SchoolId { get; set; }
         public bool HasPaid
         {
             get => Bills != null && Bills.All(x => x.HasPaId);

@@ -1,4 +1,4 @@
-﻿@model School_Manger.Models.Driver
+﻿@model School_Manger.Models.PageView.DriverDashbord
 @{
     ViewData["Title"] = "پنل راننده";
     Layout = "_Layout";
@@ -12,19 +12,19 @@
             <div class="d-flex justify-content-center gap-5 mt-3">
                 <div>
                     <span class="fs-5">نام:</span>
-                    <span class="fs-3">@Model.Name</span>
+                    <span class="fs-3">@Model.Driver.Name</span>
                 </div>
                 <div>
                     <span class="fs-5 text-light">نام خانوادگی:</span>
-                    <span class="fs-3">@Model.LastName</span>
+                    <span class="fs-3">@Model.Driver.LastName</span>
                 </div>
                 <div>
                     <span class="fs-5 text-light">خودرو:</span>
-                    <span class="fs-3">@Model.Car.Name (@Model.Car.PlateNumber)</span>
+                    <span class="fs-3">@Model.Driver.Car.Name (@Model.Driver.Car.PlateNumber)</span>
                 </div>
                 <div>
                     <span class="fs-5 text-light">صندلی‌های خالی:</span>
-                    <span class="fs-3">@Model.Car.AvailableSeats</span>
+                    <span class="fs-3">@Model.Driver.Car.AvailableSeats</span>
                 </div>
             </div>
         </div>

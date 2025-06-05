@@ -1,4 +1,4 @@
-﻿namespace School_Manger.Models.ParentViews
+﻿namespace School_Manger.Models.PageView
 {
     public class ParentDashbordView
     {
