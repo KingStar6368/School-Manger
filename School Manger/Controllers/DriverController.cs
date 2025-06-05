@@ -18,10 +18,11 @@ namespace School_Manger.Controllers
                     LastName = "تست",
                     Car = new CarInfo()
                     {
-                        AvailableSeats = 5,
                         Id = 1,
                         Name = "پراید",
-                        PlateNumber = "142317"
+                        PlateNumber = "142317",
+                        SeatNumber = 4,
+                        Color = "white"
                     },
                     Passanger = new List<long>()
                     {

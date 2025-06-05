@@ -22,6 +22,7 @@ namespace School_Manger.Controllers.Admin
                             LastName = "بنیادی",
                             Class = "اول ابتدایی",
                             NationalCode = "0521234567",
+                            DriverId = 1,
                             BirthDate = DateTime.Now.AddYears(-7).ToPersain(),
                             Path = new LocationPairModel()
                             {
@@ -182,9 +183,11 @@ namespace School_Manger.Controllers.Admin
                         LastName = "محمدی",
                         Car = new CarInfo
                         {
+                            Id = 1,
                             Name = "پراید",
                             PlateNumber = "12ب32647",
-                            AvailableSeats = 3
+                            SeatNumber = 4,
+                            Color = "white"
                         },
                         NationCode = "05211312",
                         BankAccount = "12312",

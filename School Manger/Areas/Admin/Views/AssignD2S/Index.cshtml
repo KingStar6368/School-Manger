@@ -1,0 +1,114 @@
+﻿@using School_Manger.Models.PageView
+@model AdminNONChildDriver
+@{
+    ViewData["Title"] = "تشخیص راننده به دانش آموز";
+    Layout = "_AdminLayout";
+}
+
+<div class="card shadow-lg bg-light border-0">
+    <div class="card-header bg-primary text-white text-center">
+        <h4 class="mb-0"><i class="bi bi-person-badge"></i> تشخیص راننده به دانش آموز</h4>
+    </div>
+
+    <div class="card-body">
+        <div class="row g-4">
+
+            <!-- راننده‌ها -->
+            <div class="col-md-4">
+                <div class="border rounded p-3 bg-white h-100">
+                    <h5 class="text-primary text-center mb-3">لیست راننده‌ها</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped text-center align-middle">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>شناسه</th>
+                                    <th>نام</th>
+                                    <th>نام خانوادگی</th>
+                                    <th>کد ملی</th>
+                                    <th>صندلی خالی</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach(var Driver in Model.AvailableDrivers)
+                                {
+                                    <tr>
+                                        <td>@Driver.Id</td>
+                                        <td>@Driver.Name</td>
+                                        <td>@Driver.LastName</td>
+                                        <td>@Driver.NationCode</td>
+                                        <td>@Driver.AvailableSeats</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- فرم مرکزی -->
+            <div class="col-md-3 d-flex align-items-center justify-content-center">
+                <div class="border rounded p-4 bg-white w-100" style="max-width: 320px;">
+                    <h5 class="text-center mb-4 text-success"><i class="bi bi-arrow-left-right"></i> ارتباط راننده و دانش‌آموز</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label">شناسه راننده</label>
+                        <input class="form-control" placeholder="شناسه راننده" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">شناسه دانش آموز</label>
+                        <input class="form-control" placeholder="شناسه دانش آموز" />
+                    </div>
+
+                    <div class="text-center mb-3">
+                        <button class="btn btn-success px-4" type="submit">
+                            <i class="bi bi-check-circle"></i> ثبت
+                        </button>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-secondary px-4" type="submit">
+                            <i class="bi bi-check-circle"></i> بازگشت
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- دانش‌آموزان -->
+            <div class="col-md-5">
+                <div class="border rounded p-3 bg-white h-100">
+                    <h5 class="text-primary text-center mb-3">لیست دانش‌آموزان</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped text-center align-middle">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>شناسه</th>
+                                    <th>نام</th>
+                                    <th>نام خانوادگی</th>
+                                    <th>کدملی</th>
+                                    <th>مدرسه</th>
+                                    <th>مقطع</th>
+                                    <th>آدرس</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach(var Child in Model.NonDivers)
+                                {
+                                    <tr>
+                                        <td>@Child.Id</td>
+                                        <td>@Child.FirstName</td>
+                                        <td>@Child.LastName</td>
+                                        <td>@Child.NationalCode</td>
+                                        <td>@Child.SchoolId</td>
+                                        <td>@Child.Class</td>
+                                        <td>@Child.Path.Location1.Address</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

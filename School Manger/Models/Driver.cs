@@ -24,6 +24,7 @@
         public string NationCode { get; set; }
         public int Rate { get; set; }
         public int Warnning { get; set; }
+        public int AvailableSeats => Car.SeatNumber - Passanger.Count;
         public List<long> Passanger { get; set; }
         public CarInfo Car { get; set; }
     }
@@ -33,7 +34,6 @@
         public string Name { get; set; }
         public string PlateNumber { get; set; }
         public string Color { get;set; }
-        public int AvailableSeats { get; set; }
         public int SeatNumber { get; set; }
     }
 }

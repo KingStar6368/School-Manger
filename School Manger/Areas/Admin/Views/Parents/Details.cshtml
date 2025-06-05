@@ -93,7 +93,10 @@
                                         <span class="badge bg-danger">@child.Child.Bills.Where(x=>!x.HasPaId).Sum(x=>x.TotalPrice - x.PaidPrice) تومان</span>
                                     }
                                 </td>
-                                <td>@(child.Child.DriverId ==0 ? "راننده ای اختصاص داده نشده" : $"راننده شمار {Model.Drivers.FirstOrDefault(x=>x.Id == child.Child.DriverId)}")</td>
+                                @{
+                                    var Driver = Model.Drivers.Where(x => x.Id == child.Child.DriverId).FirstOrDefault();
+                                }
+                                <td>@(child.Child.DriverId == 0 ? "راننده ای اختصاص داده نشده" : $"راننده شمار {Driver.Id}-{Driver.Name} {Driver.LastName}")</td>
                                 <td>
                                     <button class="btn btn-sm btn-outline-primary view-route"
                                     data-pickup="@child.Child.Path.Location1.Address"

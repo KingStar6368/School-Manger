@@ -6,62 +6,23 @@ using School_Manger.Models.PageView;
 namespace School_Manger.Controllers.Admin
 {
     [Area("Admin")]
-    public class DriverController : Controller
+    public class AssignD2SController : Controller
     {
-        // Mock data - no database needed
-        private List<Driver> _drivers = new List<Driver>
+        private AdminNONChildDriver Dashbord;
+        public AssignD2SController() 
         {
-            new Driver {
-                Id = 1,
-                Name = "رضا",
-                LastName = "محمدی",
-                Car = new CarInfo
-                {
-                    Id = 1,
-                    Name = "پراید",
-                    PlateNumber = "12ب32647",
-                    SeatNumber = 4,
-                    Color = "White",
-                },
-                NationCode = "05211312",
-                BankAccount = "12312",
-                BankNumber = "1231321",
-                Address = "اراک",
-                BirthDate = DateTime.Parse("1375/04/01"),
-                CertificateId = "123",
-                Descriptions = "",
-                Education = "دیپلم",
-                FutherName = "احمد",
-                Rate = 5,
-                Warnning = 0,
-                Passanger = new List<long>()
-                {
-                    1
-                }
-            },
-        };
-
-        public IActionResult Index()
-        {
-            return View(_drivers);
-        }
-        public IActionResult Details(int id)
-        {
-            var driver = _drivers.FirstOrDefault(d => d.Id == id);
-            if (driver == null) return NotFound();
-            AdminDriver admindashbord = new AdminDriver()
+            Dashbord = new AdminNONChildDriver()
             {
-                Driver = driver,
-                Passanger = new List<ChildInfo>()
+                NonDivers = new List<ChildInfo>()
                 {
-                    new ChildInfo()
+                     new ChildInfo()
                         {
-                            Id = 1,
-                            FirstName = "حسین",
+                            Id = 2,
+                            FirstName = "محمد",
                             LastName = "بنیادی",
-                            Class = "اول ابتدایی",
+                            Class = "چهارم ابتدایی",
                             NationalCode = "0521234567",
-                            BirthDate = DateTime.Now.AddYears(-7).ToPersain(),
+                            BirthDate = DateTime.Now.AddYears(-11).ToPersain(),
                             Path = new LocationPairModel()
                             {
                                 ChildId = 1,
@@ -100,8 +61,7 @@ namespace School_Manger.Controllers.Admin
                                     Id = 2,
                                     Name = "آبان",
                                     ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
+                                    PaidPrice = 10,
                                     BillExpiredTime = DateTime.Now.AddMonths(-1),
                                     TotalPrice = 100
                                 },
@@ -110,8 +70,7 @@ namespace School_Manger.Controllers.Admin
                                     Id = 3,
                                     Name = "آذر",
                                     ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
+                                    PaidPrice = 0,
                                     BillExpiredTime = DateTime.Now.AddDays(1),
                                     TotalPrice = 100
                                 },
@@ -120,33 +79,49 @@ namespace School_Manger.Controllers.Admin
                                     Id = 4,
                                     Name = "دی",
                                     ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
+                                    PaidPrice = 0,
                                     BillExpiredTime = DateTime.Now.AddMonths(1),
                                     TotalPrice = 100
                                 }
                             }
+                        }
+                },
+                AvailableDrivers = new List<Driver>() 
+                {
+                    new Driver {
+                        Id = 1,
+                        Name = "رضا",
+                        LastName = "محمدی",
+                        Car = new CarInfo
+                        {
+                            Id = 1,
+                            Name = "پراید",
+                            PlateNumber = "12ب32647",
+                            SeatNumber = 4,
+                            Color = "white"
                         },
+                        NationCode = "05211312",
+                        BankAccount = "12312",
+                        BankNumber = "1231321",
+                        Address = "اراک",
+                        BirthDate = DateTime.Parse("1375/04/01"),
+                        CertificateId = "123",
+                        Descriptions = "",
+                        Education = "دیپلم",
+                        FutherName = "احمد",
+                        Rate = 5,
+                        Warnning = 0,
+                        Passanger = new List<long>()
+                        {
+                            1
+                        }
+                    },
                 }
             };
-            return View(admindashbord);
         }
-        public IActionResult Create()
+        public IActionResult Index()
         {
-            return View();
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Driver driver)
-        {
-            if (ModelState.IsValid)
-            {
-                // Save to database or list
-                driver.Id = _drivers.Max(d => d.Id) + 1;
-                _drivers.Add(driver);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(driver);
+            return View(Dashbord);
         }
     }
 }
