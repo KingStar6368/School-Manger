@@ -1,36 +1,132 @@
 ﻿@{
-    var userType = ViewBag.UserType as string;
-    ViewData["Title"] = "ایجاد کاربر " + (userType == "parent" ? "والد" : "راننده");
+    var userType = ViewBag.UserType?.ToString() ?? "Parent";
+    ViewData["Title"] = "ایجاد کاربر " + (userType == "Parent" ? "👨‍👩‍👧 والد" : "🚗 راننده");
     Layout = "_AdminLayout";
 }
 
-<div class="card bg-dark text-white">
-    <div class="card-header @(userType == "parent" ? "bg-primary" : "bg-info")">
-        <h4>@ViewData["Title"]</h4>
+<div class="card bg-dark text-white shadow rounded">
+    <div class="card-header @(userType == "Parent" ? "bg-primary" : "bg-info") d-flex justify-content-center align-items-center">
+        <h4 class="mb-0">@ViewData["Title"]</h4>
     </div>
     <div class="card-body">
-        <form method="post">
+        <form method="post" novalidate>
             <input type="hidden" name="userType" value="@userType" />
 
-            <div class="form-group mb-3">
-                <label>نام کاربری</label>
-                <input name="username" class="form-control" required />
+            <div class="row g-4">
+                <div class="col-md-6">
+                    @if (userType == "Parent")
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">👤 نام</label>
+                            <input name="ParentFirstName" class="form-control form-control-lg" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">👥 نام خانوادگی</label>
+                            <input name="ParentLastName" class="form-control form-control-lg" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🆔 کد ملی</label>
+                            <input name="ParentNationalCode" class="form-control form-control-lg" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🏠 آدرس</label>
+                            <textarea name="Address" class="form-control" rows="2"></textarea>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">👤 نام</label>
+                            <input name="Name" class="form-control form-control-lg" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">👥 نام خانوادگی</label>
+                            <input name="LastName" class="form-control form-control-lg" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">👨‍👦 نام پدر</label>
+                            <input name="FutherName" class="form-control form-control-lg" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🎂 تاریخ تولد</label>
+                            <input name="BirthDate" type="date" class="form-control form-control-lg" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🆔 کد ملی</label>
+                            <input name="NationCode" class="form-control form-control-lg" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🎓 مدرک تحصیلی</label>
+                            <input name="Education" class="form-control form-control-lg" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">📝 توضیحات</label>
+                            <textarea name="Descriptions" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🏠 آدرس</label>
+                            <textarea name="Address" class="form-control" rows="2"></textarea>
+                        </div>
+                    }
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">👤 نام کاربری</label>
+                        <input name="Username" class="form-control form-control-lg" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">🔒 رمز عبور</label>
+                        <input name="Password" type="password" class="form-control form-control-lg" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">📞 شماره تماس</label>
+                        <input name="Phone" class="form-control form-control-lg" required />
+                    </div>
+
+                    @if (userType != "Parent")
+                    {
+                        <hr />
+                        <h5 class="text-info"><i class="bi bi-car-front-fill"></i> مشخصات ماشین</h5>
+                        <div class="mb-3">
+                            <label class="form-label">🚘 نام ماشین</label>
+                            <input name="Car.Name" class="form-control form-control-lg" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🔢 شماره پلاک</label>
+                            <input name="Car.PlateNumber" class="form-control form-control-lg" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🎨 رنگ ماشین</label>
+                            <input name="Car.Color" class="form-control form-control-lg" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">💺 تعداد صندلی</label>
+                            <input name="Car.SeatNumber" type="number" class="form-control form-control-lg" />
+                        </div>
+
+                        <hr />
+                        <h5 class="text-info"><i class="bi bi-bank2"></i> مشخصات حساب بانکی</h5>
+                        <div class="mb-3">
+                            <label class="form-label">🏦 شماره حساب</label>
+                            <input name="BankAccount" class="form-control form-control-lg" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🔢 شماره شبا</label>
+                            <input name="BankNumber" class="form-control form-control-lg" />
+                        </div>
+                    }
+                </div>
             </div>
 
-            <div class="form-group mb-3">
-                <label>رمز عبور</label>
-                <input name="password" type="password" class="form-control" required />
-            </div>
-
-            <div class="form-group mb-3">
-                <label>شماره تماس</label>
-                <input name="phone" class="form-control" required />
-            </div>
-
-            <div class="form-group mt-4">
-                <button type="submit" class="btn btn-primary">ذخیره</button>
-                <a href="@Url.Action(userType == "parent" ? "Parents" : "Drivers")"
-                   class="btn btn-secondary">انصراف</a>
+            <div class="form-group text-center mt-4 d-flex justify-content-center gap-3">
+                <button type="submit" class="btn btn-success col-md-2">
+                    <i class="bi bi-save2 me-1"></i> ذخیره
+                </button>
+                <a href="@Url.Action(userType == "Parent" ? "Parents" : "Drivers")"
+                   class="btn btn-secondary col-md-2">
+                    <i class="bi bi-x-circle me-1"></i> انصراف
+                </a>
             </div>
         </form>
     </div>

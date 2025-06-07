@@ -1,0 +1,114 @@
+﻿@using School_Manger.Models.PageView
+@model AdminSchool
+
+@{
+    ViewData["Title"] = "📚 اطلاعات مدرسه";
+    Layout = "_AdminLayout";
+}
+
+<!-- School Info -->
+<div class="card bg-dark text-white shadow-lg rounded-4 mb-4 border-primary border-2">
+    <div class="card-header bg-primary bg-gradient rounded-top">
+        <h4 class="mb-0 fw-bold">🏫 اطلاعات مدرسه</h4>
+    </div>
+    <div class="card-body row">
+        <div class="col-md-6 mb-3">
+            <strong>🏷️ نام مدرسه:</strong>
+            <div class="ms-2">@Model.School.Name</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <strong>👨‍🏫 نام مدیر:</strong>
+            <div class="ms-2">@Model.School.ManagerName</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <strong>⭐ امتیاز:</strong>
+            <div>
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <i class="bi bi-star@(i <= Model.School.Rate ? "-fill" : "") text-warning fs-5"></i>
+                }
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <strong>📍 آدرس:</strong>
+            <div class="ms-2">@Model.School.Address.Address</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <strong>🗺️ موقعیت مکانی:</strong>
+            <div class="ms-2">📌 Lat: @Model.School.Address.Latitude, Lng: @Model.School.Address.Longitude</div>
+        </div>
+    </div>
+</div>
+
+<!-- Drivers -->
+<div class="card bg-dark text-white shadow rounded-4 mb-4 border-secondary border-2">
+    <div class="card-header bg-secondary bg-gradient rounded-top">
+        <h5 class="mb-0 fw-semibold">🧑‍✈️ رانندگان</h5>
+    </div>
+    <div class="card-body table-responsive">
+        <table class="table table-dark table-hover align-middle text-center">
+            <thead class="table-light text-dark">
+                <tr>
+                    <th>👤 نام</th>
+                    <th>👥 نام خانوادگی</th>
+                    <th>🆔 کد ملی</th>
+                    <th>💺 تعداد صندلی</th>
+                    <th>🚗 خودرو</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var driver in Model.Drivers)
+                {
+                    <tr>
+                        <td>@driver.Name</td>
+                        <td>@driver.LastName</td>
+                        <td>@driver.NationCode</td>
+                        <td>@driver.Car.SeatNumber</td>
+                        <td>@driver.Car.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Students -->
+<div class="card bg-dark text-white shadow rounded-4 mb-4 border-success border-2">
+    <div class="card-header bg-success bg-gradient rounded-top">
+        <h5 class="mb-0 fw-semibold">🎓 دانش‌آموزان</h5>
+    </div>
+    <div class="card-body table-responsive">
+        <table class="table table-dark table-hover align-middle text-center">
+            <thead class="table-light text-dark">
+                <tr>
+                    <th>👶 نام</th>
+                    <th>👨‍👧 نام خانوادگی</th>
+                    <th>🆔 کد ملی</th>
+                    <th>🏷️ کلاس</th>
+                    <th>💰 پرداخت</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in Model.Students)
+                {
+                    <tr>
+                        <td>@student.FirstName</td>
+                        <td>@student.LastName</td>
+                        <td>@student.NationalCode</td>
+                        <td>@student.Class</td>
+                        <td>
+                            @if (student.HasPaid)
+                            {
+                                <span class="badge bg-success">✅ پرداخت شده</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">❌ پرداخت نشده</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

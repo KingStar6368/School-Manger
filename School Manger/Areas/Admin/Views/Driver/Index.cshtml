@@ -1,50 +1,61 @@
 ﻿@using School_Manger.Models
 @model List<Driver>
 @{
-    ViewData["Title"] = "مدیریت رانندگان";
+    ViewData["Title"] = "🚗 مدیریت رانندگان";
     Layout = "_AdminLayout";
 }
 
-<div class="card bg-dark text-white">
-    <div class="card-header bg-primary">
-    <div class="d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">لیست رانندگان</h4>
-        <a asp-action="Create" class="btn btn-success">
+<div class="card bg-dark text-white shadow-lg rounded-3">
+    <div class="card-header bg-primary d-flex justify-content-between align-items-center">
+        <h4 class="mb-0"><i class="bi bi-truck"></i> لیست رانندگان</h4>
+        <a asp-action="Create" class="btn btn-success btn-sm">
             <i class="bi bi-plus-circle"></i> راننده جدید
         </a>
     </div>
-    </div>
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-dark table-hover">
-                <thead>
+            <table class="table table-dark table-hover align-middle text-center">
+                <thead class="table-light text-dark">
                     <tr>
-                        <th>ردیف</th>
-                        <th>نام</th>
-                        <th>نام خانوادگی</th>
-                        <th>خودرو</th>
-                        <th>شماره پلاک</th>
-                        <th>اخطار</th>
-                        <th>عملیات</th>
+                        <th>ردیف 🆔</th>
+                        <th>نام 🧑‍✈️</th>
+                        <th>نام خانوادگی 👨‍✈️</th>
+                        <th>خودرو 🚙</th>
+                        <th>شماره پلاک 🏷️</th>
+                        <th>اخطار ⚠️</th>
+                        <th>عملیات 🔧</th>
                     </tr>
                 </thead>
                 <tbody>
                     @for (int i = 0; i < Model.Count; i++)
                     {
-                            <tr>
-                                <td>@(i + 1)</td>
-                                <td>@Model[i].Name</td>
-                                <td>@Model[i].LastName</td>
-                                <td>@Model[i].Car.Name</td>
-                                <td>@Html.Partial("_CarPlate",@Model[i].Car.PlateNumber)</td>
-                                <td><i class="badge bg-warning text-black">@Model[i].Warnning</i></td>
-                                <td>
+                        <tr>
+                            <td>@(i + 1)</td>
+                            <td>@Model[i].Name</td>
+                            <td>@Model[i].LastName</td>
+                            <td>@Model[i].Car.Name</td>
+                            <td>@Html.Partial("_CarPlate", Model[i].Car.PlateNumber)</td>
+                            <td>
+                                @if (Model[i].Warnning > 0)
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        ⚠️ @Model[i].Warnning
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">
+                                        ✅ بدون اخطار
+                                    </span>
+                                }
+                            </td>
+                            <td>
                                 <a asp-action="Details" asp-controller="Driver" asp-area="Admin" asp-route-id="@Model[i].Id"
-                                   class="btn btn-sm btn-info">
-                                        <i class="bi bi-eye"></i> جزئیات
-                                    </a>
-                                </td>
-                            </tr>
+                                   class="btn btn-sm btn-info" title="مشاهده جزئیات">
+                                    <i class="bi bi-eye"></i> جزئیات
+                                </a>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
