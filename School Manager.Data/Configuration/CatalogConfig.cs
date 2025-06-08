@@ -30,9 +30,6 @@ namespace School_Manager.Data.Configuration
                 .IsRequired()
                 .HasComment("کلمه عبور");
 
-            builder.Property(p => p.Email)
-                .HasColumnType("nvarchar(100)")
-                .HasComment("ایمیل");
 
             builder.Property(p => p.FirstName)
                 .HasColumnType("nvarchar(50)")

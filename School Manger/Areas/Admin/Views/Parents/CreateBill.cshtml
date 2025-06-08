@@ -1,0 +1,96 @@
+﻿@using School_Manger.Extension
+@model School_Manger.Models.ChildInfo
+@{
+    ViewData["Title"] = "📄 صدور قبض";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4 text-white" dir="rtl">
+    <div class="card shadow-lg border-0 bg-dark mb-4">
+        <div class="card-header bg-gradient bg-primary text-white">
+            <h4 class="mb-0">📄 صدور قبض برای: <strong>@Model.FirstName @Model.LastName</strong></h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="CreateBill" asp-controller="Bills" method="post">
+                <input type="hidden" name="ChildId" value="@Model.Id" />
+                <input type="hidden" name="Child" value="@Model.EnCript()" />
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">📝 عنوان قبض</label>
+                        <input type="text" name="Name" class="form-control bg-dark text-white" placeholder="مثلاً شهریه مهر ماه" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">💰 مبلغ کل (تومان)</label>
+                        <input type="number" name="TotalPrice" class="form-control bg-dark text-white" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">📆 مهلت پرداخت</label>
+                        <input type="date" name="BillExpiredTime" class="form-control bg-dark text-white" required />
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success me-2">📤 صدور قبض</button>
+                    <a asp-controller="Parents" asp-action="Index" class="btn btn-secondary">🔙 بازگشت</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- لیست قبوض -->
+    <div class="card shadow border-0 bg-dark mb-5">
+        <div class="card-header bg-gradient bg-primary text-white">
+            <h4 class="mb-0">📜 لیست قبوض <strong>@Model.FirstName @Model.LastName</strong></h4>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered mb-0 text-center text-white align-middle">
+                    <thead class="table-light text-dark">
+                        <tr>
+                            <th>🔢 ردیف</th>
+                            <th>🆔 شناسه قرارداد</th>
+                            <th>📄 نام قبض</th>
+                            <th>💵 مبلغ کل</th>
+                            <th>💳 مبلغ پرداخت شده</th>
+                            <th>✅ وضعیت</th>
+                            <th>⏰ زمان پرداخت/مهلت</th>
+                            <th>⚙️ عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Bills.Count; i++)
+                        {
+                            var bill = Model.Bills[i];
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td>@bill.ContractId</td>
+                                <td>@bill.Name</td>
+                                <td>@bill.TotalPrice.ToString("N0")</td>
+                                <td>@bill.PaidPrice.ToString("N0")</td>
+                                <td>
+                                    @if (bill.HasPaId)
+                                    {
+                                        <span class="badge bg-success">✅ پرداخت شده</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">❌ @bill.Status</span>
+                                    }
+                                </td>
+                                <td>
+                                    @(bill.HasPaId
+                                        ? DateConverter.ToPersianString(bill.PaidTime)
+                                        : DateConverter.ToPersianString(bill.BillExpiredTime))
+                                </td>
+                                <td>
+                                    <!-- عملیات مدیر اگر نیاز هست اضافه کن -->
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

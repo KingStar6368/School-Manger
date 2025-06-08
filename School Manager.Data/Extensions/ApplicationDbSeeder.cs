@@ -42,7 +42,7 @@ namespace School_Manager.Data.Extensions
             if (users == null)
             {
                 var _users = new List<User>();
-                _users.Add(new User() { UserName = "402321",PasswordHash = EntityHelper.Encrypt("123!@#qwe"), FirstName = "Admin", Email = "admin@gmail.com", LastName = "Admin" });
+                _users.Add(new User() { UserName = "402321", PasswordHash = EntityHelper.Encrypt("123!@#qwe"), FirstName = "Admin", LastName = "Admin" });
                 _dbContext.Users.AddRange(_users);
                 _dbContext.SaveChanges();
             }

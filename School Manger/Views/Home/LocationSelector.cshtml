@@ -1,7 +1,9 @@
-﻿@{
+﻿@using School_Manger.Models.PageView
+@{
     ViewData["Title"] = "انتخاب دو موقعیت مکانی";
     Layout = "_Layout";
 }
+@model ParentDashbordView
 
 <div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-dark" dir="rtl">
     <div class="card bg-black text-white border-secondary" style="width: 100%;height:auto">
@@ -9,60 +11,80 @@
             <a asp-action="ParentMenu" class="btn btn-outline-light">
                 <i class="bi bi-arrow-right"></i> بازگشت
             </a>
-            <h5 class="m-0">انتخاب دو موقعیت روی نقشه</h5>
+            <h5 class="m-0">انتخاب موقعیت روی نقشه و مقصد</h5>
         </div>
 
-        <div class="card-body p-4">
-            <div class="row">
-                <div class="col-md-8 mb-4 mb-md-0">
-                    <!-- Map Container -->
-                    <div id="map" style="height: 500px; width: 100%; border-radius: 8px;"></div>
-                </div>
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label for="locationSearch" class="form-label">جستجوی آدرس</label>
-                        <div class="input-group">
-                            <input type="text"
-                                   class="form-control bg-dark text-white border-secondary"
-                                   id="locationSearch"
-                                   placeholder="آدرس یا نام مکان">
-                            <button class="btn btn-outline-secondary" type="button" id="searchButton">
-                                <i class="bi bi-search"></i>
+        <form asp-action="AddChild" method="post">
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-8 mb-4 mb-md-0">
+                        <!-- Map Container -->
+                        <div id="map" style="height: 500px; width: 100%; border-radius: 8px;"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="locationSearch" class="form-label">جستجوی آدرس</label>
+                            <div class="input-group">
+                                <input type="text"
+                                       class="form-control bg-dark text-white border-secondary"
+                                       id="locationSearch"
+                                       placeholder="آدرس یا نام مکان">
+                                <button class="btn btn-outline-secondary" type="button" id="searchButton">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">موقعیت اول (روی نقشه انتخاب کنید):</label>
+                            <div id="location1Info" class="p-3 bg-success rounded mb-2" style="min-height: 100px;">
+                                <p class="text-muted mb-1">موقعیت اول انتخاب نشده است</p>
+                            </div>
+
+                            <label class="form-label">موقعیت دوم (مقصد):</label>
+                            <select class="form-select bg-dark text-white border-secondary mb-3" id="location2Select">
+                                <option value="" selected>-- انتخاب مقصد --</option>
+                                <option value="34.0918,49.6892|مدرسه نمونه اراک">مدرسه نمونه اراک</option>
+                                <option value="34.0854,49.7003|مدرسه شهید بهشتی اراک">مدرسه شهید بهشتی اراک</option>
+                                <option value="34.0789,49.6956|مدرسه علامه حلی اراک">مدرسه علامه حلی اراک</option>
+                                <option value="34.0723,49.6887|مدرسه فرزانگان اراک">مدرسه فرزانگان اراک</option>
+                                <option value="34.0801,49.6815|مدرسه انرژی اتمی اراک">مدرسه انرژی اتمی اراک</option>
+                            </select>
+
+                            <div id="location2Info" class="p-3 bg-danger rounded mb-3" style="min-height: 100px; display: none;">
+                                <!-- اطلاعات موقعیت دوم اینجا نمایش داده می شود -->
+                            </div>
+
+                            @* Data *@
+                            <input asp-for="SelectedChild.Path.Location1.Latitude" type="hidden" id="location1Lat">
+                            <input asp-for="SelectedChild.Path.Location1.Longitude" type="hidden" id="location1Lng">
+                            <input asp-for="SelectedChild.Path.Location1.Address" type="hidden" id="location1Address">
+
+                            <input asp-for="SelectedChild.Path.Location2.Latitude" type="hidden" id="location2Lat">
+                            <input asp-for="SelectedChild.Path.Location2.Longitude" type="hidden" id="location2Lng">
+                            <input asp-for="SelectedChild.Path.Location2.Address" type="hidden" id="location2Address">
+
+                            <input asp-for="SelectedChild.FirstName" value="@Model.SelectedChild.FirstName" type="hidden" />
+                            <input asp-for="SelectedChild.LastName" value="@Model.SelectedChild.LastName" type="hidden" />
+                            <input asp-for="SelectedChild.Class" value="@Model.SelectedChild.Class" type="hidden" />
+                            <input asp-for="SelectedChild.NationalCode" value="@Model.SelectedChild.NationalCode" type="hidden" />
+                            <input asp-for="SelectedChild.BirthDate" value="@Model.SelectedChild.BirthDate" type="hidden" />
+                            <input asp-for="SelectedChild.Path.PickTime1" value="@Model.SelectedChild.Path.PickTime1" type="hidden" />
+                            <input asp-for="SelectedChild.Path.PickTime2" value="@Model.SelectedChild.Path.PickTime2" type="hidden" />
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" id="confirmLocations" class="btn btn-primary py-2" disabled>
+                                <i class="bi bi-check-circle"></i> تایید موقعیت‌ها
+                            </button>
+                            <button id="clearLocations" class="btn btn-outline-danger py-2">
+                                <i class="bi bi-x-circle"></i> پاک کردن انتخاب‌ها
                             </button>
                         </div>
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">موقعیت اول:</label>
-                        <div id="location1Info" class="p-3 bg-success rounded mb-2" style="min-height: 100px;">
-                            <p class="text-muted mb-1">موقعیت اول انتخاب نشده است</p>
-                        </div>
-
-                        <label class="form-label">موقعیت دوم:</label>
-                        <div id="location2Info" class="p-3 bg-danger rounded mb-3" style="min-height: 100px;">
-                            <p class="text-muted mb-1">موقعیت دوم انتخاب نشده است</p>
-                        </div>
-
-                        <input type="hidden" id="location1Lat" name="location1Lat">
-                        <input type="hidden" id="location1Lng" name="location1Lng">
-                        <input type="hidden" id="location1Address" name="location1Address">
-
-                        <input type="hidden" id="location2Lat" name="location2Lat">
-                        <input type="hidden" id="location2Lng" name="location2Lng">
-                        <input type="hidden" id="location2Address" name="location2Address">
-                    </div>
-
-                    <div class="d-grid gap-2">
-                        <button id="confirmLocations" class="btn btn-primary py-2" disabled>
-                            <i class="bi bi-check-circle"></i> تایید موقعیت‌ها
-                        </button>
-                        <button id="clearLocations" class="btn btn-outline-danger py-2">
-                            <i class="bi bi-x-circle"></i> پاک کردن انتخاب‌ها
-                        </button>
-                    </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -117,11 +139,11 @@
 
     <script>
         // Initialize map
-        const map = L.map('map').setView([35.6892, 51.3890], 12); // Default to Tehran
+        const map = L.map('map').setView([34.0918, 49.6892], 13); // مرکزیت اراک
 
-        // Add dark tile layer
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        // تغییر لایه نقشه از تاریک به روشن
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
         // Variables to store locations
@@ -129,66 +151,96 @@
         let location2 = null;
         let location1Marker = null;
         let location2Marker = null;
-        let currentSelection = 1; // 1 for location1, 2 for location2
 
-        // Handle map click
+        // Handle map click (only for location1 now)
         map.on('click', function(e) {
-            if (currentSelection === 1) {
-                // Set location 1
-                if (location1Marker) {
-                    map.removeLayer(location1Marker);
-                }
+            // Set location 1
+            if (location1Marker) {
+                map.removeLayer(location1Marker);
+            }
 
-                location1 = {
-                    lat: e.latlng.lat,
-                    lng: e.latlng.lng,
-                    address: 'در حال دریافت آدرس...'
+            location1 = {
+                lat: e.latlng.lat,
+                lng: e.latlng.lng,
+                address: 'در حال دریافت آدرس...'
+            };
+
+            // Create custom marker for location 1
+            location1Marker = L.marker(e.latlng, {
+                icon: L.divIcon({
+                    className: 'location1-marker',
+                    html: '1',
+                    iconSize: [24, 24]
+                })
+            }).addTo(map)
+            .bindPopup('<div class="bg-success">موقعیت اول (مبدا)</div>')
+            .openPopup();
+
+            updateLocationDisplay();
+            getAddressFromCoordinates(e.latlng.lat, e.latlng.lng, 1);
+        });
+
+        // Handle location2 select change
+        document.getElementById('location2Select').addEventListener('change', function() {
+            const selectedValue = this.value;
+            if (selectedValue) {
+                const [coords, address] = selectedValue.split('|');
+                const [lat, lng] = coords.split(',');
+
+                location2 = {
+                    lat: parseFloat(lat),
+                    lng: parseFloat(lng),
+                    address: address
                 };
 
-                // Create custom marker for location 1
-                location1Marker = L.marker(e.latlng, {
-                    icon: L.divIcon({
-                        className: 'location1-marker',
-                        html: '1',
-                        iconSize: [24, 24]
-                    })
-                }).addTo(map)
-                .bindPopup('<div class="bg-success">موقعیت اول</div>')
-                .openPopup();
-
-                updateLocationDisplay();
-                getAddressFromCoordinates(e.latlng.lat, e.latlng.lng, 1);
-
-                // Switch to selecting location 2
-                currentSelection = 2;
-            } else {
-                // Set location 2
+                // Remove previous marker if exists
                 if (location2Marker) {
                     map.removeLayer(location2Marker);
                 }
 
-                location2 = {
-                    lat: e.latlng.lat,
-                    lng: e.latlng.lng,
-                    address: 'در حال دریافت آدرس...'
-                };
-
-                // Create custom marker for location 2
-                location2Marker = L.marker(e.latlng, {
+                // Add new marker
+                location2Marker = L.marker([lat, lng], {
                     icon: L.divIcon({
                         className: 'location2-marker',
                         html: '2',
                         iconSize: [24, 24]
                     })
                 }).addTo(map)
-                .bindPopup('<div class="bg-danger">موقعیت دوم</div>')
+                .bindPopup('<div class="bg-danger">موقعیت دوم (مقصد)</div>')
                 .openPopup();
 
-                updateLocationDisplay();
-                getAddressFromCoordinates(e.latlng.lat, e.latlng.lng, 2);
+                // Update display
+                document.getElementById('location2Info').style.display = 'block';
+                document.getElementById('location2Info').innerHTML = `
+                    <p><strong>موقعیت دوم:</strong></p>
+                    <p><small>عرض: ${lat}</small></p>
+                    <p><small>طول: ${lng}</small></p>
+                    <p><small>آدرس: ${address}</small></p>
+                `;
 
-                // Enable confirm button
-                document.getElementById('confirmLocations').disabled = false;
+                // Update hidden fields
+                document.getElementById('location2Lat').value = lat;
+                document.getElementById('location2Lng').value = lng;
+                document.getElementById('location2Address').value = address;
+
+                // Enable confirm button if both locations are selected
+                if (location1 && location2) {
+                    document.getElementById('confirmLocations').disabled = false;
+                }
+            } else {
+                // Clear location2 if nothing selected
+                if (location2Marker) {
+                    map.removeLayer(location2Marker);
+                    location2Marker = null;
+                }
+                location2 = null;
+                document.getElementById('location2Info').style.display = 'none';
+                document.getElementById('confirmLocations').disabled = true;
+
+                // Clear hidden fields
+                document.getElementById('location2Lat').value = '';
+                document.getElementById('location2Lng').value = '';
+                document.getElementById('location2Address').value = '';
             }
         });
 
@@ -198,21 +250,13 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.display_name) {
-                        if (locationNumber === 1) {
-                            location1.address = data.display_name;
-                        } else {
-                            location2.address = data.display_name;
-                        }
+                        location1.address = data.display_name;
                         updateLocationDisplay();
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching address:', error);
-                    if (locationNumber === 1) {
-                        location1.address = 'آدرس یافت نشد';
-                    } else {
-                        location2.address = 'آدرس یافت نشد';
-                    }
+                    location1.address = 'آدرس یافت نشد';
                     updateLocationDisplay();
                 });
         }
@@ -220,7 +264,6 @@
         // Update location display
         function updateLocationDisplay() {
             const location1Div = document.getElementById('location1Info');
-            const location2Div = document.getElementById('location2Info');
 
             if (location1) {
                 location1Div.innerHTML = `
@@ -234,20 +277,6 @@
                 document.getElementById('location1Lat').value = location1.lat;
                 document.getElementById('location1Lng').value = location1.lng;
                 document.getElementById('location1Address').value = location1.address;
-            }
-
-            if (location2) {
-                location2Div.innerHTML = `
-                    <p><strong>موقعیت دوم:</strong></p>
-                    <p><small>عرض: ${location2.lat.toFixed(6)}</small></p>
-                    <p><small>طول: ${location2.lng.toFixed(6)}</small></p>
-                    <p><small>آدرس: ${location2.address}</small></p>
-                `;
-
-                // Update hidden fields
-                document.getElementById('location2Lat').value = location2.lat;
-                document.getElementById('location2Lng').value = location2.lng;
-                document.getElementById('location2Address').value = location2.address;
             }
 
             // Enable confirm button if both locations are selected
@@ -272,7 +301,7 @@
 
                         map.setView([lat, lng], 15);
 
-                        // You can add this as a selected location if needed
+                        // You can add this as location1 if needed
                     }
                 })
                 .catch(error => {
@@ -282,7 +311,9 @@
         });
 
         // Clear locations button
-        document.getElementById('clearLocations').addEventListener('click', function() {
+        document.getElementById('clearLocations').addEventListener('click', function(e) {
+            e.preventDefault();
+
             // Remove markers
             if (location1Marker) {
                 map.removeLayer(location1Marker);
@@ -296,11 +327,11 @@
             // Reset locations
             location1 = null;
             location2 = null;
-            currentSelection = 1;
+            document.getElementById('location2Select').value = '';
 
             // Update display
             document.getElementById('location1Info').innerHTML = '<p class="text-muted mb-1">موقعیت اول انتخاب نشده است</p>';
-            document.getElementById('location2Info').innerHTML = '<p class="text-muted mb-1">موقعیت دوم انتخاب نشده است</p>';
+            document.getElementById('location2Info').style.display = 'none';
 
             // Clear hidden fields
             document.getElementById('location1Lat').value = '';
@@ -315,41 +346,12 @@
         });
 
         // Confirm locations button
-              // Confirm locations button - Updated version
-                document.getElementById('confirmLocations').addEventListener('click', function() {
+        document.getElementById('confirmLocations').addEventListener('click', function(e) {
             // Check if both locations are selected
             if (!location1 || !location2) {
-                alert("لطفاً هر دو موقعیت را انتخاب کنید");
-                return;
+                alert("لطفاً موقعیت مبدا و مقصد را انتخاب کنید");
+                e.preventDefault();
             }
-
-            // Create a form element
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/Home/AddChild';
-
-            // Helper function to add hidden fields
-            function addField(name, value) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = name;
-                input.value = value;
-                form.appendChild(input);
-            }
-
-            // Add location 1 data
-            addField('Location1.Latitude', location1.lat);
-            addField('Location1.Longitude', location1.lng);
-            addField('Location1.Address', location1.address);
-
-            // Add location 2 data
-            addField('Location2.Latitude', location2.lat);
-            addField('Location2.Longitude', location2.lng);
-            addField('Location2.Address', location2.address);
-
-            // Submit the form
-            document.body.appendChild(form);
-            form.submit();
         });
     </script>
 }

@@ -1,55 +1,68 @@
 ﻿@using School_Manger.Models
 @model List<Parent>
+
 @{
-    ViewData["Title"] = "مدیریت والدین";
+    ViewData["Title"] = "👨‍👩‍👧‍👦 مدیریت والدین";
     Layout = "_AdminLayout";
 }
 
-<div class="card bg-dark text-white">
-    <div class="card-header bg-primary">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">لیست والدین</h4>
-            <a href="/Admin/Parent/Create" class="btn btn-success">
-                <i class="bi bi-plus-circle me-2"></i> والد جدید +
-            </a>
-        </div>
+<div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2">
+    <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+        <h4 class="mb-0 fw-bold">
+            <i class="bi bi-people-fill me-2"></i> مدیریت والدین
+        </h4>
+        <a href="/Admin/Parent/Create" class="btn btn-success shadow-sm fw-bold">
+            <i class="bi bi-plus-circle me-1"></i> افزودن والد جدید 👨‍👧‍👦
+        </a>
     </div>
+
     <div class="card-body">
         <div class="table-responsive">
-            <table class="table table-dark table-hover">
-                <thead>
+            <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden">
+                <thead class="table-light text-dark">
                     <tr>
-                        <th>ردیف</th>
-                        <th>نام</th>
-                        <th>نام خانوادگی</th>
-                        <th>کد ملی</th>
-                        <th>تعداد فرزندان</th>
-                        <th>وضعیت</th>
-                        @* <th>وضعیت پرداختی</th> *@
-                        <th>عملیات</th>
+                        <th>#️⃣</th>
+                        <th>👤 نام</th>
+                        <th>👥 نام خانوادگی</th>
+                        <th>🆔 کد ملی</th>
+                        <th>👶 تعداد فرزندان</th>
+                        <th>⚙️ وضعیت</th>
+                        <th>💰 وضعیت مالی</th>
+                        <th>🔧 عملیات</th>
                     </tr>
                 </thead>
                 <tbody>
                     @for (int i = 0; i < Model.Count; i++)
                     {
+                        var parent = Model[i];
+                        var debt = parent.Children.Sum(c => c.Bills.Where(b => !b.HasPaId).Sum(b => b.TotalPrice - b.PaidPrice));
+                        var isActive = parent.Active;
+
                         <tr>
-                            <td>@i</td>
-                            <td>@Model[i].ParentFirstName</td>
-                            <td>@Model[i].ParentLastName</td>
-                            <td>@Model[i].ParentNationalCode</td>
-                            <td>@Model[i].Children.Count</td>
-                            <td><span class="badge bg-success">@{string Active = Model[i].Active ? "فعال" : "غیرفعال";}@Active</span></td>
-                            @* <td><span class="badge bg-danger">@Model[i].TotalPrice</span></td> *@
+                            <td>@(i + 1)</td>
+                            <td>@parent.ParentFirstName</td>
+                            <td>@parent.ParentLastName</td>
+                            <td>@parent.ParentNationalCode</td>
                             <td>
-                                <a asp-action="Details" asp-controller="Parents" asp-route-id="@Model[i].Id" class="btn btn-sm btn-primary">
-                                    <i class="bi bi-pencil">نمایش</i>
+                                <span class="badge bg-info text-dark fw-bold">
+                                    👧‍👦 @parent.Children.Count
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge fw-bold @(isActive ? "bg-success" : "bg-secondary")">
+                                    @(isActive ? "فعال ✅" : "غیرفعال ❌")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge fw-bold @(debt > 0 ? "bg-danger" : "bg-success")">
+                                    @(debt > 0 ? $"{debt:N0} تومان 💸" : "تسویه شده 🟢")
+                                </span>
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-controller="Parents" asp-route-id="@parent.Id"
+                                   class="btn btn-sm btn-outline-light rounded-pill shadow-sm">
+                                    👁️‍🗨️ مشاهده
                                 </a>
-                                <a href="/Admin/Parent/Edit/1" class="btn btn-sm btn-warning">
-                                    <i class="bi bi-pencil">تغییر</i>
-                                </a>
-                                <button class="btn btn-sm btn-danger">
-                                    <i class="bi bi-trash">حذف</i>
-                                </button>
                             </td>
                         </tr>
                     }
@@ -61,8 +74,8 @@
 
 @section PageScripts {
     <script>
-        $(document).ready(function() {
-            // Parent-specific scripts here
+        $(document).ready(function () {
+            // اسکریپت‌های صفحه والدین 👨‍👩‍👧‍👦
         });
     </script>
 }

@@ -1,33 +1,87 @@
-﻿@using School_Manger.Models
-@model Driver
+﻿@using School_Manger.Models.PageView
+@model AdminDriver
 @{
     ViewData["Title"] = "جزئیات راننده";
     Layout = "_AdminLayout";
 }
 
-<div class="card bg-dark text-white">
-    <div class="card-header bg-info">
-        <h4 class="mb-0">@ViewData["Title"]</h4>
+<div class="card bg-dark text-white shadow-lg mb-4 rounded-4">
+    <div class="card-header bg-gradient-info text-white rounded-top-4">
+        <h3 class="mb-0"><i class="bi bi-person-badge-fill me-2"></i>@ViewData["Title"]</h3>
     </div>
     <div class="card-body">
-        <div class="row">
+        <div class="row g-4">
+            <!-- Driver Info -->
             <div class="col-md-6">
-                <div class="mb-3">
-                    <h5>اطلاعات راننده:</h5>
-                    <p><strong>نام کامل:</strong> @Model.Name @Model.LastName</p>
-                </div>
+                <h5 class="border-bottom pb-2 mb-3 text-info">اطلاعات راننده</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-dark text-white border-0">👤 <strong>نام کامل:</strong> @Model.Driver.Name @Model.Driver.LastName</li>
+                    <li class="list-group-item bg-dark text-white border-0">🆔 <strong>کد ملی:</strong> @Model.Driver.NationCode</li>
+                    <li class="list-group-item bg-dark text-white border-0">👨‍👦 <strong>نام پدر:</strong> @Model.Driver.FutherName</li>
+                    <li class="list-group-item bg-dark text-white border-0">🏦 <strong>بانک:</strong> @Model.Driver.BankAccount</li>
+                    <li class="list-group-item bg-dark text-white border-0">🔢 <strong>شماره حساب:</strong> @Model.Driver.BankNumber</li>
+                    <li class="list-group-item bg-dark text-white border-0">🎂 <strong>تاریخ تولد:</strong> @Model.Driver.BirthDate</li>
+                    <li class="list-group-item bg-dark text-white border-0">⭐ <strong>امتیاز:</strong> <span class="badge bg-success">@Model.Driver.Rate</span></li>
+                    <li class="list-group-item bg-dark text-white border-0">⚠️ <strong>اخطارها:</strong> <span class="badge bg-warning text-dark">@Model.Driver.Warnning</span></li>
+                    <li class="list-group-item bg-dark text-white border-0">🏠 <strong>آدرس:</strong> @Model.Driver.Address</li>
+                    <li class="list-group-item bg-dark text-white border-0">🎓 <strong>تحصیلات:</strong> @Model.Driver.Education</li>
+                    <li class="list-group-item bg-dark text-white border-0">🚘 <strong>شماره گواهی:</strong> @Model.Driver.CertificateId</li>
+                </ul>
             </div>
+
+            <!-- Car Info -->
             <div class="col-md-6">
-                <div class="mb-3">
-                    <h5>اطلاعات خودرو:</h5>
-                    <p><strong>مدل:</strong> @Model.Car.Name</p>
-                    <p><strong>پلاک:</strong> @Model.Car.PlateNumber</p>
-                    <p><strong>صندلی خالی:</strong> @Model.Car.AvailableSeats</p>
-                </div>
+                <h5 class="border-bottom pb-2 mb-3 text-info">اطلاعات خودرو</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-dark text-white border-0">🚗 <strong>مدل:</strong> @Model.Driver.Car.Name</li>
+                    <li class="list-group-item bg-dark text-white border-0">🎨 <strong>رنگ:</strong> @Model.Driver.Car.Color</li>
+                    <li class="list-group-item bg-dark text-white border-0">💺 <strong>تعداد صندلی:</strong> @Model.Driver.Car.SeatNumber</li>
+                    <li class="list-group-item bg-dark text-white border-0">🔢 <strong>پلاک:</strong> @Html.Partial("_CarPlate", Model.Driver.Car.PlateNumber)</li>
+                    <li class="list-group-item bg-dark text-white border-0">🟢 <strong>صندلی خالی:</strong> @Model.Driver.AvailableSeats</li>
+                </ul>
             </div>
         </div>
-        <a asp-action="Index" class="btn btn-secondary">
-            <i class="bi bi-arrow-right"></i> بازگشت به لیست
-        </a>
+
+        <div class="mt-4">
+            <a asp-action="Index" class="btn btn-outline-light">
+                <i class="bi bi-arrow-right"></i> بازگشت به لیست
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Passenger List -->
+<div class="card bg-dark shadow-lg rounded-4">
+    <div class="card-header bg-secondary text-white rounded-top-4">
+        <h4><i class="bi bi-people-fill me-2"></i>لیست مسافرین</h4>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-dark table-striped table-hover align-middle text-center">
+                <thead class="table-light text-dark">
+                    <tr>
+                        <th>شناسه</th>
+                        <th>نام</th>
+                        <th>نام خانوادگی</th>
+                        <th>سال تحصیلی</th>
+                        <th>آدرس رفت</th>
+                        <th>آدرس برگشت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var passanger in Model.Passanger)
+                    {
+                        <tr>
+                            <td>@passanger.Id</td>
+                            <td>@passanger.FirstName</td>
+                            <td>@passanger.LastName</td>
+                            <td>@passanger.Class</td>
+                            <td>@passanger.Path?.Location1?.Address</td>
+                            <td>@passanger.Path?.Location2?.Address</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

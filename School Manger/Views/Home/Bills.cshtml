@@ -1,4 +1,5 @@
-﻿@using School_Manger.Models.ParentViews
+﻿@using School_Manger.Models.PageView
+@using School_Manger.Extension
 @{
     ViewData["Title"] = "مدیریت صورتحساب‌ها";
     Layout = "_Layout";
@@ -11,6 +12,9 @@
     <div class="row py-4 bg-black">
         <div class="col-12 text-center">
             <h3>مدیریت صورتحساب‌ها</h3>
+            <a asp-action="ParentMenu" class="btn btn-outline-light col-1">
+                <i class="bi bi-arrow-right"></i> بازگشت
+            </a>
         </div>
     </div>
 
@@ -51,7 +55,11 @@
                                         <span class="badge bg-danger">@bill.Status</span>
                                     }
                                 </td>
-                                <td>@(bill.HasPaId ? bill.PaidTime.ToString("yyyy/MM/dd HH:mm") : "-")</td>
+                                <td>
+                                @(bill.HasPaId
+                                        ? DateConverter.ToPersianString(bill.PaidTime)
+                                        : DateConverter.ToPersianString(bill.BillExpiredTime))
+                                </td>
                                 <td>
                                     @if (!bill.HasPaId)
                                     {
