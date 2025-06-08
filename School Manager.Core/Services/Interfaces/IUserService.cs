@@ -15,9 +15,9 @@ namespace School_Manager.Core.Services.Interfaces
         UserVM CheckAuthorize(string UserName,string Password);
 		Task<List<UserDTO>> GetListAsync();
 		UserDTO GetUserDetail(int Id);
-		//int SaveUser(UserCreateDTO User, List<UserRoleCreateDTO> UserRoles);
-		//bool Update(UserEditDTO User, List<UserRoleCreateDTO> UserRoles);
-		bool Delete(int UserId);
+        int SaveUser(UserCreateDTO User);
+        bool Update(UserEditDTO User);
+        bool Delete(int UserId);
         bool IsMobileRegistered(string Mobile);
 	}
 }
