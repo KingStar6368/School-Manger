@@ -81,7 +81,20 @@ namespace School_Manager.Data.Configuration
                 .IsUnique(true);
         }
     }
-    
+    public class CarConfig : IEntityTypeConfiguration<Car>
+    {
+        public void Configure(EntityTypeBuilder<Car> builder)
+        {
+            builder.Property(p => p.Name)
+            .HasColumnType("nvarchar(50)")
+            .IsRequired()
+            .HasComment("نام ماشین");
+
+            builder.Property(e => e.carType)
+            .HasConversion<int>();
+        }
+    }
+
     public class RawMaterialConfig : IEntityTypeConfiguration<RawMaterial>
     {
         public void Configure(EntityTypeBuilder<RawMaterial> builder)

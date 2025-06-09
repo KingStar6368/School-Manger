@@ -51,9 +51,10 @@ namespace School_Manager.Core.Mapper
             //    .ForMember(dest => dest.FormName, opt => opt.MapFrom(src => src.AppFormsOperationNavigation.AppFormNavigation.Name))
             //    .ForMember(dest => dest.OprName, opt => opt.MapFrom(src => src.AppFormsOperationNavigation.Name));
 
-            CreateMap<User, UserDTO>().ForMember(dest => dest.FullName,
-			   opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}".Trim()));
-			CreateMap<UserCreateDTO, User>();
+            CreateMap<User, UserDTO>()
+                .ForMember(dest => dest.Status,opt => opt.MapFrom(src => src.IsActive?"فعال":"غیر فعال"))
+                .ForMember(dest => dest.FullName,opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}".Trim()));
+            CreateMap<UserCreateDTO, User>();
 			CreateMap<UserEditDTO, User>();
 			#endregion
             #region LookUp
