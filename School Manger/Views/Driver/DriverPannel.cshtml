@@ -1,123 +1,163 @@
 ﻿@model School_Manger.Models.PageView.DriverDashbord
+
 @{
-    ViewData["Title"] = "پنل راننده";
+    ViewData["Title"] = "🧑‍✈️ پنل راننده";
     Layout = "_Layout";
 }
 
-<div class="container-fluid bg-dark text-white" dir="rtl">
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<div class="container-fluid bg-dark text-white py-4" dir="rtl">
     <!-- Header Section -->
-    <div class="row py-4 bg-black">
-        <div class="col-12 text-center">
-            <h3>اطلاعات راننده</h3>
-            <div class="d-flex justify-content-center gap-5 mt-3">
-                <div>
-                    <span class="fs-5">نام:</span>
-                    <span class="fs-3">@Model.Driver.Name</span>
+    <div class="row bg-black text-center rounded-4 shadow-sm py-4 mb-4">
+        <h3 class="fw-bold">🧾 اطلاعات راننده</h3>
+        <div class="d-flex justify-content-center flex-wrap gap-4 mt-3">
+            <div>
+                <span class="fw-semibold">نام:</span>
+                <span class="fs-4 fw-bold">@Model.Driver.Name</span>
+            </div>
+            <div>
+                <span class="fw-semibold">نام خانوادگی:</span>
+                <span class="fs-4 fw-bold">@Model.Driver.LastName</span>
+            </div>
+            <div>
+                <span class="fw-semibold">خودرو:</span>
+                <span class="fs-4 fw-bold">@Model.Driver.Car.Name</span>
+                <span class="badge bg-secondary">@Model.Driver.Car.PlateNumber</span>
+            </div>
+            <div>
+                <span class="fw-semibold">صندلی‌های خالی:</span>
+                <span class="fs-4 fw-bold text-success">@Model.Driver.AvailableSeats</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Passenger List Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-dark text-white shadow-lg rounded-4 border-primary">
+                <div class="card-header bg-primary d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0"><i class="bi bi-people"></i> لیست مسافران</h4>
                 </div>
-                <div>
-                    <span class="fs-5 text-light">نام خانوادگی:</span>
-                    <span class="fs-3">@Model.Driver.LastName</span>
-                </div>
-                <div>
-                    <span class="fs-5 text-light">خودرو:</span>
-                    <span class="fs-3">@Model.Driver.Car.Name (@Model.Driver.Car.PlateNumber)</span>
-                </div>
-                <div>
-                    <span class="fs-5 text-light">صندلی‌های خالی:</span>
-                    <span class="fs-3">@Model.Driver.AvailableSeats</span>
+                <div class="card-body">
+                    @if (Model.Passanger != null && Model.Passanger.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-dark table-bordered table-hover align-middle text-center">
+                                <thead class="table-light text-dark">
+                                    <tr>
+                                        <th>🔢 ردیف</th>
+                                        <th>👤 نام مسافر</th>
+                                        <th>📍 مبدا</th>
+                                        <th>🎯 مقصد</th>
+                                        <th>🕗 زمان رفت</th>
+                                        <th>🕙 زمان بازگشت</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var child in Model.Passanger)
+                                    {
+                                        <tr>
+                                            <td>@(Model.Passanger.IndexOf(child) + 1)</td>
+                                            <td>@child.FirstName @child.LastName</td>
+                                            <td>@child.Path.Location1.Address</td>
+                                            <td>@child.Path.Location2.Address</td>
+                                            <td>@child.Path.PickTime1</td>
+                                            <td>@child.Path.PickTime2</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning text-center fw-bold">
+                            🚫 مسافری یافت نشد!
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Transport List -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card bg-secondary">
-                <div class="card-header bg-info">
-                    <h4 class="mb-0">لیست مسافران</h4>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-dark table-hover">
-                            <thead>
-                                <tr>
-                                    <th>ردیف</th>
-                                    <th>نام مسافر</th>
-                                    <th>محل سوار شدن</th>
-                                    <th>مقصد</th>
-                                    <th>زمان رفت</th>
-                                    <th>زمان بازگشت</th>
-                                    <th>عملیات</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var child in Model.Passanger)
-                                {
-                                    <tr>
-                                        <td>@(Model.Passanger.IndexOf(child) + 1)</td>
-                                        <td>@child.FirstName @child.LastName</td>
-                                        <td>@child.Path.Location1.Address</td>
-                                        <td>@child.Path.Location2.Address</td>
-                                        <td>@child.Path.PickTime1</td>
-                                        <td>@child.Path.PickTime2</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <!-- Map Section -->
+    <div class="mt-4">
+        <div class="card bg-dark text-white shadow border-success">
+            <div class="card-header bg-success">
+                <h5 class="mb-0"><i class="bi bi-map"></i> 🗺 مسیرهای راننده</h5>
+            </div>
+            <div class="card-body">
+                <div id="driverMap" style="height: 500px; width: 100%; border-radius: 10px;"></div>
             </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <script>
-        $(document).ready(function() {
-            // Mark as picked up
-            $('.mark-picked-up').click(function() {
-                const childId = $(this).data('child-id');
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-                $.post('/Driver/MarkAsPickedUp', { childId: childId }, function() {
-                    location.reload();
-                }).fail(function() {
-                    alert('خطا در ثبت اطلاعات');
-                });
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const arakCenter = [34.0918, 49.6892]; // Default center if none present
+            const map = L.map('driverMap').setView(arakCenter, 12);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            const passengers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            Model.Passanger.Select(c => new
+            {
+                Name = $"{c.FirstName} {c.LastName}",
+                Pickup = new { Lat = c.Path.Location1.Latitude, Lng = c.Path.Location1.Longitude, Addr = c.Path.Location1.Address },
+                Dest = new { Lat = c.Path.Location2.Latitude, Lng = c.Path.Location2.Longitude, Addr = c.Path.Location2.Address }
+            })
+        ));
+
+            passengers.forEach(p => {
+                const pickupLatLng = [p.Pickup.Lat, p.Pickup.Lng];
+                const destLatLng = [p.Dest.Lat, p.Dest.Lng];
+
+                L.marker(pickupLatLng, {
+                    icon: L.divIcon({ className: 'text-success fw-bold', html: '📍' })
+                }).addTo(map).bindPopup(`<strong>مبدا:</strong> ${p.Pickup.Addr}<br/><strong>مسافر:</strong> ${p.Name}`);
+
+                L.marker(destLatLng, {
+                    icon: L.divIcon({ className: 'text-danger fw-bold', html: '🏁' })
+                }).addTo(map).bindPopup(`<strong>مقصد:</strong> ${p.Dest.Addr}<br/><strong>مسافر:</strong> ${p.Name}`);
+
+                L.polyline([pickupLatLng, destLatLng], {
+                    color: '#00f',
+                    weight: 4,
+                    opacity: 0.7,
+                    dashArray: '5, 5'
+                }).addTo(map);
             });
+
+            if (passengers.length > 0) {
+                const bounds = passengers.flatMap(p => [[p.Pickup.Lat, p.Pickup.Lng], [p.Dest.Lat, p.Dest.Lng]]);
+                map.fitBounds(bounds, { padding: [40, 40] });
+            }
         });
     </script>
 }
 
 <style>
-    /* Custom styles matching your parent panel */
-    .table {
-        border-color: #444;
+    .table th, .table td {
+        vertical-align: middle;
+        text-align: center;
     }
-
-        .table th, .table td {
-            vertical-align: middle;
-            text-align: center;
-        }
 
     .badge {
         font-size: 0.85rem;
         padding: 0.35em 0.65em;
     }
 
-    .card {
-        border: none;
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    }
-
-    /* Responsive adjustments */
     @@media (max-width: 768px) {
-        .table-responsive {
-            overflow-x: auto;
-        }
-
         .d-flex.justify-content-center {
-            flex-direction: column;
+            flex-direction: column !important;
             gap: 1rem !important;
         }
     }

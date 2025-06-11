@@ -7,80 +7,87 @@
 
 @model BillDashbord
 
-<div class="container-fluid bg-dark text-white" dir="rtl">
+<div class="container-fluid bg-dark text-white min-vh-100" dir="rtl">
     <!-- Header -->
     <div class="row py-4 bg-black">
         <div class="col-12 text-center">
-            <h3>مدیریت صورتحساب‌ها</h3>
-            <a asp-action="ParentMenu" class="btn btn-outline-light col-1">
-                <i class="bi bi-arrow-right"></i> بازگشت
+            <h3>📄 مدیریت صورتحساب‌ها</h3>
+            <a asp-action="ParentMenu" class="btn btn-outline-light mt-3">
+                <i class="bi bi-arrow-right-circle"></i> بازگشت به منوی والدین
             </a>
         </div>
     </div>
 
     <!-- Bills Table -->
-    <div class="row mt-4">
+    <div class="row mt-5">
         <div class="col-12">
-            <div class="table-responsive">
-                <table class="table table-dark table-hover">
-                    <thead>
-                        <tr>
-                            <th>ردیف</th>
-                            <th>شناسه قرارداد</th>
-                            <th>نام قبض</th>
-                            <th>مبلغ کل</th>
-                            <th>مبلغ پرداخت شده</th>
-                            <th>وضعیت</th>
-                            <th>زمان پرداخت</th>
-                            <th>عملیات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < Model.bills.Count; i++)
-                        {
-                            var bill = Model.bills[i];
-                            <tr>
-                                <td>@(i + 1)</td>
-                                <td>@bill.ContractId</td>
-                                <td>@bill.Name</td>
-                                <td>@bill.TotalPrice</td>
-                                <td>@bill.PaidPrice</td>
-                                <td>
-                                    @if (bill.HasPaId)
-                                    {
-                                        <span class="badge bg-success">پرداخت شده</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger">@bill.Status</span>
-                                    }
-                                </td>
-                                <td>
-                                @(bill.HasPaId
-                                        ? DateConverter.ToPersianString(bill.PaidTime)
-                                        : DateConverter.ToPersianString(bill.BillExpiredTime))
-                                </td>
-                                <td>
-                                    @if (!bill.HasPaId)
-                                    {
-                                        <button class="btn btn-sm btn-outline-primary" onclick="payBill('@bill.Id')">
-                                            <i class="bi bi-credit-card"></i> پرداخت
-                                        </button>
-                                    }
-                                    else
-                                    {
-                                        <form asp-action="ShowBillPDF">
-                                            <button class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-credit-card"></i> مشاهد
-                                            </button>
-                                            <input style="display:none" asp-for="PDFInfoIndex" value="@Model.bills[i].Id"/>
-                                        </form>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+            <div class="card bg-secondary text-white shadow-lg rounded-4 border-primary">
+                <div class="card-header bg-primary text-center rounded-top-4">
+                    <h4 class="mb-0">💰 لیست صورتحساب‌ها</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover rounded-3 overflow-hidden">
+                            <thead class="table-primary text-dark">
+                                <tr>
+                                    <th>ردیف</th>
+                                    <th>📎 شناسه قرارداد</th>
+                                    <th>📝 نام قبض</th>
+                                    <th>💵 مبلغ کل</th>
+                                    <th>💳 مبلغ پرداختی</th>
+                                    <th>📌 وضعیت</th>
+                                    <th>🕒 زمان پرداخت</th>
+                                    <th>⚙️ عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.bills.Count; i++)
+                                {
+                                    var bill = Model.bills[i];
+                                    <tr>
+                                        <td>@(i + 1)</td>
+                                        <td>@bill.ContractId</td>
+                                        <td>@bill.Name</td>
+                                        <td>@bill.TotalPrice.ToString("N0") تومان</td>
+                                        <td>@bill.PaidPrice.ToString("N0") تومان</td>
+                                        <td>
+                                            @if (bill.HasPaId)
+                                            {
+                                                <span class="badge bg-success">✅ پرداخت شده</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">❌ @bill.Status</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @(bill.HasPaId
+                                                ? DateConverter.ToPersianString(bill.PaidTime)
+                                                : DateConverter.ToPersianString(bill.BillExpiredTime))
+                                        </td>
+                                        <td>
+                                            @if (!bill.HasPaId)
+                                            {
+                                                <button class="btn btn-sm btn-outline-success w-100 my-1" onclick="payBill('@bill.Id')">
+                                                    💳 پرداخت
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <form asp-action="ShowBillPDF">
+                                                    <button class="btn btn-sm btn-outline-info w-100 my-1">
+                                                        🧾 مشاهده
+                                                    </button>
+                                                    <input style="display:none" asp-for="PDFInfoIndex" value="@Model.bills[i].Id" />
+                                                </form>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -89,22 +96,8 @@
 @section Scripts {
     <script>
         function payBill(billId) {
-            alert("پرداخت صورتحساب با شناسه: " + billId);
-            // Redirect or show modal for payment logic
-        }
-
-        function deleteBill(billId) {
-            if (confirm("آیا از حذف این صورتحساب مطمئن هستید؟")) {
-                fetch(`/Bill/Delete/${billId}`, {
-                    method: 'DELETE'
-                }).then(res => {
-                    if (res.ok) {
-                        location.reload();
-                    } else {
-                        alert("خطا در حذف صورتحساب");
-                    }
-                });
-            }
+            alert("💸 پرداخت صورتحساب با شناسه: " + billId);
+            // TODO: Redirect or open modal
         }
     </script>
 }
@@ -117,12 +110,29 @@
 
     .badge {
         font-size: 0.85rem;
-        padding: 0.35em 0.65em;
+        padding: 0.4em 0.7em;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.25);
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #2d2d2d;
+    }
+
+    .btn-outline-success:hover,
+    .btn-outline-info:hover {
+        color: #fff !important;
     }
 
     @@media (max-width: 768px) {
-        .table-responsive {
-            overflow-x: auto;
-        }
+        .table-responsive
+
+    {
+        overflow-x: auto;
+    }
+
     }
 </style>

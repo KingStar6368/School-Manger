@@ -16,7 +16,7 @@ namespace School_Manger.Controllers.Admin
                 Children = new List<ChildInfo>()
                 {
                     new ChildInfo()
-                        {
+                    {
                             Id = 1,
                             FirstName = "حسین",
                             LastName = "بنیادی",
@@ -30,17 +30,15 @@ namespace School_Manger.Controllers.Admin
                                 Id = 1,
                                 Location1 = new LocationData()
                                 {
-                                    Address = "test",
-                                    Latitude = 10,
-                                    Longitude = 10,
-                                    Name = "test",
+                                    Address="مرکز شهر",
+                                    Latitude =  34.0918,
+                                    Longitude = 49.6892
                                 },
                                 Location2 = new LocationData()
                                 {
-                                    Address = "test",
-                                    Latitude = 10,
-                                    Longitude = 10,
-                                    Name = "test",
+                                    Address="دانشگاه اراک",
+                                    Latitude = 34.0655,
+                                    Longitude = 49.7023
                                 },
                                 PickTime1 = DateTime.Now,
                                 PickTime2 = DateTime.Now,
@@ -103,17 +101,15 @@ namespace School_Manger.Controllers.Admin
                                 Id = 1,
                                 Location1 = new LocationData()
                                 {
-                                    Address = "test",
-                                    Latitude = 10,
-                                    Longitude = 10,
-                                    Name = "test",
+                                    Address="مرکز شهر",
+                                    Latitude = 	34.0918,
+                                    Longitude = 49.6892
                                 },
                                 Location2 = new LocationData()
                                 {
-                                    Address = "test",
-                                    Latitude = 10,
-                                    Longitude = 10,
-                                    Name = "test",
+                                    Address="دانشگاه اراک",
+                                    Latitude = 34.0655,
+                                    Longitude = 49.7023
                                 },
                                 PickTime1 = DateTime.Now,
                                 PickTime2 = DateTime.Now,
