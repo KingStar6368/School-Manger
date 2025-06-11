@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace School_Manager.Domain.Entities.Catalog.Operation
 {
-    /// <summary>
-    /// کلاس ماشین
-    /// </summary>
     public class Car : AuditableEntity<long>
     {
+        /// <summary>
+        /// شناسه راننده
+        /// </summary>
+        public int DriverRef { get; set; }
         /// <summary>
         /// نام ماشین
         /// </summary>
@@ -49,5 +50,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// نوع ماشین
         /// </summary>
         public CarType carType { get; set; }
+        /// <summary>
+        /// راننده
+        /// </summary>
+        public Driver DriverNavigation { get; set; }
+
     }
 }

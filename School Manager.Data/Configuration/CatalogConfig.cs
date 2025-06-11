@@ -13,56 +13,77 @@ using School_Manager.Domain.Entities.Catalog.Operation;
 
 namespace School_Manager.Data.Configuration
 {
-    public class UserConfig : IEntityTypeConfiguration<User>
+    public class BillConfig : IEntityTypeConfiguration<Bill>
     {
-        public void Configure(EntityTypeBuilder<User> builder)
+        public void Configure(EntityTypeBuilder<Bill> builder)
         {
+            builder.Property(p => p.Price)
+                .HasComment("مبلغ");
 
-            builder.HasIndex(p => p.UserName).IsUnique();
-            builder.Property(p => p.IsActive).HasDefaultValue(true);
-            builder.Property(p => p.UserName)
-                .HasColumnType("nvarchar(50)")
-                .IsRequired()
-                .HasComment("نام کاربری");
-
-            builder.Property(p => p.PasswordHash)
-                .HasColumnType("nvarchar(max)")
-                .IsRequired()
-                .HasComment("کلمه عبور");
-
-
-            builder.Property(p => p.FirstName)
-                .HasColumnType("nvarchar(50)")
-                .IsRequired()
-                .HasComment("نام");
-
-            builder.Property(p => p.LastName)
-                .HasColumnType("nvarchar(50)")
-                .IsRequired()
-                .HasComment("نام خانوادگی");
-            // Relations
-            //builder.HasMany(d => d.<<relatedList>>).WithOne(p => p.UserNavigation)
-            //.HasForeignKey(f => f.CreatedBy)
-            //.OnDelete(DeleteBehavior.Restrict);
-
-            //builder.HasMany(d => d.Outgoings).WithOne(p => p.UserNavigation)
-            //.HasForeignKey(f => f.CreatedBy)
-            //.OnDelete(DeleteBehavior.Restrict);
-
-            //builder.HasMany(d => d.PurchaseRequests).WithOne(p => p.UserNavigation)
-            //.HasForeignKey(f => f.UserRef)
-            //.HasConstraintName("FK_User_PurchaseRequests")
-            //.OnDelete(DeleteBehavior.Restrict);
-
-            //builder.HasMany(d => d.UserRoles).WithOne(p => p.UserNavigation)
-            //.HasForeignKey(f => f.UserRef)
-            //.HasConstraintName("FK_User_UserRoles")
-            //.OnDelete(DeleteBehavior.Restrict);
-
+            builder.HasMany(d => d.PayBills).WithOne(p => p.BillNavigation)
+            .HasForeignKey(f => f.BillRef)
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
+    public class CarConfig : IEntityTypeConfiguration<Car>
+    {
+        public void Configure(EntityTypeBuilder<Car> builder)
+        {
+            builder.Property(p => p.Name)
+            .HasColumnType("nvarchar(50)")
+            .IsRequired()
+            .HasComment("نام ماشین");
 
+            builder.Property(e => e.carType)
+            .HasConversion<int>();
 
+            builder.HasOne(d => d.DriverNavigation).WithOne(p => p.CarNavigation)
+            .HasForeignKey<Car>(f => f.DriverNavigation)
+            .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
+    public class ChequeConfig : IEntityTypeConfiguration<Cheque>
+    {
+        public void Configure(EntityTypeBuilder<Cheque> builder)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class ChildConfig : IEntityTypeConfiguration<Child>
+    {
+        public void Configure(EntityTypeBuilder<Child> builder)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class DriverConfig : IEntityTypeConfiguration<Driver>
+    {
+        public void Configure(EntityTypeBuilder<Driver> builder)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class DriverContractConfig : IEntityTypeConfiguration<DriverContract>
+    {
+        public void Configure(EntityTypeBuilder<DriverContract> builder)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class LocationDataConfig : IEntityTypeConfiguration<LocationData>
+    {
+        public void Configure(EntityTypeBuilder<LocationData> builder)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class LocationPairConfig : IEntityTypeConfiguration<LocationPair>
+    {
+        public void Configure(EntityTypeBuilder<LocationPair> builder)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class LookupConfig : IEntityTypeConfiguration<Lookup>
     {
         public void Configure(EntityTypeBuilder<Lookup> builder)
@@ -81,17 +102,25 @@ namespace School_Manager.Data.Configuration
                 .IsUnique(true);
         }
     }
-    public class CarConfig : IEntityTypeConfiguration<Car>
+    public class ParentConfig : IEntityTypeConfiguration<Parent>
     {
-        public void Configure(EntityTypeBuilder<Car> builder)
+        public void Configure(EntityTypeBuilder<Parent> builder)
         {
-            builder.Property(p => p.Name)
-            .HasColumnType("nvarchar(50)")
-            .IsRequired()
-            .HasComment("نام ماشین");
-
-            builder.Property(e => e.carType)
-            .HasConversion<int>();
+            throw new NotImplementedException();
+        }
+    }
+    public class PayConfig : IEntityTypeConfiguration<Pay>
+    {
+        public void Configure(EntityTypeBuilder<Pay> builder)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class PayBillConfig : IEntityTypeConfiguration<PayBill>
+    {
+        public void Configure(EntityTypeBuilder<PayBill> builder)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -150,7 +179,20 @@ namespace School_Manager.Data.Configuration
            //.OnDelete(DeleteBehavior.Restrict);
         }
     }
-
+    public class SchoolConfig : IEntityTypeConfiguration<School>
+    {
+        public void Configure(EntityTypeBuilder<School> builder)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class ServiceContractConfig : IEntityTypeConfiguration<ServiceContract>
+    {
+        public void Configure(EntityTypeBuilder<ServiceContract> builder)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class TrialConfig : IEntityTypeConfiguration<Trail>
     {    
         public void Configure(EntityTypeBuilder<Trail> builder) 
@@ -159,5 +201,53 @@ namespace School_Manager.Data.Configuration
         }
 
         //TODO:
+    }
+    public class UserConfig : IEntityTypeConfiguration<User>
+    {
+        public void Configure(EntityTypeBuilder<User> builder)
+        {
+
+            builder.HasIndex(p => p.UserName).IsUnique();
+            builder.Property(p => p.IsActive).HasDefaultValue(true);
+            builder.Property(p => p.UserName)
+                .HasColumnType("nvarchar(50)")
+                .IsRequired()
+                .HasComment("نام کاربری");
+
+            builder.Property(p => p.PasswordHash)
+                .HasColumnType("nvarchar(max)")
+                .IsRequired()
+                .HasComment("کلمه عبور");
+
+
+            builder.Property(p => p.FirstName)
+                .HasColumnType("nvarchar(50)")
+                .IsRequired()
+                .HasComment("نام");
+
+            builder.Property(p => p.LastName)
+                .HasColumnType("nvarchar(50)")
+                .IsRequired()
+                .HasComment("نام خانوادگی");
+            // Relations
+            //builder.HasMany(d => d.<<relatedList>>).WithOne(p => p.UserNavigation)
+            //.HasForeignKey(f => f.CreatedBy)
+            //.OnDelete(DeleteBehavior.Restrict);
+
+            //builder.HasMany(d => d.Outgoings).WithOne(p => p.UserNavigation)
+            //.HasForeignKey(f => f.CreatedBy)
+            //.OnDelete(DeleteBehavior.Restrict);
+
+            //builder.HasMany(d => d.PurchaseRequests).WithOne(p => p.UserNavigation)
+            //.HasForeignKey(f => f.UserRef)
+            //.HasConstraintName("FK_User_PurchaseRequests")
+            //.OnDelete(DeleteBehavior.Restrict);
+
+            //builder.HasMany(d => d.UserRoles).WithOne(p => p.UserNavigation)
+            //.HasForeignKey(f => f.UserRef)
+            //.HasConstraintName("FK_User_UserRoles")
+            //.OnDelete(DeleteBehavior.Restrict);
+
+        }
     }
 }

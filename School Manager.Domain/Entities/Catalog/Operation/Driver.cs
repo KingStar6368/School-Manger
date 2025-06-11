@@ -1,4 +1,5 @@
-﻿using System;
+﻿using School_Manager.Domain.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,59 @@ using System.Threading.Tasks;
 
 namespace School_Manager.Domain.Entities.Catalog.Operation
 {
-    internal class Driver
+    public class Driver : AuditableEntity<long>
     {
+        /// <summary>
+        /// شناسه بانک
+        /// </summary>
+        public int BankRef { get; set; }
+        /// <summary>
+        /// شناسه ماشین
+        /// </summary>
+        public int CarRef { get; set; }
+        /// <summary>
+        /// نام
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// نام خانوادگی
+        /// </summary>
+        public string LastName { get; set; }
+        /// <summary>
+        /// نام پدر
+        /// </summary>
+        public string FatherName { get; set; }
+        /// <summary>
+        /// شماره گواهی
+        /// </summary>
+        public string CertificateId { get; set; }
+        /// <summary>
+        /// تحصیلات
+        /// </summary>
+        public string Education { get; set; }
+        /// <summary>
+        /// مشحصات
+        /// </summary>
+        public string Descriptions { get; set; }
+        /// <summary>
+        /// آدرس
+        /// </summary>
+        public string Address { get; set; }
+        /// <summary>
+        /// تاریخ تولد
+        /// </summary>
+        public DateTime BirthDate { get; set; }
+        /// <summary>
+        /// کدملی
+        /// </summary>
+        public string NationCode { get; set; }
+        /// <summary>
+        /// مشخصات ماشین
+        /// </summary>
+        public Car CarNavigation { get; set; }
+        /// <summary>
+        /// لیست مسافر ها
+        /// </summary>
+        public virtual ICollection<Child> Passanger { get; set; }
     }
 }

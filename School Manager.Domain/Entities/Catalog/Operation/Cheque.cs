@@ -10,6 +10,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
     public class Cheque : AuditableEntity<int>
     {
         /// <summary>
+        /// شناسه قرارداد
+        /// </summary>
+        public int SeviceContractRef {  get; set; }
+        /// <summary>
         /// مقدار چک
         /// </summary>
         public long Price { get; set; }
@@ -33,5 +37,9 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// زمان چک
         /// </summary>
         public DateTime CheckTime { get; set; }
+        /// <summary>
+        /// قرارداد
+        /// </summary>
+        public ServiceContract ServiceContractNavigation { get; set; }
     }
 }
