@@ -84,7 +84,6 @@ namespace School_Manager.Core.Services.Implemetations
 				var newUser = _mapper.Map<User>(User);
 				_unitOfWork.GetRepository<User>().Add(newUser);
 				_unitOfWork.SaveChanges();
-				_unitOfWork.SaveChanges();
 				_unitOfWork.Commit();
 				return newUser.Id;
 			}

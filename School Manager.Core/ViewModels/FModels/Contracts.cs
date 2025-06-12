@@ -86,6 +86,14 @@
         /// </summary>
         public long Price { get; set; }
         /// <summary>
+        /// سریال چک
+        /// </summary>
+        public string CheckSerial { get; set; }
+        /// <summary>
+        /// شناسه صیاد
+        /// </summary>
+        public string CheckSayadNumber {  get; set; }
+        /// <summary>
         /// نام بانک
         /// </summary>
         public LookupComboViewModel BankName { get; set; }

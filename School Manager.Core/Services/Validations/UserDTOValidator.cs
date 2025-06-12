@@ -28,7 +28,7 @@ namespace School_Manager.Core.Services.Validations
 
             RuleFor(x => x.Mobile)
                 .NotEmpty().WithMessage(" موبایل الزامی است.")
-                .MaximumLength(11).WithMessage("نام نباید بیشتر از 11 کاراکتر باشد.");
+                .MaximumLength(11).WithMessage("موبایل نباید بیشتر از 11 کاراکتر باشد.");
 
             RuleFor(x => x.UserName)
                 .NotEmpty().WithMessage("نام کاربری الزامی است.")
