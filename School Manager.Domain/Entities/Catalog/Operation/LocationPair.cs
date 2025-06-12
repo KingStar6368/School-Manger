@@ -10,21 +10,9 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
     public class LocationPair : AuditableEntity<long>
     {
         /// <summary>
-        /// شناسه موقعیت خانه
-        /// </summary>
-        public int LocationRef1 { get; set; }
-        /// <summary>
-        /// شناسه موقعیت مدرسه
-        /// </summary>
-        public int LocationRef2 { get; set; }
-        /// <summary>
         /// شناسه مسافر
         /// </summary>
         public int ChildRef { get; set; }
-        /// <summary>
-        /// مشحصات مسافر
-        /// </summary>
-        public Child ChildNavigation { get; set; }
         /// <summary>
         /// زمان رفت
         /// </summary>
@@ -34,12 +22,12 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public DateTime PickTime2 { get; set; }
         /// <summary>
-        /// موقعیت خانه
+        /// موقعیت ها
         /// </summary>
-        public LocationData Location1 { get; set; }
+        public virtual ICollection<LocationData> Locations { get; set; }
         /// <summary>
-        /// موقعیت مدرسه
+        /// مشحصات مسافر
         /// </summary>
-        public LocationData Location2 { get; set; }
+        public virtual Child ChildNavigation { get; set; }
     }
 }

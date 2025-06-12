@@ -1,4 +1,5 @@
 ﻿using School_Manager.Domain.Common;
+using School_Manager.Domain.Entities.Catalog.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,7 +41,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// کلاس تحصیلی
         /// </summary>
-        public string Class { get; set; }
+        public ClassNumber Class { get; set; }
         /// <summary>
         /// مسیر خانه تا مدرسه
         /// </summary>
@@ -49,6 +50,9 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// والدین
         /// </summary>
         public Parent ParentNavigation { get; set; }
-        public Driver DriverNavigation { get; set; }
+        /// <summary>
+        /// راننده
+        /// </summary>
+        public virtual ICollection<DriverChild> DriverChildNavigation { get; set; }
     }
 }

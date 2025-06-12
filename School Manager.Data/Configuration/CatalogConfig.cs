@@ -46,42 +46,115 @@ namespace School_Manager.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Cheque> builder)
         {
-            throw new NotImplementedException();
+            builder.Property(p => p.CheckSerial)
+            .HasColumnType("nvarchar(24)")
+            .IsRequired()
+            .HasComment("سریال چک");
+
+            builder.Property(p => p.CheckSayadNumber)
+                .HasColumnType("nvarchar(24)")
+                .HasComment("شناسه صیاد");
+
+            builder.HasOne(d => d.ServiceContractNavigation).WithMany(p => p.Cheques)
+                        .HasForeignKey(f => f.ServiceContractRef)
+                        .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
     public class ChildConfig : IEntityTypeConfiguration<Child>
     {
         public void Configure(EntityTypeBuilder<Child> builder)
         {
-            throw new NotImplementedException();
+            builder.Property(p => p.FirstName)
+            .HasColumnType("nvarchar(128)")
+            .IsRequired()
+            .HasComment("نام");
+
+            builder.Property(p => p.LastName)
+            .HasColumnType("nvarchar(128)")
+            .IsRequired()
+            .HasComment("نام خانوادگی");
+
+            builder.Property(p => p.NationalCode)
+            .HasColumnType("nvarchar(11)")
+            .IsRequired()
+            .HasComment("کد ملی");
+
+            builder.Property(p => p.Class)
+            .HasConversion<int>();
+
+            builder.HasMany(d => d.DriverChildNavigation).WithOne(p => p.ChildNavigation)
+                .HasForeignKey(f => f.ChildRef)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(d => d.ParentNavigation).WithMany(p => p.Children)
+                .HasForeignKey(fk => fk.ParentRef)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(p=>p.PathNavigation).WithOne(d=>d.ChildNavigation)
+                .HasForeignKey<Child>(fk=>fk.LocationPairRef)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
     public class DriverConfig : IEntityTypeConfiguration<Driver>
     {
         public void Configure(EntityTypeBuilder<Driver> builder)
         {
-            throw new NotImplementedException();
+            builder.Property(p => p.Name)
+            .HasColumnType("nvarchar(128)")
+            .IsRequired()
+            .HasComment("نام");
+
+            builder.Property(p => p.LastName)
+            .HasColumnType("nvarchar(128)")
+            .IsRequired()
+            .HasComment("نام خانوادگی");
+
+            builder.Property(p => p.NationCode)
+            .HasColumnType("nvarchar(11)")
+            .IsRequired()
+            .HasComment("کد ملی");
+
+            builder.Property(p => p.FatherName)
+            .HasColumnType("nvarchar(128)")
+            .IsRequired()
+            .HasComment("نام پدر");
+
+            builder.HasMany(d => d.Passanger).WithOne(p => p.DriverNavigation)
+                .HasForeignKey(f => f.DriverRef)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
     public class DriverContractConfig : IEntityTypeConfiguration<DriverContract>
     {
         public void Configure(EntityTypeBuilder<DriverContract> builder)
         {
-            throw new NotImplementedException();
+            builder.HasMany(d => d.Cheques).WithOne(p => p.DriverContractNavigation)
+                .HasForeignKey(f => f.DriverContractRef)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(d => d.DriverNavigation).WithMany(p => p.DriverContracts)
+                .HasForeignKey(f => f.DriverRef)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
     public class LocationDataConfig : IEntityTypeConfiguration<LocationData>
     {
         public void Configure(EntityTypeBuilder<LocationData> builder)
         {
-            throw new NotImplementedException();
+            builder.Property(p => p.LocationType)
+            .HasConversion<int>();
         }
     }
     public class LocationPairConfig : IEntityTypeConfiguration<LocationPair>
     {
         public void Configure(EntityTypeBuilder<LocationPair> builder)
         {
-            throw new NotImplementedException();
+            builder.HasOne(d => d.ChildNavigation).WithOne(p => p.PathNavigation)
+            .HasForeignKey<Child>(f => f.LocationPairRef)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(p=>p.Locations).WithOne(d=>d.LocationPairNavigation)
+                .HasForeignKey(fk=>fk.LocationPairRef)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
     public class LookupConfig : IEntityTypeConfiguration<Lookup>

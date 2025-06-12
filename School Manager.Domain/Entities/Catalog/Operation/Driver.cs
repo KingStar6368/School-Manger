@@ -60,6 +60,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// لیست مسافر ها
         /// </summary>
-        public virtual ICollection<Child> Passanger { get; set; }
+        public virtual ICollection<DriverChild> Passanger { get; set; }
+        /// <summary>
+        /// قرارداد راننده
+        /// </summary>
+        public virtual ICollection<DriverContract> DriverContracts { get; set; }
     }
 }

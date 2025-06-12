@@ -12,7 +12,11 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// شناسه قرارداد
         /// </summary>
-        public int SeviceContractRef {  get; set; }
+        public int? ServiceContractRef {  get; set; }
+        /// <summary>
+        /// شناسه قرارداد
+        /// </summary>
+        public int? DriverContractRef {  get; set; }
         /// <summary>
         /// مقدار چک
         /// </summary>
@@ -38,8 +42,12 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public DateTime CheckTime { get; set; }
         /// <summary>
-        /// قرارداد
+        /// قرارداد خدمات
         /// </summary>
         public ServiceContract ServiceContractNavigation { get; set; }
+        /// <summary>
+        /// قرارداد راننده
+        /// </summary>
+        public DriverContract DriverContractNavigation { get; set; }
     }
 }
