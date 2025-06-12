@@ -32,10 +32,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// کد چک کلاس
         /// </summary>
-        public Cheque ChequeNavigation { get; set; }
+        public virtual ICollection<Cheque> Cheques { get; set; }
         /// <summary>
         /// کلاس راننده
         /// </summary>
-        public Driver DriverNavigation { get; set; }
+        public virtual Driver DriverNavigation { get; set; }
     }
 }
