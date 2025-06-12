@@ -94,6 +94,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/DriverUser") ? "active" : "")"
+                       asp-area="Admin" asp-controller="AssignD2S" asp-action="Index">
+                        <i class="bi bi-person-vcard me-2"></i> اختصاص دادن راننده به دانش آموز
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a style="pointer-events:none;cursor:not-allowed;" class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "ContractSettings" ? "active" : "")" href="/Admin/ContractSettings">
                         <i class="bi bi-gear-fill me-2"></i> تنظیمات فرم های قرارداد
                     </a>

@@ -195,9 +195,9 @@ namespace School_Manger.Controllers
         #endregion
 
         [HttpPost]
-        public IActionResult Bills(ParentDashbordView model)
+        public IActionResult Bills(int Id)
         {
-            var selectedChild = Static_Parent.Parent.Children.FirstOrDefault(x => x.Id == model.SelectedChild.Id);
+            var selectedChild = Static_Parent.Parent.Children.FirstOrDefault(x => x.Id == Id);
             #region Static Data
             //List<Bill> bills = new List<Bill>()
             //{

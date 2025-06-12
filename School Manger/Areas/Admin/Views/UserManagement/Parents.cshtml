@@ -1,56 +1,64 @@
 ﻿@using School_Manger.Models
 @model List<LoginUser>
+
 @{
     ViewData["Title"] = "👨‍👩‍👧‍👦 مدیریت کاربران والدین";
     Layout = "_AdminLayout";
 }
 
-<div class="card bg-dark text-white shadow rounded">
-    <div class="card-header bg-primary d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">🏠 لیست والدین</h4>
-        <a asp-action="Create" asp-route-type="Parent" class="btn btn-success">
-            <i class="bi bi-plus-circle me-1"></i> کاربر جدید
-        </a>
-    </div>
-    <div class="card-body">
-        @if (Model != null && Model.Any())
-        {
-            <div class="table-responsive">
-                <table class="table table-dark table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>نام کاربری</th>
-                            <th>📞 شماره تماس</th>
-                            <th>عملیات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var user in Model.Select((u, i) => new { User = u, Index = i + 1 }))
-                        {
+<div class="container mt-4 text-white" dir="rtl">
+    <div class="card bg-dark text-white  shadow-lg rounded-4 border-primary border-2">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">
+                🏠 لیست والدین
+            </h4>
+            <a asp-action="Create" asp-route-type="Parent" class="btn btn-success btn-sm fw-bold shadow-sm">
+                <i class="bi bi-plus-circle me-1"></i> کاربر جدید
+            </a>
+        </div>
+
+        <div class="card-body">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-dark table-bordered table-hover text-center align-middle mb-0">
+                        <thead class="table-light text-dark">
                             <tr>
-                                <td>@user.Index</td>
-                                <td>@user.User.UserName</td>
-                                <td>@user.User.PhoneNumber</td>
-                                <td>
-                                    <a asp-action="Edit" asp-route-id="@user.User.Id" class="btn btn-sm btn-warning me-1" title="ویرایش">
-                                        <i class="bi bi-pencil"></i> تغییر
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@user.User.Id" class="btn btn-sm btn-danger" title="حذف">
-                                        <i class="bi bi-trash"></i> حذف
-                                    </a>
-                                </td>
+                                <th>🔢 ردیف</th>
+                                <th>👤 نام کاربری</th>
+                                <th>📞 شماره تماس</th>
+                                <th>⚙️ عملیات</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-        else
-        {
-            <div class="alert alert-warning text-center" role="alert">
-                🚫 کاربری یافت نشد!
-            </div>
-        }
+                        </thead>
+                        <tbody>
+                            @foreach (var user in Model.Select((u, i) => new { User = u, Index = i + 1 }))
+                            {
+                                <tr>
+                                    <td>@user.Index</td>
+                                    <td>@user.User.UserName</td>
+                                    <td>@user.User.PhoneNumber</td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@user.User.Id"
+                                           class="btn text-black bg-warning btn-sm btn-outline-light rounded-pill shadow-sm" title="ویرایش">
+                                            <i class="bi bi-pencil"></i> 🖊️ تغییر
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@user.User.Id"
+                                           class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm title="حذف">
+                                            <i class="bi bi-trash"></i> 🗑️ حذف
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning text-center fw-bold my-3" role="alert">
+                    🚫 کاربری یافت نشد!
+                </div>
+            }
+        </div>
     </div>
 </div>

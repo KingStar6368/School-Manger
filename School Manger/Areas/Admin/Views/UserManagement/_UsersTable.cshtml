@@ -1,30 +1,34 @@
 ﻿@using School_Manger.Models
 @model List<LoginUser>
-<table class="table table-dark table-hover">
-    <thead>
-        <tr>
-            <th>ردیف</th>
-            <th>نام کاربری</th>
-            <th>شماره تماس</th>
-            <th>عملیات</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model.Select((u, i) => new { User = u, Index = i + 1 }))
-        {
+<div class="table-responsive">
+    <table class="table table-dark table-bordered table-hover text-center align-middle mb-0">
+        <thead class="table-light text-dark">
             <tr>
-                <td>@user.Index</td>
-                <td>@user.User.UserName</td>
-                <td>@user.User.PhoneNumber</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@user.User.Id" class="btn btn-sm btn-warning">
-                        <i class="bi bi-pencil">تغییر</i>
-                    </a>
-                    <a asp-action="Delete" asp-route-id="@user.User.Id" class="btn btn-sm btn-danger">
-                        <i class="bi bi-trash">حدف</i>
-                    </a>
-                </td>
+                <th>🔢 ردیف</th>
+                <th>👤 نام کاربری</th>
+                <th>📞 شماره تماس</th>
+                <th>⚙️ عملیات</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Select((u, i) => new { User = u, Index = i + 1 }))
+            {
+                <tr>
+                    <td>@user.Index</td>
+                    <td>@user.User.UserName</td>
+                    <td>@user.User.PhoneNumber</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@user.User.Id"
+                           class="btn text-black bg-warning btn-sm btn-outline-light rounded-pill shadow-sm" title="ویرایش">
+                            <i class="bi bi-pencil"></i> 🖊️ تغییر
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@user.User.Id"
+                           class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm title="حذف">
+                            <i class="bi bi-trash"></i> 🗑️ حذف
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

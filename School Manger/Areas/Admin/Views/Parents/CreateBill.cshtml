@@ -1,14 +1,21 @@
 ﻿@using School_Manger.Extension
 @model School_Manger.Models.ChildInfo
+
 @{
     ViewData["Title"] = "📄 صدور قبض";
     Layout = "_AdminLayout";
 }
 
 <div class="container mt-4 text-white" dir="rtl">
-    <div class="card shadow-lg border-0 bg-dark mb-4">
-        <div class="card-header bg-gradient bg-primary text-white">
-            <h4 class="mb-0">📄 صدور قبض برای: <strong>@Model.FirstName @Model.LastName</strong></h4>
+    <!-- 💳 Bill Creation Form -->
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">
+                📄 صدور قبض برای: <span class="text-warning">@Model.FirstName @Model.LastName</span>
+            </h4>
+            <a asp-controller="Parents" asp-action="Index" class="btn btn-outline-light shadow-sm fw-bold">
+                <i class="bi bi-arrow-right"></i> بازگشت
+            </a>
         </div>
         <div class="card-body">
             <form asp-action="CreateBill" asp-controller="Bills" method="post">
@@ -17,35 +24,39 @@
 
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label">📝 عنوان قبض</label>
-                        <input type="text" name="Name" class="form-control bg-dark text-white" placeholder="مثلاً شهریه مهر ماه" required />
+                        <label class="form-label fw-bold">📝 عنوان قبض</label>
+                        <input type="text" name="Name" class="form-control bg-dark text-white shadow-sm" placeholder="مثلاً شهریه مهر ماه" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">💰 مبلغ کل (تومان)</label>
-                        <input type="number" name="TotalPrice" class="form-control bg-dark text-white" required />
+                        <label class="form-label fw-bold">💰 مبلغ کل (تومان)</label>
+                        <input type="number" name="TotalPrice" class="form-control bg-dark text-white shadow-sm" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">📆 مهلت پرداخت</label>
-                        <input type="date" name="BillExpiredTime" class="form-control bg-dark text-white" required />
+                        <label class="form-label fw-bold">📆 مهلت پرداخت</label>
+                        <input type="date" name="BillExpiredTime" class="form-control bg-dark text-white shadow-sm" required />
                     </div>
                 </div>
 
                 <div class="mt-4">
-                    <button type="submit" class="btn btn-success me-2">📤 صدور قبض</button>
-                    <a asp-controller="Parents" asp-action="Index" class="btn btn-secondary">🔙 بازگشت</a>
+                    <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm">
+                        📤 صدور قبض
+                    </button>
+                    <a asp-controller="Parents" asp-action="Index" class="btn btn-secondary fw-bold shadow-sm">
+                        🔙 بازگشت
+                    </a>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- لیست قبوض -->
-    <div class="card shadow border-0 bg-dark mb-5">
-        <div class="card-header bg-gradient bg-primary text-white">
-            <h4 class="mb-0">📜 لیست قبوض <strong>@Model.FirstName @Model.LastName</strong></h4>
+    <!-- 📜 Bills List -->
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary">
+        <div class="card-header bg-primary bg-gradient fw-bold">
+            📜 لیست قبوض <span class="text-warning">@Model.FirstName @Model.LastName</span>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover table-bordered mb-0 text-center text-white align-middle">
+                <table class="table table-dark table-bordered table-hover text-center align-middle mb-0">
                     <thead class="table-light text-dark">
                         <tr>
                             <th>🔢 ردیف</th>
@@ -71,11 +82,11 @@
                                 <td>
                                     @if (bill.HasPaId)
                                     {
-                                        <span class="badge bg-success">✅ پرداخت شده</span>
+                                        <span class="badge bg-success rounded-pill fw-bold shadow-sm">✅ پرداخت شده</span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-danger">❌ @bill.Status</span>
+                                        <span class="badge bg-danger rounded-pill fw-bold shadow-sm">❌ @bill.Status</span>
                                     }
                                 </td>
                                 <td>
@@ -84,7 +95,7 @@
                                         : DateConverter.ToPersianString(bill.BillExpiredTime))
                                 </td>
                                 <td>
-                                    <!-- عملیات مدیر اگر نیاز هست اضافه کن -->
+                                    <!-- Add buttons here if needed (e.g. view, edit, delete) -->
                                 </td>
                             </tr>
                         }
