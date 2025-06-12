@@ -19,7 +19,28 @@ namespace School_Manager.Core.Services.Implemetations
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
+
+        public DriverDto GetDriver(long Id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DriverDto GetDriverNationCode(string NationCode)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<DriverDto> GetDrivers(int SchoolId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<DriverDto>> GetDrivers()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<ChildInfo> GetPassngers(long id)
         {
             throw new NotImplementedException();
         }

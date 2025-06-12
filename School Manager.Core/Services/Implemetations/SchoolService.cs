@@ -25,7 +25,27 @@ namespace School_Manager.Core.Services.Implemetations
             _mediator = mediator;
         }
 
+        public Task<List<ChildInfo>> GetChildren(long id)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<SchoolDriverDto> GetDrivers()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<SchoolDriverDto>> GetDrivers(long id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public School GetSchool(long id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<School>> GetSchools()
         {
             throw new NotImplementedException();
         }

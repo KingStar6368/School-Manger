@@ -157,5 +157,30 @@ namespace School_Manager.Core.Services.Implemetations
                 ).Any();
 			return ds;
         }
+
+        public UserVM GetUserById(long id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public UserDTO GetUserDetail(long Id)
+        {
+            throw new NotImplementedException();
+        }
+
+        long IUserService.SaveUser(UserCreateDTO User)
+        {
+            return SaveUser(User);
+        }
+
+        public bool Delete(long UserId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long GetPanretId(long id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
