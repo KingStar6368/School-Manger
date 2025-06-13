@@ -13,7 +13,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// شناسه راننده
         /// </summary>
-        public int DriverRef { get; set; }
+        public long DriverRef { get; set; }
         /// <summary>
         /// نام ماشین
         /// </summary>
@@ -42,6 +42,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// صندلی خالی
         /// </summary>
         public int AvailableSeats { get; set; }
+        /// <summary>
+        /// فعال
+        /// </summary>
+        public bool IsActive{ get; set; }
         /// <summary>
         /// تعداد کل صندلی
         /// </summary>

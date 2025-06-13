@@ -16,7 +16,7 @@
         /// <summary>
         /// مبلغ کل قبض
         /// </summary>
-        public long TotalPrice { get; set; }
+        public long TotalPrice { get; set; }    
         /// <summary>
         /// مبلغ پرداخت شده
         /// </summary>
@@ -24,10 +24,10 @@
         /// <summary>
         /// پرداخت شده؟
         /// </summary>
-        public bool HasPaId {  get; set; }
+        public bool HasPaid {  get; set; }
         /// <summary>
         /// زمان پرداخت کامل
         /// </summary>
-        public DateTime PaidTime { get; set; }
+        public DateTime? PaidTime { get; set; }
     }
 }

@@ -12,11 +12,11 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// شناسه راننده
         /// </summary>
-        public int DriverRef { get; set; }
+        public long DriverRef { get; set; }
         /// <summary>
         /// شناسه چک
         /// </summary>
-        public int ChequeRef { get; set; }
+        public long ChequeRef { get; set; }
         /// <summary>
         /// تاریخ شروع قرار داد 
         /// </summary>

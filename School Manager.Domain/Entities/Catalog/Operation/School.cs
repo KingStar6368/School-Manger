@@ -12,7 +12,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// شناسه آدرس
         /// </summary>
-        public int LocationDataRef { get; set; }
+        public long LocationDataRef { get; set; }
         /// <summary>
         /// نام مدسه
         /// </summary>

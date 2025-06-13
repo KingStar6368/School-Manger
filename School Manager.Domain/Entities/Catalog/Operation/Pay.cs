@@ -22,5 +22,9 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// نحوه پرداخت
         /// </summary>
         public PayType PayType { get; set; }
+        /// <summary>
+        /// ارتباط با قبض
+        /// </summary>
+        public virtual ICollection<PayBill> PayBills { get; set; }
     }
 }

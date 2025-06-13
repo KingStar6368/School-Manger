@@ -9,13 +9,17 @@ namespace School_Manager.Core.Services.Interfaces
 {
     public interface IBillService
     {
+        /// <summary>
+        /// گرفتن لیست قبض ها
+        /// </summary>
+        /// <returns></returns>
         Task<List<BillDto>> GetBills();
         /// <summary>
         /// گرقتن لیست قبض یک دانش آموز
         /// </summary>
         /// <param name="id">کد دانش آموز</param>
         /// <returns></returns>
-        Task<List<BillDto>> GetBills(long id);
+        Task<List<BillDto>> GetChildBills(long id);
         /// <summary>
         /// گرفتن یک قبض
         /// </summary>
@@ -25,9 +29,9 @@ namespace School_Manager.Core.Services.Interfaces
         /// <summary>
         /// گرقتن قرار داد قبض
         /// </summary>
-        /// <param name="id">کد قرار داد</param>
+        /// <param name="id">کد قبض</param>
         /// <returns></returns>
-        ServiesContractDto GetContract(long id);
+        ServiceContractDto GetContract(long id);
         /// <summary>
         /// پرداخت شده ؟ 
         /// </summary>

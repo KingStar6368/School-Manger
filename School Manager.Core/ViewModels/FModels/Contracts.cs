@@ -33,7 +33,7 @@
     /// <summary>
     /// قرار داد خانواده
     /// </summary>
-    public class ServiesContractDto
+    public class ServiceContractDto
     {
         /// <summary>
         /// کد

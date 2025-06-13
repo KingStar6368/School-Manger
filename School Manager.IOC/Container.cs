@@ -38,6 +38,12 @@ namespace School_Manager.IOC
             //Add Repositories
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IBillService, BillService>();
+            services.AddScoped<IDriverService, DriverService>();
+            services.AddScoped<IChildService,ChildService>();
+            services.AddScoped<IParentService,ParentService>();
+            //services.AddScoped<I,>();
+            //services.AddScoped<I,>();
             services.AddScoped<IRawMaterialService, RawMaterialService>();
             services.AddScoped<ILookupService,LookupService>();
             services.AddScoped<ISchoolService,SchoolService>();

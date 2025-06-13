@@ -24,7 +24,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// قرارداد
         /// </summary>
-        public virtual ServiceContract ContractNavigation { get; set; }
+        public virtual ServiceContract ServiceContractNavigation { get; set; }
         /// <summary>
         /// رابط قبض و پرداختی
         /// </summary>

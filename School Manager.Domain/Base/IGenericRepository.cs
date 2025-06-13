@@ -38,6 +38,7 @@ namespace School_Manager.Domain.Base
         Task AddAsync(TEntity entity);
         Task AddRangeAsync(IEnumerable<TEntity> entities);
         TEntity GetById(int id);
+        TEntity GetById(long id);
         TEntity GetById(Guid id);
         IEnumerable<TEntity> GetAll();
         IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);

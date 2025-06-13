@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace School_Manager.Domain.Entities.Catalog.Operation
 {
-    public class Cheque : AuditableEntity<int>
+    public class Cheque : AuditableEntity<long>
     {
         /// <summary>
         /// شناسه قرارداد
         /// </summary>
-        public int? ServiceContractRef {  get; set; }
+        public long? ServiceContractRef {  get; set; }
         /// <summary>
         /// شناسه قرارداد
         /// </summary>
-        public int? DriverContractRef {  get; set; }
+        public long? DriverContractRef {  get; set; }
         /// <summary>
         /// مقدار چک
         /// </summary>

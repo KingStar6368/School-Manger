@@ -13,7 +13,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// شنایه مسیر
         /// </summary>
-        public int LocationPairRef { get; set; }
+        public long LocationPairRef { get; set; }
         /// <summary>
         /// طول جرافیایی
         /// </summary>

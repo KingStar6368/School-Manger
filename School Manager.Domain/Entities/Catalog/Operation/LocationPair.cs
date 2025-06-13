@@ -12,7 +12,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// شناسه مسافر
         /// </summary>
-        public int ChildRef { get; set; }
+        public long ChildRef { get; set; }
         /// <summary>
         /// زمان رفت
         /// </summary>

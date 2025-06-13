@@ -14,10 +14,6 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public int BankRef { get; set; }
         /// <summary>
-        /// شناسه ماشین
-        /// </summary>
-        public int CarRef { get; set; }
-        /// <summary>
         /// نام
         /// </summary>
         public string Name { get; set; }
@@ -56,7 +52,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// مشخصات ماشین
         /// </summary>
-        public Car CarNavigation { get; set; }
+        public virtual ICollection<Car> Cars { get; set; }
         /// <summary>
         /// لیست مسافر ها
         /// </summary>

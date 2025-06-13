@@ -15,6 +15,10 @@ namespace School_Manager.Core.Mapper
     {
         public MappingProfiles()
         {
+            #region Bill
+            CreateMap<Bill, BillDto>()
+                .ForMember(dest => dest.ContractId, opt => opt.MapFrom(src => src.ServiceContractRef));
+            #endregion
             #region RawMaterial
             CreateMap<RawMaterial, RawMaterialCombo>()
                 .ForMember(dest => dest.DisplayMember, opt => opt.MapFrom(src => src.MaterialCode + " " + src.Name))
@@ -43,6 +47,18 @@ namespace School_Manager.Core.Mapper
             //    .ForMember(dest => dest.MajorUnitName, opt => opt.MapFrom(src => src.MajorUnitNavigation.Name ?? ""))
             //    .ForMember(dest => dest.SecondaryUnitName, opt => opt.MapFrom(src => src.SecondaryUnitNavigation.Name));
 
+            #endregion
+            #region Service
+            CreateMap<ServiceContract, ServiceContractDto>();
+            #endregion
+            #region Parent
+            CreateMap<Parent, ParentDto>();
+            #endregion
+            #region Child
+            CreateMap<Child, ChildInfo>();
+            #endregion
+            #region LocationPair
+            CreateMap<LocationPair, LocationPairModel>();
             #endregion
             #region User
             //CreateMap<User, UserVM>()

@@ -7,7 +7,7 @@ using School_Manager.Domain.Common;
 
 namespace School_Manager.Domain.Entities.Catalog.Operation
 {
-    public class Lookup : AuditableEntity<int>
+    public class Lookup : AuditableEntity<long>
     {
         public string Type { get; set; }
         public int Code { get; set; }

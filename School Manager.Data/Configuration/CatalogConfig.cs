@@ -23,6 +23,10 @@ namespace School_Manager.Data.Configuration
             builder.HasMany(d => d.PayBills).WithOne(p => p.BillNavigation)
             .HasForeignKey(f => f.BillRef)
             .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(p=>p.ServiceContractNavigation).WithMany(b=>b.BillNavigation)
+                .HasForeignKey(fk=>fk.ServiceContractRef)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
     public class CarConfig : IEntityTypeConfiguration<Car>
@@ -37,8 +41,8 @@ namespace School_Manager.Data.Configuration
             builder.Property(e => e.carType)
             .HasConversion<int>();
 
-            builder.HasOne(d => d.DriverNavigation).WithOne(p => p.CarNavigation)
-            .HasForeignKey<Car>(f => f.DriverNavigation)
+            builder.HasOne(d => d.DriverNavigation).WithMany(p => p.Cars)
+            .HasForeignKey(f => f.DriverRef)
             .OnDelete(DeleteBehavior.Restrict);
         }
     }
@@ -86,9 +90,11 @@ namespace School_Manager.Data.Configuration
             builder.HasMany(d => d.DriverChildNavigation).WithOne(p => p.ChildNavigation)
                 .HasForeignKey(f => f.ChildRef)
                 .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasOne(d => d.ParentNavigation).WithMany(p => p.Children)
                 .HasForeignKey(fk => fk.ParentRef)
                 .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasOne(p=>p.PathNavigation).WithOne(d=>d.ChildNavigation)
                 .HasForeignKey<Child>(fk=>fk.LocationPairRef)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -179,23 +185,43 @@ namespace School_Manager.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Parent> builder)
         {
-            throw new NotImplementedException();
+            builder.Property(p => p.FirstName)
+            .HasColumnType("nvarchar(128)")
+            .IsRequired()
+            .HasComment("نام");
+
+            builder.Property(p => p.LastName)
+            .HasColumnType("nvarchar(128)")
+            .IsRequired()
+            .HasComment("نام خانوادگی");
+
+            builder.Property(p => p.NationalCode)
+            .HasColumnType("nvarchar(11)")
+            .IsRequired()
+            .HasComment("کد ملی");
+
+
         }
     }
     public class PayConfig : IEntityTypeConfiguration<Pay>
     {
         public void Configure(EntityTypeBuilder<Pay> builder)
         {
-            throw new NotImplementedException();
+            builder.HasMany(b => b.PayBills).WithOne(p => p.PayNavigation)
+                .HasForeignKey(fk => fk.PayRef)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Property(p => p.PayType)
+            .HasConversion<int>();
         }
     }
-    public class PayBillConfig : IEntityTypeConfiguration<PayBill>
-    {
-        public void Configure(EntityTypeBuilder<PayBill> builder)
-        {
-            throw new NotImplementedException();
-        }
-    }
+    //public class PayBillConfig : IEntityTypeConfiguration<PayBill>
+    //{
+    //    public void Configure(EntityTypeBuilder<PayBill> builder)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
 
     public class RawMaterialConfig : IEntityTypeConfiguration<RawMaterial>
     {
@@ -256,14 +282,24 @@ namespace School_Manager.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<School> builder)
         {
-            throw new NotImplementedException();
+            builder.Property(p => p.Name)
+            .HasColumnType("nvarchar(128)")
+            .IsRequired()
+            .HasComment("نام مدرسه");
+
+            builder.Property(p => p.ManagerName)
+            .HasColumnType("nvarchar(128)")
+            .IsRequired()
+            .HasComment("نام مدیر مدرسه");
         }
     }
     public class ServiceContractConfig : IEntityTypeConfiguration<ServiceContract>
     {
         public void Configure(EntityTypeBuilder<ServiceContract> builder)
         {
-            throw new NotImplementedException();
+            builder.HasOne(p => p.ChildNavigation).WithMany(b => b.ServiceContracts)
+                .HasForeignKey(fk => fk.ChildRef)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
     public class TrialConfig : IEntityTypeConfiguration<Trail>

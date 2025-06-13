@@ -176,7 +176,10 @@ namespace School_Manager.Data.Repositories
         {
             return _dbSet.Find(id);
         }
-
+        public TEntity GetById(long id)
+        {
+            return _dbSet.Find(id);
+        }
         public TEntity GetById(Guid id)
         {
             return _dbSet.Find(id);

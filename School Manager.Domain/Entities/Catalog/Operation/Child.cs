@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace School_Manager.Domain.Entities.Catalog.Operation
 {
-    public class Child : AuditableEntity<int>
+    public class Child : AuditableEntity<long>
     {
         /// <summary>
         /// شناسه راننده
         /// </summary>
-        public int DriverRef { get; set; }
+        public long DriverRef { get; set; }
         /// <summary>
         /// شناسه والدین
         /// </summary>
-         public int ParentRef { get; set; }
+         public long ParentRef { get; set; }
         /// <summary>
         /// شناسه مسیر مدرسه
         /// </summary>
-        public int LocationPairRef { get; set; }
+        public long LocationPairRef { get; set; }
         /// <summary>
         /// نام
         /// </summary>
@@ -54,5 +54,9 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// راننده
         /// </summary>
         public virtual ICollection<DriverChild> DriverChildNavigation { get; set; }
+        /// <summary>
+        /// قرارداد
+        /// </summary>
+        public virtual ICollection<ServiceContract> ServiceContracts { get; set; }
     }
 }

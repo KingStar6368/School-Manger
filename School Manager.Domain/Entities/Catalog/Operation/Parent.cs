@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace School_Manager.Domain.Entities.Catalog.Operation
 {
-    public class Parent : AuditableEntity<int>
+    public class Parent : AuditableEntity<long>
     {
         /// <summary>
         /// نام

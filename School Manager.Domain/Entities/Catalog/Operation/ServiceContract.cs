@@ -10,13 +10,9 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
     public class ServiceContract : AuditableEntity<long>
     {
         /// <summary>
-        /// شناسه والدین
-        /// </summary>
-        public int ParentRef { get; set; }
-        /// <summary>
         /// شناسه فرزند
         /// </summary>
-        public int ChildRef { get; set; }
+        public long ChildRef { get; set; }
         /// <summary>
         /// مبلغ کل قرار داد
         /// </summary>
@@ -38,10 +34,6 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public byte[] SignatureImage { get; set; }
         /// <summary>
-        /// والدین
-        /// </summary>
-        public virtual Parent ParentNavigation { get; set; }
-        /// <summary>
         /// کلاس فرزند
         /// </summary>
         public virtual Child ChildNavigation { get; set; }
@@ -49,5 +41,6 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// کلاس چک
         /// </summary>
         public virtual ICollection<Cheque> Cheques { get; set; }
+        public virtual ICollection<Bill> BillNavigation { get; set; }
     }
 }

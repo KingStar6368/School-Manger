@@ -23,7 +23,7 @@ namespace School_Manager.Data.Context
 		//}
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlServer(@"Password=Developers@Gamarak;Persist Security Info=True;User ID=sa;Initial Catalog=SchMSDB;Data Source=DESKTOP-DRLAEKC\SQLSERVERDEV3;TrustServerCertificate=True;MultipleActiveResultSets=True;");
+			optionsBuilder.UseSqlServer(@"Password=Developer@Gamarak;Persist Security Info=True;User ID=sa;Initial Catalog=SchMSDB;Data Source=DESKTOP-72A8ILV;TrustServerCertificate=True;MultipleActiveResultSets=True;");
 		}
 
 		#region -> [-- DBSETS Identity --]
@@ -36,7 +36,21 @@ namespace School_Manager.Data.Context
         #region -> [-- DBSETS App --]
 
         public DbSet<RawMaterial> RawMaterials { get; set; }
+        public DbSet<Bill> Bills { get; set; }
+        public DbSet<Car> Cars { get; set; }
+        public DbSet<Cheque> Cheques { get; set; }
+        public DbSet<Child> Children { get; set; }
+        public DbSet<Driver> Drivers { get; set; }
+        public DbSet<DriverChild> DriverChildren { get; set; }
+        public DbSet<DriverContract> DriverContracts { get; set; }
+        public DbSet<LocationData> LocationData { get; set; }
+        public DbSet<LocationPair> LocationPair { get; set; }
         public DbSet<Lookup> Lookup { get; set; }
+        public DbSet<Parent> Parents { get; set; }
+        public DbSet<Pay> Pays { get; set; }
+        public DbSet<PayBill> PayBills { get; set; }
+        public DbSet<School> Schools { get; set; }
+        public DbSet<ServiceContract> ServiceContracts { get; set; }
 
         #endregion
         
