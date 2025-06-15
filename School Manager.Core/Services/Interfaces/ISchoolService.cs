@@ -27,11 +27,11 @@ namespace School_Manager.Core.Services.Interfaces
         /// <returns></returns>
         Task<List<ChildInfo>> GetChildren(long id);
         /// <summary>
-        /// گرفتن راننده های یک مدرسه
+        /// گرفتن راننده های یک مدرسه در کلاس مدرسه driver id
         /// </summary>
         /// <param name="id">کد مدرسه</param>
         /// <returns></returns>
-        Task<List<SchoolDriverDto>> GetDrivers(long id);
+        Task<List<DriverDto>> GetDrivers(long id);
         
     }
 }

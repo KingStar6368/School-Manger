@@ -30,12 +30,12 @@ namespace School_Manager.Core.Services.Implemetations
             throw new NotImplementedException();
         }
 
-        public List<SchoolDriverDto> GetDrivers()
+        public List<DriverDto> GetDrivers()
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<SchoolDriverDto>> GetDrivers(long id)
+        public Task<List<DriverDto>> GetDrivers(long id)
         {
             throw new NotImplementedException();
         }

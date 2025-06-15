@@ -16,7 +16,7 @@
         /// <summary>
         /// مبلغ کل قبض
         /// </summary>
-        public long TotalPrice { get; set; }    
+        public long TotalPrice { get; set; }
         /// <summary>
         /// مبلغ پرداخت شده
         /// </summary>
@@ -29,5 +29,9 @@
         /// زمان پرداخت کامل
         /// </summary>
         public DateTime? PaidTime { get; set; }
+        /// <summary>
+        /// تاریخ انقضای فرار داد
+        /// </summary>
+        public DateTime BillExpiredTime { get; set; }
     }
 }

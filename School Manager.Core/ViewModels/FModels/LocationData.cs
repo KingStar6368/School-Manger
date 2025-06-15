@@ -5,6 +5,7 @@
     /// </summary>
     public class LocationDataDto
     {
+        public string Name { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         /// <summary>
@@ -22,9 +23,9 @@
         /// </summary>
         public long Id { get; set; }
         /// <summary>
-        /// مشحصات مسافر
+        /// کد مسافر
         /// </summary>
-        public ChildInfo Child { get; set; }
+        public long ChildId { get; set; }
         /// <summary>
         /// زمان رفت
         /// </summary>
