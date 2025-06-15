@@ -48,7 +48,7 @@ namespace School_Manager.Core.Mapper
             #region LocationPair
             //CreateMap<LocationPair, LocationPairModel>();
             CreateMap<LocationPair, LocationPairModel>()
-                .ForMember(dest=>dest.Child,opt=>opt.MapFrom(src=>src.ChildNavigation))
+                .ForMember(dest=>dest.ChildId,opt=>opt.MapFrom(src=>src.ChildRef))
                 .ForMember(dest => dest.Location1,opt => opt.MapFrom(src =>src.Locations.FirstOrDefault(l => l.LocationType == LocationType.Start)))
                 .ForMember(dest => dest.Location2,opt => opt.MapFrom(src =>src.Locations.FirstOrDefault(l => l.LocationType == LocationType.End)));
             #endregion
@@ -95,7 +95,7 @@ namespace School_Manager.Core.Mapper
             #region school
             CreateMap<School, SchoolDto>()
                 .ForMember(dest=>dest.Address,opt=>opt.MapFrom(src=>src.AddressNavigation));
-            CreateMap<School, SchoolDriverDto>()
+            CreateMap<School, SchoolDto>()
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.AddressNavigation))
                 .ForMember(dest => dest.Drivers,
                     opt => opt.MapFrom(src =>src.Childs.SelectMany(c => c.DriverChilds).Where(dc => dc.DriverNavigation != null)
