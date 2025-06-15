@@ -38,6 +38,6 @@ namespace School_Manager.Core.Services.Interfaces
         /// <param name="id">کد قبض</param>
         /// <returns></returns>
         bool IsPiad(long id);
-        
+
     }
 }

@@ -14,6 +14,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public long ChildRef { get; set; }
         /// <summary>
+        /// مسیر فعال
+        /// </summary>
+        public bool IsActive { get; set; }
+        /// <summary>
         /// زمان رفت
         /// </summary>
         public DateTime PickTime1 { get; set; }

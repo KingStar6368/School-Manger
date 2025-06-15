@@ -89,7 +89,6 @@ namespace School_Manager.Core.Services.Implemetations
             }
             return result;
         }
-
         public async Task<List<BillDto>> GetChildBills(long id)
         {
             var result = new List<BillDto>();

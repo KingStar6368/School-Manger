@@ -95,8 +95,8 @@ namespace School_Manager.Data.Configuration
                 .HasForeignKey(fk => fk.ParentRef)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(p=>p.PathNavigation).WithOne(d=>d.ChildNavigation)
-                .HasForeignKey<Child>(fk=>fk.LocationPairRef)
+            builder.HasMany(p=>p.LocationPairs).WithOne(d=>d.ChildNavigation)
+                .HasForeignKey(fk=>fk.ChildRef)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
@@ -154,9 +154,9 @@ namespace School_Manager.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<LocationPair> builder)
         {
-            builder.HasOne(d => d.ChildNavigation).WithOne(p => p.PathNavigation)
-            .HasForeignKey<Child>(f => f.LocationPairRef)
-            .OnDelete(DeleteBehavior.Restrict);
+            //builder.HasOne(d => d.ChildNavigation).WithOne(p => p.PathNavigation)
+            //.HasForeignKey<Child>(f => f.LocationPairRef)
+            //.OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(p=>p.Locations).WithOne(d=>d.LocationPairNavigation)
                 .HasForeignKey(fk=>fk.LocationPairRef)

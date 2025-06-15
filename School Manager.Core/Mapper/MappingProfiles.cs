@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Entities.Catalog.Identity;
 using School_Manager.Domain.Entities.Catalog.Operation;
+using School_Manager.Core.Classes;
 
 namespace School_Manager.Core.Mapper
 {
@@ -55,7 +56,9 @@ namespace School_Manager.Core.Mapper
             CreateMap<Parent, ParentDto>();
             #endregion
             #region Child
-            CreateMap<Child, ChildInfo>();
+            CreateMap<Child, ChildInfo>()
+                .ForMember(dest => dest.Class,opt => opt.MapFrom(src => src.Class.GetDisplayName()))
+                .ForMember(dest => dest.Path,opt => opt.MapFrom(src => src.LocationPairs.FirstOrDefault(i => i.IsActive)));
             #endregion
             #region LocationPair
             CreateMap<LocationPair, LocationPairModel>();

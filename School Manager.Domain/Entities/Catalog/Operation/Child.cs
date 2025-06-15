@@ -19,10 +19,6 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
          public long ParentRef { get; set; }
         /// <summary>
-        /// شناسه مسیر مدرسه
-        /// </summary>
-        public long LocationPairRef { get; set; }
-        /// <summary>
         /// نام
         /// </summary>
         public string FirstName { get; set; }
@@ -45,7 +41,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// مسیر خانه تا مدرسه
         /// </summary>
-        public LocationPair PathNavigation { get; set; }
+        public virtual ICollection<LocationPair> LocationPairs { get; set; }
         /// <summary>
         /// والدین
         /// </summary>
