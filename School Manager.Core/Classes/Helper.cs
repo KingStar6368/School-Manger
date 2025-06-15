@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 
 namespace School_Manager.Core.Classes
 {
+    public static class StaticString
+    {
+        public static string LookUpBankType = "BankAccount";
+        public static string LookUpColorType = "Color";
+        public static string ParentList = "Parents";
+    }
     public static class EnumExtensions
     {
         public static string GetDisplayName(this Enum enumValue)

@@ -19,6 +19,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
          public long ParentRef { get; set; }
         /// <summary>
+        /// شناسه مدرسه
+        /// </summary>
+        public long SchoolRef { get; set; }
+        /// <summary>
         /// نام
         /// </summary>
         public string FirstName { get; set; }
@@ -49,10 +53,11 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// راننده
         /// </summary>
-        public virtual ICollection<DriverChild> DriverChildNavigation { get; set; }
+        public virtual ICollection<DriverChild> DriverChilds { get; set; }
         /// <summary>
         /// قرارداد
         /// </summary>
         public virtual ICollection<ServiceContract> ServiceContracts { get; set; }
+        public virtual School SchoolNavigation { get; set; }
     }
 }

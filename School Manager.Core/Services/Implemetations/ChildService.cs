@@ -43,15 +43,17 @@ namespace School_Manager.Core.Services.Implemetations
         public ChildInfo GetChildByNationCode(string nationCode)
         {
             var result = new ChildInfo();
-
-            var ds = _unitOfWork.GetRepository<Child>().Query(
-                predicate: p => p.NationalCode == nationCode.Trim(),
-                orderBy: null,
-                includes: new List<System.Linq.Expressions.Expression<Func<Child, object>>>
-                {
-                    c=>c.LocationPairs
-                }
-                ).FirstOrDefault();
+            var ds = _unitOfWork.GetRepository<Child>().Query()
+                    .Include(x=>x.LocationPairs)
+                    .FirstOrDefault(p=>p.NationalCode == nationCode.Trim());
+            //var ds = _unitOfWork.GetRepository<Child>().Query(
+            //    predicate: p => p.NationalCode == nationCode.Trim(),
+            //    orderBy: null,
+            //    includes: new List<System.Linq.Expressions.Expression<Func<Child, object>>>
+            //    {
+            //        c=>c.LocationPairs
+            //    }
+            //    ).FirstOrDefault();
             if (ds != null)
             {
                 result = _mapper.Map<ChildInfo>(ds);
@@ -62,40 +64,32 @@ namespace School_Manager.Core.Services.Implemetations
 
         public DriverDto GetChildDriver(long ChildId)
         {
-            var result = new DriverDto();
-
-            var ds = _unitOfWork.GetRepository<Child>().Query(
-                predicate: p => p.Id == ChildId,
-                orderBy: null,
-                includes: new List<System.Linq.Expressions.Expression<Func<Child, object>>>
-                {
-                    c=>c.DriverChildNavigation
-                },
-                thenIncludes:
-                new List<Func<IQueryable<Child>, IQueryable<Child>>>
-                {
-                    q => q.Include(r=>r.DriverChildNavigation)
-                        .ThenInclude(d=>d.DriverNavigation).ThenInclude(d=>d.Passanger).ThenInclude(d=>d.ChildNavigation),
-                    q=>q.Include(r=>r.DriverChildNavigation)
-                    .ThenInclude(r=>r.DriverNavigation).ThenInclude(r=>r.Cars)
-                }).FirstOrDefault();
-            var driverResult = ds.DriverChildNavigation.FirstOrDefault(x => x.IsEnabled).DriverNavigation;
-            return result;
+            var ds = _unitOfWork.GetRepository<Child>().Query()
+                    .Include(c => c.DriverChilds)
+                        .ThenInclude(d => d.DriverNavigation)
+                            .ThenInclude(d => d.Passanger)
+                                .ThenInclude(p => p.ChildNavigation)
+                    .Include(c => c.DriverChilds)
+                        .ThenInclude(d => d.DriverNavigation)
+                            .ThenInclude(d => d.Cars)
+                    .FirstOrDefault(c => c.Id == ChildId);
+            var driverResult = (ds?.DriverChilds?.FirstOrDefault(x => x.IsEnabled)?.DriverNavigation)?? new Driver();
+            return _mapper.Map<DriverDto>(driverResult);
         }
 
-        public Task<List<ChildInfo>> GetChildren()
+        public async Task<List<ChildInfo>> GetChildren()
         {
-            throw new NotImplementedException();
+            var ds = await _unitOfWork.GetRepository<Child>().Query().Include(x=>x.LocationPairs).ToListAsync();
+            return _mapper.Map<List<ChildInfo>>(ds);
         }
 
-        public SchoolDto GetChildSchool(long SchoolId)
+        public SchoolDto GetChildSchool(long ChildId)
         {
-            throw new NotImplementedException();
-        }
-
-        SchoolDto IChildService.GetChildSchool(long SchoolId)
-        {
-            throw new NotImplementedException();
+            var ds = _unitOfWork.GetRepository<Child>()
+                .Query()
+                .Include(x=>x.SchoolNavigation)
+                .FirstOrDefault(x=>x.Id == ChildId);
+            return _mapper.Map<SchoolDto>(ds.SchoolNavigation);
         }
     }
 }

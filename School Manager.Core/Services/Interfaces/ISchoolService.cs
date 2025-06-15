@@ -13,13 +13,13 @@ namespace School_Manager.Core.Services.Interfaces
         /// لیست مدرسه ها
         /// </summary>
         /// <returns></returns>
-        Task<List<School>> GetSchools();
+        Task<List<SchoolDto>> GetSchools();
         /// <summary>
         /// گرفتن مدرسه
         /// </summary>
         /// <param name="id">کد مدرسه</param>
         /// <returns></returns>
-        School GetSchool(long id);
+        SchoolDto GetSchool(long id);
         /// <summary>
         /// گرفتن لیست دانش آموزان یک مدرسه
         /// </summary>
@@ -31,7 +31,7 @@ namespace School_Manager.Core.Services.Interfaces
         /// </summary>
         /// <param name="id">کد مدرسه</param>
         /// <returns></returns>
-        Task<List<SchoolDriverDto>> GetDrivers(long id);
+        Task<SchoolDriverDto> GetDrivers(long id);
         
     }
 }

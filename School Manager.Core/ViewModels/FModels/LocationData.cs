@@ -22,7 +22,7 @@
         /// </summary>
         public long Id { get; set; }
         /// <summary>
-        /// مشحصات مسافر
+        /// مشخصات مسافر
         /// </summary>
         public ChildInfo Child { get; set; }
         /// <summary>

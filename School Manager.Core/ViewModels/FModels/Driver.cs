@@ -58,7 +58,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// <summary>
         /// لیست مسافر ها
         /// </summary>
-        public List<ChildInfo> Passanger { get; set; }
+        public List<ChildInfo>? Passanger { get; set; }
         /// <summary>
         /// مشخصات ماشین
         /// </summary>

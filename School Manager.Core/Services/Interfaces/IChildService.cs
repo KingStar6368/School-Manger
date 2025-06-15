@@ -35,8 +35,8 @@ namespace School_Manager.Core.Services.Interfaces
         /// <summary>
         /// گرفتن مدرسه فرزند
         /// </summary>
-        /// <param name="SchoolId">کد مدرسه</param>
+        /// <param name="ChildId">کد دانش آموز</param>
         /// <returns></returns>
-        public SchoolDto GetChildSchool(long SchoolId);
+        public SchoolDto GetChildSchool(long ChildId);
     }
 }
