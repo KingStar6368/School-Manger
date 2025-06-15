@@ -38,6 +38,20 @@ namespace School_Manager.Core.Services.Interfaces
         /// <param name="id">کد قبض</param>
         /// <returns></returns>
         bool IsPiad(long id);
-        
+        /// <summary>
+        /// ثبت قبض جدید
+        /// </summary>
+        long Create(BillDto bill);
+
+        /// <summary>
+        /// ویرایش قبض
+        /// </summary>
+        bool Update(BillDto bill);
+
+        /// <summary>
+        /// حذف قبض
+        /// </summary>
+        bool Delete(long billId);
+
     }
 }

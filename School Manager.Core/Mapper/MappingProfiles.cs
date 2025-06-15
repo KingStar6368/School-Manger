@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Entities.Catalog.Identity;
 using School_Manager.Domain.Entities.Catalog.Operation;
+using School_Manager.Core.Classes;
+using School_Manager.Domain.Entities.Catalog.Enums;
 
 namespace School_Manager.Core.Mapper
 {
@@ -17,7 +19,49 @@ namespace School_Manager.Core.Mapper
         {
             #region Bill
             CreateMap<Bill, BillDto>()
-                .ForMember(dest => dest.ContractId, opt => opt.MapFrom(src => src.ServiceContractRef));
+                .ForMember(dest=>dest.ContractId,opt=>opt.MapFrom(dest=>dest.ServiceContractRef))
+                .ForMember(dest=>dest.TotalPrice,opt=>opt.MapFrom(dest=>dest.Price))
+                .ForMember(dest => dest.PaidPrice, opt => opt.MapFrom<PaidPriceResolver>())
+                .ForMember(dest => dest.PaidTime, opt => opt.MapFrom<PaidTimeResolver>())
+                .ForMember(dest => dest.HasPaid, opt => opt.MapFrom<HasPaidResolver>());
+            #endregion
+            #region Car
+            CreateMap<Car, CarInfoDto>()
+                .ForMember(dest => dest.Color,opt => opt.MapFrom<ColorResolver>())
+                .ForMember(dest=>dest.PlateNumber,opt=>opt.MapFrom(src=>src.FirstIntPlateNumber+src.ChrPlateNumber+src.SecondIntPlateNumber+src.ThirdIntPlateNumber));
+            #endregion
+            #region Child
+            CreateMap<Child, ChildInfo>()
+                .ForMember(dest => dest.Class,opt => opt.MapFrom(src => src.Class.GetDisplayName()))
+                .ForMember(dest => dest.Path,opt => opt.MapFrom(src => src.LocationPairs.FirstOrDefault(i => i.IsActive)));
+            #endregion
+            #region Driver
+            CreateMap<Driver, DriverDto>()
+                .ForMember(dest => dest.Car, opt => opt.MapFrom(src => src.Cars.FirstOrDefault(i => i.IsActive)))
+                .ForMember(dest=>dest.Passanger, opt => opt.MapFrom(src => src.Passanger.Select(p => p.ChildNavigation).ToList()))
+                .ForMember(dest => dest.BankAccount,opt => opt.MapFrom<BankAccountResolver>());
+            #endregion
+            #region Location Data
+            CreateMap<LocationData, LocationDataDto>();
+
+            #endregion
+            #region LocationPair
+            //CreateMap<LocationPair, LocationPairModel>();
+            CreateMap<LocationPair, LocationPairModel>()
+                .ForMember(dest=>dest.Child,opt=>opt.MapFrom(src=>src.ChildNavigation))
+                .ForMember(dest => dest.Location1,opt => opt.MapFrom(src =>src.Locations.FirstOrDefault(l => l.LocationType == LocationType.Start)))
+                .ForMember(dest => dest.Location2,opt => opt.MapFrom(src =>src.Locations.FirstOrDefault(l => l.LocationType == LocationType.End)));
+            #endregion
+            #region LookUp
+            CreateMap<Lookup, LookupComboViewModel>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Value));
+            #endregion
+            #region Parent
+            CreateMap<Parent, ParentDto>()
+                .ForMember(dest => dest.ParentFirstName, opt => opt.MapFrom(src => src.FirstName))
+                .ForMember(dest => dest.ParentLastName, opt => opt.MapFrom(src => src.LastName))
+                .ForMember(dest => dest.ParentNationalCode, opt => opt.MapFrom(src => src.NationalCode))
+                .ForMember(dest => dest.Children, opt => opt.MapFrom(src => src.Children));
             #endregion
             #region RawMaterial
             CreateMap<RawMaterial, RawMaterialCombo>()
@@ -48,17 +92,17 @@ namespace School_Manager.Core.Mapper
             //    .ForMember(dest => dest.SecondaryUnitName, opt => opt.MapFrom(src => src.SecondaryUnitNavigation.Name));
 
             #endregion
+            #region school
+            CreateMap<School, SchoolDto>()
+                .ForMember(dest=>dest.Address,opt=>opt.MapFrom(src=>src.AddressNavigation));
+            CreateMap<School, SchoolDriverDto>()
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.AddressNavigation))
+                .ForMember(dest => dest.Drivers,
+                    opt => opt.MapFrom(src =>src.Childs.SelectMany(c => c.DriverChilds).Where(dc => dc.DriverNavigation != null)
+                    .Select(dc => dc.DriverNavigation).Distinct()));
+            #endregion
             #region Service
             CreateMap<ServiceContract, ServiceContractDto>();
-            #endregion
-            #region Parent
-            CreateMap<Parent, ParentDto>();
-            #endregion
-            #region Child
-            CreateMap<Child, ChildInfo>();
-            #endregion
-            #region LocationPair
-            CreateMap<LocationPair, LocationPairModel>();
             #endregion
             #region User
             //CreateMap<User, UserVM>()
@@ -73,10 +117,6 @@ namespace School_Manager.Core.Mapper
             CreateMap<UserCreateDTO, User>();
 			CreateMap<UserEditDTO, User>();
 			#endregion
-            #region LookUp
-            CreateMap<Lookup, LookupComboViewModel>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Value));
-            #endregion
         }
     }
 }

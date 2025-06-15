@@ -1,5 +1,9 @@
-﻿using School_Manager.Core.Services.Interfaces;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
+using School_Manager.Domain.Base;
+using School_Manager.Domain.Entities.Catalog.Operation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,39 +14,82 @@ namespace School_Manager.Core.Services.Implemetations
 {
     public class ChildService : IChildService
     {
-        public BillDto GetBill(long id)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        public ChildService(IUnitOfWork unitOfWork,IMapper mapper)
         {
-            throw new NotImplementedException();
+            _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
-
         public ChildInfo GetChild(long id)
         {
-            throw new NotImplementedException();
-        }
+            var result = new ChildInfo();
+            
+            var ds = _unitOfWork.GetRepository<Child>().Query(
+                predicate: p => p.Id == id,
+                orderBy: null,
+                includes: new List<System.Linq.Expressions.Expression<Func<Child, object>>>
+                {
+                    c=>c.LocationPairs
+                }
+                ).FirstOrDefault();
+            if (ds != null) 
+            {
+                result = _mapper.Map<ChildInfo>(ds);
+            }
 
-        public List<BillDto> GetChildBill(long id)
-        {
-            throw new NotImplementedException();
+            return result;
         }
-
         public ChildInfo GetChildByNationCode(string nationCode)
         {
-            throw new NotImplementedException();
+            var result = new ChildInfo();
+            var ds = _unitOfWork.GetRepository<Child>().Query()
+                    .Include(x=>x.LocationPairs)
+                    .FirstOrDefault(p=>p.NationalCode == nationCode.Trim());
+            //var ds = _unitOfWork.GetRepository<Child>().Query(
+            //    predicate: p => p.NationalCode == nationCode.Trim(),
+            //    orderBy: null,
+            //    includes: new List<System.Linq.Expressions.Expression<Func<Child, object>>>
+            //    {
+            //        c=>c.LocationPairs
+            //    }
+            //    ).FirstOrDefault();
+            if (ds != null)
+            {
+                result = _mapper.Map<ChildInfo>(ds);
+            }
+
+            return result;
         }
 
-        public DriverDto GetChildDriver(long DriverId)
+        public DriverDto GetChildDriver(long ChildId)
         {
-            throw new NotImplementedException();
+            var ds = _unitOfWork.GetRepository<Child>().Query()
+                    .Include(c => c.DriverChilds)
+                        .ThenInclude(d => d.DriverNavigation)
+                            .ThenInclude(d => d.Passanger)
+                                .ThenInclude(p => p.ChildNavigation)
+                    .Include(c => c.DriverChilds)
+                        .ThenInclude(d => d.DriverNavigation)
+                            .ThenInclude(d => d.Cars)
+                    .FirstOrDefault(c => c.Id == ChildId);
+            var driverResult = (ds?.DriverChilds?.FirstOrDefault(x => x.IsEnabled)?.DriverNavigation)?? new Driver();
+            return _mapper.Map<DriverDto>(driverResult);
         }
 
-        public Task<List<ChildInfo>> GetChildren()
+        public async Task<List<ChildInfo>> GetChildren()
         {
-            throw new NotImplementedException();
+            var ds = await _unitOfWork.GetRepository<Child>().Query().Include(x=>x.LocationPairs).ToListAsync();
+            return _mapper.Map<List<ChildInfo>>(ds);
         }
 
-        public School GetChildSchool(long SchoolId)
+        public SchoolDto GetChildSchool(long ChildId)
         {
-            throw new NotImplementedException();
+            var ds = _unitOfWork.GetRepository<Child>()
+                .Query()
+                .Include(x=>x.SchoolNavigation)
+                .FirstOrDefault(x=>x.Id == ChildId);
+            return _mapper.Map<SchoolDto>(ds.SchoolNavigation);
         }
     }
 }

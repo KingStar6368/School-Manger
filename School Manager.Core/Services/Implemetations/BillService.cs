@@ -22,34 +22,28 @@ namespace School_Manager.Core.Services.Implemetations
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
         public BillDto GetBill(long id)
         {
             var result = new BillDto();
-            var ds = _unitOfWork.GetRepository<Bill>().Query(
-                predicate: p => p.Id == id,
-                orderBy: null,
-                includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
-                {
-                    c=>c.ServiceContractNavigation,
-                    c=>c.PayBills
-                },
-                new List<Func<IQueryable<Bill>, IQueryable<Bill>>>
-                {
-                    q => q.Include(r=>r.PayBills)
-                        .ThenInclude(d=>d.PayNavigation)
-                }
-                ).FirstOrDefault();
+            var ds = _unitOfWork.GetRepository<Bill>().Query().Include(c=>c.ServiceContractNavigation)
+                .Include(c=>c.PayBills).ThenInclude(c=>c.PayNavigation).FirstOrDefault(c=>c.Id == id);
+                //predicate: p => p.Id == id,
+                //orderBy: null,
+                //includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
+                //{
+                //    c=>c.ServiceContractNavigation,
+                //    c=>c.PayBills
+                //},
+                //new List<Func<IQueryable<Bill>, IQueryable<Bill>>>
+                //{
+                //    q => q.Include(r=>r.PayBills)
+                //        .ThenInclude(d=>d.PayNavigation)
+                //}
+                //).FirstOrDefault();
             if (ds != null)
             {
-                result = new BillDto
-                {
-                    ContractId = ds.ServiceContractRef,
-                    Id = ds.Id,
-                    PaidPrice = ds.PayBills.Select(s => s.PayNavigation.Price).DefaultIfEmpty(0).Sum(),
-                    PaidTime = ds.PayBills.LastOrDefault()?.PayNavigation.BecomingTime,
-                    TotalPrice = ds.Price
-                };
-                result.HasPaid = result.TotalPrice == result.PaidPrice;
+               result = _mapper.Map<BillDto>(ds);
             }
             return result;
         }
@@ -57,71 +51,48 @@ namespace School_Manager.Core.Services.Implemetations
         public async Task<List<BillDto>> GetBills()
         {
             var result = new List<BillDto>();
-            var dss = await _unitOfWork.GetRepository<Bill>().Query(
-                predicate: p => p.Id > 0,
-                orderBy: null,
-                includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
-                {
-                    c=>c.ServiceContractNavigation,
-                    c=>c.PayBills
-                },
-                new List<Func<IQueryable<Bill>, IQueryable<Bill>>>
-                {
-                    q => q.Include(r=>r.PayBills)
-                        .ThenInclude(d=>d.PayNavigation)
-                }
-                ).ToListAsync();
+            var dss = await _unitOfWork.GetRepository<Bill>().Query().Include(c => c.ServiceContractNavigation)
+                .Include(c => c.PayBills).ThenInclude(c => c.PayNavigation).ToListAsync();
+        //predicate: p => p.Id > 0,
+        //        orderBy: null,
+        //        includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
+        //        {
+        //            c=>c.ServiceContractNavigation,
+        //            c=>c.PayBills
+        //        },
+        //        new List<Func<IQueryable<Bill>, IQueryable<Bill>>>
+        //        {
+        //            q => q.Include(r=>r.PayBills)
+        //                .ThenInclude(d=>d.PayNavigation)
+        //        }
+        //        ).ToListAsync();
             if (dss != null)
             {
-                foreach (var ds in dss)
-                {
-                    var t = new BillDto
-                    {
-                        ContractId = ds.ServiceContractRef,
-                        Id = ds.Id,
-                        PaidPrice = ds.PayBills.Select(s => s.PayNavigation.Price).DefaultIfEmpty(0).Sum(),
-                        PaidTime = ds.PayBills.LastOrDefault()?.PayNavigation.BecomingTime,
-                        TotalPrice = ds.Price
-                    };
-                    t.HasPaid = t.TotalPrice == t.PaidPrice;
-                    result.Add(t);
-                }
+                result = _mapper.Map<List<BillDto>>(dss);
             }
             return result;
         }
-
         public async Task<List<BillDto>> GetChildBills(long id)
         {
             var result = new List<BillDto>();
-            var dss = await _unitOfWork.GetRepository<Bill>().Query(
-                predicate: p => p.ServiceContractNavigation.ChildRef == id,
-                orderBy: null,
-                includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
-                {
-                    c=>c.ServiceContractNavigation,
-                    c=>c.PayBills
-                },
-                new List<Func<IQueryable<Bill>, IQueryable<Bill>>>
-                {
-                    q => q.Include(r=>r.PayBills)
-                        .ThenInclude(d=>d.PayNavigation)
-                }
-                ).ToListAsync();
+            var dss = await _unitOfWork.GetRepository<Bill>().Query().Include(c => c.ServiceContractNavigation)
+                .Include(c => c.PayBills).ThenInclude(c => c.PayNavigation).Where(x=>x.ServiceContractNavigation.ChildRef == id).ToListAsync();
+            //predicate: p => p.ServiceContractNavigation.ChildRef == id,
+            //        orderBy: null,
+            //        includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
+            //        {
+            //            c=>c.ServiceContractNavigation,
+            //            c=>c.PayBills
+            //        },
+            //        new List<Func<IQueryable<Bill>, IQueryable<Bill>>>
+            //        {
+            //            q => q.Include(r=>r.PayBills)
+            //                .ThenInclude(d=>d.PayNavigation)
+            //        }
+            //        ).ToListAsync();
             if (dss != null)
             {
-                foreach (var ds in dss)
-                {
-                    var t = new BillDto
-                    {
-                        ContractId = ds.ServiceContractRef,
-                        Id = ds.Id,
-                        PaidPrice = ds.PayBills.Select(s => s.PayNavigation.Price).DefaultIfEmpty(0).Sum(),
-                        PaidTime = ds.PayBills.LastOrDefault()?.PayNavigation.BecomingTime,
-                        TotalPrice = ds.Price
-                    };
-                    t.HasPaid = t.TotalPrice == t.PaidPrice;
-                    result.Add(t);
-                }
+                result = _mapper.Map<List<BillDto>>(dss);
             }
             return result;
         }
@@ -129,20 +100,21 @@ namespace School_Manager.Core.Services.Implemetations
         public ServiceContractDto GetContract(long id)
         {
             var result = new ServiceContractDto();
-            var dss =  _unitOfWork.GetRepository<Bill>().Query(
-                predicate: p => p.Id == id,
-                orderBy: null,
-                includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
-                {
-                    c=>c.ServiceContractNavigation,
-                    c=>c.PayBills
-                },
-                new List<Func<IQueryable<Bill>, IQueryable<Bill>>>
-                {
-                    q => q.Include(r=>r.PayBills)
-                        .ThenInclude(d=>d.PayNavigation)
-                }
-                ).FirstOrDefault()?.ServiceContractNavigation;
+            var dss =  _unitOfWork.GetRepository<Bill>().Query().Include(c => c.ServiceContractNavigation)
+                .Include(c => c.PayBills).ThenInclude(c => c.PayNavigation).FirstOrDefault(c => c.Id == id)?.ServiceContractNavigation;
+        //predicate: p => p.Id == id,
+        //        orderBy: null,
+        //        includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
+        //        {
+        //            c=>c.ServiceContractNavigation,
+        //            c=>c.PayBills
+        //        },
+        //        new List<Func<IQueryable<Bill>, IQueryable<Bill>>>
+        //        {
+        //            q => q.Include(r=>r.PayBills)
+        //                .ThenInclude(d=>d.PayNavigation)
+        //        }
+        //        ).FirstOrDefault()?.ServiceContractNavigation;
             if (dss != null)
             {
                 result = _mapper.Map<ServiceContractDto>(dss);
@@ -154,6 +126,21 @@ namespace School_Manager.Core.Services.Implemetations
         {
             var mBill = GetBill(id);
             return mBill.HasPaid;
+        }
+
+        public long Create(BillDto bill)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Update(BillDto bill)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Delete(long billId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

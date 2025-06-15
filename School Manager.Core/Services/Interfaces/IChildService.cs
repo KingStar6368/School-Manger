@@ -29,26 +29,14 @@ namespace School_Manager.Core.Services.Interfaces
         /// <summary>
         /// گرفتن راننده فرزند
         /// </summary>
-        /// <param name="DriverId">کد راننده</param>
+        /// <param name="DriverId">کد فرزند</param>
         /// <returns></returns>
-        public DriverDto GetChildDriver(long DriverId);
+        public DriverDto GetChildDriver(long ChildId);
         /// <summary>
         /// گرفتن مدرسه فرزند
         /// </summary>
-        /// <param name="SchoolId">کد مدرسه</param>
+        /// <param name="ChildId">کد دانش آموز</param>
         /// <returns></returns>
-        public School GetChildSchool(long SchoolId);
-        /// <summary>
-        /// گرفتن لیست قبض های یک دانش آموز
-        /// </summary>
-        /// <param name="id">کد دانش آموز</param>
-        /// <returns></returns>
-        public List<BillDto> GetChildBill(long id);
-        /// <summary>
-        /// گرفتن یک قبض
-        /// </summary>
-        /// <param name="id">کد قبض</param>
-        /// <returns></returns>
-        public BillDto GetBill(long id);
+        public SchoolDto GetChildSchool(long ChildId);
     }
 }

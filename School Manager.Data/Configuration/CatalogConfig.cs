@@ -27,6 +27,7 @@ namespace School_Manager.Data.Configuration
             builder.HasOne(p=>p.ServiceContractNavigation).WithMany(b=>b.BillNavigation)
                 .HasForeignKey(fk=>fk.ServiceContractRef)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(x=>!x.IsDeleted);
         }
     }
     public class CarConfig : IEntityTypeConfiguration<Car>
@@ -44,6 +45,7 @@ namespace School_Manager.Data.Configuration
             builder.HasOne(d => d.DriverNavigation).WithMany(p => p.Cars)
             .HasForeignKey(f => f.DriverRef)
             .OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
     public class ChequeConfig : IEntityTypeConfiguration<Cheque>
@@ -62,6 +64,7 @@ namespace School_Manager.Data.Configuration
             builder.HasOne(d => d.ServiceContractNavigation).WithMany(p => p.Cheques)
                         .HasForeignKey(f => f.ServiceContractRef)
                         .OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(x => !x.IsDeleted);
 
         }
     }
@@ -87,7 +90,7 @@ namespace School_Manager.Data.Configuration
             builder.Property(p => p.Class)
             .HasConversion<int>();
 
-            builder.HasMany(d => d.DriverChildNavigation).WithOne(p => p.ChildNavigation)
+            builder.HasMany(d => d.DriverChilds).WithOne(p => p.ChildNavigation)
                 .HasForeignKey(f => f.ChildRef)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -95,9 +98,10 @@ namespace School_Manager.Data.Configuration
                 .HasForeignKey(fk => fk.ParentRef)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(p=>p.PathNavigation).WithOne(d=>d.ChildNavigation)
-                .HasForeignKey<Child>(fk=>fk.LocationPairRef)
+            builder.HasMany(p=>p.LocationPairs).WithOne(d=>d.ChildNavigation)
+                .HasForeignKey(fk=>fk.ChildRef)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
     public class DriverConfig : IEntityTypeConfiguration<Driver>
@@ -127,6 +131,7 @@ namespace School_Manager.Data.Configuration
             builder.HasMany(d => d.Passanger).WithOne(p => p.DriverNavigation)
                 .HasForeignKey(f => f.DriverRef)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
     public class DriverContractConfig : IEntityTypeConfiguration<DriverContract>
@@ -140,6 +145,7 @@ namespace School_Manager.Data.Configuration
             builder.HasOne(d => d.DriverNavigation).WithMany(p => p.DriverContracts)
                 .HasForeignKey(f => f.DriverRef)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
     public class LocationDataConfig : IEntityTypeConfiguration<LocationData>
@@ -148,19 +154,22 @@ namespace School_Manager.Data.Configuration
         {
             builder.Property(p => p.LocationType)
             .HasConversion<int>();
+
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
     public class LocationPairConfig : IEntityTypeConfiguration<LocationPair>
     {
         public void Configure(EntityTypeBuilder<LocationPair> builder)
         {
-            builder.HasOne(d => d.ChildNavigation).WithOne(p => p.PathNavigation)
-            .HasForeignKey<Child>(f => f.LocationPairRef)
-            .OnDelete(DeleteBehavior.Restrict);
+            //builder.HasOne(d => d.ChildNavigation).WithOne(p => p.PathNavigation)
+            //.HasForeignKey<Child>(f => f.LocationPairRef)
+            //.OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(p=>p.Locations).WithOne(d=>d.LocationPairNavigation)
                 .HasForeignKey(fk=>fk.LocationPairRef)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
     public class LookupConfig : IEntityTypeConfiguration<Lookup>
@@ -179,6 +188,7 @@ namespace School_Manager.Data.Configuration
 
             builder.HasIndex(p => new { p.Type, p.Code })
                 .IsUnique(true);
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
     public class ParentConfig : IEntityTypeConfiguration<Parent>
@@ -199,6 +209,7 @@ namespace School_Manager.Data.Configuration
             .HasColumnType("nvarchar(11)")
             .IsRequired()
             .HasComment("کد ملی");
+            builder.HasQueryFilter(x => !x.IsDeleted);
 
 
         }
@@ -213,15 +224,16 @@ namespace School_Manager.Data.Configuration
 
             builder.Property(p => p.PayType)
             .HasConversion<int>();
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
-    //public class PayBillConfig : IEntityTypeConfiguration<PayBill>
-    //{
-    //    public void Configure(EntityTypeBuilder<PayBill> builder)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
+    public class PayBillConfig : IEntityTypeConfiguration<PayBill>
+    {
+        public void Configure(EntityTypeBuilder<PayBill> builder)
+        {
+            builder.HasQueryFilter(x => !x.IsDeleted);
+        }
+    }
 
     public class RawMaterialConfig : IEntityTypeConfiguration<RawMaterial>
     {
@@ -251,31 +263,32 @@ namespace School_Manager.Data.Configuration
             builder.Property(p => p.TechnicalSpecification)
             .HasColumnType("nvarchar(256)")
             .HasComment("مشخصه فنی");
+            builder.HasQueryFilter(x => !x.IsDeleted);
 
-           // builder.HasMany(p => p.IncomingDetails).WithOne(p => p.RawMaterialNavigation)
-           //.HasForeignKey(p => p.MaterialRef)
-           //.HasConstraintName("FK_RawMaterial_IncomingDetails")
-           //.OnDelete(DeleteBehavior.Restrict);
+            // builder.HasMany(p => p.IncomingDetails).WithOne(p => p.RawMaterialNavigation)
+            //.HasForeignKey(p => p.MaterialRef)
+            //.HasConstraintName("FK_RawMaterial_IncomingDetails")
+            //.OnDelete(DeleteBehavior.Restrict);
 
-           // builder.HasMany(p => p.Inventories).WithOne(p => p.RawMaterialNavigation)
-           //.HasForeignKey(p => p.MaterialRef)
-           //.HasConstraintName("FK_RawMaterial_Inventories")
-           //.OnDelete(DeleteBehavior.Restrict);
+            // builder.HasMany(p => p.Inventories).WithOne(p => p.RawMaterialNavigation)
+            //.HasForeignKey(p => p.MaterialRef)
+            //.HasConstraintName("FK_RawMaterial_Inventories")
+            //.OnDelete(DeleteBehavior.Restrict);
 
-           // builder.HasMany(p => p.InventoryHistories).WithOne(p => p.RawMaterialNavigation)
-           //.HasForeignKey(p => p.MaterialRef)
-           //.HasConstraintName("FK_RawMaterial_InventoryHistories")
-           //.OnDelete(DeleteBehavior.Restrict);
+            // builder.HasMany(p => p.InventoryHistories).WithOne(p => p.RawMaterialNavigation)
+            //.HasForeignKey(p => p.MaterialRef)
+            //.HasConstraintName("FK_RawMaterial_InventoryHistories")
+            //.OnDelete(DeleteBehavior.Restrict);
 
-           // builder.HasMany(p => p.OutgoingDetails).WithOne(p => p.RawMaterialNavigation)
-           //.HasForeignKey(p => p.MaterialRef)
-           //.HasConstraintName("FK_RawMaterial_OutgoingDetails")
-           //.OnDelete(DeleteBehavior.Restrict);
+            // builder.HasMany(p => p.OutgoingDetails).WithOne(p => p.RawMaterialNavigation)
+            //.HasForeignKey(p => p.MaterialRef)
+            //.HasConstraintName("FK_RawMaterial_OutgoingDetails")
+            //.OnDelete(DeleteBehavior.Restrict);
 
-           // builder.HasMany(p => p.PurchaseRequestDetails).WithOne(p => p.RawMaterialNavigation)
-           //.HasForeignKey(p => p.MaterialRef)
-           //.HasConstraintName("FK_RawMaterial_PurchaseRequestDetails")
-           //.OnDelete(DeleteBehavior.Restrict);
+            // builder.HasMany(p => p.PurchaseRequestDetails).WithOne(p => p.RawMaterialNavigation)
+            //.HasForeignKey(p => p.MaterialRef)
+            //.HasConstraintName("FK_RawMaterial_PurchaseRequestDetails")
+            //.OnDelete(DeleteBehavior.Restrict);
         }
     }
     public class SchoolConfig : IEntityTypeConfiguration<School>
@@ -291,6 +304,13 @@ namespace School_Manager.Data.Configuration
             .HasColumnType("nvarchar(128)")
             .IsRequired()
             .HasComment("نام مدیر مدرسه");
+
+            builder.HasMany(b=>b.Childs)
+                .WithOne(p=>p.SchoolNavigation)
+                .HasForeignKey(p=>p.SchoolRef)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
     public class ServiceContractConfig : IEntityTypeConfiguration<ServiceContract>
@@ -300,6 +320,7 @@ namespace School_Manager.Data.Configuration
             builder.HasOne(p => p.ChildNavigation).WithMany(b => b.ServiceContracts)
                 .HasForeignKey(fk => fk.ChildRef)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
     public class TrialConfig : IEntityTypeConfiguration<Trail>
@@ -338,6 +359,16 @@ namespace School_Manager.Data.Configuration
                 .HasColumnType("nvarchar(50)")
                 .IsRequired()
                 .HasComment("نام خانوادگی");
+
+            builder.HasMany(p => p.Parents).WithOne(b => b.UserNavigation)
+                .HasForeignKey(fk => fk.UserRef)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(p=>p.Drivers).WithOne(b => b.UserNavigation)
+                .HasForeignKey(fk => fk.UserRef)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasQueryFilter(x => !x.IsDeleted);
             // Relations
             //builder.HasMany(d => d.<<relatedList>>).WithOne(p => p.UserNavigation)
             //.HasForeignKey(f => f.CreatedBy)

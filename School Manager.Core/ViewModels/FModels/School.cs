@@ -3,7 +3,7 @@
     /// <summary>
     /// کلاس مدرسه
     /// </summary>
-    public class School
+    public class SchoolDto
     {
         /// <summary>
         /// کد

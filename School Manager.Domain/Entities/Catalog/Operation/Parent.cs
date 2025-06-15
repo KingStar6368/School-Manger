@@ -1,4 +1,5 @@
 ﻿using School_Manager.Domain.Common;
+using School_Manager.Domain.Entities.Catalog.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
 {
     public class Parent : AuditableEntity<long>
     {
+        /// <summary>
+        /// شناسه کاربر
+        /// </summary>
+        public long UserRef { get; set; }
         /// <summary>
         /// نام
         /// </summary>
@@ -33,5 +38,9 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// لیست فرزندها
         /// </summary>
         public virtual ICollection<Child> Children { get; set; }
+        /// <summary>
+        /// کاربر
+        /// </summary>
+        public virtual User UserNavigation { get; set; }
     }
 }

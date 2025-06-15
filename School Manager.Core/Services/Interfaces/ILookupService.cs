@@ -9,6 +9,18 @@ namespace School_Manager.Core.Services.Interfaces
 {
     public interface ILookupService
     {
-        List<LookupComboViewModel> GetLookupCombo(string Type);
+        /// <summary>
+        /// گرفتن یک سطر lookUp
+        /// </summary>
+        /// <param name="Type">نوع</param>
+        /// <param name="Code">شناسه سطر</param>
+        /// <returns></returns>
+        LookupComboViewModel? GetLookUp(string Type,int Code);
+        /// <summary>
+        /// دریافت اطلاعات برای Combo
+        /// </summary>
+        /// <param name="Type">نوع اطلاعات مثال:بانکها</param>
+        /// <returns></returns>
+        Task<List<LookupComboViewModel>> GetLookupTypesAsync(string Type);
     }
 }
