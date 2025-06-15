@@ -30,13 +30,13 @@ namespace School_Manager.Core.Services.Interfaces
         /// گرفتن لیست دانش آموزان راننده با کد راننده
         /// </summary>
         /// <param name="id">کد راننده</param>
-        /// <returns></returns>
+        /// <returns>کلاس دانش آموزانی که در لیست کد مسافر راننده وجود دارد</returns>
         List<ChildInfo> GetPassngers(long id);
         /// <summary>
         /// گرفتن راننده های فعال در مدرسه
         /// </summary>
         /// <param name="SchoolId">شناسه مدرسه</param>
-        /// <returns></returns>
+        /// <returns>کلاس راننده های که در لیست رانندگان مدرسه وجود دارد</returns>
         Task<List<DriverDto>> GetDrivers(int SchoolId);
     }
 }

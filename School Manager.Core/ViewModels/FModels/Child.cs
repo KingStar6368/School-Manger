@@ -51,6 +51,9 @@ namespace School_Manager.Core.ViewModels.FModels
         /// مسیر خانه تا مدرسه
         /// </summary>
         public LocationPairModel Path { get; set; }
+        /// <summary>
+        /// لیست قبص ها
+        /// </summary>
         public List<BillDto> Bills { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿namespace School_Manager.Core.ViewModels.FModels
 {
-    //Done
     public class ParentDto
     {
         public long Id { get; set; }
