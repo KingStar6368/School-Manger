@@ -32,6 +32,23 @@ namespace School_Manager.Core.Services.Interfaces
         /// <param name="id">کد مدرسه</param>
         /// <returns>لیست راننده های که در کلاس مدرسه کد ان وجود دارد</returns>
         Task<List<DriverDto>> GetDrivers(long id);
-        
+        /// <summary>
+        /// ایجاد
+        /// </summary>
+        /// <param name="school">مدرسه</param>
+        /// <returns>شناسه مدرسه ثبت شده</returns>
+        long CreateSchool(SchoolCreateDto school);
+        /// <summary>
+        /// حذف
+        /// </summary>
+        /// <param name="id">شناسه مدرسه</param>
+        /// <returns>آیا موفق بود؟</returns>
+        bool DeleteSchool(long id);
+        /// <summary>
+        /// بروز رسانی
+        /// </summary>
+        /// <param name="school">مدرسه</param>
+        /// <returns>آیا موفقیت آمیز بود؟</returns>
+        bool UpdateSchool(SchoolUpdateDto school);
     }
 }

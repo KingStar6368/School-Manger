@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
@@ -16,10 +17,17 @@ namespace School_Manager.Core.Services.Implemetations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public ParentService(IUnitOfWork unitOfWork,IMapper mapper)
+        private readonly IValidator<ParentCreateDto> _createValidator;
+        private readonly IValidator<ParentUpdateDto> _UpdateValidator;
+        public ParentService(IUnitOfWork unitOfWork,
+                             IMapper mapper,
+                             IValidator<ParentCreateDto> createValidator,
+                             IValidator<ParentUpdateDto> updateValidator )
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _createValidator = createValidator;
+            _UpdateValidator = updateValidator;
         }
         public ParentDto GetParent(long Id)
         {
@@ -48,6 +56,51 @@ namespace School_Manager.Core.Services.Implemetations
                 .Query()
                 .Include(x=>x.Children).ToListAsync();
             return _mapper.Map<List<ParentDto>>(ds);
+        }
+        public long CreateParent(ParentCreateDto parent)
+        {
+            long result = 0;
+            var validationResult = _createValidator.Validate(parent);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
+                throw new ValidationException(errors);
+            }
+            var mParent = _mapper.Map<Parent>(parent);
+            _unitOfWork.GetRepository<Parent>().Add(mParent);
+            if (_unitOfWork.SaveChanges() > 0)
+                result = mParent.Id;
+            return result;
+        }
+        public bool UpdateParent(ParentUpdateDto parent)
+        {
+            var mainParent = _unitOfWork.GetRepository<Parent>().GetById(parent.Id);
+            var validationResult = _UpdateValidator.Validate(parent);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
+                throw new ValidationException(errors);
+            }
+            _mapper.Map(parent, mainParent);
+            _unitOfWork.GetRepository<Parent>().Update(mainParent);
+            return _unitOfWork.SaveChanges() > 0;
+        }
+        public bool DeleteParent(long id)
+        {
+            var Parent = _unitOfWork.GetRepository<Parent>()
+                        .Query(x => x.Id == id)
+                        .Include(x => x.Children)
+                        .FirstOrDefault();
+
+            if (Parent == null) return false;
+
+            // بررسی وجود اطلاعات وابسته
+            if (Parent.Children?.Any() ?? false)
+            {
+                throw new InvalidOperationException("این والد دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
+            }
+            _unitOfWork.GetRepository<Parent>().Remove(Parent);
+            return _unitOfWork.SaveChanges() > 0;
         }
     }
 }

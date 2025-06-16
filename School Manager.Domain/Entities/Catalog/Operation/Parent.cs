@@ -34,6 +34,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// ؟فعال
         /// </summary>
         public bool Active { get; set; }
+        public bool IsMale { get; set; }
         /// <summary>
         /// لیست فرزندها
         /// </summary>

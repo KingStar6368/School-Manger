@@ -10,14 +10,6 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
     public class Cheque : AuditableEntity<long>
     {
         /// <summary>
-        /// شناسه قرارداد
-        /// </summary>
-        public long? ServiceContractRef {  get; set; }
-        /// <summary>
-        /// شناسه قرارداد
-        /// </summary>
-        public long? DriverContractRef {  get; set; }
-        /// <summary>
         /// مقدار چک
         /// </summary>
         public long Price { get; set; }
@@ -41,13 +33,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// زمان چک
         /// </summary>
         public DateTime CheckTime { get; set; }
-        /// <summary>
-        /// قرارداد خدمات
-        /// </summary>
-        public ServiceContract ServiceContractNavigation { get; set; }
-        /// <summary>
-        /// قرارداد راننده
-        /// </summary>
-        public DriverContract DriverContractNavigation { get; set; }
+        public virtual ICollection<DriverContractCheque> DriverContractCheques { get; set; }
+        public virtual ICollection<ServiceContractCheque> ServiceContractCheques { get;set; }
     }
 }

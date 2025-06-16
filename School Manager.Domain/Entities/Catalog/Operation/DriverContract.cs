@@ -32,7 +32,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// کد چک کلاس
         /// </summary>
-        public virtual ICollection<Cheque> Cheques { get; set; }
+        public virtual ICollection<DriverContractCheque> DriverContractCheques { get; set; }
         /// <summary>
         /// کلاس راننده
         /// </summary>

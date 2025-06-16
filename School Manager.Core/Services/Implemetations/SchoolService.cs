@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using School_Manager.Core.Services.Interfaces;
@@ -19,13 +20,23 @@ namespace School_Manager.Core.Services.Implemetations
         private readonly ICachService _cachService;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
-        public SchoolService(IUnitOfWork unitOfWork,ICachService cachService,IMapper mapper,IMediator mediator)
+        private readonly IValidator<SchoolCreateDto> _createValidator;
+        private readonly IValidator<SchoolUpdateDto> _UpdateValidator;
+        public SchoolService(IUnitOfWork unitOfWork,
+                             ICachService cachService,
+                             IMapper mapper,
+                             IMediator mediator,
+                             IValidator<SchoolCreateDto> createValidator,
+                             IValidator<SchoolUpdateDto> updateValidator)
         {
             _unitOfWork = unitOfWork;
             _cachService = cachService;
             _mapper = mapper;
             _mediator = mediator;
+            _createValidator = createValidator;
+            _UpdateValidator = updateValidator;
         }
+
 
         public async Task<List<ChildInfo>> GetChildren(long id)
         {
@@ -56,6 +67,52 @@ namespace School_Manager.Core.Services.Implemetations
                 .Include(x => x.Childs).ThenInclude(x => x.DriverChilds).ThenInclude(x => x.DriverNavigation)
                 .ToListAsync();
             return _mapper.Map<List<SchoolDto>>(ds);
+        }
+
+        public long CreateSchool(SchoolCreateDto school)
+        {
+            long result = 0;
+            var validationResult = _createValidator.Validate(school);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
+                throw new ValidationException(errors);
+            }
+            var mSchool = _mapper.Map<School>(school);
+            _unitOfWork.GetRepository<School>().Add(mSchool);
+            if (_unitOfWork.SaveChanges() > 0)
+                result = mSchool.Id;
+            return result;
+        }
+        public bool UpdateSchool(SchoolUpdateDto school)
+        {
+            var mainSchool = _unitOfWork.GetRepository<School>().GetById(school.Id);
+            var validationResult = _UpdateValidator.Validate(school);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
+                throw new ValidationException(errors);
+            }
+            _mapper.Map(school, mainSchool);
+            _unitOfWork.GetRepository<School>().Update(mainSchool);
+            return _unitOfWork.SaveChanges() > 0;
+        }
+        public bool DeleteSchool(long id)
+        {
+            var School = _unitOfWork.GetRepository<School>()
+                        .Query(x => x.Id == id)
+                        .Include(x => x.Childs)
+                        .FirstOrDefault();
+
+            if (School == null) return false;
+
+            // بررسی وجود اطلاعات وابسته
+            if (School.Childs?.Any() ?? false)
+            {
+                throw new InvalidOperationException("این مدرسه دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
+            }
+            _unitOfWork.GetRepository<School>().Remove(School);
+            return _unitOfWork.SaveChanges() > 0;
         }
     }
 }

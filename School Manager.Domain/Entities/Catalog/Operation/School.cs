@@ -11,13 +11,9 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
     public class School : AuditableEntity<long>
     {
         /// <summary>
-        /// شناسه آدرس
-        /// </summary>
-        public long LocationDataRef { get; set; }
-        /// <summary>
         /// نام مدسه
         /// </summary>
-        public string Name { get; set; } 
+        public string Name { get; set; }
         /// <summary>
         /// نام مدیر
         /// </summary>
@@ -30,7 +26,15 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// آدرس
         /// </summary>
-        public LocationData AddressNavigation { get; set; }
+        public string Address { get; set; }
+        /// <summary>
+        /// طول جغرافیایی
+        /// </summary>
+        public double Latitude { get; set; }
+        /// <summary>
+        /// عرض جغرافیایی
+        /// </summary>
+        public double Longitude { get; set; }
         public virtual ICollection<Child> Childs { get; set; }
     }
 }

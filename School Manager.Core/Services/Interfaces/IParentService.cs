@@ -32,5 +32,23 @@ namespace School_Manager.Core.Services.Interfaces
         /// <param name="Phone"></param>
         /// <returns></returns>
         ParentDto GetParentByPhone(string Phone);
+        /// <summary>
+        /// ایجاد
+        /// </summary>
+        /// <param name="parent">والد</param>
+        /// <returns>شناسه والد ثبتی</returns>
+        long CreateParent(ParentCreateDto parent);
+        /// <summary>
+        /// بروز رسانی
+        /// </summary>
+        /// <param name="parent">والد</param>
+        /// <returns>آیا موفق بود؟</returns>
+        bool UpdateParent(ParentUpdateDto parent);
+        /// <summary>
+        /// حذف
+        /// </summary>
+        /// <param name="id">شناسه والد</param>
+        /// <returns>آیا موفق بود؟</returns>
+        bool DeleteParent(long id);
     }
 }

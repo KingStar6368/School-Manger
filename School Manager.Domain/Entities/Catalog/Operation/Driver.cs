@@ -55,6 +55,14 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public string NationCode { get; set; }
         /// <summary>
+        /// امتیاز راننده
+        /// </summary>
+        public int Rate { get; set; }
+        /// <summary>
+        /// اخطار ها
+        /// </summary>
+        public int Warnning { get; set; }
+        /// <summary>
         /// مشخصات ماشین
         /// </summary>
         public virtual ICollection<Car> Cars { get; set; }

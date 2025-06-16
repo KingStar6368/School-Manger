@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
@@ -14,12 +15,16 @@ namespace School_Manager.Core.Services.Implemetations
 {
     public class DriverService : IDriverService
     {
-        private IUnitOfWork _unitOfWork;
-        private IMapper _mapper;
-        public DriverService(IUnitOfWork unitOfWork,IMapper mapper)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+        private readonly IValidator<DriverCreateDto> _createValidator;
+        private readonly IValidator<DriverUpdateDto> _UpdateValidator;
+        public DriverService(IUnitOfWork unitOfWork,IMapper mapper, IValidator<DriverCreateDto> createValidator, IValidator<DriverUpdateDto> updateValidator)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _createValidator = createValidator;
+            _UpdateValidator = updateValidator;
         }
 
         public DriverDto GetDriver(long Id)
@@ -48,6 +53,8 @@ namespace School_Manager.Core.Services.Implemetations
                 .Query()
                 .Include(x => x.Childs).ThenInclude(x => x.DriverChilds).ThenInclude(x => x.DriverNavigation).ThenInclude(x=>x.Cars)
                 .Where(x => x.Id == SchoolId).FirstOrDefaultAsync();
+            if (ds == null)
+                return new List<DriverDto>();
             var drivers = ds.Childs
                         .SelectMany(c => c.DriverChilds)
                         .Where(dc => dc.DriverNavigation != null)
@@ -69,8 +76,57 @@ namespace School_Manager.Core.Services.Implemetations
         {
             var ds =  _unitOfWork.GetRepository<Driver>().Query()
                 .Include(x => x.Passanger).ThenInclude(x => x.ChildNavigation).FirstOrDefault(x=>x.Id == id);
+            if (ds == null) return new List<ChildInfo>();
             var child = ds.Passanger.Select(x => x.ChildNavigation).ToList();
             return _mapper.Map<List<ChildInfo>>(child);
+        }
+
+        public long CreateDriver(DriverCreateDto driver)
+        {
+            long result = 0;
+            var validationResult = _createValidator.Validate(driver);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
+                throw new ValidationException(errors);
+            }
+            var mDriver = _mapper.Map<Driver>(driver);
+            _unitOfWork.GetRepository<Driver>().Add(mDriver);
+            if (_unitOfWork.SaveChanges() > 0)
+                result = mDriver.Id;
+            return result;
+        }
+
+        public bool DeleteDriver(long id)
+        {
+            var Driver = _unitOfWork.GetRepository<Driver>()
+                        .Query(x => x.Id == id)
+                        .Include(x => x.DriverContracts)
+                        .FirstOrDefault();
+
+            if (Driver == null) return false;
+
+            // بررسی وجود اطلاعات وابسته
+            if ((Driver.DriverContracts?.Any() ?? false))
+            {
+                throw new InvalidOperationException("این قبض دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
+            }
+            _unitOfWork.GetRepository<Driver>().Remove(Driver);
+            return _unitOfWork.SaveChanges() > 0;
+        }
+
+        public bool UpdateDriver(DriverUpdateDto driver)
+        {
+            var mainDriver = _unitOfWork.GetRepository<Driver>().GetById(driver.Id);
+            var validationResult = _UpdateValidator.Validate(driver);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
+                throw new ValidationException(errors);
+            }
+            _mapper.Map(driver, mainDriver);
+            _unitOfWork.GetRepository<Driver>().Update(mainDriver);
+            return _unitOfWork.SaveChanges() > 0;
         }
     }
 }

@@ -55,20 +55,108 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public string NationCode { get; set; }
         /// <summary>
-        /// امتیاز راننده NewV
+        /// امتیاز راننده
         /// </summary>
         public int Rate { get; set; }
         /// <summary>
-        /// اخطار ها NewV
+        /// اخطار ها
         /// </summary>
         public int Warnning { get; set; }
         /// <summary>
-        /// لیست کد مسافر ها NewC
+        /// لیست کد مسافر ها
         /// </summary>
         public List<long> Passanger { get; set; }
         /// <summary>
         /// مشخصات ماشین
         /// </summary>
         public CarInfoDto Car { get; set; }
+    }
+    public interface IDriverDto
+    {
+        /// <summary>
+        /// شناسه کاربر
+        /// </summary>
+        public int UserRef { get; set; }
+        /// <summary>
+        /// شناسه بانک
+        /// </summary>
+        public int BankRef { get; set; }
+        /// <summary>
+        /// نام
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// نام خانوادگی
+        /// </summary>
+        public string LastName { get; set; }
+        /// <summary>
+        /// نام پدر
+        /// </summary>
+        public string FatherName { get; set; }
+        /// <summary>
+        /// شماره گواهی
+        /// </summary>
+        public string CertificateId { get; set; }
+        /// <summary>
+        /// تحصیلات
+        /// </summary>
+        public string Education { get; set; }
+        /// <summary>
+        /// مشحصات
+        /// </summary>
+        public string Descriptions { get; set; }
+        /// <summary>
+        /// آدرس
+        /// </summary>
+        public string Address { get; set; }
+        /// <summary>
+        /// تاریخ تولد
+        /// </summary>
+        public DateTime BirthDate { get; set; }
+        /// <summary>
+        /// کدملی
+        /// </summary>
+        public string NationCode { get; set; }
+        /// <summary>
+        /// امتیاز راننده
+        /// </summary>
+        public int Rate { get; set; }
+        /// <summary>
+        /// اخطار ها
+        /// </summary>
+        public int Warnning { get; set; }
+    }
+    public class DriverCreateDto : IDriverDto
+    {
+        public int UserRef {get;set;}
+        public int BankRef {get;set;}
+        public string Name {get;set;}
+        public string LastName {get;set;}
+        public string FatherName {get;set;}
+        public string CertificateId {get;set;}
+        public string Education {get;set;}
+        public string Descriptions {get;set;}
+        public string Address {get;set;}
+        public DateTime BirthDate {get;set;}
+        public string NationCode {get;set;}
+        public int Rate {get;set;}
+        public int Warnning {get;set;}
+    }
+    public class DriverUpdateDto : IDriverDto
+    {
+        public int Id { get; set; }
+        public int UserRef { get; set; }
+        public int BankRef { get; set; }
+        public string Name { get; set; }
+        public string LastName { get; set; }
+        public string FatherName { get; set; }
+        public string CertificateId { get; set; }
+        public string Education { get; set; }
+        public string Descriptions { get; set; }
+        public string Address { get; set; }
+        public DateTime BirthDate { get; set; }
+        public string NationCode { get; set; }
+        public int Rate { get; set; }
+        public int Warnning { get; set; }
     }
 }
