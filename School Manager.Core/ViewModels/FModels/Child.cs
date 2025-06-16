@@ -37,11 +37,11 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public string Class { get; set; }
         /// <summary>
-        /// کد راننده
+        /// کد راننده NewV
         /// </summary>
         public long DriverId { get; set; }
         /// <summary>
-        /// کد مدرسه
+        /// کد مدرسه NewV
         /// </summary>
         public long SchoolId { get; set; }
         /// <summary>

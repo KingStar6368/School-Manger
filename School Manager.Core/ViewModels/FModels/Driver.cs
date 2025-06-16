@@ -55,15 +55,15 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public string NationCode { get; set; }
         /// <summary>
-        /// امتیاز راننده
+        /// امتیاز راننده NewV
         /// </summary>
         public int Rate { get; set; }
         /// <summary>
-        /// اخطار ها
+        /// اخطار ها NewV
         /// </summary>
         public int Warnning { get; set; }
         /// <summary>
-        /// لیست کد مسافر ها
+        /// لیست کد مسافر ها NewC
         /// </summary>
         public List<long> Passanger { get; set; }
         /// <summary>

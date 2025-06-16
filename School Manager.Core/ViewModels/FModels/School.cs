@@ -26,11 +26,11 @@
         /// </summary>
         public LocationDataDto Address { get; set; } = new LocationDataDto();
         /// <summary>
-        /// لیست از رانندگان این مدرسه
+        /// لیست از رانندگان این مدرسه NewC
         /// </summary>
         public List<long> Drivers { get; set; }
         /// <summary>
-        /// کد دانش آموزان
+        /// کد دانش آموزان NewV
         /// </summary>
         public List<long> Students { get; set; }
     }

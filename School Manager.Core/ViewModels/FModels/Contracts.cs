@@ -81,6 +81,9 @@
         /// کد
         /// </summary>
         public long Id { get; set; }
+        /// <summary>
+        /// کد قرار داد
+        /// </summary>
         public long ContractId { get; set; }
         /// <summary>
         /// مقدار چک

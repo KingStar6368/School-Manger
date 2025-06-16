@@ -10,7 +10,7 @@
         /// </summary>
         public long Id { get; set; }
         /// <summary>
-        /// کد قرار داد
+        /// کد قرار داد NewV
         /// </summary>
         public long ContractId { get; set; }
         /// <summary>
@@ -30,7 +30,7 @@
         /// </summary>
         public DateTime? PaidTime { get; set; }
         /// <summary>
-        /// تاریخ انقضای فرار داد
+        /// تاریخ انقضای فرار داد NewV
         /// </summary>
         public DateTime BillExpiredTime { get; set; }
     }
