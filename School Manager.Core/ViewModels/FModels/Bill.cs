@@ -30,4 +30,38 @@
         /// </summary>
         public DateTime? PaidTime { get; set; }
     }
+    public class BillCreateDto
+    {
+        /// <summary>
+        /// کد قرار داد
+        /// </summary>
+        public long ServiceContractRef { get; set; }
+        /// <summary>
+        /// مبلغ کل قبض
+        /// </summary>
+        public long Price { get; set; }
+        /// <summary>
+        /// مهلت پرداخت
+        /// </summary>
+        public DateTime EstimateTime { get; set; }
+    }
+    public class BillUpdateDto
+    {
+        /// <summary>
+        /// شناسه
+        /// </summary>
+        public long Id { get; set; }
+        /// <summary>
+        /// کد قرار داد
+        /// </summary>
+        public long ServiceContractRef { get; set; }
+        /// <summary>
+        /// مبلغ کل قبض
+        /// </summary>
+        public long Price { get; set; }
+        /// <summary>
+        /// مهلت پرداخت
+        /// </summary>
+        public DateTime EstimateTime { get; set; }
+    }
 }

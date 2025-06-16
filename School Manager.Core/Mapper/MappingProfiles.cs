@@ -24,6 +24,8 @@ namespace School_Manager.Core.Mapper
                 .ForMember(dest => dest.PaidPrice, opt => opt.MapFrom<PaidPriceResolver>())
                 .ForMember(dest => dest.PaidTime, opt => opt.MapFrom<PaidTimeResolver>())
                 .ForMember(dest => dest.HasPaid, opt => opt.MapFrom<HasPaidResolver>());
+            CreateMap<BillCreateDto, Bill>();
+            CreateMap<BillUpdateDto, Bill>();
             #endregion
             #region Car
             CreateMap<Car, CarInfoDto>()

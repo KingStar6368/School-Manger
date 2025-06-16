@@ -128,12 +128,12 @@ namespace School_Manager.Core.Services.Implemetations
             return mBill.HasPaid;
         }
 
-        public long Create(BillDto bill)
+        public long Create(BillCreateDto bill)
         {
-            throw new NotImplementedException();
+            
         }
 
-        public bool Update(BillDto bill)
+        public bool Update(BillUpdateDto bill)
         {
             throw new NotImplementedException();
         }

@@ -41,17 +41,16 @@ namespace School_Manager.Core.Services.Interfaces
         /// <summary>
         /// ثبت قبض جدید
         /// </summary>
-        long Create(BillDto bill);
-
+        long Create(BillCreateDto bill);
         /// <summary>
-        /// ویرایش قبض
+        /// بروز رسانی قبض
         /// </summary>
-        bool Update(BillDto bill);
-
+        /// <param name="bill">قبض</param>
+        /// <returns></returns>
+        bool Update(BillUpdateDto bill);
         /// <summary>
         /// حذف قبض
         /// </summary>
         bool Delete(long billId);
-
     }
 }
