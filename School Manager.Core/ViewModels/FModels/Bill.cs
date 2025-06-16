@@ -10,7 +10,7 @@
         /// </summary>
         public long Id { get; set; }
         /// <summary>
-        /// کد قرار داد
+        /// کد قرار داد NewV
         /// </summary>
         public long ContractId { get; set; }
         /// <summary>
