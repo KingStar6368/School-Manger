@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DNTPersianUtils.Core;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
@@ -17,17 +18,24 @@ namespace School_Manager.Core.Services.Implemetations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public BillService(IUnitOfWork unitOfWork,IMapper mapper)
+        private readonly IValidator<BillCreateDto> _createValidator;
+        private readonly IValidator<BillUpdateDto> _UpdateValidator;
+        public BillService(IUnitOfWork unitOfWork,
+                           IMapper mapper,
+                           IValidator<BillCreateDto> createValidator,
+                           IValidator<BillUpdateDto> updateValidator)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _createValidator = createValidator;
+            _UpdateValidator = updateValidator;
         }
 
         public BillDto GetBill(long id)
         {
             var result = new BillDto();
-            var ds = _unitOfWork.GetRepository<Bill>().Query().Include(c=>c.ServiceContractNavigation)
-                .Include(c=>c.PayBills).ThenInclude(c=>c.PayNavigation).FirstOrDefault(c=>c.Id == id);
+            var ds = _unitOfWork.GetRepository<Bill>().Query(c=>c.Id == id).Include(c=>c.ServiceContractNavigation)
+                .Include(c=>c.PayBills).ThenInclude(c=>c.PayNavigation).FirstOrDefault();
                 //predicate: p => p.Id == id,
                 //orderBy: null,
                 //includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
@@ -75,8 +83,8 @@ namespace School_Manager.Core.Services.Implemetations
         public async Task<List<BillDto>> GetChildBills(long id)
         {
             var result = new List<BillDto>();
-            var dss = await _unitOfWork.GetRepository<Bill>().Query().Include(c => c.ServiceContractNavigation)
-                .Include(c => c.PayBills).ThenInclude(c => c.PayNavigation).Where(x=>x.ServiceContractNavigation.ChildRef == id).ToListAsync();
+            var dss = await _unitOfWork.GetRepository<Bill>().Query(x=>x.ServiceContractNavigation.ChildRef == id).Include(c => c.ServiceContractNavigation)
+                .Include(c => c.PayBills).ThenInclude(c => c.PayNavigation).ToListAsync();
             //predicate: p => p.ServiceContractNavigation.ChildRef == id,
             //        orderBy: null,
             //        includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
@@ -100,8 +108,8 @@ namespace School_Manager.Core.Services.Implemetations
         public ServiceContractDto GetContract(long id)
         {
             var result = new ServiceContractDto();
-            var dss =  _unitOfWork.GetRepository<Bill>().Query().Include(c => c.ServiceContractNavigation)
-                .Include(c => c.PayBills).ThenInclude(c => c.PayNavigation).FirstOrDefault(c => c.Id == id)?.ServiceContractNavigation;
+            var dss =  _unitOfWork.GetRepository<Bill>().Query(c => c.Id == id).Include(c => c.ServiceContractNavigation)
+                .Include(c => c.PayBills).ThenInclude(c => c.PayNavigation).FirstOrDefault()?.ServiceContractNavigation;
         //predicate: p => p.Id == id,
         //        orderBy: null,
         //        includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
@@ -130,17 +138,50 @@ namespace School_Manager.Core.Services.Implemetations
 
         public long Create(BillCreateDto bill)
         {
-            
+            long result = 0;
+            var validationResult = _createValidator.Validate(bill);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
+                throw new ValidationException(errors);
+            }
+            var mBill = _mapper.Map<Bill>(bill);
+            _unitOfWork.GetRepository<Bill>().Add(mBill);
+            if (_unitOfWork.SaveChanges() > 0)
+                result = mBill.Id;
+            return result;
         }
 
         public bool Update(BillUpdateDto bill)
         {
-            throw new NotImplementedException();
+            var mainBill = _unitOfWork.GetRepository<Bill>().GetById(bill.Id);
+            var validationResult = _UpdateValidator.Validate(bill);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
+                throw new ValidationException(errors);
+            }
+            _mapper.Map(bill,mainBill);
+            _unitOfWork.GetRepository<Bill>().Update(mainBill);
+            return _unitOfWork.SaveChanges() > 0;
         }
 
         public bool Delete(long billId)
         {
-            throw new NotImplementedException();
+            var bill = _unitOfWork.GetRepository<Bill>()
+                        .Query(x => x.Id == billId)
+                        .Include(x => x.PayBills)
+                        .FirstOrDefault();
+
+            if (bill == null) return false;
+
+            // بررسی وجود اطلاعات وابسته
+            if ((bill.PayBills?.Any() ?? false))
+            {
+                throw new InvalidOperationException("این قبض دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
+            }
+            _unitOfWork.GetRepository<Bill>().Remove(bill);
+            return _unitOfWork.SaveChanges() > 0;
         }
     }
 }

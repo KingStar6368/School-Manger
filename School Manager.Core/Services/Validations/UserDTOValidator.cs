@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Identity;
@@ -28,29 +29,21 @@ namespace School_Manager.Core.Services.Validations
 
             RuleFor(x => x.Mobile)
                 .NotEmpty().WithMessage(" موبایل الزامی است.")
-                .MaximumLength(11).WithMessage("موبایل نباید بیشتر از 11 کاراکتر باشد.");
+                .MaximumLength(11).WithMessage("موبایل نباید بیشتر از 11 کاراکتر باشد.")
+                .MustAsync(async (mobile, cancellation) =>
+                {
+                    var repo = unitOfWork.GetRepository<User>();
+                    return !await repo.Query().AnyAsync(u => u.Mobile == mobile);
+                }).WithMessage("شماره موبایل تکراری است.");
 
             RuleFor(x => x.UserName)
                 .NotEmpty().WithMessage("نام کاربری الزامی است.")
-                .MaximumLength(10).WithMessage("نام کاربری نباید بیشتر از 10 کاراکتر باشد.");
-
-            RuleFor(x => x)
-                .Must(x => BeUniqueMobile(x, x.Mobile)).WithMessage("موبایل تکراری است.");
-
-            RuleFor(x => x)
-                .Must(x => BeUniqueUserName(x, x.UserName)).WithMessage("نام کاربری تکراری است.");
-
-            
-        }
-        private bool BeUniqueMobile(UserCreateDTO dTO, string code)
-        {
-            var repo = _unitOfWork.GetRepository<User>();
-            return !repo.GetAll().Any(x => x.Mobile == code);
-        }
-        private bool BeUniqueUserName(UserCreateDTO dTO, string code)
-        {
-            var repo = _unitOfWork.GetRepository<User>();
-            return !repo.GetAll().Any(x => x.UserName == code);
+                .MaximumLength(10).WithMessage("نام کاربری نباید بیشتر از 10 کاراکتر باشد.")
+                .MustAsync(async (userName, cancellation) =>
+                {
+                    var repo = unitOfWork.GetRepository<User>();
+                    return !await repo.Query().AnyAsync(u => u.UserName == userName);
+                }).WithMessage("نام کاربری تکراری است.");
         }
     }
     public class UserEditDTOValidator : AbstractValidator<UserEditDTO>
@@ -69,30 +62,22 @@ namespace School_Manager.Core.Services.Validations
                 .MaximumLength(100).WithMessage("نام خانوادگی نباید بیشتر از 30 کاراکتر باشد.");
 
             RuleFor(x => x.Mobile)
-                .NotEmpty().WithMessage(" موبایل الزامی است.")
-                .MaximumLength(11).WithMessage("نام نباید بیشتر از 11 کاراکتر باشد.");
+                .NotEmpty().WithMessage("موبایل الزامی است.")
+                .MaximumLength(11).WithMessage("موبایل نباید بیشتر از 11 کاراکتر باشد.")
+                .MustAsync(async (dto, mobile, cancellation) =>
+                {
+                    var repo = _unitOfWork.GetRepository<User>();
+                    return !await repo.Query().AnyAsync(u => u.Mobile == mobile && u.Id != dto.Id);
+                }).WithMessage("شماره موبایل تکراری است.");
 
             RuleFor(x => x.UserName)
                 .NotEmpty().WithMessage("نام کاربری الزامی است.")
-                .MaximumLength(10).WithMessage("نام کاربری نباید بیشتر از 10 کاراکتر باشد.");
-
-            RuleFor(x => x)
-                .Must(x => BeUniqueMobile(x, x.Mobile)).WithMessage("موبایل تکراری است.");
-
-            RuleFor(x => x)
-                .Must(x => BeUniqueUserName(x, x.UserName)).WithMessage("نام کاربری تکراری است.");
-
-            
-        }
-        private bool BeUniqueMobile(UserEditDTO dTO, string code)
-        {
-            var repo = _unitOfWork.GetRepository<User>();
-            return !repo.GetAll().Any(x => x.Mobile == code && x.Id != dTO.Id);
-        }
-        private bool BeUniqueUserName(UserEditDTO dTO, string code)
-        {
-            var repo = _unitOfWork.GetRepository<User>();
-            return !repo.GetAll().Any(x => x.UserName == code && x.Id != dTO.Id);
+                .MaximumLength(10).WithMessage("نام کاربری نباید بیشتر از 10 کاراکتر باشد.")
+                .MustAsync(async (dto, userName, cancellation) =>
+                {
+                    var repo = _unitOfWork.GetRepository<User>();
+                    return !await repo.Query().AnyAsync(u => u.UserName == userName && u.Id != dto.Id);
+                }).WithMessage("نام کاربری تکراری است.");
         }
     }
 }

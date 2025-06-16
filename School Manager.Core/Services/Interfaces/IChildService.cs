@@ -38,5 +38,23 @@ namespace School_Manager.Core.Services.Interfaces
         /// <param name="ChildId">کد دانش آموز</param>
         /// <returns></returns>
         public SchoolDto GetChildSchool(long ChildId);
+        /// <summary>
+        /// ایجاد فرزند
+        /// </summary>
+        /// <param name="child">فرزند</param>
+        /// <returns>شناسه فرزند اگر ناموفق صفر می شود</returns>
+        public int CreateChild(ChildCreateDto child);
+        /// <summary>
+        /// بروز رسانی فرزند
+        /// </summary>
+        /// <param name="child">فرزند</param>
+        /// <returns>عملیات موفقیت آمیز بود؟</returns>
+        public bool UpdateChild(ChildUpdateDto child);
+        /// <summary>
+        /// حذف فرزند
+        /// </summary>
+        /// <param name="ChildId">شناسه فرزند</param>
+        /// <returns>عملیات موفقیت آمیز بود؟</returns>
+        public bool DeleteChild(long ChildId);
     }
 }

@@ -13,7 +13,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// شناسه راننده
         /// </summary>
-        public long DriverRef { get; set; }
+        //public long? DriverRef { get; set; }
         /// <summary>
         /// شناسه والدین
         /// </summary>
@@ -21,7 +21,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// شناسه مدرسه
         /// </summary>
-        public long SchoolRef { get; set; }
+        public long? SchoolRef { get; set; }
         /// <summary>
         /// نام
         /// </summary>

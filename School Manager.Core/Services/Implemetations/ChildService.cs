@@ -21,6 +21,7 @@ namespace School_Manager.Core.Services.Implemetations
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
+
         public ChildInfo GetChild(long id)
         {
             var result = new ChildInfo();
@@ -90,6 +91,21 @@ namespace School_Manager.Core.Services.Implemetations
                 .Include(x=>x.SchoolNavigation)
                 .FirstOrDefault(x=>x.Id == ChildId);
             return _mapper.Map<SchoolDto>(ds.SchoolNavigation);
+        }
+
+        public int CreateChild(ChildCreateDto child)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteChild(long ChildId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UpdateChild(ChildUpdateDto child)
+        {
+            throw new NotImplementedException();
         }
     }
 }

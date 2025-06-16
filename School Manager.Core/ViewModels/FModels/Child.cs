@@ -1,4 +1,5 @@
-﻿using System;
+﻿using School_Manager.Domain.Entities.Catalog.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -55,5 +56,76 @@ namespace School_Manager.Core.ViewModels.FModels
         /// لیست قبص ها
         /// </summary>
         public List<BillDto> Bills { get; set; }
+    }
+    public class ChildCreateDto
+    {
+        /// <summary>
+        /// شناسه راننده
+        /// </summary>
+        public long DriverRef { get; set; }
+        /// <summary>
+        /// شناسه والدین
+        /// </summary>
+        public long ParentRef { get; set; }
+        /// <summary>
+        /// شناسه مدرسه
+        /// </summary>
+        public long SchoolRef { get; set; }
+        /// <summary>
+        /// نام
+        /// </summary>
+        public string FirstName { get; set; }
+        /// <summary>
+        /// نام خانوادگی
+        /// </summary>
+        public string LastName { get; set; }
+        /// <summary>
+        /// کدملی
+        /// </summary>
+        public string NationalCode { get; set; }
+        /// <summary>
+        /// تاریخ تولد
+        /// </summary>
+        public DateTime BirthDate { get; set; }
+        /// <summary>
+        /// کلاس تحصیلی
+        /// </summary>
+        public int Class { get; set; }
+    }
+    public class ChildUpdateDto
+    {
+        public long Id { get; set; }
+        /// <summary>
+        /// شناسه راننده
+        /// </summary>
+        public long DriverRef { get; set; }
+        /// <summary>
+        /// شناسه والدین
+        /// </summary>
+        public long ParentRef { get; set; }
+        /// <summary>
+        /// شناسه مدرسه
+        /// </summary>
+        public long SchoolRef { get; set; }
+        /// <summary>
+        /// نام
+        /// </summary>
+        public string FirstName { get; set; }
+        /// <summary>
+        /// نام خانوادگی
+        /// </summary>
+        public string LastName { get; set; }
+        /// <summary>
+        /// کدملی
+        /// </summary>
+        public string NationalCode { get; set; }
+        /// <summary>
+        /// تاریخ تولد
+        /// </summary>
+        public DateTime BirthDate { get; set; }
+        /// <summary>
+        /// کلاس تحصیلی
+        /// </summary>
+        public int Class { get; set; }
     }
 }

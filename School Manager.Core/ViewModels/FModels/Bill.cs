@@ -34,7 +34,7 @@
         /// </summary>
         public DateTime BillExpiredTime { get; set; }
     }
-    public class BillCreateDto
+    public interface IBillDto
     {
         /// <summary>
         /// کد قرار داد
@@ -48,8 +48,15 @@
         /// مهلت پرداخت
         /// </summary>
         public DateTime EstimateTime { get; set; }
+
     }
-    public class BillUpdateDto
+    public class BillCreateDto : IBillDto
+    {
+        public long ServiceContractRef { get; set; }
+        public long Price { get; set; }
+        public DateTime EstimateTime { get; set; }
+    }
+    public class BillUpdateDto : IBillDto
     {
         /// <summary>
         /// شناسه

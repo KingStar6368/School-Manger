@@ -20,6 +20,7 @@ namespace School_Manager.Core.Mapper
             #region Bill
             CreateMap<Bill, BillDto>()
                 .ForMember(dest=>dest.ContractId,opt=>opt.MapFrom(dest=>dest.ServiceContractRef))
+                .ForMember(dest=>dest.BillExpiredTime,opt=>opt.MapFrom(dest=>dest.EstimateTime))
                 .ForMember(dest=>dest.TotalPrice,opt=>opt.MapFrom(dest=>dest.Price))
                 .ForMember(dest => dest.PaidPrice, opt => opt.MapFrom<PaidPriceResolver>())
                 .ForMember(dest => dest.PaidTime, opt => opt.MapFrom<PaidTimeResolver>())
@@ -36,6 +37,8 @@ namespace School_Manager.Core.Mapper
             CreateMap<Child, ChildInfo>()
                 .ForMember(dest => dest.Class,opt => opt.MapFrom(src => src.Class.GetDisplayName()))
                 .ForMember(dest => dest.Path,opt => opt.MapFrom(src => src.LocationPairs.FirstOrDefault(i => i.IsActive)));
+            CreateMap<ChildCreateDto,Child>();
+            CreateMap<ChildUpdateDto, Child>();
             #endregion
             #region Driver
             CreateMap<Driver, DriverDto>()
