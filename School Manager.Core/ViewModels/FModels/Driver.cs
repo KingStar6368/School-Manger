@@ -1,5 +1,4 @@
 ﻿using School_Manager.Domain.Entities.Catalog.Enums;
-
 namespace School_Manager.Core.ViewModels.FModels
 {
     /// <summary>
@@ -56,9 +55,17 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public string NationCode { get; set; }
         /// <summary>
-        /// لیست مسافر ها
+        /// امتیاز راننده
         /// </summary>
-        public List<ChildInfo>? Passanger { get; set; }
+        public int Rate { get; set; }
+        /// <summary>
+        /// اخطار ها
+        /// </summary>
+        public int Warnning { get; set; }
+        /// <summary>
+        /// لیست کد مسافر ها
+        /// </summary>
+        public List<long> Passanger { get; set; }
         /// <summary>
         /// مشخصات ماشین
         /// </summary>

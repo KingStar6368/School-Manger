@@ -24,14 +24,14 @@ namespace School_Manager.Core.Services.Interfaces
         /// گرفتن لیست دانش آموزان یک مدرسه
         /// </summary>
         /// <param name="id">کد مدرسه</param>
-        /// <returns></returns>
+        /// <returns>لیست دانش آموزانی که کد انها در کلاس مدرسه است</returns>
         Task<List<ChildInfo>> GetChildren(long id);
         /// <summary>
-        /// گرفتن راننده های یک مدرسه
+        /// گرفتن راننده های یک مدرسه در کلاس مدرسه driver id
         /// </summary>
         /// <param name="id">کد مدرسه</param>
-        /// <returns></returns>
-        Task<SchoolDriverDto> GetDrivers(long id);
+        /// <returns>لیست راننده های که در کلاس مدرسه کد ان وجود دارد</returns>
+        Task<List<DriverDto>> GetDrivers(long id);
         
     }
 }

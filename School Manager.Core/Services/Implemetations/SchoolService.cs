@@ -34,12 +34,12 @@ namespace School_Manager.Core.Services.Implemetations
             var children = ds.Childs.ToList();
             return _mapper.Map<List<ChildInfo>>(children);
         }
-        public async Task<SchoolDriverDto> GetDrivers(long id)
+        public async Task<List<DriverDto>> GetDrivers(long id)
         {
-            var ds = await _unitOfWork.GetRepository<School>().Query()
-                .Include(x=>x.Childs).ThenInclude(x=>x.DriverChilds).ThenInclude(x=>x.DriverNavigation)
-                .Where(x=>x.Id == id).FirstOrDefaultAsync();
-            return _mapper.Map<SchoolDriverDto>(ds);
+            var ds = await _unitOfWork.GetRepository<Driver>().Query()
+                .Include(x=>x.Passanger).ThenInclude(x=>x.ChildNavigation).ThenInclude(x=>x.SchoolNavigation)
+                .Where(x=>x.Passanger.Any(y=>y.ChildNavigation.SchoolRef == id)).ToListAsync();
+            return _mapper.Map<List<DriverDto>>(ds);
         }
 
         public SchoolDto GetSchool(long id)

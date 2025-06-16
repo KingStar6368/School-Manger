@@ -1,7 +1,7 @@
 ﻿namespace School_Manager.Core.ViewModels.FModels
 {
     /// <summary>
-    /// کلاس والد
+    /// کلاس والدین
     /// </summary>
     public class ParentDto
     {
@@ -18,7 +18,7 @@
         /// </summary>
         public string ParentLastName { get; set; }
         /// <summary>
-        /// کدملی
+        /// کد ملی
         /// </summary>
         public string ParentNationalCode { get; set; }
         /// <summary>
@@ -26,11 +26,11 @@
         /// </summary>
         public string Address { get; set; }
         /// <summary>
-        /// ؟فعال
+        /// فعال است ؟
         /// </summary>
         public bool Active { get; set; }
         /// <summary>
-        /// لیست فرزندها
+        /// لیست فرزندان
         /// </summary>
         public List<ChildInfo> Children { get; set; }
     }

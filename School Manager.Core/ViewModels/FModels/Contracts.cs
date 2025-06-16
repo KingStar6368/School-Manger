@@ -81,6 +81,7 @@
         /// کد
         /// </summary>
         public long Id { get; set; }
+        public long ContractId { get; set; }
         /// <summary>
         /// مقدار چک
         /// </summary>
@@ -92,7 +93,7 @@
         /// <summary>
         /// شناسه صیاد
         /// </summary>
-        public string CheckSayadNumber {  get; set; }
+        public string CheckSayadNumber { get; set; }
         /// <summary>
         /// نام بانک
         /// </summary>

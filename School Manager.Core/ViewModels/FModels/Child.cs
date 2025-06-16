@@ -14,7 +14,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// <summary>
         /// کد
         /// </summary>
-        public long Id { get; set; }
+         public long Id { get; set; }
         /// <summary>
         /// نام
         /// </summary>
@@ -36,6 +36,14 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public string Class { get; set; }
         /// <summary>
+        /// کد راننده
+        /// </summary>
+        public long DriverId { get; set; }
+        /// <summary>
+        /// کد مدرسه
+        /// </summary>
+        public long SchoolId { get; set; }
+        /// <summary>
         /// کامل پرداخت شده ؟
         /// </summary>
         public bool HasPaid { get; set; }
@@ -43,5 +51,9 @@ namespace School_Manager.Core.ViewModels.FModels
         /// مسیر خانه تا مدرسه
         /// </summary>
         public LocationPairModel Path { get; set; }
+        /// <summary>
+        /// لیست قبص ها
+        /// </summary>
+        public List<BillDto> Bills { get; set; }
     }
 }
