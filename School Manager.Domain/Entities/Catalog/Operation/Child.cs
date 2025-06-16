@@ -11,10 +11,6 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
     public class Child : AuditableEntity<long>
     {
         /// <summary>
-        /// شناسه راننده
-        /// </summary>
-        //public long? DriverRef { get; set; }
-        /// <summary>
         /// شناسه والدین
         /// </summary>
          public long ParentRef { get; set; }

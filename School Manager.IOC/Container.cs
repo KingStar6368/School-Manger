@@ -55,6 +55,8 @@ namespace School_Manager.IOC
             services.AddScoped<IValidator<UserEditDTO>, UserEditDTOValidator>();
             services.AddScoped<IValidator<BillCreateDto>, BillCreateDtoValidator>();
             services.AddScoped<IValidator<BillUpdateDto>, BillUpdateDtoValidator>();
+            services.AddScoped<IValidator<ChildCreateDto>, ChildCreateDtoValidator>();
+            services.AddScoped<IValidator<ChildUpdateDto>, ChildUpdateDtoValidator>();
         }
     }
 }

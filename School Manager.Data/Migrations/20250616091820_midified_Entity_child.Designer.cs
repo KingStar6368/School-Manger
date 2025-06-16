@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using School_Manager.Data.Context;
 
@@ -11,9 +12,11 @@ using School_Manager.Data.Context;
 namespace School_Manager.Data.Migrations
 {
     [DbContext(typeof(SchMSDBContext))]
-    partial class SchMSDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250616091820_midified_Entity_child")]
+    partial class midified_Entity_child
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
