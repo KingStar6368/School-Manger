@@ -30,7 +30,7 @@
         /// </summary>
         public DateTime? PaidTime { get; set; }
         /// <summary>
-        /// تاریخ انقضای فرار داد
+        /// تاریخ انقضای فرار داد NewV
         /// </summary>
         public DateTime BillExpiredTime { get; set; }
     }
