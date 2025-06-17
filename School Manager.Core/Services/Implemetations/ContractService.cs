@@ -3,12 +3,6 @@ using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Operation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace School_Manager.Core.Services.Implemetations
 {
