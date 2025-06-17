@@ -42,6 +42,9 @@ namespace School_Manager.IOC
             services.AddScoped<IDriverService, DriverService>();
             services.AddScoped<IChildService,ChildService>();
             services.AddScoped<IParentService,ParentService>();
+            services.AddScoped<ICarService,CarService>();
+            services.AddScoped<IChequeService,ChequeService>();
+            services.AddScoped<IContractService,ContractService>();
             //services.AddScoped<I,>();
             //services.AddScoped<I,>();
             services.AddScoped<IRawMaterialService, RawMaterialService>();

@@ -30,6 +30,41 @@
         /// </summary>
         public byte[] SignatureImage { get; set; }
     }
+    public interface IDriverContractDto
+    {
+        /// <summary>
+        /// شناسه راننده
+        /// </summary>
+        public long DriverRef { get; set; }
+        /// <summary>
+        /// تاریخ شروع قرار داد 
+        /// </summary>
+        public DateTime StartTime { get; set; }
+        /// <summary>
+        /// تاریخ اتمام قرار داد
+        /// </summary>
+        public DateTime EndTime { get; set; }
+        /// <summary>
+        /// عکس امضا
+        /// </summary>
+        public byte[] SignatureImage { get; set; }
+    }
+    public class DriverContractCreateDto : IDriverContractDto
+    {
+        public long DriverRef { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public byte[] SignatureImage { get; set; }
+    }
+    public class DriverContractUpdateDto : IDriverContractDto
+    {
+        public long Id { get; set; }
+        public long DriverRef { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public byte[] SignatureImage { get; set; }
+    }
+
     /// <summary>
     /// قرار داد خانواده
     /// </summary>
@@ -72,42 +107,50 @@
         /// </summary>
         public CheckDto Check { get; set; }
     }
-    /// <summary>
-    /// کلاس چک
-    /// </summary>
-    public class CheckDto
+    public interface IServiceContractDto
     {
         /// <summary>
-        /// کد
+        /// شناسه فرزند
         /// </summary>
+        public long ChildRef { get; set; }
+        /// <summary>
+        /// مبلغ کل قرار داد
+        /// </summary>
+        public long TotalPrice { get; set; }
+        /// <summary>
+        /// مبلغ در هر ماه
+        /// </summary>
+        public long MonthPrice { get; set; }
+        /// <summary>
+        /// تاریخ شروع قرار داد
+        /// </summary>
+        public DateTime StartTime { get; set; }
+        /// <summary>
+        /// تاریخ اتمام قرار داد
+        /// </summary>
+        public DateTime EndTime { get; set; }
+        /// <summary>
+        /// عکس امضا
+        /// </summary>
+        public byte[] SignatureImage { get; set; }
+    }
+    public class ServiceContractCreateDto : IServiceContractDto
+    {
+        public long ChildRef { get; set; }
+        public long TotalPrice { get; set; }
+        public long MonthPrice { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public byte[] SignatureImage { get; set; }
+    }
+    public class ServiceContractUpdateDto : IServiceContractDto
+    {
         public long Id { get; set; }
-        /// <summary>
-        /// کد قرار داد
-        /// </summary>
-        public long ContractId { get; set; }
-        /// <summary>
-        /// مقدار چک
-        /// </summary>
-        public long Price { get; set; }
-        /// <summary>
-        /// سریال چک
-        /// </summary>
-        public string CheckSerial { get; set; }
-        /// <summary>
-        /// شناسه صیاد
-        /// </summary>
-        public string CheckSayadNumber { get; set; }
-        /// <summary>
-        /// نام بانک
-        /// </summary>
-        public LookupComboViewModel BankName { get; set; }
-        /// <summary>
-        /// نام دارند چک
-        /// </summary>
-        public string CheckOwner { get; set; }
-        /// <summary>
-        /// زمان چک
-        /// </summary>
-        public DateTime CheckTime { get; set; }
+        public long ChildRef { get; set; }
+        public long TotalPrice { get; set; }
+        public long MonthPrice { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public byte[] SignatureImage { get; set; }
     }
 }

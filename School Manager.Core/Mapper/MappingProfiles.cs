@@ -32,6 +32,14 @@ namespace School_Manager.Core.Mapper
             CreateMap<Car, CarInfoDto>()
                 .ForMember(dest => dest.Color,opt => opt.MapFrom<ColorResolver>())
                 .ForMember(dest=>dest.PlateNumber,opt=>opt.MapFrom(src=>src.FirstIntPlateNumber+src.ChrPlateNumber+src.SecondIntPlateNumber+src.ThirdIntPlateNumber));
+            CreateMap<CarCreateDto, Car>()
+                .ForMember(dest => dest.carType,opt => opt.MapFrom(src=> (CarType)src.carType));
+            CreateMap<CarUpdateDto, Car>()
+                .ForMember(dest => dest.carType, opt => opt.MapFrom(src => (CarType)src.carType));
+            #endregion
+            #region Cheque
+            CreateMap<ChequeCreateDto, Cheque>();
+            CreateMap<ChequeUpdateDto, Cheque>();
             #endregion
             #region Child
             CreateMap<Child, ChildInfo>()
@@ -50,6 +58,10 @@ namespace School_Manager.Core.Mapper
                 .ForMember(dest => dest.BankAccount,opt => opt.MapFrom<BankAccountResolver>());
             CreateMap<DriverCreateDto, Driver>();
             CreateMap<DriverUpdateDto, Driver>();
+            #endregion
+            #region DriverContract
+            CreateMap<DriverContractCreateDto, DriverContract>();
+            CreateMap<DriverContractUpdateDto, DriverContract>();
             #endregion
             #region Location Data
             CreateMap<LocationData, LocationDataDto>();
@@ -125,6 +137,10 @@ namespace School_Manager.Core.Mapper
             #endregion
             #region Service
             CreateMap<ServiceContract, ServiceContractDto>();
+            #endregion
+            #region SrviceContract
+            CreateMap<ServiceContractCreateDto, ServiceContract>();
+            CreateMap<ServiceContractUpdateDto, ServiceContract>();
             #endregion
             #region User
             //CreateMap<User, UserVM>()
