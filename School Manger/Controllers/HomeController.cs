@@ -4,6 +4,7 @@ using iText.Layout.Element;
 using iText.Layout.Properties;
 using Microsoft.AspNetCore.Mvc;
 using PersianTextShaper;
+using School_Manager.Core.Services.Interfaces;
 using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models;
@@ -15,11 +16,13 @@ namespace School_Manger.Controllers
     {
         //static data
         ParentDashbordView Static_Parent;
-        private readonly ILogger<HomeController> _logger;
+        private readonly IParentService _PService;
+        private readonly IChildService _CService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IParentService PService,IChildService CService)
         {
-            _logger = logger;
+            _PService = PService;
+            _CService = CService;
             Static_Parent = new ParentDashbordView()
             {
                 Parent = new Parent()
