@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using School_Manager.Data.Context;
 
@@ -11,9 +12,11 @@ using School_Manager.Data.Context;
 namespace School_Manager.Data.Migrations
 {
     [DbContext(typeof(SchMSDBContext))]
-    partial class SchMSDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250616091820_midified_Entity_child")]
+    partial class midified_Entity_child
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -287,6 +290,9 @@ namespace School_Manager.Data.Migrations
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<long?>("DriverContractRef")
+                        .HasColumnType("bigint");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -299,7 +305,14 @@ namespace School_Manager.Data.Migrations
                     b.Property<long>("Price")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("ServiceContractRef")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("DriverContractRef");
+
+                    b.HasIndex("ServiceContractRef");
 
                     b.ToTable("Cheques");
                 });
@@ -440,13 +453,7 @@ namespace School_Manager.Data.Migrations
                         .HasColumnType("nvarchar(11)")
                         .HasComment("کد ملی");
 
-                    b.Property<int>("Rate")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserRef")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Warnning")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -517,6 +524,9 @@ namespace School_Manager.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<long>("ChequeRef")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
 
@@ -558,48 +568,6 @@ namespace School_Manager.Data.Migrations
                     b.ToTable("DriverContracts");
                 });
 
-            modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.DriverContractCheque", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("ChequeRef")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("CreatedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("DeletedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("DriverContractRef")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<long?>("LastModifiedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DriverContractRef");
-
-                    b.ToTable("DriverContractCheque");
-                });
-
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.LocationData", b =>
                 {
                     b.Property<long>("Id")
@@ -636,7 +604,7 @@ namespace School_Manager.Data.Migrations
                     b.Property<double>("Latitude")
                         .HasColumnType("float");
 
-                    b.Property<long?>("LocationPairRef")
+                    b.Property<long>("LocationPairRef")
                         .HasColumnType("bigint");
 
                     b.Property<int>("LocationType")
@@ -786,9 +754,6 @@ namespace School_Manager.Data.Migrations
                         .HasComment("نام");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsMale")
                         .HasColumnType("bit");
 
                     b.Property<long?>("LastModifiedBy")
@@ -989,9 +954,8 @@ namespace School_Manager.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("AddressNavigationId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
@@ -1014,11 +978,8 @@ namespace School_Manager.Data.Migrations
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
+                    b.Property<long>("LocationDataRef")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("ManagerName")
                         .IsRequired()
@@ -1034,6 +995,8 @@ namespace School_Manager.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressNavigationId");
 
                     b.ToTable("Schools");
                 });
@@ -1093,48 +1056,6 @@ namespace School_Manager.Data.Migrations
                     b.ToTable("ServiceContracts");
                 });
 
-            modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.ServiceContractCheque", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("ChequeRef")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("CreatedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long?>("DeletedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<long?>("LastModifiedBy")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime?>("LastModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("ServiceContractRef")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ServiceContractRef");
-
-                    b.ToTable("ServiceContractCheque");
-                });
-
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Bill", b =>
                 {
                     b.HasOne("School_Manager.Domain.Entities.Catalog.Operation.ServiceContract", "ServiceContractNavigation")
@@ -1155,6 +1076,23 @@ namespace School_Manager.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("DriverNavigation");
+                });
+
+            modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Cheque", b =>
+                {
+                    b.HasOne("School_Manager.Domain.Entities.Catalog.Operation.DriverContract", "DriverContractNavigation")
+                        .WithMany("Cheques")
+                        .HasForeignKey("DriverContractRef")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("School_Manager.Domain.Entities.Catalog.Operation.ServiceContract", "ServiceContractNavigation")
+                        .WithMany("Cheques")
+                        .HasForeignKey("ServiceContractRef")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("DriverContractNavigation");
+
+                    b.Navigation("ServiceContractNavigation");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Child", b =>
@@ -1216,31 +1154,13 @@ namespace School_Manager.Data.Migrations
                     b.Navigation("DriverNavigation");
                 });
 
-            modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.DriverContractCheque", b =>
-                {
-                    b.HasOne("School_Manager.Domain.Entities.Catalog.Operation.Cheque", "ChequeNavigation")
-                        .WithMany("DriverContractCheques")
-                        .HasForeignKey("DriverContractRef")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("School_Manager.Domain.Entities.Catalog.Operation.DriverContract", "DriverContractNavigation")
-                        .WithMany("DriverContractCheques")
-                        .HasForeignKey("DriverContractRef")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("ChequeNavigation");
-
-                    b.Navigation("DriverContractNavigation");
-                });
-
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.LocationData", b =>
                 {
                     b.HasOne("School_Manager.Domain.Entities.Catalog.Operation.LocationPair", "LocationPairNavigation")
                         .WithMany("Locations")
                         .HasForeignKey("LocationPairRef")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("LocationPairNavigation");
                 });
@@ -1286,6 +1206,17 @@ namespace School_Manager.Data.Migrations
                     b.Navigation("PayNavigation");
                 });
 
+            modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.School", b =>
+                {
+                    b.HasOne("School_Manager.Domain.Entities.Catalog.Operation.LocationData", "AddressNavigation")
+                        .WithMany()
+                        .HasForeignKey("AddressNavigationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AddressNavigation");
+                });
+
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.ServiceContract", b =>
                 {
                     b.HasOne("School_Manager.Domain.Entities.Catalog.Operation.Child", "ChildNavigation")
@@ -1295,25 +1226,6 @@ namespace School_Manager.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ChildNavigation");
-                });
-
-            modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.ServiceContractCheque", b =>
-                {
-                    b.HasOne("School_Manager.Domain.Entities.Catalog.Operation.Cheque", "ChequeNavigation")
-                        .WithMany("ServiceContractCheques")
-                        .HasForeignKey("ServiceContractRef")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("School_Manager.Domain.Entities.Catalog.Operation.ServiceContract", "ServiceContractNavigation")
-                        .WithMany("ServiceContractCheques")
-                        .HasForeignKey("ServiceContractRef")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("ChequeNavigation");
-
-                    b.Navigation("ServiceContractNavigation");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Identity.User", b =>
@@ -1326,13 +1238,6 @@ namespace School_Manager.Data.Migrations
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Bill", b =>
                 {
                     b.Navigation("PayBills");
-                });
-
-            modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Cheque", b =>
-                {
-                    b.Navigation("DriverContractCheques");
-
-                    b.Navigation("ServiceContractCheques");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Child", b =>
@@ -1355,7 +1260,7 @@ namespace School_Manager.Data.Migrations
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.DriverContract", b =>
                 {
-                    b.Navigation("DriverContractCheques");
+                    b.Navigation("Cheques");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.LocationPair", b =>
@@ -1382,7 +1287,7 @@ namespace School_Manager.Data.Migrations
                 {
                     b.Navigation("BillNavigation");
 
-                    b.Navigation("ServiceContractCheques");
+                    b.Navigation("Cheques");
                 });
 #pragma warning restore 612, 618
         }

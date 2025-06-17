@@ -37,13 +37,13 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public string Class { get; set; }
         /// <summary>
-        /// کد راننده NewV
+        /// کد راننده 
         /// </summary>
-        public long DriverId { get; set; }
+        public long? DriverId { get; set; }
         /// <summary>
-        /// کد مدرسه NewV
+        /// کد مدرسه 
         /// </summary>
-        public long SchoolId { get; set; }
+        public long? SchoolId { get; set; }
         /// <summary>
         /// کامل پرداخت شده ؟
         /// </summary>
@@ -57,12 +57,8 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public List<BillDto> Bills { get; set; }
     }
-    public class ChildCreateDto
+    public interface IChildDto
     {
-        /// <summary>
-        /// شناسه راننده
-        /// </summary>
-        public long DriverRef { get; set; }
         /// <summary>
         /// شناسه والدین
         /// </summary>
@@ -70,7 +66,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// <summary>
         /// شناسه مدرسه
         /// </summary>
-        public long SchoolRef { get; set; }
+        public long? SchoolRef { get; set; }
         /// <summary>
         /// نام
         /// </summary>
@@ -92,13 +88,8 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public int Class { get; set; }
     }
-    public class ChildUpdateDto
+    public class ChildCreateDto : IChildDto
     {
-        public long Id { get; set; }
-        /// <summary>
-        /// شناسه راننده
-        /// </summary>
-        public long DriverRef { get; set; }
         /// <summary>
         /// شناسه والدین
         /// </summary>
@@ -106,7 +97,39 @@ namespace School_Manager.Core.ViewModels.FModels
         /// <summary>
         /// شناسه مدرسه
         /// </summary>
-        public long SchoolRef { get; set; }
+        public long? SchoolRef { get; set; }
+        /// <summary>
+        /// نام
+        /// </summary>
+        public string FirstName { get; set; }
+        /// <summary>
+        /// نام خانوادگی
+        /// </summary>
+        public string LastName { get; set; }
+        /// <summary>
+        /// کدملی
+        /// </summary>
+        public string NationalCode { get; set; }
+        /// <summary>
+        /// تاریخ تولد
+        /// </summary>
+        public DateTime BirthDate { get; set; }
+        /// <summary>
+        /// کلاس تحصیلی
+        /// </summary>
+        public int Class { get; set; }
+    }
+    public class ChildUpdateDto : IChildDto
+    {
+        public long Id { get; set; }
+        /// <summary>
+        /// شناسه والدین
+        /// </summary>
+        public long ParentRef { get; set; }
+        /// <summary>
+        /// شناسه مدرسه
+        /// </summary>
+        public long? SchoolRef { get; set; }
         /// <summary>
         /// نام
         /// </summary>

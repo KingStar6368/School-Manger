@@ -11,9 +11,9 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
     public class LocationData : AuditableEntity<long>
     {
         /// <summary>
-        /// شنایه مسیر
+        /// شناسه مسیر
         /// </summary>
-        public long LocationPairRef { get; set; }
+        public long? LocationPairRef { get; set; }
         /// <summary>
         /// طول جرافیایی
         /// </summary>

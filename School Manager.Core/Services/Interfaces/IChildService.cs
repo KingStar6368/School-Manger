@@ -43,7 +43,7 @@ namespace School_Manager.Core.Services.Interfaces
         /// </summary>
         /// <param name="child">فرزند</param>
         /// <returns>شناسه فرزند اگر ناموفق صفر می شود</returns>
-        public int CreateChild(ChildCreateDto child);
+        public long CreateChild(ChildCreateDto child);
         /// <summary>
         /// بروز رسانی فرزند
         /// </summary>

@@ -38,5 +38,23 @@ namespace School_Manager.Core.Services.Interfaces
         /// <param name="SchoolId">شناسه مدرسه</param>
         /// <returns>کلاس راننده های که در لیست رانندگان مدرسه وجود دارد</returns>
         Task<List<DriverDto>> GetDrivers(int SchoolId);
+        /// <summary>
+        /// ایجاد راننده
+        /// </summary>
+        /// <param name="driver">راننده</param>
+        /// <returns>شناسه راننده</returns>
+        long CreateDriver(DriverCreateDto driver);
+        /// <summary>
+        /// حذف
+        /// </summary>
+        /// <param name="id">شناسه راننده</param>
+        /// <returns>آیا موفق بود؟</returns>
+        bool DeleteDriver(long id);
+        /// <summary>
+        /// بروز رسانی
+        /// </summary>
+        /// <param name="driver"></param>
+        /// <returns></returns>
+        bool UpdateDriver(DriverUpdateDto driver);
     }
 }

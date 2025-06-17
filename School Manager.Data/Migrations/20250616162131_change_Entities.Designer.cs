@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using School_Manager.Data.Context;
 
@@ -11,9 +12,11 @@ using School_Manager.Data.Context;
 namespace School_Manager.Data.Migrations
 {
     [DbContext(typeof(SchMSDBContext))]
-    partial class SchMSDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250616162131_change_Entities")]
+    partial class change_Entities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -516,6 +519,9 @@ namespace School_Manager.Data.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ChequeRef")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");

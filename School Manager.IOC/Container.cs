@@ -42,6 +42,9 @@ namespace School_Manager.IOC
             services.AddScoped<IDriverService, DriverService>();
             services.AddScoped<IChildService,ChildService>();
             services.AddScoped<IParentService,ParentService>();
+            services.AddScoped<ICarService,CarService>();
+            services.AddScoped<IChequeService,ChequeService>();
+            services.AddScoped<IContractService,ContractService>();
             //services.AddScoped<I,>();
             //services.AddScoped<I,>();
             services.AddScoped<IRawMaterialService, RawMaterialService>();
@@ -55,6 +58,14 @@ namespace School_Manager.IOC
             services.AddScoped<IValidator<UserEditDTO>, UserEditDTOValidator>();
             services.AddScoped<IValidator<BillCreateDto>, BillCreateDtoValidator>();
             services.AddScoped<IValidator<BillUpdateDto>, BillUpdateDtoValidator>();
+            services.AddScoped<IValidator<ChildCreateDto>, ChildCreateDtoValidator>();
+            services.AddScoped<IValidator<ChildUpdateDto>, ChildUpdateDtoValidator>();
+            services.AddScoped<IValidator<DriverCreateDto>, DriverCreateDtoValidator>();
+            services.AddScoped<IValidator<DriverUpdateDto>, DriverUpdateDtoValidator>();
+            services.AddScoped<IValidator<ParentCreateDto>, ParentCreateDtoValidator>();
+            services.AddScoped<IValidator<ParentUpdateDto>, ParentUpdateDtoValidator>();
+            services.AddScoped<IValidator<SchoolCreateDto>, SchoolCreateDtoValidator>();
+            services.AddScoped<IValidator<SchoolUpdateDto>, SchoolUpdateDtoValidator>();
         }
     }
 }

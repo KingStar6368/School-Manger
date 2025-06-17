@@ -14,10 +14,6 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public long DriverRef { get; set; }
         /// <summary>
-        /// شناسه چک
-        /// </summary>
-        public long ChequeRef { get; set; }
-        /// <summary>
         /// تاریخ شروع قرار داد 
         /// </summary>
         public DateTime StartTime { get; set; }
@@ -32,7 +28,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// کد چک کلاس
         /// </summary>
-        public virtual ICollection<Cheque> Cheques { get; set; }
+        public virtual ICollection<DriverContractCheque> DriverContractCheques { get; set; }
         /// <summary>
         /// کلاس راننده
         /// </summary>

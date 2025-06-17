@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using School_Manager.Core.Services.Interfaces;
+using School_Manager.Core.Services.Validations;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Operation;
@@ -16,10 +18,15 @@ namespace School_Manager.Core.Services.Implemetations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public ChildService(IUnitOfWork unitOfWork,IMapper mapper)
+        private readonly IValidator<ChildCreateDto> _createValidator;
+        private readonly IValidator<ChildUpdateDto> _UpdateValidator;
+
+        public ChildService(IUnitOfWork unitOfWork,IMapper mapper,IValidator<ChildCreateDto> createValidator, IValidator<ChildUpdateDto> updateValidator)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _createValidator = createValidator;
+            _UpdateValidator = updateValidator;
         }
 
         public ChildInfo GetChild(long id)
@@ -93,19 +100,52 @@ namespace School_Manager.Core.Services.Implemetations
             return _mapper.Map<SchoolDto>(ds.SchoolNavigation);
         }
 
-        public int CreateChild(ChildCreateDto child)
+        public long CreateChild(ChildCreateDto child)
         {
-            throw new NotImplementedException();
+            long result = 0;
+            var validationResult = _createValidator.Validate(child);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
+                throw new ValidationException(errors);
+            }
+            var mChild = _mapper.Map<Child>(child);
+            _unitOfWork.GetRepository<Child>().Add(mChild);
+            if (_unitOfWork.SaveChanges() > 0)
+                result = mChild.Id;
+            return result;
         }
 
         public bool DeleteChild(long ChildId)
         {
-            throw new NotImplementedException();
+            var child = _unitOfWork.GetRepository<Child>()
+                        .Query(x => x.Id == ChildId)
+                        .Include(x => x.ServiceContracts)
+                        .FirstOrDefault();
+
+            if (child == null) return false;
+
+            // بررسی وجود اطلاعات وابسته
+            if ((child.ServiceContracts?.Any() ?? false))
+            {
+                throw new InvalidOperationException("این قبض دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
+            }
+            _unitOfWork.GetRepository<Child>().Remove(child);
+            return _unitOfWork.SaveChanges() > 0;
         }
 
         public bool UpdateChild(ChildUpdateDto child)
         {
-            throw new NotImplementedException();
+            var mainchild = _unitOfWork.GetRepository<Child>().GetById(child.Id);
+            var validationResult = _UpdateValidator.Validate(child);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
+                throw new ValidationException(errors);
+            }
+            _mapper.Map(child, mainchild);
+            _unitOfWork.GetRepository<Child>().Update(mainchild);
+            return _unitOfWork.SaveChanges() > 0;
         }
     }
 }

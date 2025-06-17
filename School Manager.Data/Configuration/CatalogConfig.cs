@@ -1,12 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using School_Manager.Domain.Entities.Catalog.App;
 using School_Manager.Domain.Entities.Catalog.Identity;
 using School_Manager.Domain.Entities.Catalog.Operation;
@@ -45,6 +38,7 @@ namespace School_Manager.Data.Configuration
             builder.HasOne(d => d.DriverNavigation).WithMany(p => p.Cars)
             .HasForeignKey(f => f.DriverRef)
             .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
@@ -61,10 +55,10 @@ namespace School_Manager.Data.Configuration
                 .HasColumnType("nvarchar(24)")
                 .HasComment("شناسه صیاد");
 
-            builder.HasOne(d => d.ServiceContractNavigation).WithMany(p => p.Cheques)
-                        .HasForeignKey(f => f.ServiceContractRef)
-                        .OnDelete(DeleteBehavior.Restrict);
-            builder.HasQueryFilter(x => !x.IsDeleted);
+            //builder.HasMany(d => d.).Withone(p => p.Cheques)
+            //            .HasForeignKey(f => f.ServiceContractRef)
+            //            .OnDelete(DeleteBehavior.Restrict);
+            //builder.HasQueryFilter(x => !x.IsDeleted);
 
         }
     }
@@ -101,6 +95,7 @@ namespace School_Manager.Data.Configuration
             builder.HasMany(p=>p.LocationPairs).WithOne(d=>d.ChildNavigation)
                 .HasForeignKey(fk=>fk.ChildRef)
                 .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
@@ -131,6 +126,7 @@ namespace School_Manager.Data.Configuration
             builder.HasMany(d => d.Passanger).WithOne(p => p.DriverNavigation)
                 .HasForeignKey(f => f.DriverRef)
                 .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
@@ -138,16 +134,27 @@ namespace School_Manager.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<DriverContract> builder)
         {
-            builder.HasMany(d => d.Cheques).WithOne(p => p.DriverContractNavigation)
+            builder.HasMany(d => d.DriverContractCheques).WithOne(p => p.DriverContractNavigation)
                 .HasForeignKey(f => f.DriverContractRef)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(d => d.DriverNavigation).WithMany(p => p.DriverContracts)
                 .HasForeignKey(f => f.DriverRef)
                 .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
+    public class DriverContractChequeConfig : IEntityTypeConfiguration<DriverContractCheque>
+    {
+        public void Configure(EntityTypeBuilder<DriverContractCheque> builder)
+        {
+            builder.HasOne(d=>d.ChequeNavigation).WithMany(p=>p.DriverContractCheques)
+                .HasForeignKey(fk=>fk.DriverContractRef)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
+
     public class LocationDataConfig : IEntityTypeConfiguration<LocationData>
     {
         public void Configure(EntityTypeBuilder<LocationData> builder)
@@ -169,6 +176,7 @@ namespace School_Manager.Data.Configuration
             builder.HasMany(p=>p.Locations).WithOne(d=>d.LocationPairNavigation)
                 .HasForeignKey(fk=>fk.LocationPairRef)
                 .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
@@ -188,6 +196,7 @@ namespace School_Manager.Data.Configuration
 
             builder.HasIndex(p => new { p.Type, p.Code })
                 .IsUnique(true);
+
             builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
@@ -209,6 +218,7 @@ namespace School_Manager.Data.Configuration
             .HasColumnType("nvarchar(11)")
             .IsRequired()
             .HasComment("کد ملی");
+
             builder.HasQueryFilter(x => !x.IsDeleted);
 
 
@@ -224,6 +234,7 @@ namespace School_Manager.Data.Configuration
 
             builder.Property(p => p.PayType)
             .HasConversion<int>();
+
             builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
@@ -310,6 +321,8 @@ namespace School_Manager.Data.Configuration
                 .HasForeignKey(p=>p.SchoolRef)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            //builder.HasOne(p => p.AddressNavigation).WithMany(b=>b.)
+
             builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
@@ -317,10 +330,25 @@ namespace School_Manager.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<ServiceContract> builder)
         {
+            builder.HasMany(p => p.ServiceContractCheques).WithOne(b => b.ServiceContractNavigation)
+                .HasForeignKey(fk => fk.ServiceContractRef)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(x => !x.IsDeleted);
+
             builder.HasOne(p => p.ChildNavigation).WithMany(b => b.ServiceContracts)
                 .HasForeignKey(fk => fk.ChildRef)
                 .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasQueryFilter(x => !x.IsDeleted);
+        }
+    }
+    public class ServiceContractChequeConfig : IEntityTypeConfiguration<ServiceContractCheque>
+    {
+        public void Configure(EntityTypeBuilder<ServiceContractCheque> builder)
+        {
+            builder.HasOne(d => d.ChequeNavigation).WithMany(p => p.ServiceContractCheques)
+                .HasForeignKey(fk => fk.ServiceContractRef)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
     public class TrialConfig : IEntityTypeConfiguration<Trail>
