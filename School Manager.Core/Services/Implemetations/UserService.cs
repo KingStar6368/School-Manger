@@ -95,7 +95,7 @@ namespace School_Manager.Core.Services.Implemetations
 		}
 
 
-		public bool UpdateUser(UserEditDTO User)
+		public bool UpdateUser(UserUpdateDTO User)
 		{
 			try
 			{

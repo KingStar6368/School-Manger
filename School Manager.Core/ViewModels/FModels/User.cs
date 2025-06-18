@@ -38,7 +38,7 @@ namespace School_Manager.Core.ViewModels.FModels
         public  string LastName { get; set; }
         public bool IsActive { get; set; }
     }
-    public class UserEditDTO
+    public class UserUpdateDTO
     {
         public int Id { get; set; }
         public required string UserName { get; set; }

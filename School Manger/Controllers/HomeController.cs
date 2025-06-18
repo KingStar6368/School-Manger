@@ -4,6 +4,7 @@ using iText.Layout.Element;
 using iText.Layout.Properties;
 using Microsoft.AspNetCore.Mvc;
 using PersianTextShaper;
+using School_Manager.Core.Services.Interfaces;
 using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models;
@@ -16,9 +17,11 @@ namespace School_Manger.Controllers
         //static data
         ParentDashbordView Static_Parent;
         private readonly ILogger<HomeController> _logger;
+        private readonly IUserService _userService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,IUserService userService)
         {
+            _userService = userService;
             _logger = logger;
             Static_Parent = new ParentDashbordView()
             {
@@ -145,6 +148,15 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult SignIn()
         {
+            _userService.CreateUser(new School_Manager.Core.ViewModels.FModels.UserCreateDTO
+            {
+                UserName = "testUserName",
+                FirstName = "testName",
+                IsActive = true,
+                Mobile = "+989181605874",
+                LastName = "testFamily",
+                PasswordHash = ""
+            });
             return View("OTPConfirmation");
         }
         [HttpPost]
