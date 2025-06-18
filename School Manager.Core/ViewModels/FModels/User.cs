@@ -31,7 +31,7 @@ namespace School_Manager.Core.ViewModels.FModels
 
     public class UserCreateDTO
     {
-        public required string UserName { get; set; }
+        public  string UserName { get; set; }
         public string PasswordHash { get; set; }
         public  string Mobile { get; set; }
         public  string FirstName { get; set; }
@@ -41,7 +41,7 @@ namespace School_Manager.Core.ViewModels.FModels
     public class UserUpdateDTO
     {
         public int Id { get; set; }
-        public required string UserName { get; set; }
+        public  string UserName { get; set; }
         public string PasswordHash{ get; set; }
         public string Mobile { get; set; }
         public string FirstName { get; set; }
