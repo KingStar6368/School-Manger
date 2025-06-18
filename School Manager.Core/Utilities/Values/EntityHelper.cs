@@ -15,7 +15,8 @@ namespace School_Manager.Core.Utilities.Values
             byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
             using (Aes encryptor = Aes.Create())
             {
-                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(_EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                var salt = Encoding.UTF8.GetBytes("Babak Abolfazl Mehrab");
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(_EncryptionKey,salt);
                 encryptor.Key = pdb.GetBytes(32);
                 encryptor.IV = pdb.GetBytes(16);
                 using (MemoryStream ms = new MemoryStream())
@@ -36,7 +37,8 @@ namespace School_Manager.Core.Utilities.Values
             byte[] cipherBytes = Convert.FromBase64String(cipherText);
             using (Aes encryptor = Aes.Create())
             {
-                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(_EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                var salt = Encoding.UTF8.GetBytes("Babak Abolfazl Mehrab"); 
+                using var pdb = new Rfc2898DeriveBytes(_EncryptionKey, salt);
                 encryptor.Key = pdb.GetBytes(32);
                 encryptor.IV = pdb.GetBytes(16);
                 using (MemoryStream ms = new MemoryStream())

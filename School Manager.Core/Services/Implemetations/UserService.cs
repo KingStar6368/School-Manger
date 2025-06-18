@@ -21,7 +21,7 @@ namespace School_Manager.Core.Services.Implemetations
             _mapper = mapper;
         }
 
-        public UserVM CheckAuthorize(string UserName, string Password)
+        public UserDTO CheckAuthorize(string UserName, string Password)
         {
             var data = _unitOfWork.GetRepository<User>().Query(
 				predicate: p=>p.UserName == UserName && p.PasswordHash == EntityHelper.Encrypt(Password),
@@ -37,13 +37,13 @@ namespace School_Manager.Core.Services.Implemetations
 					//.ThenInclude(x=>x.AppFormsOperationNavigation)
 					//.ThenInclude(x=>x.AppFormNavigation)
 				}).FirstOrDefault();
-            return _mapper.Map<UserVM>(data);
+            return _mapper.Map<UserDTO>(data);
         }
 
-        public async Task<List<UserVM>> GetAllAsync()
+        public async Task<List<UserDTO>> GetAllAsync()
         {
             var results = await _unitOfWork.GetRepository<User>().GetAllAsync();
-            return results.Select(a=>new UserVM { Id = a.Id}).ToList();
+            return results.Select(a=>new UserDTO { Id = a.Id}).ToList();
         }
 
         /// <summary>
@@ -59,10 +59,10 @@ namespace School_Manager.Core.Services.Implemetations
 
 
 
-		public UserVM GetUserById(int id)
+		public UserDTO GetUserById(int id)
         {
             var d = _unitOfWork.GetRepository<User>().GetByIdAsync(id).Result;
-            return new UserVM
+            return new UserDTO
             {
                 Id = d.Id,
             }; 
@@ -95,7 +95,7 @@ namespace School_Manager.Core.Services.Implemetations
 		}
 
 
-		public bool Update(UserEditDTO User)
+		public bool UpdateUser(UserEditDTO User)
 		{
 			try
 			{
@@ -158,7 +158,7 @@ namespace School_Manager.Core.Services.Implemetations
 			return ds;
         }
 
-        public UserVM GetUserById(long id)
+        public UserDTO GetUserById(long id)
         {
             throw new NotImplementedException();
         }
@@ -168,12 +168,12 @@ namespace School_Manager.Core.Services.Implemetations
             throw new NotImplementedException();
         }
 
-        long IUserService.SaveUser(UserCreateDTO User)
+        long IUserService.CreateUser(UserCreateDTO User)
         {
             return SaveUser(User);
         }
 
-        public bool Delete(long UserId)
+        public bool DeleteUser(long UserId)
         {
             throw new NotImplementedException();
         }
