@@ -177,7 +177,8 @@ namespace School_Manager.Data.Configuration
         {
             builder.Property(p => p.Type)
                 .HasColumnType("nvarchar(50)")
-                .HasComment("نوع");
+                .IsRequired()
+                .HasComment("نوع"); 
 
             builder.Property(p => p.Value)
                 .HasColumnType("nvarchar(100)")
