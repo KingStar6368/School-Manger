@@ -143,6 +143,8 @@ namespace School_Manager.Data.Configuration
             builder.HasOne(d=>d.ChequeNavigation).WithMany(p=>p.DriverContractCheques)
                 .HasForeignKey(fk=>fk.DriverContractRef)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
 
@@ -331,6 +333,8 @@ namespace School_Manager.Data.Configuration
             builder.HasOne(d => d.ChequeNavigation).WithMany(p => p.ServiceContractCheques)
                 .HasForeignKey(fk => fk.ServiceContractRef)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
     public class TrialConfig : IEntityTypeConfiguration<Trail>

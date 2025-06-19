@@ -62,6 +62,7 @@ namespace School_Manager.Core.Mapper
             #region DriverContract
             CreateMap<DriverContractCreateDto, DriverContract>();
             CreateMap<DriverContractUpdateDto, DriverContract>();
+            CreateMap<DriverContractChequeUpdateDto, DriverContractCheque>();
             #endregion
             #region Location Data
             CreateMap<LocationData, LocationDataDto>();
@@ -141,6 +142,7 @@ namespace School_Manager.Core.Mapper
             #region SrviceContract
             CreateMap<ServiceContractCreateDto, ServiceContract>();
             CreateMap<ServiceContractUpdateDto, ServiceContract>();
+            CreateMap<ServiceContractChequeUpdateDto, ServiceContractCheque>();
             #endregion
             #region User
             //CreateMap<User, UserVM>()

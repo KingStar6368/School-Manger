@@ -126,7 +126,7 @@ namespace School_Manager.Data.Migrations
                     b.HasIndex("UserName")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Bill", b =>
@@ -172,7 +172,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("ServiceContractRef");
 
-                    b.ToTable("Bills");
+                    b.ToTable("Bills", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Car", b =>
@@ -244,7 +244,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("DriverRef");
 
-                    b.ToTable("Cars");
+                    b.ToTable("Cars", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Cheque", b =>
@@ -301,7 +301,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cheques");
+                    b.ToTable("Cheques", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Child", b =>
@@ -366,7 +366,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("SchoolRef");
 
-                    b.ToTable("Children");
+                    b.ToTable("Children", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Driver", b =>
@@ -453,7 +453,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("UserRef");
 
-                    b.ToTable("Drivers");
+                    b.ToTable("Drivers", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.DriverChild", b =>
@@ -506,7 +506,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("DriverRef");
 
-                    b.ToTable("DriverChildren");
+                    b.ToTable("DriverChildren", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.DriverContract", b =>
@@ -555,7 +555,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("DriverRef");
 
-                    b.ToTable("DriverContracts");
+                    b.ToTable("DriverContracts", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.DriverContractCheque", b =>
@@ -597,7 +597,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("DriverContractRef");
 
-                    b.ToTable("DriverContractCheque");
+                    b.ToTable("DriverContractCheque", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.LocationData", b =>
@@ -649,7 +649,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("LocationPairRef");
 
-                    b.ToTable("LocationData");
+                    b.ToTable("LocationData", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.LocationPair", b =>
@@ -697,7 +697,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("ChildRef");
 
-                    b.ToTable("LocationPair");
+                    b.ToTable("LocationPair", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Lookup", b =>
@@ -750,7 +750,7 @@ namespace School_Manager.Data.Migrations
                     b.HasIndex("Type", "Code")
                         .IsUnique();
 
-                    b.ToTable("Lookup");
+                    b.ToTable("Lookup", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Parent", b =>
@@ -814,7 +814,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("UserRef");
 
-                    b.ToTable("Parents");
+                    b.ToTable("Parents", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Pay", b =>
@@ -857,7 +857,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Pays");
+                    b.ToTable("Pays", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.PayBill", b =>
@@ -901,7 +901,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("PayRef");
 
-                    b.ToTable("PayBills");
+                    b.ToTable("PayBills", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.RawMaterial", b =>
@@ -978,7 +978,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RawMaterials");
+                    b.ToTable("RawMaterials", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.School", b =>
@@ -1035,7 +1035,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Schools");
+                    b.ToTable("Schools", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.ServiceContract", b =>
@@ -1090,7 +1090,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("ChildRef");
 
-                    b.ToTable("ServiceContracts");
+                    b.ToTable("ServiceContracts", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.ServiceContractCheque", b =>
@@ -1132,7 +1132,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("ServiceContractRef");
 
-                    b.ToTable("ServiceContractCheque");
+                    b.ToTable("ServiceContractCheque", (string)null);
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Bill", b =>

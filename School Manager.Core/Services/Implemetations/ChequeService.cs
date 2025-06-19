@@ -37,6 +37,38 @@ namespace School_Manager.Core.Services.Implemetations
             return result;
         }
 
+        public long CreateDriverContractCheque(long DriverContractId, long ChequeId)
+        {
+            long result = 0;
+            var mDto = new DriverContractCheque
+            {
+                DriverContractRef = DriverContractId,
+                ChequeRef = ChequeId
+            };
+            _unitOfWork.GetRepository<DriverContractCheque>().Add(mDto);
+            if (_unitOfWork.SaveChanges() > 0)
+            {
+                result = mDto.Id;
+            }
+            return result;
+        }
+
+        public long CreateServiceContractCheque(long ServiceContractId, long ChequeId)
+        {
+            long result = 0;
+            var mDto = new ServiceContractCheque
+            {
+                ServiceContractRef = ServiceContractId,
+                ChequeRef = ChequeId
+            };
+            _unitOfWork.GetRepository<ServiceContractCheque>().Add(mDto);
+            if (_unitOfWork.SaveChanges() > 0)
+            {
+                result = mDto.Id;
+            }
+            return result;
+        }
+
         public bool DeleteCheque(long id)
         {
             var cheque = _unitOfWork.GetRepository<Cheque>()
@@ -46,6 +78,30 @@ namespace School_Manager.Core.Services.Implemetations
             if (cheque == null) return false;
 
             _unitOfWork.GetRepository<Cheque>().Remove(cheque);
+            return _unitOfWork.SaveChanges() > 0;
+        }
+
+        public bool DeleteDriverContractCheque(long id)
+        {
+            var driverContractCheque = _unitOfWork.GetRepository<DriverContractCheque>()
+                        .Query(x => x.Id == id)
+                        .FirstOrDefault();
+
+            if (driverContractCheque == null) return false;
+
+            _unitOfWork.GetRepository<DriverContractCheque>().Remove(driverContractCheque);
+            return _unitOfWork.SaveChanges() > 0;
+        }
+
+        public bool DeleteServiceContractCheque(long id)
+        {
+            var serviceContractCheque = _unitOfWork.GetRepository<ServiceContractCheque>()
+                        .Query(x => x.Id == id)
+                        .FirstOrDefault();
+
+            if (serviceContractCheque == null) return false;
+
+            _unitOfWork.GetRepository<ServiceContractCheque>().Remove(serviceContractCheque);
             return _unitOfWork.SaveChanges() > 0;
         }
 
@@ -60,6 +116,24 @@ namespace School_Manager.Core.Services.Implemetations
             //}
             _mapper.Map(cheque, maincheque);
             _unitOfWork.GetRepository<Cheque>().Update(maincheque);
+            return _unitOfWork.SaveChanges() > 0;
+        }
+
+        public bool UpdateDriverContractCheque(DriverContractChequeUpdateDto dto)
+        {
+            var maincheque = _unitOfWork.GetRepository<DriverContractCheque>().GetById(dto.Id);
+            if (maincheque == null) return false;
+            _mapper.Map(dto, maincheque);
+            _unitOfWork.GetRepository<DriverContractCheque>().Update(maincheque);
+            return _unitOfWork.SaveChanges() > 0;
+        }
+
+        public bool UpdateServiceContractCheque(ServiceContractChequeUpdateDto dto)
+        {
+            var maincheque = _unitOfWork.GetRepository<ServiceContractCheque>().GetById(dto.Id);
+            if (maincheque == null) return false;
+            _mapper.Map(dto, maincheque);
+            _unitOfWork.GetRepository<ServiceContractCheque>().Update(maincheque);
             return _unitOfWork.SaveChanges() > 0;
         }
     }
