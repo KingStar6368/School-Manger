@@ -90,4 +90,17 @@ namespace School_Manager.Core.ViewModels.FModels
         public string CheckOwner { get; set; }
         public DateTime CheckTime { get; set; }
     }
+
+    public class DriverContractChequeUpdateDto
+    {
+        public long Id { get; set; }
+        public long DriverContractRef { get; set; }
+        public long ChequeRef { get; set; }
+    }
+    public class ServiceContractChequeUpdateDto
+    {
+        public long Id { get; set; }
+        public long ServiceContractRef { get; set; }
+        public long ChequeRef { get; set; }
+    }
 }

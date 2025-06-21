@@ -12,5 +12,11 @@ namespace School_Manager.Core.Services.Interfaces
         long CreateCheque(ChequeCreateDto cheque);
         bool DeleteCheque(long id);
         bool UpdateCheque(ChequeUpdateDto cheque);
+        long CreateDriverContractCheque(long DriverContractId, long ChequeId);
+        bool DeleteDriverContractCheque(long id);
+        bool UpdateDriverContractCheque(DriverContractChequeUpdateDto dto);
+        long CreateServiceContractCheque(long ServiceContractId,long ChequeId);
+        bool DeleteServiceContractCheque(long id);
+        bool UpdateServiceContractCheque(ServiceContractChequeUpdateDto dto);
     }
 }
