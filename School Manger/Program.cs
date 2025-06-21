@@ -1,3 +1,4 @@
+using Microsoft.Win32;
 using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.IOC;
@@ -11,15 +12,9 @@ container.Register(builder.Services);
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<IBillService, BillService>();
-builder.Services.AddScoped<IDriverService, DriverService>();
-builder.Services.AddScoped<IParentService,ParentService>();
-builder.Services.AddScoped<IChildService,ChildService>();
-builder.Services.AddScoped<IUserService,UserService>();
-builder.Services.AddScoped<ISchoolService,SchoolService>();
+new School_Manager.IOC.Container().Register(builder.Services);
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

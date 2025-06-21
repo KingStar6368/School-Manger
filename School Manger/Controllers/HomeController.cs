@@ -5,6 +5,8 @@ using iText.Layout.Properties;
 using Microsoft.AspNetCore.Mvc;
 using PersianTextShaper;
 using School_Manager.Core.Services.Interfaces;
+using School_Manager.Core.ViewModels.FModels;
+using School_Manager.Domain.Entities.Catalog.Enums;
 using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models;
@@ -18,14 +20,15 @@ namespace School_Manger.Controllers
         ParentDashbordView Static_Parent;
         private readonly IParentService _PService;
         private readonly IChildService _CService;
-
-        public HomeController(IParentService PService,IChildService CService)
+        private readonly IUserService _UserService;
+        public HomeController(IParentService PService,IChildService CService,IUserService UService)
         {
             _PService = PService;
             _CService = CService;
+            _UserService = UService;
             Static_Parent = new ParentDashbordView()
             {
-                Parent = new Parent()
+                Parent = new ParentDto()
                 {
                     Children = new List<ChildInfo>()
                     {
@@ -37,9 +40,9 @@ namespace School_Manger.Controllers
                             Class = "اول ابتدایی",
                             NationalCode = "0521234567",
                             BirthDate = DateTime.Now.AddYears(-7).ToPersain(),
-                            Bills = new List<Bill>()
+                            Bills = new List<BillDto>()
                             {
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 1,
                                     Name = "مهر",
@@ -49,7 +52,7 @@ namespace School_Manger.Controllers
                                     BillExpiredTime = DateTime.Now,
                                     TotalPrice = 100
                                 },
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 2,
                                     Name = "آبان",
@@ -59,7 +62,7 @@ namespace School_Manger.Controllers
                                     BillExpiredTime = DateTime.Now.AddMonths(-1),
                                     TotalPrice = 100
                                 },
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 3,
                                     Name = "آذر",
@@ -69,7 +72,7 @@ namespace School_Manger.Controllers
                                     BillExpiredTime = DateTime.Now.AddDays(1),
                                     TotalPrice = 100
                                 },
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 4,
                                     Name = "دی",
@@ -89,9 +92,9 @@ namespace School_Manger.Controllers
                             Class = "چهارم ابتدایی",
                             NationalCode = "0521234567",
                             BirthDate = DateTime.Now.AddYears(-11).ToPersain(),
-                            Bills = new List<Bill>()
+                            Bills = new List<BillDto>()
                             {
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 1,
                                     Name = "مهر",
@@ -101,7 +104,7 @@ namespace School_Manger.Controllers
                                     BillExpiredTime = DateTime.Now,
                                     TotalPrice = 100
                                 },
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 2,
                                     Name = "آبان",
@@ -110,7 +113,7 @@ namespace School_Manger.Controllers
                                     BillExpiredTime = DateTime.Now.AddMonths(-1),
                                     TotalPrice = 100
                                 },
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 3,
                                     Name = "آذر",
@@ -119,7 +122,7 @@ namespace School_Manger.Controllers
                                     BillExpiredTime = DateTime.Now.AddDays(1),
                                     TotalPrice = 100
                                 },
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 4,
                                     Name = "دی",
@@ -146,30 +149,76 @@ namespace School_Manger.Controllers
         }
 
         [HttpPost]
-        public IActionResult SignIn()
+        public IActionResult SignIn(string PhoneNumber)
         {
+            TempData["PhoneNumber"] = PhoneNumber;
+            //Otp
             return View("OTPConfirmation");
         }
         [HttpPost]
         public IActionResult VerifyOtp()
         {
+            //OtpCode Confirm
             return View("UserInfo");
         }
         public IActionResult Login()
         {
+      
+            //Todo Verfiy User 
             return View("Login");
+        }
+        [HttpPost]
+        public IActionResult CompleteProfile(string nationalCode, string firstName, string lastName, string password)
+        {
+            //TODO Create User & Parent
+            //LoginPageData pageData = Data.DeCript<LoginPageData>();
+            LoginUser user = new LoginUser()
+            {
+                UserName = nationalCode,
+                PhoneNumber = TempData["PhoneNumber"].ToString(),
+                Password = password,
+                Type = UserType.Parent,
+            };
+            ParentDto parent = new ParentDto()
+            {
+                Active = true,
+                ParentFirstName = firstName,
+                ParentLastName = lastName,
+                ParentNationalCode = nationalCode,
+            };
+            long UseRref = _UserService.CreateUser(new School_Manager.Core.ViewModels.FModels.UserCreateDTO()
+            {
+                FirstName = parent.ParentFirstName,
+                IsActive = true,
+                LastName = parent.ParentLastName,
+                Mobile = user.PhoneNumber,
+                PasswordHash = user.Password,
+                UserName = user.UserName
+            });
+            long ParentRef = _PService.CreateParent(new School_Manager.Core.ViewModels.FModels.ParentCreateDto()
+            {
+                FirstName = parent.ParentFirstName,
+                LastName = parent.ParentLastName,
+                NationalCode = parent.ParentNationalCode,
+                UserRef = UseRref,
+                Active = true,
+                Address = "",
+
+            });
+            TempData["Uref"] = UseRref;
+            TempData["Pref"] = ParentRef;
+            //Parent
+            return ParentMenu();
         }
         #endregion
 
         #region AfterLogin
         public IActionResult ParentMenu()
         {
+            long Uref = long.Parse(TempData["Uref"].ToString());
+            long Pref = long.Parse(TempData["Pref"].ToString());
+            School_Manager.Core.ViewModels.FModels.ParentDto parent = _PService.GetParent(Pref);
             return View("ParentMenu",Static_Parent);
-        }
-        [HttpPost]
-        public IActionResult CompleteProfile()
-        {
-            return ParentMenu();
         }
         [HttpPost]
         public IActionResult LocationSelector(ParentDashbordView view)
@@ -179,7 +228,7 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult AddChild(ParentDashbordView model)
         {
-            model.SelectedChild.Bills = new List<Bill>();
+            model.SelectedChild.Bills = new List<BillDto>();
             //this is for Test!!!!!!
             long Lastid = Static_Parent.Parent.Children.Select(x => x.Id).OrderBy(x => x).FirstOrDefault();
             model.SelectedChild.Id = Lastid++;
@@ -202,9 +251,9 @@ namespace School_Manger.Controllers
         {
             var selectedChild = Static_Parent.Parent.Children.FirstOrDefault(x => x.Id == Id);
             #region Static Data
-            //List<Bill> bills = new List<Bill>()
+            //List<BillDto> bills = new List<BillDto>()
             //{
-            //    new Bill()
+            //    new BillDto()
             //    {
             //        Id = 3,
             //        Name = "مهر",
@@ -214,7 +263,7 @@ namespace School_Manger.Controllers
             //        BillExpiredTime = DateTime.Now,
             //        TotalPrice = 100
             //    },
-            //    new Bill()
+            //    new BillDto()
             //    {
             //        Id = 3,
             //        Name = "آبان",
@@ -223,7 +272,7 @@ namespace School_Manger.Controllers
             //        BillExpiredTime = DateTime.Now.AddMonths(-1),
             //        TotalPrice = 100
             //    },
-            //    new Bill()
+            //    new BillDto()
             //    {
             //        Id = 3,
             //        Name = "آذر",
@@ -232,7 +281,7 @@ namespace School_Manger.Controllers
             //        BillExpiredTime = DateTime.Now.AddDays(1),
             //        TotalPrice = 100
             //    },
-            //    new Bill()
+            //    new BillDto()
             //    {
             //        Id = 3,
             //        Name = "دی",
@@ -252,9 +301,9 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult ShowBillPDF(BillDashbord index)
         {
-            List<Bill> bills = new List<Bill>()
+            List<BillDto> bills = new List<BillDto>()
             {
-                  new Bill()
+                  new BillDto()
                 {
                     Id = 3,
                     Name = "مهر",
@@ -264,7 +313,7 @@ namespace School_Manger.Controllers
                     BillExpiredTime = DateTime.Now,
                     TotalPrice = 100
                 },
-                new Bill()
+                new BillDto()
                 {
                     Id = 3,
                     Name = "آبان",
@@ -273,7 +322,7 @@ namespace School_Manger.Controllers
                     BillExpiredTime = DateTime.Now.AddMonths(-1),
                     TotalPrice = 100
                 },
-                new Bill()
+                new BillDto()
                 {
                     Id = 3,
                     Name = "آذر",
@@ -282,7 +331,7 @@ namespace School_Manger.Controllers
                     BillExpiredTime = DateTime.Now.AddDays(1),
                     TotalPrice = 100
                 },
-                new Bill()
+                new BillDto()
                 {
                     Id = 3,
                     Name = "دی",
@@ -293,7 +342,7 @@ namespace School_Manger.Controllers
                 }
             };
 
-            Bill bill = bills.FirstOrDefault();
+            BillDto bill = bills.FirstOrDefault();
             PDFGenerator PDF = new PDFGenerator();
             PDF.TitlesPer = new List<Paragraph>()
             {
@@ -308,8 +357,8 @@ namespace School_Manger.Controllers
                 .AddRow("عنوان :",bill.Name)
                 .AddRow("مبلق پرداخت شده :",bill.PaidPrice)
                 .AddRow("مبلغ کل :",bill.TotalPrice)
-                .AddRow("کامل پرداخت شده :",bill.HasPaId)
-                .AddRow("وضعیت :",bill.HasPaId)
+                .AddRow("کامل پرداخت شده :",bill.HasPaid)
+                .AddRow("وضعیت :",bill.HasPaid)
                 .AddRow("تاریخ پرداخت :",bill.PaidTime)
             };
             return File(PDF.Generate(), "application/pdf");

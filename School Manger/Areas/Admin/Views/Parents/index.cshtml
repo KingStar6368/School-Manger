@@ -1,5 +1,5 @@
-﻿@using School_Manger.Models
-@model List<Parent>
+﻿@using School_Manager.Core.ViewModels.FModels
+@model List<ParentDto>
 
 @{
     ViewData["Title"] = "👨‍👩‍👧‍👦 مدیریت والدین";
@@ -35,7 +35,7 @@
                     @for (int i = 0; i < Model.Count; i++)
                     {
                         var parent = Model[i];
-                        var debt = parent.Children.Sum(c => c.Bills.Where(b => !b.HasPaId).Sum(b => b.TotalPrice - b.PaidPrice));
+                        var debt = parent.Children.Sum(c => c.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice));
                         var isActive = parent.Active;
 
                         <tr>

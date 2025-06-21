@@ -1,5 +1,5 @@
 ﻿@using School_Manger.Extension
-@model School_Manger.Models.ChildInfo
+@using School_Manager.Core.ViewModels.FModels
 
 @{
     ViewData["Title"] = "📄 صدور قبض";
@@ -7,7 +7,7 @@
 }
 
 <div class="container mt-4 text-white" dir="rtl">
-    <!-- 💳 Bill Creation Form -->
+    <!-- 💳 BillDto Creation Form -->
     <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
         <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
             <h4 class="mb-0 fw-bold">
@@ -80,7 +80,7 @@
                                 <td>@bill.TotalPrice.ToString("N0")</td>
                                 <td>@bill.PaidPrice.ToString("N0")</td>
                                 <td>
-                                    @if (bill.HasPaId)
+                                    @if (bill.HasPaid)
                                     {
                                         <span class="badge bg-success rounded-pill fw-bold shadow-sm">✅ پرداخت شده</span>
                                     }
@@ -90,7 +90,7 @@
                                     }
                                 </td>
                                 <td>
-                                    @(bill.HasPaId
+                                    @(bill.HasPaid
                                         ? DateConverter.ToPersianString(bill.PaidTime)
                                         : DateConverter.ToPersianString(bill.BillExpiredTime))
                                 </td>

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using School_Manager.Core.ViewModels.FModels;
 using School_Manger.Extension;
-using School_Manger.Models;
 using School_Manger.Models.PageView;
 
 namespace School_Manger.Controllers.Admin
@@ -9,9 +9,9 @@ namespace School_Manger.Controllers.Admin
     [Area("Admin")]
     public class ParentsController : Controller
     {
-        List<Parent> TestModel = new List<Parent>()
+        List<ParentDto> TestModel = new List<ParentDto>()
         {
-            new Parent()
+            new ParentDto()
             {
                 Children = new List<ChildInfo>()
                 {
@@ -28,13 +28,13 @@ namespace School_Manger.Controllers.Admin
                             {
                                 ChildId = 1,
                                 Id = 1,
-                                Location1 = new LocationData()
+                                Location1 = new LocationDataDto()
                                 {
                                     Address="مرکز شهر",
                                     Latitude =  34.0918,
                                     Longitude = 49.6892
                                 },
-                                Location2 = new LocationData()
+                                Location2 = new LocationDataDto()
                                 {
                                     Address="دانشگاه اراک",
                                     Latitude = 34.0655,
@@ -43,9 +43,9 @@ namespace School_Manger.Controllers.Admin
                                 PickTime1 = DateTime.Now,
                                 PickTime2 = DateTime.Now,
                             },
-                            Bills = new List<Bill>()
+                            Bills = new List<BillDto>()
                             {
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 1,
                                     Name = "مهر",
@@ -55,7 +55,7 @@ namespace School_Manger.Controllers.Admin
                                     BillExpiredTime = DateTime.Now,
                                     TotalPrice = 100
                                 },
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 2,
                                     Name = "آبان",
@@ -65,7 +65,7 @@ namespace School_Manger.Controllers.Admin
                                     BillExpiredTime = DateTime.Now.AddMonths(-1),
                                     TotalPrice = 100
                                 },
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 3,
                                     Name = "آذر",
@@ -75,7 +75,7 @@ namespace School_Manger.Controllers.Admin
                                     BillExpiredTime = DateTime.Now.AddDays(1),
                                     TotalPrice = 100
                                 },
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 4,
                                     Name = "دی",
@@ -99,13 +99,13 @@ namespace School_Manger.Controllers.Admin
                             {
                                 ChildId = 1,
                                 Id = 1,
-                                Location1 = new LocationData()
+                                Location1 = new LocationDataDto()
                                 {
                                     Address="مرکز شهر",
                                     Latitude = 	34.0918,
                                     Longitude = 49.6892
                                 },
-                                Location2 = new LocationData()
+                                Location2 = new LocationDataDto()
                                 {
                                     Address="دانشگاه اراک",
                                     Latitude = 34.0655,
@@ -114,9 +114,9 @@ namespace School_Manger.Controllers.Admin
                                 PickTime1 = DateTime.Now,
                                 PickTime2 = DateTime.Now,
                             },
-                            Bills = new List<Bill>()
+                            Bills = new List<BillDto>()
                             {
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 1,
                                     Name = "مهر",
@@ -126,7 +126,7 @@ namespace School_Manger.Controllers.Admin
                                     BillExpiredTime = DateTime.Now,
                                     TotalPrice = 100
                                 },
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 2,
                                     Name = "آبان",
@@ -135,7 +135,7 @@ namespace School_Manger.Controllers.Admin
                                     BillExpiredTime = DateTime.Now.AddMonths(-1),
                                     TotalPrice = 100
                                 },
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 3,
                                     Name = "آذر",
@@ -144,7 +144,7 @@ namespace School_Manger.Controllers.Admin
                                     BillExpiredTime = DateTime.Now.AddDays(1),
                                     TotalPrice = 100
                                 },
-                                new Bill()
+                                new BillDto()
                                 {
                                     Id = 4,
                                     Name = "دی",
@@ -171,13 +171,13 @@ namespace School_Manger.Controllers.Admin
             AdminParent admindashbord = new AdminParent()
             {
                 Parent = Model,
-                Drivers = new List<Driver>()
-                { new Driver
+                Drivers = new List<DriverDto>()
+                { new DriverDto
                     {
                         Id = 1,
                         Name = "رضا",
                         LastName = "محمدی",
-                        Car = new CarInfo
+                        Car = new CarInfoDto
                         {
                             Id = 1,
                             Name = "پراید",
@@ -186,7 +186,7 @@ namespace School_Manger.Controllers.Admin
                             Color = "white"
                         },
                         NationCode = "05211312",
-                        BankAccount = "12312",
+                        BankAccount = null,
                         BankNumber = "1231321",
                         Address = "اراک",
                         BirthDate = DateTime.Parse("1375/04/01"),

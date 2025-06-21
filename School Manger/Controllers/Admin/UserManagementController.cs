@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using School_Manger.Models;
+using School_Manager.Core.ViewModels.FModels;
+using School_Manager.Domain.Entities.Catalog.Enums;
 
 namespace School_Manger.Controllers.Admin
 {

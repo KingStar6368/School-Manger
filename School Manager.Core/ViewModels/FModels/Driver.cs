@@ -63,6 +63,10 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public int Warnning { get; set; }
         /// <summary>
+        /// تعداد صندلی خالی
+        /// </summary>
+        public int AvailableSeats { get; set; }
+        /// <summary>
         /// لیست کد مسافر ها
         /// </summary>
         public List<long> Passanger { get; set; }

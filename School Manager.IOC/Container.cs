@@ -55,7 +55,7 @@ namespace School_Manager.IOC
             services.AddScoped<ICachService, CachService>(); 
             services.AddScoped<IValidator<RawMaterialDTO>, RawMaterialDTOValidator>();
             services.AddScoped<IValidator<UserCreateDTO>, UserCreateDTOValidator>();
-            services.AddScoped<IValidator<UserEditDTO>, UserEditDTOValidator>();
+            services.AddScoped<IValidator<UserUpdateDTO>, UserEditDTOValidator>();
             services.AddScoped<IValidator<BillCreateDto>, BillCreateDtoValidator>();
             services.AddScoped<IValidator<BillUpdateDto>, BillUpdateDtoValidator>();
             services.AddScoped<IValidator<ChildCreateDto>, ChildCreateDtoValidator>();

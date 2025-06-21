@@ -51,7 +51,7 @@
                                         <td>@bill.TotalPrice.ToString("N0") تومان</td>
                                         <td>@bill.PaidPrice.ToString("N0") تومان</td>
                                         <td>
-                                            @if (bill.HasPaId)
+                                            @if (bill.HasPaid)
                                             {
                                                 <span class="badge bg-success">✅ پرداخت شده</span>
                                             }
@@ -61,12 +61,12 @@
                                             }
                                         </td>
                                         <td>
-                                            @(bill.HasPaId
-                                                ? DateConverter.ToPersianString(bill.PaidTime)
+                                            @(bill.HasPaid
+                                                ? DateConverter.ToPersianString((DateTime)bill.PaidTime)
                                                 : DateConverter.ToPersianString(bill.BillExpiredTime))
                                         </td>
                                         <td>
-                                            @if (!bill.HasPaId)
+                                            @if (!bill.HasPaid)
                                             {
                                                 <button class="btn btn-sm btn-outline-success w-100 my-1" onclick="payBill('@bill.Id')">
                                                     💳 پرداخت

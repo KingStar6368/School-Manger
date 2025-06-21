@@ -49,7 +49,7 @@
                 }
                 else
                 {
-                    var unpaidTotal = Model.Parent.Children.Sum(x => x.Bills.Where(b => !b.HasPaId).Sum(b => b.TotalPrice - b.PaidPrice));
+                    var unpaidTotal = Model.Parent.Children.Sum(x => x.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice));
                     <span class="badge bg-danger px-3 py-2">💸 @unpaidTotal.ToString("N0") تومان</span>
                 }
             </div>
@@ -93,7 +93,7 @@
                                 }
                                 else
                                 {
-                                    var unpaid = child.Child.Bills.Where(x => !x.HasPaId).Sum(x => x.TotalPrice - x.PaidPrice);
+                                    var unpaid = child.Child.Bills.Where(x => !x.HasPaid).Sum(x => x.TotalPrice - x.PaidPrice);
                                     <span class="badge bg-danger">💳 @unpaid.ToString("N0") تومان</span>
                                 }
                             </td>

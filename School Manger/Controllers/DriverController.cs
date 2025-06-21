@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using School_Manager.Core.ViewModels.FModels;
 using School_Manger.Models;
 using School_Manger.Models.PageView;
 
@@ -11,12 +12,12 @@ namespace School_Manger.Controllers
         {
             Dashbord = new DriverDashbord()
             {
-                Driver = new Driver()
+                Driver = new DriverDto()
                 {
                     Id = 1,
                     Name = "محسن",
                     LastName = "تست",
-                    Car = new CarInfo()
+                    Car = new CarInfoDto()
                     {
                         Id = 1,
                         Name = "پراید",
@@ -45,13 +46,13 @@ namespace School_Manger.Controllers
                         {
                             ChildId = 1,
                             Id = 1,
-                            Location1 = new LocationData()
+                            Location1 = new LocationDataDto()
                             {
                                 Address="مرکز شهر",
                                 Latitude = 	34.0918,
                                 Longitude = 49.6892
                             },
-                            Location2 = new LocationData()
+                            Location2 = new LocationDataDto()
                             {
                                 Address="دانشگاه اراک",
                                 Latitude = 34.0655,
@@ -60,9 +61,9 @@ namespace School_Manger.Controllers
                             PickTime1 = DateTime.Now,
                             PickTime2 = DateTime.Now,
                         },
-                        Bills = new List<Bill>()
+                        Bills = new List<BillDto>()
                         {
-                            new Bill()
+                            new BillDto()
                             {
                                 Id = 1,
                                 Name = "مهر",
@@ -72,7 +73,7 @@ namespace School_Manger.Controllers
                                 BillExpiredTime = DateTime.Now,
                                 TotalPrice = 100
                             },
-                            new Bill()
+                            new BillDto()
                             {
                                 Id = 2,
                                 Name = "آبان",
@@ -82,7 +83,7 @@ namespace School_Manger.Controllers
                                 BillExpiredTime = DateTime.Now.AddMonths(-1),
                                 TotalPrice = 100
                             },
-                            new Bill()
+                            new BillDto()
                             {
                                 Id = 3,
                                 Name = "آذر",
@@ -92,7 +93,7 @@ namespace School_Manger.Controllers
                                 BillExpiredTime = DateTime.Now.AddDays(1),
                                 TotalPrice = 100
                             },
-                            new Bill()
+                            new BillDto()
                             {
                                 Id = 4,
                                 Name = "دی",
@@ -117,13 +118,13 @@ namespace School_Manger.Controllers
                         {
                             ChildId = 1,
                             Id = 1,
-                            Location1 = new LocationData()
+                            Location1 = new LocationDataDto()
                             {
                                 Address="مرکز شهر",
                                 Latitude =  34.1,
                                 Longitude = 49.7
                             },
-                            Location2 = new LocationData()
+                            Location2 = new LocationDataDto()
                             {
                                 Address="دانشگاه اراک",
                                 Latitude = 34.0655,
@@ -132,9 +133,9 @@ namespace School_Manger.Controllers
                             PickTime1 = DateTime.Now,
                             PickTime2 = DateTime.Now,
                         },
-                        Bills = new List<Bill>()
+                        Bills = new List<BillDto>()
                         {
-                            new Bill()
+                            new BillDto()
                             {
                                 Id = 1,
                                 Name = "مهر",
@@ -144,7 +145,7 @@ namespace School_Manger.Controllers
                                 BillExpiredTime = DateTime.Now,
                                 TotalPrice = 100
                             },
-                            new Bill()
+                            new BillDto()
                             {
                                 Id = 2,
                                 Name = "آبان",
@@ -154,7 +155,7 @@ namespace School_Manger.Controllers
                                 BillExpiredTime = DateTime.Now.AddMonths(-1),
                                 TotalPrice = 100
                             },
-                            new Bill()
+                            new BillDto()
                             {
                                 Id = 3,
                                 Name = "آذر",
@@ -164,7 +165,7 @@ namespace School_Manger.Controllers
                                 BillExpiredTime = DateTime.Now.AddDays(1),
                                 TotalPrice = 100
                             },
-                            new Bill()
+                            new BillDto()
                             {
                                 Id = 4,
                                 Name = "دی",

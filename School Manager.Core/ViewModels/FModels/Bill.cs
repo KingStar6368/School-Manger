@@ -10,6 +10,10 @@
         /// </summary>
         public long Id { get; set; }
         /// <summary>
+        /// عنوان قبض
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
         /// کد قرار داد
         /// </summary>
         public long ContractId { get; set; }
@@ -21,6 +25,10 @@
         /// مبلغ پرداخت شده
         /// </summary>
         public long PaidPrice { get; set; }
+        /// <summary>
+        /// وضعیت پرداخت
+        /// </summary>
+        public string Status { get; set; }
         /// <summary>
         /// پرداخت شده؟
         /// </summary>

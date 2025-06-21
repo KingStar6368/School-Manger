@@ -43,7 +43,7 @@
         /// <summary>
         /// شناسه کاربر
         /// </summary>
-        public int UserRef { get; set; }
+        public long UserRef { get; set; }
         /// <summary>
         /// نام
         /// </summary>
@@ -68,7 +68,7 @@
     }
     public class ParentCreateDto : IParentDto
     {
-        public int UserRef {get;set;}
+        public long UserRef {get;set;}
         public string FirstName {get;set;}
         public string LastName {get;set;}
         public string NationalCode {get;set;}
@@ -79,7 +79,7 @@
     public class ParentUpdateDto : IParentDto
     {
         public long Id { get;set;}
-        public int UserRef {get;set;}
+        public long UserRef {get;set;}
         public string FirstName {get;set;}
         public string LastName {get;set;}
         public string NationalCode {get;set;}
