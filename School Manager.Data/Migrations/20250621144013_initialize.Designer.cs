@@ -12,8 +12,8 @@ using School_Manager.Data.Context;
 namespace School_Manager.Data.Migrations
 {
     [DbContext(typeof(SchMSDBContext))]
-    [Migration("20250616162131_change_Entities")]
-    partial class change_Entities
+    [Migration("20250621144013_initialize")]
+    partial class initialize
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,20 +68,20 @@ namespace School_Manager.Data.Migrations
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Identity.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DeletedBy")
-                        .HasColumnType("int");
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
@@ -99,8 +99,8 @@ namespace School_Manager.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("LastModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<long?>("LastModifiedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("datetime2");
@@ -164,6 +164,11 @@ namespace School_Manager.Data.Migrations
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasComment("نام قبض");
+
                     b.Property<long>("Price")
                         .HasColumnType("bigint")
                         .HasComment("مبلغ");
@@ -185,9 +190,6 @@ namespace School_Manager.Data.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<int>("AvailableSeats")
-                        .HasColumnType("int");
 
                     b.Property<string>("ChrPlateNumber")
                         .IsRequired()
@@ -384,6 +386,9 @@ namespace School_Manager.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("AvailableSeats")
+                        .HasColumnType("int");
+
                     b.Property<int>("BankRef")
                         .HasColumnType("int");
 
@@ -446,8 +451,8 @@ namespace School_Manager.Data.Migrations
                     b.Property<int>("Rate")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserRef")
-                        .HasColumnType("int");
+                    b.Property<long>("UserRef")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("Warnning")
                         .HasColumnType("int");
@@ -519,9 +524,6 @@ namespace School_Manager.Data.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("ChequeRef")
-                        .HasColumnType("bigint");
 
                     b.Property<long>("CreatedBy")
                         .HasColumnType("bigint");
@@ -813,8 +815,8 @@ namespace School_Manager.Data.Migrations
                         .HasColumnType("nvarchar(11)")
                         .HasComment("کد ملی");
 
-                    b.Property<int>("UserRef")
-                        .HasColumnType("int");
+                    b.Property<long>("UserRef")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 

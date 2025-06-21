@@ -129,6 +129,10 @@ namespace School_Manager.Core.ViewModels.FModels
         /// اخطار ها
         /// </summary>
         public int Warnning { get; set; }
+        /// <summary>
+        /// صندلی خالی
+        /// </summary>
+        public int AvailableSeats { get; set; }
     }
     public class DriverCreateDto : IDriverDto
     {
@@ -145,6 +149,7 @@ namespace School_Manager.Core.ViewModels.FModels
         public string NationCode {get;set;}
         public int Rate {get;set;}
         public int Warnning {get;set;}
+        public int AvailableSeats { get ; set; }
     }
     public class DriverUpdateDto : IDriverDto
     {
@@ -162,5 +167,6 @@ namespace School_Manager.Core.ViewModels.FModels
         public string NationCode { get; set; }
         public int Rate { get; set; }
         public int Warnning { get; set; }
+        public int AvailableSeats { get ; set ; }
     }
 }

@@ -13,6 +13,10 @@ namespace School_Manager.Data.Configuration
             builder.Property(p => p.Price)
                 .HasComment("مبلغ");
 
+            builder.Property(p => p.Name)
+            .HasColumnType("nvarchar(50)")
+            .HasComment("نام قبض");
+
             builder.HasMany(d => d.PayBills).WithOne(p => p.BillNavigation)
             .HasForeignKey(f => f.BillRef)
             .OnDelete(DeleteBehavior.Restrict);

@@ -39,10 +39,6 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public int ColorCode { get; set; }
         /// <summary>
-        /// صندلی خالی
-        /// </summary>
-        public int AvailableSeats { get; set; }
-        /// <summary>
         /// فعال
         /// </summary>
         public bool IsActive{ get; set; }

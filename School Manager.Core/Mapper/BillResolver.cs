@@ -44,6 +44,22 @@ namespace School_Manager.Core.Mapper
             return paid == source.Price;
         }
     }
-
-
+    public class StatusResolver : IValueResolver<Bill, BillDto, string>
+    {
+        public string Resolve(Bill source, BillDto destination, string destMember, ResolutionContext context)
+        {
+            var paid = source.PayBills?
+                .Where(pb => pb?.PayNavigation != null)
+                .Select(pb => pb.PayNavigation.Price)
+                .DefaultIfEmpty(0)
+                .Sum() ?? 0;
+            var price = source.Price;
+            var estimateDate = source.EstimateTime;
+            bool hasPaid = paid == price;
+            if (hasPaid) { return "پرداخت شده"; }
+            if (estimateDate > DateTime.Now) { return "معوقه"; }
+            if (estimateDate < DateTime.Now) { return "سر رسید نشده"; }
+            return "نا مشخص";
+        }
+    }
 }

@@ -32,21 +32,21 @@ namespace School_Manager.Core.Services.Implemetations
         public ParentDto GetParent(long Id)
         {
             var ds = _unitOfWork.GetRepository<Parent>().Query()
-                .Include(x=>x.Children).Where(x=>x.Id == Id);
+                .Include(x=>x.Children).FirstOrDefault(x=>x.Id == Id);
             return _mapper.Map<ParentDto>(ds);
         }
 
         public ParentDto GetParentByNationCode(string NationCode)
         {
             var ds = _unitOfWork.GetRepository<Parent>().Query()
-                .Include(x => x.Children).Where(x => x.NationalCode == NationCode);
+                .Include(x => x.Children).FirstOrDefault(x => x.NationalCode == NationCode);
             return _mapper.Map<ParentDto>(ds);
         }
 
         public ParentDto GetParentByPhone(string Phone)
         {
             var ds = _unitOfWork.GetRepository<Parent>().Query()
-                .Include(x => x.Children).Where(x => x.UserNavigation.Mobile == Phone);
+                .Include(x => x.Children).FirstOrDefault(x => x.UserNavigation.Mobile == Phone);
             return _mapper.Map<ParentDto>(ds);
         }
 

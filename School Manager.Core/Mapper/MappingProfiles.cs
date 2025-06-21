@@ -19,12 +19,14 @@ namespace School_Manager.Core.Mapper
         {
             #region Bill
             CreateMap<Bill, BillDto>()
-                .ForMember(dest=>dest.ContractId,opt=>opt.MapFrom(dest=>dest.ServiceContractRef))
-                .ForMember(dest=>dest.BillExpiredTime,opt=>opt.MapFrom(dest=>dest.EstimateTime))
-                .ForMember(dest=>dest.TotalPrice,opt=>opt.MapFrom(dest=>dest.Price))
+                .ForMember(dest => dest.ContractId, opt => opt.MapFrom(dest => dest.ServiceContractRef))
+                .ForMember(dest => dest.BillExpiredTime, opt => opt.MapFrom(dest => dest.EstimateTime))
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(dest => dest.Price))
                 .ForMember(dest => dest.PaidPrice, opt => opt.MapFrom<PaidPriceResolver>())
                 .ForMember(dest => dest.PaidTime, opt => opt.MapFrom<PaidTimeResolver>())
-                .ForMember(dest => dest.HasPaid, opt => opt.MapFrom<HasPaidResolver>());
+                .ForMember(dest => dest.HasPaid, opt => opt.MapFrom<HasPaidResolver>())
+                .ForMember(dest => dest.Status, opt => opt.MapFrom<StatusResolver>());
+                
             CreateMap<BillCreateDto, Bill>();
             CreateMap<BillUpdateDto, Bill>();
             #endregion

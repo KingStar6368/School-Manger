@@ -13,7 +13,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// شناسه کاربر
         /// </summary>
-        public int UserRef { get; set; }
+        public long UserRef { get; set; }
         /// <summary>
         /// شناسه بانک
         /// </summary>
@@ -54,6 +54,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// کدملی
         /// </summary>
         public string NationCode { get; set; }
+        /// <summary>
+        /// صندلی خالی
+        /// </summary>
+        public int AvailableSeats { get; set; }
         /// <summary>
         /// امتیاز راننده
         /// </summary>

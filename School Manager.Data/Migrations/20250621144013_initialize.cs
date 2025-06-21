@@ -35,21 +35,17 @@ namespace School_Manager.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Drivers",
+                name: "Cheques",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BankRef = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام"),
-                    LastName = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام خانوادگی"),
-                    FatherName = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام پدر"),
-                    CertificateId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Education = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Descriptions = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NationCode = table.Column<string>(type: "nvarchar(11)", nullable: false, comment: "کد ملی"),
+                    Price = table.Column<long>(type: "bigint", nullable: false),
+                    CheckSerial = table.Column<string>(type: "nvarchar(24)", nullable: false, comment: "سریال چک"),
+                    CheckSayadNumber = table.Column<string>(type: "nvarchar(24)", nullable: false, comment: "شناسه صیاد"),
+                    BankId = table.Column<int>(type: "int", nullable: false),
+                    CheckOwner = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CheckTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<long>(type: "bigint", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedBy = table.Column<long>(type: "bigint", nullable: true),
@@ -60,29 +56,7 @@ namespace School_Manager.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Drivers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "LocationPair",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ChildRef = table.Column<long>(type: "bigint", nullable: false),
-                    PickTime1 = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PickTime2 = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastModifiedBy = table.Column<long>(type: "bigint", nullable: true),
-                    LastModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedBy = table.Column<long>(type: "bigint", nullable: true),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LocationPair", x => x.Id);
+                    table.PrimaryKey("PK_Cheques", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -106,30 +80,6 @@ namespace School_Manager.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Lookup", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Parents",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام"),
-                    LastName = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام خانوادگی"),
-                    NationalCode = table.Column<string>(type: "nvarchar(11)", nullable: false, comment: "کد ملی"),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Active = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastModifiedBy = table.Column<long>(type: "bigint", nullable: true),
-                    LastModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedBy = table.Column<long>(type: "bigint", nullable: true),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Parents", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -185,10 +135,35 @@ namespace School_Manager.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Schools",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام مدرسه"),
+                    ManagerName = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام مدیر مدرسه"),
+                    Rate = table.Column<int>(type: "int", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Latitude = table.Column<double>(type: "float", nullable: false),
+                    Longitude = table.Column<double>(type: "float", nullable: false),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<long>(type: "bigint", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<long>(type: "bigint", nullable: true),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Schools", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserName = table.Column<string>(type: "nvarchar(50)", nullable: false, comment: "نام کاربری"),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "کلمه عبور"),
@@ -196,17 +171,88 @@ namespace School_Manager.Data.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(50)", nullable: false, comment: "نام"),
                     LastName = table.Column<string>(type: "nvarchar(50)", nullable: false, comment: "نام خانوادگی"),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    CreatedBy = table.Column<int>(type: "int", nullable: false),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastModifiedBy = table.Column<int>(type: "int", nullable: true),
+                    LastModifiedBy = table.Column<long>(type: "bigint", nullable: true),
                     LastModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedBy = table.Column<int>(type: "int", nullable: true),
+                    DeletedBy = table.Column<long>(type: "bigint", nullable: true),
                     DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Drivers",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserRef = table.Column<long>(type: "bigint", nullable: false),
+                    BankRef = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام"),
+                    LastName = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام خانوادگی"),
+                    FatherName = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام پدر"),
+                    CertificateId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Education = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Descriptions = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NationCode = table.Column<string>(type: "nvarchar(11)", nullable: false, comment: "کد ملی"),
+                    AvailableSeats = table.Column<int>(type: "int", nullable: false),
+                    Rate = table.Column<int>(type: "int", nullable: false),
+                    Warnning = table.Column<int>(type: "int", nullable: false),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<long>(type: "bigint", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<long>(type: "bigint", nullable: true),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Drivers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Drivers_Users_UserRef",
+                        column: x => x.UserRef,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Parents",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserRef = table.Column<long>(type: "bigint", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام"),
+                    LastName = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام خانوادگی"),
+                    NationalCode = table.Column<string>(type: "nvarchar(11)", nullable: false, comment: "کد ملی"),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Active = table.Column<bool>(type: "bit", nullable: false),
+                    IsMale = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<long>(type: "bigint", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<long>(type: "bigint", nullable: true),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Parents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Parents_Users_UserRef",
+                        column: x => x.UserRef,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -222,7 +268,6 @@ namespace School_Manager.Data.Migrations
                     SecondIntPlateNumber = table.Column<int>(type: "int", nullable: false),
                     ThirdIntPlateNumber = table.Column<int>(type: "int", nullable: false),
                     ColorCode = table.Column<int>(type: "int", nullable: false),
-                    AvailableSeats = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     SeatNumber = table.Column<int>(type: "int", nullable: false),
                     carType = table.Column<int>(type: "int", nullable: false),
@@ -252,7 +297,6 @@ namespace School_Manager.Data.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DriverRef = table.Column<long>(type: "bigint", nullable: false),
-                    ChequeRef = table.Column<long>(type: "bigint", nullable: false),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SignatureImage = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
@@ -276,44 +320,13 @@ namespace School_Manager.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LocationData",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    LocationPairRef = table.Column<long>(type: "bigint", nullable: false),
-                    Latitude = table.Column<double>(type: "float", nullable: false),
-                    Longitude = table.Column<double>(type: "float", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LocationType = table.Column<int>(type: "int", nullable: false),
-                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastModifiedBy = table.Column<long>(type: "bigint", nullable: true),
-                    LastModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DeletedBy = table.Column<long>(type: "bigint", nullable: true),
-                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LocationData", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_LocationData_LocationPair_LocationPairRef",
-                        column: x => x.LocationPairRef,
-                        principalTable: "LocationPair",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Children",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DriverRef = table.Column<long>(type: "bigint", nullable: false),
                     ParentRef = table.Column<long>(type: "bigint", nullable: false),
-                    LocationPairRef = table.Column<long>(type: "bigint", nullable: false),
+                    SchoolRef = table.Column<long>(type: "bigint", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام"),
                     LastName = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام خانوادگی"),
                     NationalCode = table.Column<string>(type: "nvarchar(11)", nullable: false, comment: "کد ملی"),
@@ -331,30 +344,27 @@ namespace School_Manager.Data.Migrations
                 {
                     table.PrimaryKey("PK_Children", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Children_LocationPair_LocationPairRef",
-                        column: x => x.LocationPairRef,
-                        principalTable: "LocationPair",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_Children_Parents_ParentRef",
                         column: x => x.ParentRef,
                         principalTable: "Parents",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Children_Schools_SchoolRef",
+                        column: x => x.SchoolRef,
+                        principalTable: "Schools",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Schools",
+                name: "DriverContractCheque",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LocationDataRef = table.Column<long>(type: "bigint", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام مدرسه"),
-                    ManagerName = table.Column<string>(type: "nvarchar(128)", nullable: false, comment: "نام مدیر مدرسه"),
-                    Rate = table.Column<int>(type: "int", nullable: false),
-                    AddressNavigationId = table.Column<long>(type: "bigint", nullable: false),
+                    DriverContractRef = table.Column<long>(type: "bigint", nullable: false),
+                    ChequeRef = table.Column<long>(type: "bigint", nullable: false),
                     CreatedBy = table.Column<long>(type: "bigint", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedBy = table.Column<long>(type: "bigint", nullable: true),
@@ -365,13 +375,19 @@ namespace School_Manager.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Schools", x => x.Id);
+                    table.PrimaryKey("PK_DriverContractCheque", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Schools_LocationData_AddressNavigationId",
-                        column: x => x.AddressNavigationId,
-                        principalTable: "LocationData",
+                        name: "FK_DriverContractCheque_Cheques_DriverContractRef",
+                        column: x => x.DriverContractRef,
+                        principalTable: "Cheques",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_DriverContractCheque_DriverContracts_DriverContractRef",
+                        column: x => x.DriverContractRef,
+                        principalTable: "DriverContracts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -411,6 +427,35 @@ namespace School_Manager.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LocationPair",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ChildRef = table.Column<long>(type: "bigint", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    PickTime1 = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PickTime2 = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<long>(type: "bigint", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<long>(type: "bigint", nullable: true),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LocationPair", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LocationPair_Children_ChildRef",
+                        column: x => x.ChildRef,
+                        principalTable: "Children",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ServiceContracts",
                 columns: table => new
                 {
@@ -442,11 +487,42 @@ namespace School_Manager.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LocationData",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LocationPairRef = table.Column<long>(type: "bigint", nullable: true),
+                    Latitude = table.Column<double>(type: "float", nullable: false),
+                    Longitude = table.Column<double>(type: "float", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LocationType = table.Column<int>(type: "int", nullable: false),
+                    CreatedBy = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedBy = table.Column<long>(type: "bigint", nullable: true),
+                    LastModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedBy = table.Column<long>(type: "bigint", nullable: true),
+                    DeletedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LocationData", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LocationData_LocationPair_LocationPairRef",
+                        column: x => x.LocationPairRef,
+                        principalTable: "LocationPair",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Bills",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", nullable: false, comment: "نام قبض"),
                     ServiceContractRef = table.Column<long>(type: "bigint", nullable: false),
                     Price = table.Column<long>(type: "bigint", nullable: false, comment: "مبلغ"),
                     EstimateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -470,19 +546,13 @@ namespace School_Manager.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cheques",
+                name: "ServiceContractCheque",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ServiceContractRef = table.Column<long>(type: "bigint", nullable: true),
-                    DriverContractRef = table.Column<long>(type: "bigint", nullable: true),
-                    Price = table.Column<long>(type: "bigint", nullable: false),
-                    CheckSerial = table.Column<string>(type: "nvarchar(24)", nullable: false, comment: "سریال چک"),
-                    CheckSayadNumber = table.Column<string>(type: "nvarchar(24)", nullable: false, comment: "شناسه صیاد"),
-                    BankId = table.Column<int>(type: "int", nullable: false),
-                    CheckOwner = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CheckTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ServiceContractRef = table.Column<long>(type: "bigint", nullable: false),
+                    ChequeRef = table.Column<long>(type: "bigint", nullable: false),
                     CreatedBy = table.Column<long>(type: "bigint", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedBy = table.Column<long>(type: "bigint", nullable: true),
@@ -493,15 +563,15 @@ namespace School_Manager.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cheques", x => x.Id);
+                    table.PrimaryKey("PK_ServiceContractCheque", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Cheques_DriverContracts_DriverContractRef",
-                        column: x => x.DriverContractRef,
-                        principalTable: "DriverContracts",
+                        name: "FK_ServiceContractCheque_Cheques_ServiceContractRef",
+                        column: x => x.ServiceContractRef,
+                        principalTable: "Cheques",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Cheques_ServiceContracts_ServiceContractRef",
+                        name: "FK_ServiceContractCheque_ServiceContracts_ServiceContractRef",
                         column: x => x.ServiceContractRef,
                         principalTable: "ServiceContracts",
                         principalColumn: "Id",
@@ -552,25 +622,14 @@ namespace School_Manager.Data.Migrations
                 column: "DriverRef");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cheques_DriverContractRef",
-                table: "Cheques",
-                column: "DriverContractRef");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Cheques_ServiceContractRef",
-                table: "Cheques",
-                column: "ServiceContractRef");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Children_LocationPairRef",
-                table: "Children",
-                column: "LocationPairRef",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Children_ParentRef",
                 table: "Children",
                 column: "ParentRef");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Children_SchoolRef",
+                table: "Children",
+                column: "SchoolRef");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DriverChildren_ChildRef",
@@ -583,9 +642,19 @@ namespace School_Manager.Data.Migrations
                 column: "DriverRef");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DriverContractCheque_DriverContractRef",
+                table: "DriverContractCheque",
+                column: "DriverContractRef");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DriverContracts_DriverRef",
                 table: "DriverContracts",
                 column: "DriverRef");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Drivers_UserRef",
+                table: "Drivers",
+                column: "UserRef");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LocationData_LocationPairRef",
@@ -593,10 +662,20 @@ namespace School_Manager.Data.Migrations
                 column: "LocationPairRef");
 
             migrationBuilder.CreateIndex(
+                name: "IX_LocationPair_ChildRef",
+                table: "LocationPair",
+                column: "ChildRef");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Lookup_Type_Code",
                 table: "Lookup",
                 columns: new[] { "Type", "Code" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Parents_UserRef",
+                table: "Parents",
+                column: "UserRef");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PayBills_BillRef",
@@ -609,9 +688,9 @@ namespace School_Manager.Data.Migrations
                 column: "PayRef");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Schools_AddressNavigationId",
-                table: "Schools",
-                column: "AddressNavigationId");
+                name: "IX_ServiceContractCheque_ServiceContractRef",
+                table: "ServiceContractCheque",
+                column: "ServiceContractRef");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceContracts_ChildRef",
@@ -636,10 +715,13 @@ namespace School_Manager.Data.Migrations
                 name: "Cars");
 
             migrationBuilder.DropTable(
-                name: "Cheques");
+                name: "DriverChildren");
 
             migrationBuilder.DropTable(
-                name: "DriverChildren");
+                name: "DriverContractCheque");
+
+            migrationBuilder.DropTable(
+                name: "LocationData");
 
             migrationBuilder.DropTable(
                 name: "Lookup");
@@ -651,13 +733,13 @@ namespace School_Manager.Data.Migrations
                 name: "RawMaterials");
 
             migrationBuilder.DropTable(
-                name: "Schools");
-
-            migrationBuilder.DropTable(
-                name: "Users");
+                name: "ServiceContractCheque");
 
             migrationBuilder.DropTable(
                 name: "DriverContracts");
+
+            migrationBuilder.DropTable(
+                name: "LocationPair");
 
             migrationBuilder.DropTable(
                 name: "Bills");
@@ -666,7 +748,7 @@ namespace School_Manager.Data.Migrations
                 name: "Pays");
 
             migrationBuilder.DropTable(
-                name: "LocationData");
+                name: "Cheques");
 
             migrationBuilder.DropTable(
                 name: "Drivers");
@@ -678,10 +760,13 @@ namespace School_Manager.Data.Migrations
                 name: "Children");
 
             migrationBuilder.DropTable(
-                name: "LocationPair");
+                name: "Parents");
 
             migrationBuilder.DropTable(
-                name: "Parents");
+                name: "Schools");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

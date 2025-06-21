@@ -8,7 +8,7 @@ namespace School_Manager.Core.ViewModels.FModels
 {
     public class UserDTO
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string UserName { get; set; }
         private string _passwordHash;
         public string Password

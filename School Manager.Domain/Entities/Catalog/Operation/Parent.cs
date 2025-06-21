@@ -13,7 +13,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// شناسه کاربر
         /// </summary>
-        public int UserRef { get; set; }
+        public long UserRef { get; set; }
         /// <summary>
         /// نام
         /// </summary>

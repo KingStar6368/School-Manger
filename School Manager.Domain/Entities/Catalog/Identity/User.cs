@@ -9,7 +9,7 @@ using School_Manager.Domain.Interfaces;
 
 namespace School_Manager.Domain.Entities.Catalog.Identity
 {
-    public  class User : AuditableEntity<int>
+    public  class User : AuditableEntity<long>
     {
         public  string UserName { get; set; }
         public  string PasswordHash { get; set; }

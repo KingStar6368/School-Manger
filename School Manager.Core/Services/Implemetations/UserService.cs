@@ -76,7 +76,7 @@ namespace School_Manager.Core.Services.Implemetations
 		}
 
 
-		public int SaveUser(UserCreateDTO User)
+		public long SaveUser(UserCreateDTO User)
 		{
 			try
 			{

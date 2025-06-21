@@ -163,7 +163,9 @@ namespace School_Manger.Controllers
         }
         public IActionResult Login()
         {
-      
+            long Uref = 1;
+            long Pref = 1;
+            ParentDto parent = _PService.GetParent(Pref);
             //Todo Verfiy User 
             return View("Login");
         }
@@ -217,7 +219,7 @@ namespace School_Manger.Controllers
         {
             long Uref = long.Parse(TempData["Uref"].ToString());
             long Pref = long.Parse(TempData["Pref"].ToString());
-            School_Manager.Core.ViewModels.FModels.ParentDto parent = _PService.GetParent(Pref);
+            ParentDto parent = _PService.GetParent(Pref);
             return View("ParentMenu",Static_Parent);
         }
         [HttpPost]

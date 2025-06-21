@@ -44,6 +44,7 @@
     }
     public interface IBillDto
     {
+        public string Name { get; set; }
         /// <summary>
         /// کد قرار داد
         /// </summary>
@@ -63,6 +64,7 @@
         public long ServiceContractRef { get; set; }
         public long Price { get; set; }
         public DateTime EstimateTime { get; set; }
+        public string Name {get;set;}
     }
     public class BillUpdateDto : IBillDto
     {
@@ -82,5 +84,6 @@
         /// مهلت پرداخت
         /// </summary>
         public DateTime EstimateTime { get; set; }
+        public string Name {get;set;}
     }
 }

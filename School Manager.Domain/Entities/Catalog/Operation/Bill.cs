@@ -10,6 +10,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
     public class Bill : AuditableEntity<long>
     {
         /// <summary>
+        /// نام قبض
+        /// </summary>
+        public string Name {  get; set; }
+        /// <summary>
         /// کد قرار داد
         /// </summary>
         public long ServiceContractRef { get; set; }

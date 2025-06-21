@@ -65,20 +65,20 @@ namespace School_Manager.Data.Migrations
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Identity.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DeletedBy")
-                        .HasColumnType("int");
+                    b.Property<long?>("DeletedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("DeletedOn")
                         .HasColumnType("datetime2");
@@ -96,8 +96,8 @@ namespace School_Manager.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("LastModifiedBy")
-                        .HasColumnType("int");
+                    b.Property<long?>("LastModifiedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("datetime2");
@@ -126,7 +126,7 @@ namespace School_Manager.Data.Migrations
                     b.HasIndex("UserName")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Bill", b =>
@@ -161,6 +161,11 @@ namespace School_Manager.Data.Migrations
                     b.Property<DateTime?>("LastModifiedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasComment("نام قبض");
+
                     b.Property<long>("Price")
                         .HasColumnType("bigint")
                         .HasComment("مبلغ");
@@ -172,7 +177,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("ServiceContractRef");
 
-                    b.ToTable("Bills", (string)null);
+                    b.ToTable("Bills");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Car", b =>
@@ -182,9 +187,6 @@ namespace School_Manager.Data.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<int>("AvailableSeats")
-                        .HasColumnType("int");
 
                     b.Property<string>("ChrPlateNumber")
                         .IsRequired()
@@ -244,7 +246,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("DriverRef");
 
-                    b.ToTable("Cars", (string)null);
+                    b.ToTable("Cars");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Cheque", b =>
@@ -301,7 +303,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cheques", (string)null);
+                    b.ToTable("Cheques");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Child", b =>
@@ -366,7 +368,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("SchoolRef");
 
-                    b.ToTable("Children", (string)null);
+                    b.ToTable("Children");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Driver", b =>
@@ -380,6 +382,9 @@ namespace School_Manager.Data.Migrations
                     b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("AvailableSeats")
+                        .HasColumnType("int");
 
                     b.Property<int>("BankRef")
                         .HasColumnType("int");
@@ -443,8 +448,8 @@ namespace School_Manager.Data.Migrations
                     b.Property<int>("Rate")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserRef")
-                        .HasColumnType("int");
+                    b.Property<long>("UserRef")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("Warnning")
                         .HasColumnType("int");
@@ -453,7 +458,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("UserRef");
 
-                    b.ToTable("Drivers", (string)null);
+                    b.ToTable("Drivers");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.DriverChild", b =>
@@ -506,7 +511,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("DriverRef");
 
-                    b.ToTable("DriverChildren", (string)null);
+                    b.ToTable("DriverChildren");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.DriverContract", b =>
@@ -555,7 +560,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("DriverRef");
 
-                    b.ToTable("DriverContracts", (string)null);
+                    b.ToTable("DriverContracts");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.DriverContractCheque", b =>
@@ -597,7 +602,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("DriverContractRef");
 
-                    b.ToTable("DriverContractCheque", (string)null);
+                    b.ToTable("DriverContractCheque");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.LocationData", b =>
@@ -649,7 +654,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("LocationPairRef");
 
-                    b.ToTable("LocationData", (string)null);
+                    b.ToTable("LocationData");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.LocationPair", b =>
@@ -697,7 +702,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("ChildRef");
 
-                    b.ToTable("LocationPair", (string)null);
+                    b.ToTable("LocationPair");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Lookup", b =>
@@ -750,7 +755,7 @@ namespace School_Manager.Data.Migrations
                     b.HasIndex("Type", "Code")
                         .IsUnique();
 
-                    b.ToTable("Lookup", (string)null);
+                    b.ToTable("Lookup");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Parent", b =>
@@ -807,14 +812,14 @@ namespace School_Manager.Data.Migrations
                         .HasColumnType("nvarchar(11)")
                         .HasComment("کد ملی");
 
-                    b.Property<int>("UserRef")
-                        .HasColumnType("int");
+                    b.Property<long>("UserRef")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserRef");
 
-                    b.ToTable("Parents", (string)null);
+                    b.ToTable("Parents");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Pay", b =>
@@ -857,7 +862,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Pays", (string)null);
+                    b.ToTable("Pays");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.PayBill", b =>
@@ -901,7 +906,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("PayRef");
 
-                    b.ToTable("PayBills", (string)null);
+                    b.ToTable("PayBills");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.RawMaterial", b =>
@@ -978,7 +983,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RawMaterials", (string)null);
+                    b.ToTable("RawMaterials");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.School", b =>
@@ -1035,7 +1040,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Schools", (string)null);
+                    b.ToTable("Schools");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.ServiceContract", b =>
@@ -1090,7 +1095,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("ChildRef");
 
-                    b.ToTable("ServiceContracts", (string)null);
+                    b.ToTable("ServiceContracts");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.ServiceContractCheque", b =>
@@ -1132,7 +1137,7 @@ namespace School_Manager.Data.Migrations
 
                     b.HasIndex("ServiceContractRef");
 
-                    b.ToTable("ServiceContractCheque", (string)null);
+                    b.ToTable("ServiceContractCheque");
                 });
 
             modelBuilder.Entity("School_Manager.Domain.Entities.Catalog.Operation.Bill", b =>

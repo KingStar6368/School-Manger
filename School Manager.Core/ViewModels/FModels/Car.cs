@@ -24,10 +24,6 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public string Color { get; set; }
         /// <summary>
-        /// صندلی خالی
-        /// </summary>
-        public int AvailableSeats { get; set; }
-        /// <summary>
         /// تعداد کل صندلی
         /// </summary>
         public int SeatNumber { get; set; }
@@ -67,10 +63,6 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public int ColorCode { get; set; }
         /// <summary>
-        /// صندلی خالی
-        /// </summary>
-        public int AvailableSeats { get; set; }
-        /// <summary>
         /// فعال
         /// </summary>
         public bool IsActive { get; set; }
@@ -92,7 +84,6 @@ namespace School_Manager.Core.ViewModels.FModels
         public int SecondIntPlateNumber {get;set;}
         public int ThirdIntPlateNumber {get;set;}
         public int ColorCode {get;set;}
-        public int AvailableSeats {get;set;}
         public bool IsActive {get;set;}
         public int SeatNumber {get;set;}
         public int carType {get;set;}
@@ -107,7 +98,6 @@ namespace School_Manager.Core.ViewModels.FModels
         public int SecondIntPlateNumber { get; set; }
         public int ThirdIntPlateNumber { get; set; }
         public int ColorCode { get; set; }
-        public int AvailableSeats { get; set; }
         public bool IsActive { get; set; }
         public int SeatNumber { get; set; }
         public int carType { get; set; }
