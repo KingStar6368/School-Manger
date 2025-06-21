@@ -24,7 +24,7 @@ namespace School_Manager.Core.Services.Implemetations
         public UserDTO CheckAuthorize(string UserName, string Password)
         {
             var data = _unitOfWork.GetRepository<User>().Query(
-				predicate: p=>p.UserName == UserName && p.PasswordHash == EntityHelper.Encrypt(Password),
+				predicate: p=>p.UserName == UserName && p.PasswordHash == Password,
 				orderBy:null,
 				includes:new List<System.Linq.Expressions.Expression<Func<User, object>>>{
 					//c=>c.UserRoles

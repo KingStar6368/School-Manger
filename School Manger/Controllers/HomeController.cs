@@ -152,6 +152,11 @@ namespace School_Manger.Controllers
         public IActionResult SignIn(string PhoneNumber)
         {
             TempData["PhoneNumber"] = PhoneNumber;
+            if (_UserService.IsMobileRegistered(TempData["PhoneNumber"].ToString()))
+            {
+                ControllerExtensions.ShowError(this,"خطا", "این شماره موبایل در سیستم موجود است");
+                return Redirect("Index");
+            }
             //Otp
             return View("OTPConfirmation");
         }
@@ -161,66 +166,64 @@ namespace School_Manger.Controllers
             //OtpCode Confirm
             return View("UserInfo");
         }
-        public IActionResult Login()
+        public IActionResult Login(string NationalCode, string Password)
         {
-            long Uref = 1;
-            long Pref = 1;
-            ParentDto parent = _PService.GetParent(Pref);
-            //Todo Verfiy User 
-            return View("Login");
+            if(NationalCode == null && Password == null) 
+                return View();
+            else
+            {
+                UserDTO user = _UserService.CheckAuthorize(NationalCode, Password);
+                if (user != null)
+                {
+                    ControllerExtensions.AddKey(this,"Uref",user.Id);
+                    ControllerExtensions.AddKey(this,"Pref", _PService.GetParentByNationCode(NationalCode).Id);
+                    return ParentMenu();
+                }
+                else
+                {
+                    ControllerExtensions.ShowError(this, "خطا در ورود", "کد ملی یا رمز عبور صحیح نیست!");
+                    return View();
+                }
+            }
         }
         [HttpPost]
         public IActionResult CompleteProfile(string nationalCode, string firstName, string lastName, string password)
         {
-            //TODO Create User & Parent
-            //LoginPageData pageData = Data.DeCript<LoginPageData>();
-            LoginUser user = new LoginUser()
+            long UseRref = _UserService.CreateUser(new UserCreateDTO()
             {
-                UserName = nationalCode,
-                PhoneNumber = TempData["PhoneNumber"].ToString(),
-                Password = password,
-                Type = UserType.Parent,
-            };
-            ParentDto parent = new ParentDto()
-            {
-                Active = true,
-                ParentFirstName = firstName,
-                ParentLastName = lastName,
-                ParentNationalCode = nationalCode,
-            };
-            long UseRref = _UserService.CreateUser(new School_Manager.Core.ViewModels.FModels.UserCreateDTO()
-            {
-                FirstName = parent.ParentFirstName,
+                FirstName = firstName,
+                LastName = lastName,
                 IsActive = true,
-                LastName = parent.ParentLastName,
-                Mobile = user.PhoneNumber,
-                PasswordHash = user.Password,
-                UserName = user.UserName
+                Mobile = TempData["PhoneNumber"].ToString(),
+                PasswordHash = password,
+                UserName = nationalCode
             });
-            long ParentRef = _PService.CreateParent(new School_Manager.Core.ViewModels.FModels.ParentCreateDto()
+            long ParentRef = _PService.CreateParent(new ParentCreateDto()
             {
-                FirstName = parent.ParentFirstName,
-                LastName = parent.ParentLastName,
-                NationalCode = parent.ParentNationalCode,
+                FirstName = firstName,
+                LastName = lastName,
+                NationalCode = nationalCode,
                 UserRef = UseRref,
                 Active = true,
                 Address = "",
-
             });
-            TempData["Uref"] = UseRref;
-            TempData["Pref"] = ParentRef;
-            //Parent
-            return ParentMenu();
+            ControllerExtensions.AddKey(this,"Uref",UseRref);
+            ControllerExtensions.AddKey(this,"Pref", ParentRef);
+            // Redirect to Login With Message موفق 
+            return View("Login");
         }
         #endregion
 
         #region AfterLogin
         public IActionResult ParentMenu()
         {
-            long Uref = long.Parse(TempData["Uref"].ToString());
-            long Pref = long.Parse(TempData["Pref"].ToString());
+            long Uref = ControllerExtensions.GetKey<long>(this,"Uref");
+            long Pref = ControllerExtensions.GetKey<long>(this, "Pref");
             ParentDto parent = _PService.GetParent(Pref);
-            return View("ParentMenu",Static_Parent);
+            return View("ParentMenu", new ParentDashbordView()
+            {
+                Parent = parent,
+            });
         }
         [HttpPost]
         public IActionResult LocationSelector(ParentDashbordView view)
@@ -230,20 +233,32 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult AddChild(ParentDashbordView model)
         {
-            model.SelectedChild.Bills = new List<BillDto>();
-            //this is for Test!!!!!!
-            long Lastid = Static_Parent.Parent.Children.Select(x => x.Id).OrderBy(x => x).FirstOrDefault();
-            model.SelectedChild.Id = Lastid++;
-            //!!!!!!
-            
-            Static_Parent.Parent.Children.Add(model.SelectedChild);
-            //Add Child And Show Menu Again
+            if(_CService.GetChildByNationCode(model.SelectedChild.NationalCode)!= null)
+            {
+                ControllerExtensions.ShowError(this, "خطا", "این فرزند وجود دارد");
+                return ParentMenu();
+            }
+            else
+            {
+                _CService.CreateChild(new ChildCreateDto()
+                {
+                    FirstName = model.SelectedChild.FirstName,
+                    LastName = model.SelectedChild.LastName,
+                    NationalCode = model.SelectedChild.NationalCode,
+                    ParentRef = ControllerExtensions.GetKey<long>(this,"Pref"),
+                    BirthDate = model.SelectedChild.BirthDate,
+                    Class = 1,//todo it must cast to int
+                    SchoolRef = model.SelectedChild.SchoolId
+                });
+                ControllerExtensions.ShowSuccess(this, "موفق", "فرزند جدید اضافه شد");
+            }
             return ParentMenu();
         }
         [HttpPost]
         public IActionResult RemoveChild(ParentDashbordView model)
         {
-            Static_Parent.Parent.Children.Remove(Static_Parent.Parent.Children.FirstOrDefault(x => x.NationalCode == model.SelectedChild.NationalCode));
+            _CService.DeleteChild(model.SelectedChild.Id);
+            ControllerExtensions.ShowSuccess(this, "موفق", "فرزند حذف شد");
             return ParentMenu();
         }
         #endregion

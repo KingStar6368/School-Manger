@@ -11,10 +11,11 @@ var container = new Container();
 container.Register(builder.Services);
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthorization();
+builder.Services.AddSession();
 
 new School_Manager.IOC.Container().Register(builder.Services);
-
 var app = builder.Build();
+app.UseSession();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

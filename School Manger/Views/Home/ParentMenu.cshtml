@@ -33,7 +33,7 @@
                 {
                     <span class="fw-semibold">💰 مبالغ پرداخت‌نشده:</span>
                     <span class="badge bg-danger fs-5 mt-2">
-                        @Model.Parent.Children.Sum(x => x.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice)) تومان
+                        @Model.Parent.Children.Sum(x =>x.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice)) تومان
                     </span>
                 }
             </div>
