@@ -163,9 +163,6 @@ namespace School_Manger.Controllers
         }
         public IActionResult Login()
         {
-            long Uref = 1;
-            long Pref = 1;
-            ParentDto parent = _PService.GetParent(Pref);
             //Todo Verfiy User 
             return View("Login");
         }
