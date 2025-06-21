@@ -11,7 +11,7 @@ namespace School_Manager.Domain.Entities.Catalog.Identity
 {
     public  class User : AuditableEntity<int>
     {
-        public required string UserName { get; set; }
+        public  string UserName { get; set; }
         public  string PasswordHash { get; set; }
         public string Mobile { get; set; }
         public string FirstName { get; set; }

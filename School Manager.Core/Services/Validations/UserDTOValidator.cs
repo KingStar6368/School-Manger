@@ -46,7 +46,7 @@ namespace School_Manager.Core.Services.Validations
                 }).WithMessage("نام کاربری تکراری است.");
         }
     }
-    public class UserEditDTOValidator : AbstractValidator<UserEditDTO>
+    public class UserEditDTOValidator : AbstractValidator<UserUpdateDTO>
     {
         IUnitOfWork _unitOfWork;
         public UserEditDTOValidator(IUnitOfWork unitOfWork)

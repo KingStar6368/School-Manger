@@ -23,7 +23,7 @@ namespace School_Manager.Data.Context
 		//}
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			optionsBuilder.UseSqlServer(@"Password=Developers@Gamarak;Persist Security Info=True;User ID=sa;Initial Catalog=SchMSDB;Data Source=DESKTOP-DRLAEKC\SQLSERVERDEV3;TrustServerCertificate=True;MultipleActiveResultSets=True;");
+			optionsBuilder.UseSqlServer(@"Password=mehrab1918;Persist Security Info=True;User ID=sa;Initial Catalog=SchMSDB;Data Source=DESKTOP-A65IC15\KINGSTAR;TrustServerCertificate=True;MultipleActiveResultSets=True;");
 		}
 
 		#region -> [-- DBSETS Identity --]

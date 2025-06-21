@@ -29,7 +29,6 @@ namespace School_Manager.Data.Configuration
         {
             builder.Property(p => p.Name)
             .HasColumnType("nvarchar(50)")
-            .IsRequired()
             .HasComment("نام ماشین");
 
             builder.Property(e => e.carType)
@@ -48,7 +47,6 @@ namespace School_Manager.Data.Configuration
         {
             builder.Property(p => p.CheckSerial)
             .HasColumnType("nvarchar(24)")
-            .IsRequired()
             .HasComment("سریال چک");
 
             builder.Property(p => p.CheckSayadNumber)
@@ -68,17 +66,14 @@ namespace School_Manager.Data.Configuration
         {
             builder.Property(p => p.FirstName)
             .HasColumnType("nvarchar(128)")
-            .IsRequired()
             .HasComment("نام");
 
             builder.Property(p => p.LastName)
             .HasColumnType("nvarchar(128)")
-            .IsRequired()
             .HasComment("نام خانوادگی");
 
             builder.Property(p => p.NationalCode)
             .HasColumnType("nvarchar(11)")
-            .IsRequired()
             .HasComment("کد ملی");
 
             builder.Property(p => p.Class)
@@ -105,22 +100,18 @@ namespace School_Manager.Data.Configuration
         {
             builder.Property(p => p.Name)
             .HasColumnType("nvarchar(128)")
-            .IsRequired()
             .HasComment("نام");
 
             builder.Property(p => p.LastName)
             .HasColumnType("nvarchar(128)")
-            .IsRequired()
             .HasComment("نام خانوادگی");
 
             builder.Property(p => p.NationCode)
             .HasColumnType("nvarchar(11)")
-            .IsRequired()
             .HasComment("کد ملی");
 
             builder.Property(p => p.FatherName)
             .HasColumnType("nvarchar(128)")
-            .IsRequired()
             .HasComment("نام پدر");
 
             builder.HasMany(d => d.Passanger).WithOne(p => p.DriverNavigation)
@@ -187,11 +178,10 @@ namespace School_Manager.Data.Configuration
             builder.Property(p => p.Type)
                 .HasColumnType("nvarchar(50)")
                 .IsRequired()
-                .HasComment("نوع");
+                .HasComment("نوع"); 
 
             builder.Property(p => p.Value)
                 .HasColumnType("nvarchar(100)")
-                .IsRequired()
                 .HasComment("مقدار");
 
             builder.HasIndex(p => new { p.Type, p.Code })
@@ -206,17 +196,14 @@ namespace School_Manager.Data.Configuration
         {
             builder.Property(p => p.FirstName)
             .HasColumnType("nvarchar(128)")
-            .IsRequired()
             .HasComment("نام");
 
             builder.Property(p => p.LastName)
             .HasColumnType("nvarchar(128)")
-            .IsRequired()
             .HasComment("نام خانوادگی");
 
             builder.Property(p => p.NationalCode)
             .HasColumnType("nvarchar(11)")
-            .IsRequired()
             .HasComment("کد ملی");
 
             builder.HasQueryFilter(x => !x.IsDeleted);
@@ -252,12 +239,10 @@ namespace School_Manager.Data.Configuration
         {
             builder.Property(p => p.MaterialCode)
             .HasColumnType("nvarchar(50)")
-            .IsRequired()
             .HasComment("کد کالا");
 
             builder.Property(p => p.Name)
             .HasColumnType("nvarchar(100)")
-            .IsRequired()
             .HasComment("نام کالا");
 
             builder.Property(p => p.Description)
@@ -265,7 +250,6 @@ namespace School_Manager.Data.Configuration
             .HasComment("توضیحات");
 
             builder.Property(p => p.MajorUnitRef)
-            .IsRequired()
             .HasComment("واحد اصلی");
 
             builder.Property(p => p.SecondaryUnitRef)
@@ -308,12 +292,10 @@ namespace School_Manager.Data.Configuration
         {
             builder.Property(p => p.Name)
             .HasColumnType("nvarchar(128)")
-            .IsRequired()
             .HasComment("نام مدرسه");
 
             builder.Property(p => p.ManagerName)
             .HasColumnType("nvarchar(128)")
-            .IsRequired()
             .HasComment("نام مدیر مدرسه");
 
             builder.HasMany(b=>b.Childs)
@@ -369,23 +351,19 @@ namespace School_Manager.Data.Configuration
             builder.Property(p => p.IsActive).HasDefaultValue(true);
             builder.Property(p => p.UserName)
                 .HasColumnType("nvarchar(50)")
-                .IsRequired()
                 .HasComment("نام کاربری");
 
             builder.Property(p => p.PasswordHash)
                 .HasColumnType("nvarchar(max)")
-                .IsRequired()
                 .HasComment("کلمه عبور");
 
 
             builder.Property(p => p.FirstName)
                 .HasColumnType("nvarchar(50)")
-                .IsRequired()
                 .HasComment("نام");
 
             builder.Property(p => p.LastName)
                 .HasColumnType("nvarchar(50)")
-                .IsRequired()
                 .HasComment("نام خانوادگی");
 
             builder.HasMany(p => p.Parents).WithOne(b => b.UserNavigation)
