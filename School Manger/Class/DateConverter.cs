@@ -16,6 +16,27 @@ namespace School_Manger.Extension
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(obj)));
         }
     }
+    public static class Helper
+    {
+        public static string ConvertPersianToEnglish(this string input)
+        {
+            string[] persianDigits = { "۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹" };
+            for (int i = 0; i < persianDigits.Length; i++)
+            {
+                input = input.Replace(persianDigits[i], i.ToString());
+            }
+            return input;
+        }
+        public static string ConvertEnglishToPersian(this string input)
+        {
+            string[] persianDigits = { "۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹" };
+            for (int i = 0; i < 10; i++)
+            {
+                input = input.Replace(i.ToString(), persianDigits[i]);
+            }
+            return input;
+        }
+    }
     public static class DateConverter
     {
         private static readonly PersianCalendar PersianCal = new PersianCalendar();

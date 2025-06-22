@@ -1,4 +1,5 @@
 ﻿@using School_Manger.Models.PageView
+@using School_Manger.Extension
 @model ParentDashbordView
 
 @{
@@ -83,7 +84,7 @@
                                             <td>@child.LastName</td>
                                             <td>@child.Class</td>
                                             <td>@child.NationalCode</td>
-                                            <td>@child.BirthDate.ToString("yyyy/MM/dd")</td>
+                                            <td>@child.BirthDate.ToPersianString()</td>
                                             <td>
                                                 @if (child.HasPaid)
                                                 {
@@ -98,7 +99,7 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex flex-wrap justify-content-center gap-1">
-                                                    <button class="btn btn-sm btn-outline-warning" onclick="editChild('@child.Id')">
+                                              @*       <button class="btn btn-sm btn-outline-warning" onclick="editChild('@child.Id')">
                                                         <i class="bi bi-pencil"></i> ویرایش
                                                     </button>
                                                     <form asp-action="RemoveChild" method="post">
@@ -106,7 +107,7 @@
                                                         <button type="submit" class="btn btn-sm btn-outline-danger">
                                                             <i class="bi bi-trash"></i> حذف
                                                         </button>
-                                                    </form>
+                                                    </form> *@
                                                     <form asp-action="Bills" method="post">
                                                         <input type="hidden" name="Id" value="@child.Id" />
                                                         <button type="submit" class="btn btn-sm btn-outline-primary">
@@ -166,8 +167,9 @@
                             <input asp-for="SelectedChild.Class" class="form-control bg-secondary text-white" required />
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">تاریخ تولد</label>
-                            <input asp-for="SelectedChild.BirthDate" type="date" class="form-control bg-secondary text-white" required />
+                            <label for="PersianDate" class="form-label">تاریخ تولد</label>
+                            <input id="PersianDate" name="Date" class="form-control bg-secondary text-white" required />
+                            <input type="hidden" id="GregorianDate"  />
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">زمان رفت</label>

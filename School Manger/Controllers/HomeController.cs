@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using DNTPersianUtils.Core;
 using iText.Layout.Element;
 using iText.Layout.Properties;
@@ -21,125 +22,14 @@ namespace School_Manger.Controllers
         private readonly IParentService _PService;
         private readonly IChildService _CService;
         private readonly IUserService _UserService;
-        public HomeController(IParentService PService,IChildService CService,IUserService UService)
+        private readonly IBillService _BillService;
+        public HomeController(IParentService PService,IChildService CService,
+            IUserService UService,IBillService billService)
         {
             _PService = PService;
             _CService = CService;
             _UserService = UService;
-            Static_Parent = new ParentDashbordView()
-            {
-                Parent = new ParentDto()
-                {
-                    Children = new List<ChildInfo>()
-                    {
-                        new ChildInfo()
-                        {
-                            Id = 1,
-                            FirstName = "حسین",
-                            LastName = "بنیادی",
-                            Class = "اول ابتدایی",
-                            NationalCode = "0521234567",
-                            BirthDate = DateTime.Now.AddYears(-7).ToPersain(),
-                            Bills = new List<BillDto>()
-                            {
-                                new BillDto()
-                                {
-                                    Id = 1,
-                                    Name = "مهر",
-                                    ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
-                                    BillExpiredTime = DateTime.Now,
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 2,
-                                    Name = "آبان",
-                                    ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
-                                    BillExpiredTime = DateTime.Now.AddMonths(-1),
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 3,
-                                    Name = "آذر",
-                                    ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
-                                    BillExpiredTime = DateTime.Now.AddDays(1),
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 4,
-                                    Name = "دی",
-                                    ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
-                                    BillExpiredTime = DateTime.Now.AddMonths(1),
-                                    TotalPrice = 100
-                                }
-                            }
-                        },
-                        new ChildInfo()
-                        {
-                            Id = 2,
-                            FirstName = "محمد",
-                            LastName = "بنیادی",
-                            Class = "چهارم ابتدایی",
-                            NationalCode = "0521234567",
-                            BirthDate = DateTime.Now.AddYears(-11).ToPersain(),
-                            Bills = new List<BillDto>()
-                            {
-                                new BillDto()
-                                {
-                                    Id = 1,
-                                    Name = "مهر",
-                                    ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
-                                    BillExpiredTime = DateTime.Now,
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 2,
-                                    Name = "آبان",
-                                    ContractId = 1,
-                                    PaidPrice = 10,
-                                    BillExpiredTime = DateTime.Now.AddMonths(-1),
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 3,
-                                    Name = "آذر",
-                                    ContractId = 1,
-                                    PaidPrice = 0,
-                                    BillExpiredTime = DateTime.Now.AddDays(1),
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 4,
-                                    Name = "دی",
-                                    ContractId = 1,
-                                    PaidPrice = 0,
-                                    BillExpiredTime = DateTime.Now.AddMonths(1),
-                                    TotalPrice = 100
-                                }
-                            }
-                        }
-                    },
-                    ParentFirstName = "رضا",
-                    ParentNationalCode = "0527654321",
-                    ParentLastName = "بنیادی"
-
-                },
-            };
+            _BillService = billService;
         }
 
         #region Login&SignIn
@@ -226,8 +116,9 @@ namespace School_Manger.Controllers
             });
         }
         [HttpPost]
-        public IActionResult LocationSelector(ParentDashbordView view)
+        public IActionResult LocationSelector(ParentDashbordView view,string Date)
         {
+            view.SelectedChild.BirthDate = Date.ConvertPersianToEnglish().ToMiladi();
             return View(view);
         }
         [HttpPost]
@@ -264,54 +155,16 @@ namespace School_Manger.Controllers
         #endregion
 
         [HttpPost]
-        public IActionResult Bills(int Id)
+        public async Task<IActionResult> Bills(long Id)
         {
-            var selectedChild = Static_Parent.Parent.Children.FirstOrDefault(x => x.Id == Id);
-            #region Static Data
-            //List<BillDto> bills = new List<BillDto>()
-            //{
-            //    new BillDto()
-            //    {
-            //        Id = 3,
-            //        Name = "مهر",
-            //        ContractId = 1,
-            //        PaidPrice = 100,
-            //        PaidTime = DateTime.Now,
-            //        BillExpiredTime = DateTime.Now,
-            //        TotalPrice = 100
-            //    },
-            //    new BillDto()
-            //    {
-            //        Id = 3,
-            //        Name = "آبان",
-            //        ContractId = 1,
-            //        PaidPrice = 10,
-            //        BillExpiredTime = DateTime.Now.AddMonths(-1),
-            //        TotalPrice = 100
-            //    },
-            //    new BillDto()
-            //    {
-            //        Id = 3,
-            //        Name = "آذر",
-            //        ContractId = 1,
-            //        PaidPrice = 10,
-            //        BillExpiredTime = DateTime.Now.AddDays(1),
-            //        TotalPrice = 100
-            //    },
-            //    new BillDto()
-            //    {
-            //        Id = 3,
-            //        Name = "دی",
-            //        ContractId = 1,
-            //        PaidPrice = 10,
-            //        BillExpiredTime = DateTime.Now.AddMonths(1),
-            //        TotalPrice = 100
-            //    }
-            //}; 
-            #endregion
+            ParentDto parent = _PService.GetParent(ControllerExtensions.GetKey<long>(this,"Pref"));
+            ChildInfo child = _CService.GetChild(Id);
+            List<BillDto> bills = await _BillService.GetChildBills(Id);
             BillDashbord dashbord = new BillDashbord()
             {
-                bills = selectedChild.Bills,
+                bills = bills,
+                child = child,
+                parent = parent,
             };
             return View(dashbord);
         }
