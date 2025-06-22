@@ -41,8 +41,8 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult SignIn(string PhoneNumber)
         {
-            TempData["PhoneNumber"] = PhoneNumber;
-            if (_UserService.IsMobileRegistered(TempData["PhoneNumber"].ToString()))
+            ControllerExtensions.AddKey(this, "PhoneNumber", PhoneNumber);
+            if (_UserService.IsMobileRegistered(ControllerExtensions.GetKey<string>(this, "PhoneNumber")))
             {
                 ControllerExtensions.ShowError(this,"خطا", "این شماره موبایل در سیستم موجود است");
                 return Redirect("Index");
@@ -84,7 +84,7 @@ namespace School_Manger.Controllers
                 FirstName = firstName,
                 LastName = lastName,
                 IsActive = true,
-                Mobile = TempData["PhoneNumber"].ToString(),
+                Mobile = ControllerExtensions.GetKey<string>(this, "PhoneNumber"),
                 PasswordHash = password,
                 UserName = nationalCode
             });

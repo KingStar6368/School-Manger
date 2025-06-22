@@ -55,7 +55,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// <summary>
         /// لیست قبص ها
         /// </summary>
-        public List<BillDto> Bills = new List<BillDto>();
+        public List<BillDto> Bills { get; set; }
     }
     public interface IChildDto
     {

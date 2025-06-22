@@ -34,7 +34,11 @@
                 {
                     <span class="fw-semibold">💰 مبالغ پرداخت‌نشده:</span>
                     <span class="badge bg-danger fs-5 mt-2">
-                        @Model.Parent.Children.Sum(x =>x.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice)) تومان
+                        @if(Model.Parent.Children.Any(x=>x.Bills != null))
+                        {
+                            @Model.Parent.Children.Sum(x =>x.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice)) 
+                        }
+                        تومان
                     </span>
                 }
             </div>
@@ -92,6 +96,8 @@
                                                 }
                                                 else
                                                 {
+                                                    if (child.Bills == null)
+                                                        child.Bills = new List<School_Manager.Core.ViewModels.FModels.BillDto>();
                                                     <span class="badge bg-danger">
                                                         @child.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice) تومان
                                                     </span>
