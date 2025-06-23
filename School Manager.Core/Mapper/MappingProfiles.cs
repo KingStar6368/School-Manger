@@ -68,7 +68,8 @@ namespace School_Manager.Core.Mapper
             #endregion
             #region Location Data
             CreateMap<LocationData, LocationDataDto>();
-
+            CreateMap<LocationDataCreateDto, LocationData>();
+            CreateMap<LocationDataUpdateDto, LocationData>();
             #endregion
             #region LocationPair
             //CreateMap<LocationPair, LocationPairModel>();
@@ -76,6 +77,8 @@ namespace School_Manager.Core.Mapper
                 .ForMember(dest=>dest.ChildId,opt=>opt.MapFrom(src=>src.ChildRef))
                 .ForMember(dest => dest.Location1,opt => opt.MapFrom(src =>src.Locations.FirstOrDefault(l => l.LocationType == LocationType.Start)))
                 .ForMember(dest => dest.Location2,opt => opt.MapFrom(src =>src.Locations.FirstOrDefault(l => l.LocationType == LocationType.End)));
+            CreateMap<LocationPairCreateDto, LocationPair>();
+            CreateMap<LocationPairUpdateDto, LocationPair>();
             #endregion
             #region LookUp
             CreateMap<Lookup, LookupComboViewModel>()

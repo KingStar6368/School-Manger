@@ -23,7 +23,7 @@ namespace School_Manager.Core.Services.Validations
 
             RuleFor(x => x.NationalCode)
                 .NotEmpty().WithMessage("نام خانوادگی الزامی است.")
-                .MaximumLength(11).WithMessage("نام خانوادگی نباید بیشتر از 30 کاراکتر باشد.");
+                .MaximumLength(11).WithMessage("کد ملی نباید بیشتر از 11 کاراکتر باشد.");
 
         }
     }
