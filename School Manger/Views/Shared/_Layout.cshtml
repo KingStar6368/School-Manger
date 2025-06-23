@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Text.Json
+<!DOCTYPE html>
 <html dir="rtl" lang="fa">
 <head>
     <meta charset="utf-8">
@@ -9,22 +10,23 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/School_Manger.styles.css" asp-append-version="true" />
-    @* <style>
-        @@font-face {
-            font-family: 'MyCustomFont';
-            src: url('/fonts/B-NAZANIN.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-        body{
-            font-family: 'MyCustomFont', sans-serif;
-            font-size : 24px
-        }
-    </style> *@
+
+    <link href="~/css/persian-datepicker.min.css" rel="stylesheet" />
+
     @RenderSection("Styles", required: false)
 </head>
 <body>
+
+    @{
+        Notification notification = null;
+        if (TempData["Notification"] is string jsonNotification)
+        {
+            notification = JsonSerializer.Deserialize<Notification>(jsonNotification);
+        }
+    }
+
     @await Html.PartialAsync("_Header")
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -32,10 +34,28 @@
     </div>
     @await Html.PartialAsync("_Footer")
 
+    @await Html.PartialAsync("_NotificationPartial", notification);
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/js/persian-date.min.js"></script>
+    <script src="~/js/persian-datepicker.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        $(document).ready(function () {
+            $("#PersianDate").persianDatepicker({
+                format: "YYYY/MM/DD",
+                altField: "#GregorianDate",
+                altFormat: "YYYY-MM-DD",
+                observer: true,
+                initialValue: false
+            });
+        });
+    </script>
+
 </body>
 </html>

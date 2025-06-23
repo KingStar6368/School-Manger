@@ -1,0 +1,111 @@
+﻿@model Notification
+
+@if (Model != null)
+{
+    <div class="notification @Model.Type">
+        <div class="notification-header">
+            <strong>@Model.Title</strong>
+            <button class="close-notification">&times;</button>
+        </div>
+        <div class="notification-body">
+            @Model.Message
+        </div>
+    </div>
+
+    <style>
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            color: white;
+            z-index: 10000;
+            max-width: 350px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            animation: slideIn 0.5s forwards;
+        }
+
+        @@keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @@keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+        }
+
+        .notification.Success {
+            background-color: #28a745 !important;
+            border: 1px solid #218838 !important;
+        }
+
+        .notification.Warning {
+            background-color: #ffc107 !important;
+            color: #212529 !important;
+            border: 1px solid #e0a800 !important;
+        }
+
+        .notification.Error {
+            background-color: #dc3545 !important;
+            border: 1px solid #c82333 !important;
+        }
+
+        .notification-header {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            margin-bottom: 5px !important;
+        }
+
+        .close-notification {
+            background: none !important;
+            border: none !important;
+            color: inherit !important;
+            font-size: 1.2rem !important;
+            cursor: pointer !important;
+            padding: 0 !important;
+            line-height: 1 !important;
+            margin-right: 10px !important;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Close notification when X is clicked
+            const closeBtn = document.querySelector('.close-notification');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    const notification = this.closest('.notification');
+                    notification.style.animation = 'slideOut 0.5s forwards';
+                    setTimeout(() => notification.remove(), 500);
+                });
+            }
+
+            // Auto-close notification after 5 seconds
+            const notification = document.querySelector('.notification');
+            if (notification) {
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.5s forwards';
+                    setTimeout(() => notification.remove(), 500);
+                }, 5000);
+            }
+        });
+    </script>
+}

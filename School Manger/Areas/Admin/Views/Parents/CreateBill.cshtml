@@ -1,6 +1,6 @@
 ﻿@using School_Manger.Extension
 @using School_Manager.Core.ViewModels.FModels
-
+@model ChildInfo
 @{
     ViewData["Title"] = "📄 صدور قبض";
     Layout = "_AdminLayout";
@@ -91,7 +91,7 @@
                                 </td>
                                 <td>
                                     @(bill.HasPaid
-                                        ? DateConverter.ToPersianString(bill.PaidTime)
+                                        ? DateConverter.ToPersianString((DateTime)bill.PaidTime)
                                         : DateConverter.ToPersianString(bill.BillExpiredTime))
                                 </td>
                                 <td>

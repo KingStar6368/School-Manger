@@ -66,8 +66,12 @@ namespace School_Manager.Core.Services.Implemetations
             {
                 result = _mapper.Map<ChildInfo>(ds);
             }
+            else if(ds == null)
+            {
+                return null;
+            }
 
-            return result;
+                return result;
         }
 
         public DriverDto GetChildDriver(long ChildId)
