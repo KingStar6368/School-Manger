@@ -106,6 +106,7 @@
         /// کلاس چک
         /// </summary>
         public CheckDto Check { get; set; }
+        public bool IsActive { get; set; }
     }
     public interface IServiceContractDto
     {
@@ -133,6 +134,7 @@
         /// عکس امضا
         /// </summary>
         public byte[] SignatureImage { get; set; }
+        public bool IsActive { get; set; }
     }
     public class ServiceContractCreateDto : IServiceContractDto
     {
@@ -142,6 +144,7 @@
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public byte[] SignatureImage { get; set; }
+        public bool IsActive { get; set; }
     }
     public class ServiceContractUpdateDto : IServiceContractDto
     {
@@ -152,5 +155,6 @@
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public byte[] SignatureImage { get; set; }
+        public bool IsActive { get; set; }
     }
 }

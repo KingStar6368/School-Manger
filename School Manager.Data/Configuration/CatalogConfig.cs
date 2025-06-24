@@ -21,6 +21,9 @@ namespace School_Manager.Data.Configuration
             .HasForeignKey(f => f.BillRef)
             .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Property(p => p.Type)
+                .HasConversion<int>();
+
             builder.HasOne(p=>p.ServiceContractNavigation).WithMany(b=>b.BillNavigation)
                 .HasForeignKey(fk=>fk.ServiceContractRef)
                 .OnDelete(DeleteBehavior.Restrict);

@@ -34,6 +34,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public byte[] SignatureImage { get; set; }
         /// <summary>
+        /// قرارداد فعال است
+        /// </summary>
+        public bool IsActive { get; set; }
+        /// <summary>
         /// کلاس فرزند
         /// </summary>
         public virtual Child ChildNavigation { get; set; }

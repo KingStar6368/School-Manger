@@ -30,6 +30,10 @@
         /// </summary>
         public string Status { get; set; }
         /// <summary>
+        /// متن وضعیت
+        /// </summary>
+        public string TypeOfBill {  get; set; }
+        /// <summary>
         /// پرداخت شده؟
         /// </summary>
         public bool HasPaid {  get; set; }
@@ -57,6 +61,7 @@
         /// مهلت پرداخت
         /// </summary>
         public DateTime EstimateTime { get; set; }
+        public int Type {  get; set; }
 
     }
     public class BillCreateDto : IBillDto
@@ -65,6 +70,7 @@
         public long Price { get; set; }
         public DateTime EstimateTime { get; set; }
         public string Name {get;set;}
+        public int Type { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
     public class BillUpdateDto : IBillDto
     {
@@ -85,5 +91,6 @@
         /// </summary>
         public DateTime EstimateTime { get; set; }
         public string Name {get;set;}
+        public int Type { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

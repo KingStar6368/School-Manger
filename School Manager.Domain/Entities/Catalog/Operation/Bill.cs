@@ -1,4 +1,5 @@
 ﻿using School_Manager.Domain.Common;
+using School_Manager.Domain.Entities.Catalog.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// مهلت پرداخت
         /// </summary>
         public DateTime EstimateTime { get; set; }
+        /// <summary>
+        /// نوع قبض (پیش پرداخت یا عادی) است
+        /// </summary>
+        public BillType Type { get; set; }
         /// <summary>
         /// قرارداد
         /// </summary>
