@@ -18,7 +18,6 @@ namespace School_Manger.Controllers
     public class HomeController : Controller
     {
         //static data
-        ParentDashbordView Static_Parent;
         private readonly IParentService _PService;
         private readonly IChildService _CService;
         private readonly IUserService _UserService;
@@ -139,7 +138,33 @@ namespace School_Manger.Controllers
                     ParentRef = ControllerExtensions.GetKey<long>(this,"Pref"),
                     BirthDate = model.SelectedChild.BirthDate,
                     Class = 1,//todo it must cast to int
-                    SchoolRef = model.SelectedChild.SchoolId
+                    SchoolRef = model.SelectedChild.SchoolId,
+                    LocationPairs = new List<LocationPairCreateDto>()
+                    {
+                        new LocationPairCreateDto()
+                        {
+                            PickTime1 = model.SelectedChild.Path.PickTime1,
+                            PickTime2 = model.SelectedChild.Path.PickTime2,
+                            Locations = new List<LocationDataCreateDto>()
+                            {
+                                new LocationDataCreateDto()
+                                {
+                                    Address = model.SelectedChild.Path.Location1.Address,
+                                    Latitude = model.SelectedChild.Path.Location1.Latitude,
+                                    Longitude = model.SelectedChild.Path.Location1.Longitude,
+                                    LocationType = LocationType.Start,
+                                },
+                                new LocationDataCreateDto()
+                                {
+                                    Address = model.SelectedChild.Path.Location2.Address,
+                                    Latitude = model.SelectedChild.Path.Location2.Latitude,
+                                    Longitude = model.SelectedChild.Path.Location2.Longitude,
+                                    LocationType = LocationType.End,
+                                }
+                            }
+                            
+                        }
+                    }
                 });
                 ControllerExtensions.ShowSuccess(this, "موفق", "فرزند جدید اضافه شد");
             }
