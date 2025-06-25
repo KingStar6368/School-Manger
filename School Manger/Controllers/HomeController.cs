@@ -62,6 +62,7 @@ namespace School_Manger.Controllers
                 return View();
             else
             {
+                //var prnt = _PService.GetParent(1);
                 UserDTO user = _UserService.CheckAuthorize(NationalCode, Password);
                 if (user != null)
                 {
