@@ -35,7 +35,7 @@
                     @for (int i = 0; i < Model.Count; i++)
                     {
                         var parent = Model[i];
-                        var debt = parent.Children.Sum(c => c.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice));
+                        var debt = parent.Children.Where(x=>x.Bills != null).Sum(c => c.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice));
                         var isActive = parent.Active;
 
                         <tr>

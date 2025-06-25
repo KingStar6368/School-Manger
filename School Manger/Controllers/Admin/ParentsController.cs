@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manger.Extension;
 using School_Manger.Models.PageView;
@@ -9,199 +10,44 @@ namespace School_Manger.Controllers.Admin
     [Area("Admin")]
     public class ParentsController : Controller
     {
-        List<ParentDto> TestModel = new List<ParentDto>()
+        private readonly IUserService _userService;
+        private readonly IParentService _parentService;
+        private readonly IChildService _childService;
+        private readonly IContractService _contractService;
+        private readonly IBillService _billService;
+        private readonly ISchoolService _schoolService;
+        private readonly IDriverService _driverService;
+        public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, IBillService billService, ISchoolService schoolService, IDriverService driverService)
         {
-            new ParentDto()
-            {
-                Children = new List<ChildInfo>()
-                {
-                    new ChildInfo()
-                    {
-                            Id = 1,
-                            FirstName = "حسین",
-                            LastName = "بنیادی",
-                            Class = "اول ابتدایی",
-                            NationalCode = "0521234567",
-                            DriverId = 1,
-                            BirthDate = DateTime.Now.AddYears(-7).ToPersain(),
-                            Path = new LocationPairModel()
-                            {
-                                ChildId = 1,
-                                Id = 1,
-                                Location1 = new LocationDataDto()
-                                {
-                                    Address="مرکز شهر",
-                                    Latitude =  34.0918,
-                                    Longitude = 49.6892
-                                },
-                                Location2 = new LocationDataDto()
-                                {
-                                    Address="دانشگاه اراک",
-                                    Latitude = 34.0655,
-                                    Longitude = 49.7023
-                                },
-                                PickTime1 = DateTime.Now,
-                                PickTime2 = DateTime.Now,
-                            },
-                            Bills = new List<BillDto>()
-                            {
-                                new BillDto()
-                                {
-                                    Id = 1,
-                                    Name = "مهر",
-                                    ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
-                                    BillExpiredTime = DateTime.Now,
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 2,
-                                    Name = "آبان",
-                                    ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
-                                    BillExpiredTime = DateTime.Now.AddMonths(-1),
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 3,
-                                    Name = "آذر",
-                                    ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
-                                    BillExpiredTime = DateTime.Now.AddDays(1),
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 4,
-                                    Name = "دی",
-                                    ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
-                                    BillExpiredTime = DateTime.Now.AddMonths(1),
-                                    TotalPrice = 100
-                                }
-                            }
-                        },
-                    new ChildInfo()
-                        {
-                            Id = 2,
-                            FirstName = "محمد",
-                            LastName = "بنیادی",
-                            Class = "چهارم ابتدایی",
-                            NationalCode = "0521234567",
-                            BirthDate = DateTime.Now.AddYears(-11).ToPersain(),
-                            Path = new LocationPairModel()
-                            {
-                                ChildId = 1,
-                                Id = 1,
-                                Location1 = new LocationDataDto()
-                                {
-                                    Address="مرکز شهر",
-                                    Latitude = 	34.0918,
-                                    Longitude = 49.6892
-                                },
-                                Location2 = new LocationDataDto()
-                                {
-                                    Address="دانشگاه اراک",
-                                    Latitude = 34.0655,
-                                    Longitude = 49.7023
-                                },
-                                PickTime1 = DateTime.Now,
-                                PickTime2 = DateTime.Now,
-                            },
-                            Bills = new List<BillDto>()
-                            {
-                                new BillDto()
-                                {
-                                    Id = 1,
-                                    Name = "مهر",
-                                    ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
-                                    BillExpiredTime = DateTime.Now,
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 2,
-                                    Name = "آبان",
-                                    ContractId = 1,
-                                    PaidPrice = 10,
-                                    BillExpiredTime = DateTime.Now.AddMonths(-1),
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 3,
-                                    Name = "آذر",
-                                    ContractId = 1,
-                                    PaidPrice = 0,
-                                    BillExpiredTime = DateTime.Now.AddDays(1),
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 4,
-                                    Name = "دی",
-                                    ContractId = 1,
-                                    PaidPrice = 0,
-                                    BillExpiredTime = DateTime.Now.AddMonths(1),
-                                    TotalPrice = 100
-                                }
-                            }
-                        }
-                },
-                ParentFirstName = "رضا",
-                ParentNationalCode = "0527654321",
-                ParentLastName = "بنیادی"
-            },
-        };
-        public IActionResult Index()
+            _parentService = parentService;
+            _childService = childService;
+            _contractService = contractService;
+            _billService = billService;
+            _schoolService = schoolService;
+            _driverService = driverService;
+        }
+        public async Task<IActionResult> Index()
         {
-            return View(TestModel);
+            var Parents = await _parentService.GetParents();
+            return View(Parents);
         }
         public IActionResult Details(int id)
         {
-            var Model = TestModel.FirstOrDefault(x => x.Id == id);
+            var Model = _parentService.GetParent(id);
+            List<DriverDto> drivers = new List<DriverDto>();
+            List<SchoolDto> schools = new List<SchoolDto>();
+            foreach(var child in Model.Children)
+            {
+                if (child.DriverId != null)
+                    drivers.Add(_driverService.GetDriver((long)child.DriverId));
+                if(child.SchoolId != null)
+                    schools.Add(_schoolService.GetSchool((long)child.SchoolId));
+            }
             AdminParent admindashbord = new AdminParent()
             {
                 Parent = Model,
-                Drivers = new List<DriverDto>()
-                { new DriverDto
-                    {
-                        Id = 1,
-                        Name = "رضا",
-                        LastName = "محمدی",
-                        Car = new CarInfoDto
-                        {
-                            Id = 1,
-                            Name = "پراید",
-                            PlateNumber = "12ب32647",
-                            SeatNumber = 4,
-                            Color = "white"
-                        },
-                        NationCode = "05211312",
-                        BankAccount = null,
-                        BankNumber = "1231321",
-                        Address = "اراک",
-                        BirthDate = DateTime.Parse("1375/04/01"),
-                        CertificateId = "123",
-                        Descriptions = "",
-                        Education = "دیپلم",
-                        FutherName = "احمد",
-                        Rate = 5,
-                        Warnning = 0,
-                        Passanger = new List<long>()
-                        {
-                            1
-                        }
-                    }
-                },
+                Drivers = drivers,
+                Schools = schools
             };
             return View(admindashbord);
         }

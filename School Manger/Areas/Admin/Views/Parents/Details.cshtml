@@ -49,7 +49,7 @@
                 }
                 else
                 {
-                    var unpaidTotal = Model.Parent.Children.Sum(x => x.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice));
+                    var unpaidTotal = Model.Parent.Children.Where(x=>x.Bills != null).Sum(x => x.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice));
                     <span class="badge bg-danger px-3 py-2">💸 @unpaidTotal.ToString("N0") تومان</span>
                 }
             </div>
@@ -91,14 +91,14 @@
                                 {
                                     <span class="badge bg-success">✅ پرداخت شده</span>
                                 }
-                                else
+                                else if(child.Child.Bills != null)
                                 {
                                     var unpaid = child.Child.Bills.Where(x => !x.HasPaid).Sum(x => x.TotalPrice - x.PaidPrice);
                                     <span class="badge bg-danger">💳 @unpaid.ToString("N0") تومان</span>
                                 }
                             </td>
                             <td>
-                                @if (child.Child.DriverId == 0 || driver == null)
+                                @if (child.Child.DriverId == 0 || child.Child.DriverId == null || driver == null)
                                 {
                                     <span class="text-muted">❌ اختصاص داده نشده</span>
                                 }
@@ -108,6 +108,7 @@
                                 }
                             </td>
                             <td>
+                                @if(child.Child.Path != null){
                                 <button class="btn btn-sm btn-outline-primary view-route"
                                         data-pickup="@child.Child.Path.Location1.Address"
                                         data-destination="@child.Child.Path.Location2.Address"
@@ -117,6 +118,7 @@
                                         data-dest-lng="@child.Child.Path.Location2.Longitude">
                                     <i class="bi bi-map"></i> مشاهده
                                 </button>
+                                }
                             </td>
                             <td>
                                 <form asp-action="CreateBill" method="post" class="d-inline">
