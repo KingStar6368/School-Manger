@@ -18,7 +18,7 @@
             </a>
         </div>
         <div class="card-body">
-            <form asp-action="CreateBill" asp-controller="Bills" method="post">
+            <form asp-action="MakeBill" method="post">
                 <input type="hidden" name="ChildId" value="@Model.Id" />
                 <input type="hidden" name="Child" value="@Model.EnCript()" />
 

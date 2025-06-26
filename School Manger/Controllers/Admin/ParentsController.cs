@@ -52,9 +52,16 @@ namespace School_Manger.Controllers.Admin
             return View(admindashbord);
         }
         [HttpPost]
-        public IActionResult CreateBill(string Child)
+        public IActionResult CreateBill(long ChildId)
         {
-            return View(Child.DeCript<ChildInfo>());
+            var Child = _childService.GetChild(ChildId);
+            return View(Child);
+        }
+        [HttpPost]
+        public IActionResult MakeBill(long ChildId, string Name,long TotalPrice,string EndTime,string IsPaid, string TrackCode,string PaymentType,long PaidPrice)
+        {
+            var Child = _childService.GetChild(ChildId);
+            return View("CreateBill", Child);
         }
         //[HttpPost]
         //public IActionResult test(string Child)
