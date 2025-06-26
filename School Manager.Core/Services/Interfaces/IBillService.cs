@@ -52,5 +52,11 @@ namespace School_Manager.Core.Services.Interfaces
         /// حذف قبض
         /// </summary>
         bool Delete(long billId);
+        /// <summary>
+        /// ذخیره قبض پیش پرداخت
+        /// </summary>
+        /// <param name="bill">قبض پیش پرداخت</param>
+        /// <returns></returns>
+        SavePreBillResult CreatePreBill(CreatePreBillDto bill);
     }
 }

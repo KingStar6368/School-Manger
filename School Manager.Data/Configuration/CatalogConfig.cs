@@ -24,7 +24,7 @@ namespace School_Manager.Data.Configuration
             builder.Property(p => p.Type)
                 .HasConversion<int>();
 
-            builder.HasOne(p=>p.ServiceContractNavigation).WithMany(b=>b.BillNavigation)
+            builder.HasOne(p=>p.ServiceContractNavigation).WithMany(b=>b.Bills)
                 .HasForeignKey(fk=>fk.ServiceContractRef)
                 .OnDelete(DeleteBehavior.Restrict);
             builder.HasQueryFilter(x=>!x.IsDeleted);

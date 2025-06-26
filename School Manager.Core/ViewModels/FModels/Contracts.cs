@@ -146,6 +146,17 @@
         public byte[] SignatureImage { get; set; }
         public bool IsActive { get; set; }
     }
+    public class PreServiceContractCreateDto
+    {
+        public long ChildRef { get; set; }
+        public long TotalPrice { get; set; }
+        public long MonthPrice { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public byte[] SignatureImage { get; set; }
+        public bool IsActive { get; set; }
+        public List<BillCreateDto> BillCreates { get; set; }
+    }
     public class ServiceContractUpdateDto : IServiceContractDto
     {
         public long Id { get; set; }

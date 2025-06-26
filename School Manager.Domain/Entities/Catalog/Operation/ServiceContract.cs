@@ -45,6 +45,6 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// کلاس چک
         /// </summary>
         public virtual ICollection<ServiceContractCheque> ServiceContractCheques { get; set; }
-        public virtual ICollection<Bill> BillNavigation { get; set; }
+        public virtual ICollection<Bill> Bills { get; set; }
     }
 }

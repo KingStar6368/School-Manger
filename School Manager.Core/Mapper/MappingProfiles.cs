@@ -32,6 +32,22 @@ namespace School_Manager.Core.Mapper
                 .ForMember(dest => dest.Type,opt=>opt.MapFrom(src=>(BillType)src.Type));
             CreateMap<BillUpdateDto, Bill>()
                 .ForMember(dest => dest.Type,opt=>opt.MapFrom(src=>(BillType)src.Type));
+
+            CreateMap<CreatePreBillDto, ServiceContract>()
+            .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Price))
+            .ForMember(dest => dest.MonthPrice, opt => opt.MapFrom(_ => 0))
+            .ForMember(dest => dest.SignatureImage, opt => opt.MapFrom(_ => Array.Empty<byte>()))
+            .ForMember(dest => dest.IsActive, opt => opt.MapFrom(_ => true))
+            .ForMember(dest => dest.Bills, opt => opt.MapFrom(src => new List<Bill>
+            {
+                new Bill
+                {
+                    Name = src.Name,
+                    EstimateTime = src.EstimateTime,
+                    Price = src.Price,
+                    Type = BillType.Pre
+                }
+            }));
             #endregion
             #region Car
             CreateMap<Car, CarInfoDto>()
@@ -150,6 +166,8 @@ namespace School_Manager.Core.Mapper
             #region SrviceContract
             CreateMap<ServiceContractCreateDto, ServiceContract>();
             CreateMap<ServiceContractUpdateDto, ServiceContract>();
+            CreateMap<PreServiceContractCreateDto, ServiceContract>()
+                .ForMember(dest=>dest.Bills,opt=>opt.MapFrom(src=>src.BillCreates));
             CreateMap<ServiceContractChequeUpdateDto, ServiceContractCheque>();
             #endregion
             #region User

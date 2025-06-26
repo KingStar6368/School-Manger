@@ -1,4 +1,6 @@
-﻿namespace School_Manager.Core.ViewModels.FModels
+﻿using School_Manager.Core.Utilities;
+
+namespace School_Manager.Core.ViewModels.FModels
 {
     /// <summary>
     /// کلاس قبض
@@ -70,7 +72,7 @@
         public long Price { get; set; }
         public DateTime EstimateTime { get; set; }
         public string Name {get;set;}
-        public int Type { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int Type { get; set; }
     }
     public class BillUpdateDto : IBillDto
     {
@@ -91,6 +93,23 @@
         /// </summary>
         public DateTime EstimateTime { get; set; }
         public string Name {get;set;}
-        public int Type { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int Type { get; set; }
+    }
+    public class CreatePreBillDto
+    {
+        public long ChildRef {  get; set; }
+        public string Name { get; set; } = Constant.PreBillName;
+        public DateTime EstimateTime { get; set; } = DateTime.Now;
+        public DateTime StartTime {  get; set; }
+        public DateTime EndTime { get; set; }
+        public long Price { get; set; }
+    }
+    /// <summary>
+    /// نتیجه ذخیره قبض پیش پرداخت
+    /// </summary>
+    public class SavePreBillResult
+    {
+        public long BillId { get; set; }
+        public long ServiceContractRef { get; set; }
     }
 }

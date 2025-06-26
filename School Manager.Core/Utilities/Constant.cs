@@ -8,5 +8,6 @@ namespace School_Manager.Core.Utilities
 {
     public static class Constant
     {
+        public static string PreBillName = "قبض پیش پرداخت";
     }
 }

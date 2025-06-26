@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Base;
+using School_Manager.Domain.Entities.Catalog.Enums;
 using School_Manager.Domain.Entities.Catalog.Operation;
 using System;
 using System.Collections.Generic;
@@ -20,15 +21,18 @@ namespace School_Manager.Core.Services.Implemetations
         private readonly IMapper _mapper;
         private readonly IValidator<BillCreateDto> _createValidator;
         private readonly IValidator<BillUpdateDto> _UpdateValidator;
+        private readonly IValidator<CreatePreBillDto> _createPreBillValidator;
         public BillService(IUnitOfWork unitOfWork,
                            IMapper mapper,
                            IValidator<BillCreateDto> createValidator,
-                           IValidator<BillUpdateDto> updateValidator)
+                           IValidator<BillUpdateDto> updateValidator,
+                           IValidator<CreatePreBillDto> createPreBillValidator)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _createValidator = createValidator;
             _UpdateValidator = updateValidator;
+            _createPreBillValidator = createPreBillValidator;
         }
 
         public BillDto GetBill(long id)
@@ -182,6 +186,26 @@ namespace School_Manager.Core.Services.Implemetations
             }
             _unitOfWork.GetRepository<Bill>().Remove(bill);
             return _unitOfWork.SaveChanges() > 0;
+        }
+
+        public SavePreBillResult CreatePreBill(CreatePreBillDto bill)
+        {
+            SavePreBillResult result = new SavePreBillResult { BillId =0,ServiceContractRef =0};
+            var validationResult = _createPreBillValidator.Validate(bill);
+            if (!validationResult.IsValid)
+            {
+                var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
+                throw new ValidationException(errors);
+            }
+            
+            var saveItem = _mapper.Map<ServiceContract>(bill);
+            _unitOfWork.GetRepository<ServiceContract>().Add(saveItem);
+            if(_unitOfWork.SaveChanges() > 0)
+            {
+                result.BillId = saveItem.Bills.FirstOrDefault()?.Id ?? 0;
+                result.ServiceContractRef = saveItem.Id;
+            }
+            return result;
         }
     }
 }
