@@ -33,7 +33,33 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">📆 مهلت پرداخت</label>
-                        <input type="date" name="BillExpiredTime" class="form-control bg-dark text-white shadow-sm" required />
+                        <input id="PersianDate" name="EndTime" class="form-control bg-secondary text-white" required />
+                        <input type="hidden" id="GregorianDate" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">پرداخت شده؟</label>
+                        <input type="checkbox" id="isPaidCheckbox" name="IsPaid" class="form-check-input bg-dark text-white shadow-sm" onchange="togglePaymentFields()" />
+                    </div>
+
+                    <!-- Additional fields that appear when checkbox is checked -->
+                    <div id="paymentFields" class="row g-3" style="display: none;">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">🔖 کد رهگیری (اختیاری)</label>
+                            <input type="text" name="TrackCode" class="form-control bg-dark text-white shadow-sm" placeholder="کد رهگیری پرداخت" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">💳 روش پرداخت</label>
+                            <select name="PaymentType" class="form-select bg-dark text-white shadow-sm" required>
+                                <option value="">-- انتخاب کنید --</option>
+                                <option value="Cash">💵 نقدی</option>
+                                <option value="Card">💳 کارت به کارت</option>
+                                <option value="Internet">🌐 اینترنتی</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">💵 مبلغ پرداخت شده</label>
+                            <input type="number" name="PaidPrice" class="form-control bg-dark text-white shadow-sm" required />
+                        </div>
                     </div>
                 </div>
 
@@ -48,6 +74,7 @@
             </form>
         </div>
     </div>
+    </div>
 
     <!-- 📜 Bills List -->
     <div class="card bg-dark text-white shadow-lg rounded-4 border-primary">
@@ -56,52 +83,78 @@
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-dark table-bordered table-hover text-center align-middle mb-0">
-                    <thead class="table-light text-dark">
-                        <tr>
-                            <th>🔢 ردیف</th>
-                            <th>🆔 شناسه قرارداد</th>
-                            <th>📄 نام قبض</th>
-                            <th>💵 مبلغ کل</th>
-                            <th>💳 مبلغ پرداخت شده</th>
-                            <th>✅ وضعیت</th>
-                            <th>⏰ زمان پرداخت/مهلت</th>
-                            <th>⚙️ عملیات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < Model.Bills.Count; i++)
-                        {
-                            var bill = Model.Bills[i];
+                @if(Model.Bills != null){
+                    <table class="table table-dark table-bordered table-hover text-center align-middle mb-0">
+                        <thead class="table-light text-dark">
                             <tr>
-                                <td>@(i + 1)</td>
-                                <td>@bill.ContractId</td>
-                                <td>@bill.Name</td>
-                                <td>@bill.TotalPrice.ToString("N0")</td>
-                                <td>@bill.PaidPrice.ToString("N0")</td>
-                                <td>
-                                    @if (bill.HasPaid)
-                                    {
-                                        <span class="badge bg-success rounded-pill fw-bold shadow-sm">✅ پرداخت شده</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger rounded-pill fw-bold shadow-sm">❌ @bill.Status</span>
-                                    }
-                                </td>
-                                <td>
-                                    @(bill.HasPaid
-                                        ? DateConverter.ToPersianString((DateTime)bill.PaidTime)
-                                        : DateConverter.ToPersianString(bill.BillExpiredTime))
-                                </td>
-                                <td>
-                                    <!-- Add buttons here if needed (e.g. view, edit, delete) -->
-                                </td>
+                                <th>🔢 ردیف</th>
+                                <th>🆔 شناسه قرارداد</th>
+                                <th>📄 نام قبض</th>
+                                <th>💵 مبلغ کل</th>
+                                <th>💳 مبلغ پرداخت شده</th>
+                                <th>✅ وضعیت</th>
+                                <th>⏰ زمان پرداخت/مهلت</th>
+                                <th>⚙️ عملیات</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Bills.Count; i++)
+                            {
+                                var bill = Model.Bills[i];
+                                <tr>
+                                    <td>@(i + 1)</td>
+                                    <td>@bill.ContractId</td>
+                                    <td>@bill.Name</td>
+                                    <td>@bill.TotalPrice.ToString("N0")</td>
+                                    <td>@bill.PaidPrice.ToString("N0")</td>
+                                    <td>
+                                        @if (bill.HasPaid)
+                                        {
+                                            <span class="badge bg-success rounded-pill fw-bold shadow-sm">✅ پرداخت شده</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger rounded-pill fw-bold shadow-sm">❌ @bill.Status</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @(bill.HasPaid
+                                            ? DateConverter.ToPersianString((DateTime)bill.PaidTime)
+                                            : DateConverter.ToPersianString(bill.BillExpiredTime))
+                                    </td>
+                                    <td>
+                                        <!-- Add buttons here if needed (e.g. view, edit, delete) -->
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }else{
+                    <div class="alert alert-warning text-center fw-bold">🚫 هیچ قبضی ثبت نشده است.</div>
+                }
             </div>
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        function togglePaymentFields() {
+            var checkbox = document.getElementById('isPaidCheckbox');
+            var paymentFields = document.getElementById('paymentFields');
+
+            if (checkbox.checked) {
+                paymentFields.style.display = 'flex';
+                // Make the required fields mandatory when shown
+                paymentFields.querySelectorAll('input[required], select[required]').forEach(function(input) {
+                    input.required = true;
+                });
+            } else {
+                paymentFields.style.display = 'none';
+                // Remove required attribute when hidden
+                paymentFields.querySelectorAll('input, select').forEach(function(input) {
+                    input.required = false;
+                });
+            }
+        }
+    </script>
+}

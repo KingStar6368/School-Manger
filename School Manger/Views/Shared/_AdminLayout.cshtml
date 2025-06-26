@@ -149,6 +149,17 @@
 
     @await Html.PartialAsync("_NotificationPartial", notification);
 
+    <script>
+        $(document).ready(function () {
+            $("#PersianDate").persianDatepicker({
+                format: "YYYY/MM/DD",
+                altField: "#GregorianDate",
+                altFormat: "YYYY-MM-DD",
+                observer: true,
+                initialValue: false
+            });
+        });
+    </script>
 
     @section Scripts {
         <script>
