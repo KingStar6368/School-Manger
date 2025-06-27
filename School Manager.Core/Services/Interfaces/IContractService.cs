@@ -9,7 +9,7 @@ namespace School_Manager.Core.Services.Interfaces
 {
     public interface IContractService
     {
-        Task<ServiceContractDto> GetContracts();
+        Task<List<ServiceContractDto>> GetContracts();
         ServiceContractDto GetContract(long Id);
         ServiceContractDto GetContractWithChild(long ChildId);
 

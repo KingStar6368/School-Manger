@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using School_Manager.Core.Mapper;
 using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.Services.Validations;
@@ -45,8 +46,7 @@ namespace School_Manager.IOC
             services.AddScoped<ICarService,CarService>();
             services.AddScoped<IChequeService,ChequeService>();
             services.AddScoped<IContractService,ContractService>();
-            //services.AddScoped<I,>();
-            //services.AddScoped<I,>();
+            services.AddScoped<IPayBillService,PayBillService>();
             services.AddScoped<IRawMaterialService, RawMaterialService>();
             services.AddScoped<ILookupService,LookupService>();
             services.AddScoped<ISchoolService,SchoolService>();
@@ -67,6 +67,17 @@ namespace School_Manager.IOC
             services.AddScoped<IValidator<SchoolCreateDto>, SchoolCreateDtoValidator>();
             services.AddScoped<IValidator<SchoolUpdateDto>, SchoolUpdateDtoValidator>();
             services.AddScoped<IValidator<CreatePreBillDto>, PreBillDTOValidator>();
+            services.AddScoped<IValidator<PayCreateDto>, PayCreateDtoValidator>();
+            services.AddScoped<IValidator<PayUpdateDto>, PayUpdateDtoValidator>();
+            services.AddTransient<BankNameResolver>();
+            services.AddTransient<ActiveDriverIdResolver>();
+            services.AddTransient<BankAccountResolver>();
+            services.AddTransient<ColorResolver>();
+            services.AddTransient<HasPaidResolver>();
+            services.AddTransient<PaidPriceResolver>();
+            services.AddTransient<PaidTimeResolver>();
+            services.AddTransient<StatusResolver>();
+
         }
     }
 }
