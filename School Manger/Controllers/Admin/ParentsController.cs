@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
+using School_Manager.Domain.Entities.Catalog.Enums;
 using School_Manger.Extension;
 using School_Manger.Models.PageView;
 
@@ -58,11 +59,8 @@ namespace School_Manger.Controllers.Admin
             return View(Child);
         }
         [HttpPost]
-        public IActionResult MakeBill(long ChildId, string Name,long TotalPrice,string EndTime,string IsPaid,
-            string TrackCode,string PaymentType,long PaidPrice,string IsPerBill,
-            string Estimatetime)
+        public IActionResult MakeBill(long ChildId, string Name,long TotalPrice,string StartTime,string EndTime,string Estimate, string IsPerBill)
         {
-            var Child = _childService.GetChild(ChildId);
             if (IsPerBill == "on")
             {
                 SavePreBillResult result = _billService.CreatePreBill(new CreatePreBillDto()
@@ -70,11 +68,11 @@ namespace School_Manger.Controllers.Admin
                     ChildRef = ChildId,
                     Name = Name,
                     EndTime = EndTime.ToMiladi(),
-                    EstimateTime = Estimatetime.ToMiladi(),
+                    EstimateTime = Estimate.ToMiladi(),
                     Price = TotalPrice,
-                    StartTime = DateTime.Now
+                    StartTime = StartTime.ToMiladi()
                 });
-                return View("Contract", "");
+                return View("CreateBill", ChildId);
             }
             else
             {
@@ -83,11 +81,11 @@ namespace School_Manger.Controllers.Admin
                 {
                     Name = Name,
                     Price = TotalPrice,
-                    EstimateTime = Estimatetime.ToMiladi(),
+                    EstimateTime = Estimate.ToMiladi(),
                     ServiceContractRef = contractref,
-                    Type = 0 // mustchange
+                    Type = (int)BillType.Normal
                 });
-                return View("CreateBill", Child);
+                return View("CreateBill", ChildId);
             }
         }
         //[HttpPost]
