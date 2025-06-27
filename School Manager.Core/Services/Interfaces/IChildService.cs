@@ -45,14 +45,14 @@ namespace School_Manager.Core.Services.Interfaces
         /// </summary>
         /// <param name="ChildId"></param>
         /// <param name="DriverId"></param>
-        public void SetDriver(long ChildId, long DriverId);
+        public bool SetDriver(long ChildId, long DriverId);
         /// <summary>
         /// مشخص کردن مدرسه دانش آموز با کد مدرسه
         /// در فرزند باید school id تغییر پیدا کند
         /// </summary>
         /// <param name="ChildId"></param>
         /// <param name="SchoolId"></param>
-        public void SetSchool(long ChildId, long SchoolId);
+        public bool SetSchool(long ChildId, long SchoolId);
         /// <summary>
         /// ایجاد فرزند
         /// </summary>

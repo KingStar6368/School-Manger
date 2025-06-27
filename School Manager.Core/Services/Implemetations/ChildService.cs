@@ -8,6 +8,7 @@ using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Operation;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -149,6 +150,37 @@ namespace School_Manager.Core.Services.Implemetations
             }
             _mapper.Map(child, mainchild);
             _unitOfWork.GetRepository<Child>().Update(mainchild);
+            return _unitOfWork.SaveChanges() > 0;
+        }
+
+        public bool SetDriver(long ChildId, long DriverId)
+        {
+            var last = _unitOfWork.GetRepository<DriverChild>().Query(x=>x.ChildRef == ChildId && x.IsEnabled).FirstOrDefault();
+            if (last != null)
+            {
+                last.IsEnabled = false;
+                last.EndDate = DateTime.Now;
+                _unitOfWork.GetRepository<DriverChild>().Update(last);
+            }
+            var _new = new DriverChild
+            {
+                DriverRef = ChildId,
+                EndDate = DateTime.Now.AddYears(1),
+                IsDeleted = false,
+                ChildRef = ChildId,
+                IsEnabled = true,
+                Year = new PersianCalendar().GetYear(DateTime.Now)
+            };
+            _unitOfWork.GetRepository<DriverChild>().Add(_new);
+            return _unitOfWork.SaveChanges() > 0;
+        }
+
+        public bool SetSchool(long ChildId, long SchoolId)
+        {
+            var child = _unitOfWork.GetRepository<Child>().Query(x=>x.Id == ChildId).FirstOrDefault();
+            if (child == null) return false;
+            child.SchoolRef = SchoolId;
+            _unitOfWork.GetRepository<Child>().Update(child);
             return _unitOfWork.SaveChanges() > 0;
         }
     }
