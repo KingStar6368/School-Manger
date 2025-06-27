@@ -58,10 +58,37 @@ namespace School_Manger.Controllers.Admin
             return View(Child);
         }
         [HttpPost]
-        public IActionResult MakeBill(long ChildId, string Name,long TotalPrice,string EndTime,string IsPaid, string TrackCode,string PaymentType,long PaidPrice)
+        public IActionResult MakeBill(long ChildId, string Name,long TotalPrice,string EndTime,string IsPaid,
+            string TrackCode,string PaymentType,long PaidPrice,string IsPerBill,
+            string Estimatetime)
         {
             var Child = _childService.GetChild(ChildId);
-            return View("CreateBill", Child);
+            if (IsPerBill == "on")
+            {
+                SavePreBillResult result = _billService.CreatePreBill(new CreatePreBillDto()
+                {
+                    ChildRef = ChildId,
+                    Name = Name,
+                    EndTime = EndTime.ToMiladi(),
+                    EstimateTime = Estimatetime.ToMiladi(),
+                    Price = TotalPrice,
+                    StartTime = DateTime.Now
+                });
+                return View("Contract", "");
+            }
+            else
+            {
+                long contractref = _contractService.GetContractWithChild(ChildId).Id;
+                _billService.Create(new BillCreateDto()
+                {
+                    Name = Name,
+                    Price = TotalPrice,
+                    EstimateTime = Estimatetime.ToMiladi(),
+                    ServiceContractRef = contractref,
+                    Type = 0 // mustchange
+                });
+                return View("CreateBill", Child);
+            }
         }
         //[HttpPost]
         //public IActionResult test(string Child)
