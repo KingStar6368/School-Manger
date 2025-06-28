@@ -38,7 +38,7 @@ namespace School_Manger.Controllers.Admin
         public IActionResult Details(int id)
         {
             var Model = _parentService.GetParent(id);
-            
+            Model.Children = _childService.GetChildrenParent(Model.Id);
             List<DriverDto> drivers = new List<DriverDto>();
             List<SchoolDto> schools = new List<SchoolDto>();
             foreach(var child in Model.Children)

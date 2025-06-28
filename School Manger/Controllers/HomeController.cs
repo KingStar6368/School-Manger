@@ -165,7 +165,6 @@ namespace School_Manger.Controllers
                                     LocationType = LocationType.End,
                                 }
                             }
-                            
                         }
                     }
                 });
