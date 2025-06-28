@@ -37,7 +37,7 @@ namespace School_Manager.Core.Services.Implemetations
             var ds = _unitOfWork.GetRepository<Child>()
                                 .Query(p => p.Id == id)
                                 .Include(x=>x.LocationPairs)
-                                .Include(x=>x.ServiceContracts).ThenInclude(x=>x.Bills)
+                                .Include(x=>x.ServiceContracts).ThenInclude(x=>x.Bills).ThenInclude(x=>x.PayBills).ThenInclude(x=> x.PayNavigation)
                                 .FirstOrDefault();
             if (ds != null) 
             {
@@ -51,7 +51,7 @@ namespace School_Manager.Core.Services.Implemetations
             var result = new ChildInfo();
             var ds = _unitOfWork.GetRepository<Child>().Query(p=>p.NationalCode == nationCode.Trim())
                     .Include(x=>x.LocationPairs)
-                    .Include(x => x.ServiceContracts).ThenInclude(x => x.Bills)
+                    .Include(x => x.ServiceContracts).ThenInclude(x => x.Bills).ThenInclude(x => x.PayBills).ThenInclude(x => x.PayNavigation)
                     .FirstOrDefault();
             if (ds != null)
             {
