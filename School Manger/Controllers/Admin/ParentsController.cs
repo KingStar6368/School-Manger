@@ -76,7 +76,8 @@ namespace School_Manger.Controllers.Admin
                     Price = TotalPrice,
                     StartTime = StartTime.ToMiladi()
                 });
-                return View("CreateBill", ChildId);
+                var child = _childService.GetChild(ChildId);
+                return View("CreateBill", child);
             }
             else
             {
@@ -89,15 +90,19 @@ namespace School_Manger.Controllers.Admin
                     ServiceContractRef = contractref,
                     Type = (int)BillType.Normal
                 });
-                return View("CreateBill", ChildId);
+                var child = _childService.GetChild(ChildId);
+                return View("CreateBill", child);
             }
         }
         [HttpPost]
         public IActionResult PayBill(long ChildId,long BillId,string TrackCode,string PaymentType,long PaidPrice,string PiadTime)
         {
+            var child = _childService.GetChild(ChildId);
             BillDto Bill = _billService.GetBill(BillId);
             if(Bill ==null)
-                return View("CreateBill", ChildId);
+                return View("CreateBill", child);
+            if(Bill.HasPaid)
+                return View("CreateBill", child);
             PayType type = PayType.Pos;
             switch (PaymentType)
             {
@@ -121,7 +126,7 @@ namespace School_Manger.Controllers.Admin
                 BecomingTime = PiadTime.ToMiladi(),
                 PayType = type
             });
-            return View("CreateBill", ChildId);
+            return View("CreateBill", child);
         }
         //[HttpPost]
         //public IActionResult test(string Child)

@@ -87,14 +87,18 @@
                             <td>@child.Child.BirthDate.ToShortDateString()</td>
                             <td>@child.Child.Class</td>
                             <td>
-                                @if (child.Child.HasPaid)
+                                @if (child.Child.HasPaid && child.Child.Bills.Count >0)
                                 {
                                     <span class="badge bg-success">✅ پرداخت شده</span>
                                 }
-                                else if(child.Child.Bills != null)
+                                else if(child.Child.Bills != null && child.Child.Bills.Count >0)
                                 {
                                     var unpaid = child.Child.Bills.Where(x => !x.HasPaid).Sum(x => x.TotalPrice - x.PaidPrice);
                                     <span class="badge bg-danger">💳 @unpaid.ToString("N0") تومان</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">✅ قبضی صادر نشده</span>
                                 }
                             </td>
                             <td>

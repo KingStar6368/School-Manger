@@ -113,7 +113,7 @@
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
-                @if(Model.Bills != null){
+                @if(Model.Bills != null && Model.Bills.Count > 0){
                     <table class="table table-dark table-bordered table-hover text-center align-middle mb-0">
                         <thead class="table-light text-dark">
                             <tr>

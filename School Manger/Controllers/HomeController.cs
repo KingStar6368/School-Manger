@@ -112,6 +112,7 @@ namespace School_Manger.Controllers
             long Uref = ControllerExtensions.GetKey<long>(this,"Uref");
             long Pref = ControllerExtensions.GetKey<long>(this, "Pref");
             ParentDto parent = _PService.GetParent(Pref);
+            parent.Children = _CService.GetChildrenParent(parent.Id);
             return View("ParentMenu", new ParentDashbordView()
             {
                 Parent = parent,
