@@ -224,6 +224,11 @@ namespace School_Manager.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Pay> builder)
         {
+            builder.Property(p => p.TrackingCode)
+            .HasColumnType("nvarchar(32)")
+            .IsRequired(false)
+            .HasComment("کد رهگیری");
+
             builder.HasMany(b => b.PayBills).WithOne(p => p.PayNavigation)
                 .HasForeignKey(fk => fk.PayRef)
                 .OnDelete(DeleteBehavior.Restrict);
