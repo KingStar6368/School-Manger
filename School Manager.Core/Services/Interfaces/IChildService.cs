@@ -21,6 +21,12 @@ namespace School_Manager.Core.Services.Interfaces
         /// <returns></returns>
         public ChildInfo GetChild(long id);
         /// <summary>
+        /// گرفتن فرزند یک والد با جزئیات
+        /// </summary>
+        /// <param name="ParentId">کد والد</param>
+        /// <returns></returns>
+        public List<ChildInfo> GetChildrenParent(long ParentId);
+        /// <summary>
         /// گرفتن فرزند با کد ملی
         /// </summary>
         /// <param name="nationCode"></param>
