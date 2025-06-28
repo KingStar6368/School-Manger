@@ -57,6 +57,6 @@ namespace School_Manager.Core.Services.Interfaces
         /// </summary>
         /// <param name="bill">قبض پیش پرداخت</param>
         /// <returns></returns>
-        SavePreBillResult CreatePreBill(CreatePreBillDto bill);
+        Task<SavePreBillResult> CreatePreBill(CreatePreBillDto bill);
     }
 }

@@ -25,7 +25,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// شماره ارجاع
         /// </summary>
-        public string TrackingCode { get; set; }
+        public string? TrackingCode { get; set; }
         /// <summary>
         /// ارتباط با قبض
         /// </summary>
