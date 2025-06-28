@@ -188,10 +188,10 @@ namespace School_Manager.Core.Services.Implemetations
             return _unitOfWork.SaveChanges() > 0;
         }
 
-        public SavePreBillResult CreatePreBill(CreatePreBillDto bill)
+        public async Task<SavePreBillResult> CreatePreBill(CreatePreBillDto bill)
         {
             SavePreBillResult result = new SavePreBillResult { BillId =0,ServiceContractRef =0};
-            var validationResult = _createPreBillValidator.Validate(bill);
+            var validationResult =await _createPreBillValidator.ValidateAsync(bill);
             if (!validationResult.IsValid)
             {
                 var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));

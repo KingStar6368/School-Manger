@@ -32,7 +32,7 @@ namespace School_Manager.Core.Services.Validations
                 .MaximumLength(11).WithMessage("موبایل نباید بیشتر از 11 کاراکتر باشد.")
                 .MustAsync(async (mobile, cancellation) =>
                 {
-                    var repo = unitOfWork.GetRepository<User>();
+                    var repo = _unitOfWork.GetRepository<User>();
                     return !await repo.Query().AnyAsync(u => u.Mobile == mobile);
                 }).WithMessage("شماره موبایل تکراری است.");
 
@@ -41,7 +41,7 @@ namespace School_Manager.Core.Services.Validations
                 .MaximumLength(10).WithMessage("نام کاربری نباید بیشتر از 10 کاراکتر باشد.")
                 .MustAsync(async (userName, cancellation) =>
                 {
-                    var repo = unitOfWork.GetRepository<User>();
+                    var repo = _unitOfWork.GetRepository<User>();
                     return !await repo.Query().AnyAsync(u => u.UserName == userName);
                 }).WithMessage("نام کاربری تکراری است.");
         }
