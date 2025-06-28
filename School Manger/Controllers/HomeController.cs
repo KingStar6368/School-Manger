@@ -5,6 +5,7 @@ using iText.Layout.Element;
 using iText.Layout.Properties;
 using Microsoft.AspNetCore.Mvc;
 using PersianTextShaper;
+using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Entities.Catalog.Enums;
@@ -22,13 +23,15 @@ namespace School_Manger.Controllers
         private readonly IChildService _CService;
         private readonly IUserService _UserService;
         private readonly IBillService _BillService;
+        //private readonly IContractService _ContractService;
         public HomeController(IParentService PService,IChildService CService,
-            IUserService UService,IBillService billService)
+            IUserService UService,IBillService billService/*,IContractService contractService*/)
         {
             _PService = PService;
             _CService = CService;
             _UserService = UService;
             _BillService = billService;
+            //_ContractService = contractService;
         }
 
         #region Login&SignIn

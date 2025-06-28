@@ -93,6 +93,7 @@ namespace School_Manager.Core.Services.Implemetations
             var ds = _unitOfWork.GetRepository<ServiceContract>()
                                 .Query(x => x.ChildRef == ChildId && x.IsActive)
                                 .Include(x => x.ChildNavigation).ThenInclude(x => x.ParentNavigation)
+                                .Include(x=>x.Bills)
                                 .Include(x => x.ServiceContractCheques).ThenInclude(x => x.ChequeNavigation)
                                 .FirstOrDefault();
             if (ds == null)
