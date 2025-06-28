@@ -19,7 +19,8 @@ namespace School_Manger.Controllers.Admin
         private readonly ISchoolService _schoolService;
         private readonly IDriverService _driverService;
         private readonly IPayBillService _payBillService;
-        public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, IBillService billService, ISchoolService schoolService, IDriverService driverService)
+        public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, IBillService billService,
+            ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService)
         {
             _parentService = parentService;
             _childService = childService;
@@ -27,6 +28,7 @@ namespace School_Manger.Controllers.Admin
             _billService = billService;
             _schoolService = schoolService;
             _driverService = driverService;
+            _payBillService = payBillService;
         }
         public async Task<IActionResult> Index()
         {
