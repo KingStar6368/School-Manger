@@ -173,5 +173,22 @@ namespace School_Manager.Core.Services.Implemetations
             _unitOfWork.GetRepository<Child>().Update(child);
             return _unitOfWork.SaveChanges() > 0;
         }
+
+        public List<ChildInfo> GetChildrenParent(long ParentId)
+        {
+            var result = new List<ChildInfo>();
+
+            var ds = _unitOfWork.GetRepository<Child>()
+                                .Query(p => p.ParentRef == ParentId)
+                                .Include(x => x.LocationPairs)
+                                .Include(x => x.ServiceContracts).ThenInclude(x => x.Bills).ThenInclude(x => x.PayBills).ThenInclude(x => x.PayNavigation)
+                                .ToList();
+            if (ds != null)
+            {
+                result = _mapper.Map<List<ChildInfo>>(ds);
+            }
+
+            return result;
+        }
     }
 }
