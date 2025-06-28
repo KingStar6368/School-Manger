@@ -105,7 +105,7 @@
         /// <summary>
         /// کلاس چک
         /// </summary>
-        public CheckDto Check { get; set; }
+        public List<CheckDto> Checks { get; set; }
         public bool IsActive { get; set; }
     }
     public interface IServiceContractDto

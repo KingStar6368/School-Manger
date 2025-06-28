@@ -42,4 +42,23 @@ namespace School_Manager.Core.Mapper
             return  lookup?.Name ?? "نامشخص";
         }
     }
+    public class BankNameResolver : IValueResolver<ServiceContractCheque, CheckDto, LookupComboViewModel>
+    {
+        private readonly ILookupService _lookUp;
+
+        public BankNameResolver(ILookupService unitOfWork)
+        {
+            _lookUp = unitOfWork;
+        }
+        public LookupComboViewModel Resolve(ServiceContractCheque source, CheckDto destination, LookupComboViewModel destMember, ResolutionContext context)
+        {
+            var lookup = _lookUp.GetLookUp(StaticString.LookUpBankType, source.ChequeNavigation.BankId);
+
+            return new LookupComboViewModel
+            {
+                Code = source.ChequeNavigation.BankId,
+                Name = lookup?.Name ?? "نامشخص"
+            };
+        }
+    }
 }

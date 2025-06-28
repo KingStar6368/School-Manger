@@ -39,6 +39,21 @@ namespace School_Manager.Core.Services.Interfaces
         /// <returns></returns>
         public SchoolDto GetChildSchool(long ChildId);
         /// <summary>
+        /// مشخص کردن رانند با کد رانند
+        /// در راننده باید فیلد passanger اضافه شود
+        /// در child باید driverid ست شود
+        /// </summary>
+        /// <param name="ChildId"></param>
+        /// <param name="DriverId"></param>
+        public bool SetDriver(long ChildId, long DriverId);
+        /// <summary>
+        /// مشخص کردن مدرسه دانش آموز با کد مدرسه
+        /// در فرزند باید school id تغییر پیدا کند
+        /// </summary>
+        /// <param name="ChildId"></param>
+        /// <param name="SchoolId"></param>
+        public bool SetSchool(long ChildId, long SchoolId);
+        /// <summary>
         /// ایجاد فرزند
         /// </summary>
         /// <param name="child">فرزند</param>

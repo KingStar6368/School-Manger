@@ -113,6 +113,14 @@ namespace School_Manager.Core.Mapper
             CreateMap<ParentCreateDto, Parent>();
             CreateMap<ParentUpdateDto, Parent>();
             #endregion
+            #region Pay
+            CreateMap<PayCreateDto, Pay>()
+            .ForMember(dest => dest.PayBills, opt => opt.MapFrom(src =>
+                src.Bills.Select(billId => new PayBill
+                {
+                    BillRef = billId
+                }).ToList()));
+            #endregion
             #region RawMaterial
             CreateMap<RawMaterial, RawMaterialCombo>()
                 .ForMember(dest => dest.DisplayMember, opt => opt.MapFrom(src => src.MaterialCode + " " + src.Name))
@@ -164,11 +172,31 @@ namespace School_Manager.Core.Mapper
             CreateMap<ServiceContract, ServiceContractDto>();
             #endregion
             #region SrviceContract
+            
             CreateMap<ServiceContractCreateDto, ServiceContract>();
+            
             CreateMap<ServiceContractUpdateDto, ServiceContract>();
+            
             CreateMap<PreServiceContractCreateDto, ServiceContract>()
                 .ForMember(dest=>dest.Bills,opt=>opt.MapFrom(src=>src.BillCreates));
+            
             CreateMap<ServiceContractChequeUpdateDto, ServiceContractCheque>();
+
+            CreateMap<ServiceContract, ServiceContractDto>()
+            .ForMember(dest => dest.Child, opt => opt.MapFrom(src => src.ChildNavigation))
+            .ForMember(dest => dest.Parent, opt => opt.MapFrom(src => src.ChildNavigation.ParentNavigation))
+            .ForMember(dest => dest.Checks, opt => opt.MapFrom(src => src.ServiceContractCheques)); // اگر فقط یکی مد نظره
+
+            CreateMap<ServiceContractCheque, CheckDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.ContractId, opt => opt.MapFrom(src => src.ServiceContractRef))
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.ChequeNavigation.Price))
+            .ForMember(dest => dest.CheckSerial, opt => opt.MapFrom(src => src.ChequeNavigation.CheckSerial))
+            .ForMember(dest => dest.CheckSayadNumber, opt => opt.MapFrom(src => src.ChequeNavigation.CheckSayadNumber))
+            .ForMember(dest => dest.BankName, opt => opt.MapFrom<BankNameResolver>())
+            .ForMember(dest => dest.CheckOwner, opt => opt.MapFrom(src => src.ChequeNavigation.CheckOwner))
+            .ForMember(dest => dest.CheckTime, opt => opt.MapFrom(src => src.ChequeNavigation.CheckTime));
+
             #endregion
             #region User
             //CreateMap<User, UserVM>()

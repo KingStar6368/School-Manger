@@ -18,10 +18,13 @@
             </a>
         </div>
         <div class="card-body">
-            <form asp-action="CreateBill" asp-controller="Bills" method="post">
-                <input type="hidden" name="ChildId" value="@Model.Id" />
-                <input type="hidden" name="Child" value="@Model.EnCript()" />
 
+            <div class="col-md-5">
+                <label class="form-label fw-bold">❓پرداخت شده</label>
+                <input type="checkbox" id="isPaidCheckbox" name="IsPaid" class="form-check-input bg-dark text-white shadow-sm" onchange="togglePaymentFields()" />
+            </div>
+            <form asp-action="MakeBill" method="post" id="BillGruop">
+                <input type="hidden" name="ChildId" value="@Model.Id" />
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">📝 عنوان قبض</label>
@@ -32,49 +35,76 @@
                         <input type="number" name="TotalPrice" class="form-control bg-dark text-white shadow-sm" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">📆 مهلت پرداخت</label>
-                        <input id="PersianDate" name="EndTime" class="form-control bg-secondary text-white" required />
-                        <input type="hidden" id="GregorianDate" />
+                        <label class="form-label fw-bold">📆 مهلت قبض</label>
+                        <input name="EndTime" class="persian-date form-control bg-secondary text-white" required />
+                        <input type="hidden" class="gregorian-date" />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">پرداخت شده؟</label>
-                        <input type="checkbox" id="isPaidCheckbox" name="IsPaid" class="form-check-input bg-dark text-white shadow-sm" onchange="togglePaymentFields()" />
+                        <label class="form-label fw-bold">📆 مهلت پرداخت</label>
+                        <input name="Estimate" class="persian-date form-control bg-secondary text-white" required />
+                        <input type="hidden" class="gregorian-date" />
                     </div>
-
-                    <!-- Additional fields that appear when checkbox is checked -->
-                    <div id="paymentFields" class="row g-3" style="display: none;">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">🔖 کد رهگیری (اختیاری)</label>
-                            <input type="text" name="TrackCode" class="form-control bg-dark text-white shadow-sm" placeholder="کد رهگیری پرداخت" />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">💳 روش پرداخت</label>
-                            <select name="PaymentType" class="form-select bg-dark text-white shadow-sm" required>
-                                <option value="">-- انتخاب کنید --</option>
-                                <option value="Cash">💵 نقدی</option>
-                                <option value="Card">💳 کارت به کارت</option>
-                                <option value="Internet">🌐 اینترنتی</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">💵 مبلغ پرداخت شده</label>
-                            <input type="number" name="PaidPrice" class="form-control bg-dark text-white shadow-sm" required />
-                        </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">💵 قبض پیش پرداخت</label>
+                        <input type="checkbox" id="IsPerBill" name="IsPerBill" class="form-check-input bg-dark text-white shadow-sm" onchange="toggleisperbill()" />
+                    </div>
+                    <div id="PreStart" style="display:none" class="col-md-6">
+                        <label class="form-label fw-bold">📆 تاریخ شروع</label>
+                        <input name="StartTime" class="persian-date form-control bg-secondary text-white" required />
+                        <input type="hidden" class="gregorian-date" />
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm">
+                            📤 صدور قبض
+                        </button>
+                        <a asp-controller="Parents" asp-action="Index" class="btn btn-secondary fw-bold shadow-sm">
+                            🔙 بازگشت
+                        </a>
                     </div>
                 </div>
-
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm">
-                        📤 صدور قبض
-                    </button>
-                    <a asp-controller="Parents" asp-action="Index" class="btn btn-secondary fw-bold shadow-sm">
-                        🔙 بازگشت
-                    </a>
+            </form>
+            <form asp-action="PayBill" method="post" id="paymentFields" style="display:none;">
+                <input type="hidden" name="ChildId" value="@Model.Id" />
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">🆔 شماره قبض</label>
+                        <input type="number" name="BillId" class="form-control bg-dark text-white shadow-sm" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">🔖 کد رهگیری (اختیاری)</label>
+                        <input type="text" name="TrackCode" class="form-control bg-dark text-white shadow-sm" placeholder="کد رهگیری پرداخت" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">💳 روش پرداخت</label>
+                        <select name="PaymentType" class="form-select bg-dark text-white shadow-sm" required>
+                            <option value="">-- انتخاب کنید --</option>
+                            <option value="Cash">💵 نقدی</option>
+                            <option value="Card">💳 کارت به کارت</option>
+                            <option value="Internet">🌐 اینترنتی</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">💵 مبلغ پرداخت شده</label>
+                        <input type="number" name="PaidPrice" class="form-control bg-dark text-white shadow-sm" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">📆زمان پرداخت</label>
+                        <input name="EndTime" class="persian-date form-control bg-secondary text-white" required />
+                        <input type="hidden" class="gregorian-date" />
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm">
+                            📤 ثبت خرید
+                        </button>
+                        <a asp-controller="Parents" asp-action="Index" class="btn btn-secondary fw-bold shadow-sm">
+                            🔙 بازگشت
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
-    </div>
+</div>
 
     <!-- 📜 Bills List -->
     <div class="card bg-dark text-white shadow-lg rounded-4 border-primary">
@@ -88,6 +118,7 @@
                         <thead class="table-light text-dark">
                             <tr>
                                 <th>🔢 ردیف</th>
+                                <th>🆔 شناسه قبض</th>
                                 <th>🆔 شناسه قرارداد</th>
                                 <th>📄 نام قبض</th>
                                 <th>💵 مبلغ کل</th>
@@ -103,6 +134,7 @@
                                 var bill = Model.Bills[i];
                                 <tr>
                                     <td>@(i + 1)</td>
+                                    <td>@bill.Id</td>
                                     <td>@bill.ContractId</td>
                                     <td>@bill.Name</td>
                                     <td>@bill.TotalPrice.ToString("N0")</td>
@@ -136,22 +168,47 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
     <script>
         function togglePaymentFields() {
             var checkbox = document.getElementById('isPaidCheckbox');
             var paymentFields = document.getElementById('paymentFields');
-
+            var BillGruop = document.getElementById('BillGruop');
             if (checkbox.checked) {
                 paymentFields.style.display = 'flex';
-                // Make the required fields mandatory when shown
+                BillGruop.style.display = 'none';
+
                 paymentFields.querySelectorAll('input[required], select[required]').forEach(function(input) {
                     input.required = true;
                 });
+                BillGruop.querySelectorAll('input[required], select[required]').forEach(function(input) {
+                    input.required = false;
+                });
             } else {
                 paymentFields.style.display = 'none';
-                // Remove required attribute when hidden
+                BillGruop.style.display = 'flex';
                 paymentFields.querySelectorAll('input, select').forEach(function(input) {
+                    input.required = false;
+                });
+                BillGruop.querySelectorAll('input[required], select[required]').forEach(function(input) {
+                    input.required = true;
+                });
+            }
+        }
+        function toggleisperbill(){
+            var checkbox = document.getElementById('IsPerBill');
+            var detial = document.getElementById('PreStart');
+            if(checkbox.checked)
+            {
+                detial.style.display = 'flex';
+                detial.querySelectorAll('input, select').forEach(function(input) {
+                    input.required = true;
+                });
+            }
+            else{
+                detial.style.display = 'none';
+                detial.querySelectorAll('input, select').forEach(function(input) {
                     input.required = false;
                 });
             }

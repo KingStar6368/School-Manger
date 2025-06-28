@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
+using School_Manager.Domain.Entities.Catalog.Enums;
 using School_Manger.Extension;
 using School_Manger.Models.PageView;
 
@@ -52,9 +53,40 @@ namespace School_Manger.Controllers.Admin
             return View(admindashbord);
         }
         [HttpPost]
-        public IActionResult CreateBill(string Child)
+        public IActionResult CreateBill(long ChildId)
         {
-            return View(Child.DeCript<ChildInfo>());
+            var Child = _childService.GetChild(ChildId);
+            return View(Child);
+        }
+        [HttpPost]
+        public IActionResult MakeBill(long ChildId, string Name,long TotalPrice,string StartTime,string EndTime,string Estimate, string IsPerBill)
+        {
+            if (IsPerBill == "on")
+            {
+                SavePreBillResult result = _billService.CreatePreBill(new CreatePreBillDto()
+                {
+                    ChildRef = ChildId,
+                    Name = Name,
+                    EndTime = EndTime.ToMiladi(),
+                    EstimateTime = Estimate.ToMiladi(),
+                    Price = TotalPrice,
+                    StartTime = StartTime.ToMiladi()
+                });
+                return View("CreateBill", ChildId);
+            }
+            else
+            {
+                long contractref = _contractService.GetContractWithChild(ChildId).Id;
+                _billService.Create(new BillCreateDto()
+                {
+                    Name = Name,
+                    Price = TotalPrice,
+                    EstimateTime = Estimate.ToMiladi(),
+                    ServiceContractRef = contractref,
+                    Type = (int)BillType.Normal
+                });
+                return View("CreateBill", ChildId);
+            }
         }
         //[HttpPost]
         //public IActionResult test(string Child)

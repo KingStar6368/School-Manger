@@ -9,6 +9,10 @@ namespace School_Manager.Core.Services.Interfaces
 {
     public interface IContractService
     {
+        Task<List<ServiceContractDto>> GetContracts();
+        ServiceContractDto GetContract(long Id);
+        ServiceContractDto GetContractWithChild(long ChildId);
+
         long CreateDriverContract(DriverContractCreateDto driverContract);
         bool DeleteDriverContract(long Id);
         bool UpdateDriverContract(DriverContractUpdateDto driverContract);
