@@ -104,7 +104,7 @@
                                             </td>
                                             <td>
                                                 <div class="d-flex flex-wrap justify-content-center gap-1">
-                                              @*       <button class="btn btn-sm btn-outline-warning" onclick="editChild('@child.Id')">
+                                                    @*       <button class="btn btn-sm btn-outline-warning" onclick="editChild('@child.Id')">
                                                         <i class="bi bi-pencil"></i> ویرایش
                                                     </button>
                                                     <form asp-action="RemoveChild" method="post">
@@ -169,7 +169,13 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">مقطع تحصیلی</label>
-                            <input asp-for="SelectedChild.Class" class="form-control bg-secondary text-white" required />
+                            @* <input asp-for="SelectedChild.Class" class="form-control bg-secondary text-white" required /> *@
+                            <select asp-for="SelectedChild.Class" class="form-select form-control bg-secondary text-white required">
+                                @for (int i = 1; i <= 12; i++)
+                                {
+                                    <option value="@i">مقطع تحصیلی @i</option>
+                                }
+                            </select>
                         </div>
                         <div class="col-md-6">
                             <label for="PersianDate" class="form-label">تاریخ تولد</label>

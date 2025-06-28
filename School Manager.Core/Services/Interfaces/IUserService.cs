@@ -11,6 +11,8 @@ namespace School_Manager.Core.Services.Interfaces
     {
         UserDTO GetUserById(long id);
         Task<List<UserDTO>> GetAllAsync();
+        Task<List<UserDTO>> GetAllAsyncDrivers();
+        Task<List<UserDTO>> GetAllAsyncParents();
         UserDTO CheckAuthorize(string UserName,string Password);
 		Task<List<UserDTO>> GetListAsync();
 		UserDTO GetUserDetail(long Id);

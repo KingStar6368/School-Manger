@@ -47,7 +47,7 @@ namespace School_Manager.Core.Services.Implemetations
             return _mapper.Map<DriverDto>(ds);
         }
 
-        public async Task<List<DriverDto>> GetDrivers(int SchoolId)
+        public async Task<List<DriverDto>> GetDrivers(long SchoolId)
         {
             var ds = await _unitOfWork.GetRepository<School>()
                 .Query()

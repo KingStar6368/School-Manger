@@ -80,11 +80,11 @@ namespace School_Manager.Core.ViewModels.FModels
         /// <summary>
         /// شناسه کاربر
         /// </summary>
-        public int UserRef { get; set; }
+        public long UserRef { get; set; }
         /// <summary>
         /// شناسه بانک
         /// </summary>
-        public int BankRef { get; set; }
+        public long BankRef { get; set; }
         /// <summary>
         /// نام
         /// </summary>
@@ -136,8 +136,8 @@ namespace School_Manager.Core.ViewModels.FModels
     }
     public class DriverCreateDto : IDriverDto
     {
-        public int UserRef {get;set;}
-        public int BankRef {get;set;}
+        public long UserRef {get;set;}
+        public long BankRef {get;set;}
         public string Name {get;set;}
         public string LastName {get;set;}
         public string FatherName {get;set;}
@@ -153,9 +153,9 @@ namespace School_Manager.Core.ViewModels.FModels
     }
     public class DriverUpdateDto : IDriverDto
     {
-        public int Id { get; set; }
-        public int UserRef { get; set; }
-        public int BankRef { get; set; }
+        public long Id { get; set; }
+        public long UserRef { get; set; }
+        public long BankRef { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
         public string FatherName { get; set; }

@@ -26,9 +26,9 @@
                             <label for="locationSearch" class="form-label">جستجوی آدرس</label>
                             <div class="input-group">
                                 <input type="text"
-                                       class="form-control bg-dark text-white border-secondary"
-                                       id="locationSearch"
-                                       placeholder="آدرس یا نام مکان">
+                                class="form-control bg-dark text-white border-secondary"
+                                id="locationSearch"
+                                placeholder="آدرس یا نام مکان">
                                 <button class="btn btn-outline-secondary" type="button" id="searchButton">
                                     <i class="bi bi-search"></i>
                                 </button>
@@ -44,11 +44,19 @@
                             <label class="form-label">موقعیت دوم (مقصد):</label>
                             <select class="form-select bg-dark text-white border-secondary mb-3" id="location2Select">
                                 <option value="" selected>-- انتخاب مقصد --</option>
-                                <option value="34.0918,49.6892|مدرسه نمونه اراک">مدرسه نمونه اراک</option>
-                                <option value="34.0854,49.7003|مدرسه شهید بهشتی اراک">مدرسه شهید بهشتی اراک</option>
-                                <option value="34.0789,49.6956|مدرسه علامه حلی اراک">مدرسه علامه حلی اراک</option>
-                                <option value="34.0723,49.6887|مدرسه فرزانگان اراک">مدرسه فرزانگان اراک</option>
-                                <option value="34.0801,49.6815|مدرسه انرژی اتمی اراک">مدرسه انرژی اتمی اراک</option>
+                                @foreach(var schools in Model.Schools)
+                                {
+                                    <option value="@schools.Address.Latitude,@schools.Address.Longitude|@schools.Name">@schools.Name</option>
+                                }
+                                @if (Model.Schools == null || Model.Schools.Count == 0)
+                                {
+                                    <option value="34.0918,49.6892|مدرسه نمونه اراک">نمونه تستی</option>
+                                    <option value="34.0918,49.6892|مدرسه نمونه اراک">مدرسه نمونه اراک</option>
+                                    <option value="34.0854,49.7003|مدرسه شهید بهشتی اراک">مدرسه شهید بهشتی اراک</option>
+                                    <option value="34.0789,49.6956|مدرسه علامه حلی اراک">مدرسه علامه حلی اراک</option>
+                                    <option value="34.0723,49.6887|مدرسه فرزانگان اراک">مدرسه فرزانگان اراک</option>
+                                    <option value="34.0801,49.6815|مدرسه انرژی اتمی اراک">مدرسه انرژی اتمی اراک</option>
+                                }
                             </select>
 
                             <div id="location2Info" class="p-3 bg-danger rounded mb-3" style="min-height: 100px; display: none;">

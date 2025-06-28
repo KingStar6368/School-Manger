@@ -1,134 +1,37 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manger.Extension;
 using School_Manger.Models;
 using School_Manger.Models.PageView;
+using System.Threading.Tasks;
 
 namespace School_Manger.Controllers.Admin
 {
     [Area("Admin")]
     public class DriverController : Controller
     {
-        // Mock data - no database needed
-        private List<DriverDto> _drivers = new List<DriverDto>
+        private readonly IDriverService _driverService;
+        private readonly IUserService _userService;
+        public DriverController(IDriverService driverService,IUserService userService)
         {
-            new DriverDto {
-                Id = 1,
-                Name = "رضا",
-                LastName = "محمدی",
-                Car = new CarInfoDto
-                {
-                    Id = 1,
-                    Name = "پراید",
-                    PlateNumber = "12ب32647",
-                    SeatNumber = 4,
-                    Color = "White",
-                },
-                NationCode = "05211312",
-                BankAccount = null,
-                BankNumber = "1231321",
-                Address = "اراک",
-                BirthDate = DateTime.Parse("1375/04/01"),
-                CertificateId = "123",
-                Descriptions = "",
-                Education = "دیپلم",
-                FutherName = "احمد",
-                Rate = 5,
-                Warnning = 0,
-                Passanger = new List<long>()
-                {
-                    1
-                }
-            },
-        };
-
-        public IActionResult Index()
-        {
-            return View(_drivers);
+            _driverService = driverService;
+            _userService = userService;
         }
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Index()
         {
-            var driver = _drivers.FirstOrDefault(d => d.Id == id);
+            var Drivers = await _driverService.GetDrivers();
+            return View(Drivers);
+        }
+        public IActionResult Details(long id)
+        {
+            var driver = _driverService.GetDriver(id);
             if (driver == null) return NotFound();
+            var passanger = _driverService.GetPassngers(id);
             AdminDriver admindashbord = new AdminDriver()
             {
                 Driver = driver,
-                Passanger = new List<ChildInfo>()
-                {
-                    new ChildInfo()
-                        {
-                            Id = 1,
-                            FirstName = "حسین",
-                            LastName = "بنیادی",
-                            Class = "اول ابتدایی",
-                            NationalCode = "0521234567",
-                            BirthDate = DateTime.Now.AddYears(-7).ToPersain(),
-                            Path = new LocationPairModel()
-                            {
-                                ChildId = 1,
-                                Id = 1,
-                                Location1 = new LocationDataDto()
-                                {
-                                    Address = "test",
-                                    Latitude = 10,
-                                    Longitude = 10,
-                                    Name = "test",
-                                },
-                                Location2 = new LocationDataDto()
-                                {
-                                    Address = "test",
-                                    Latitude = 10,
-                                    Longitude = 10,
-                                    Name = "test",
-                                },
-                                PickTime1 = DateTime.Now,
-                                PickTime2 = DateTime.Now,
-                            },
-                            Bills = new List<BillDto>()
-                            {
-                                new BillDto()
-                                {
-                                    Id = 1,
-                                    Name = "مهر",
-                                    ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
-                                    BillExpiredTime = DateTime.Now,
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 2,
-                                    Name = "آبان",
-                                    ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
-                                    BillExpiredTime = DateTime.Now.AddMonths(-1),
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 3,
-                                    Name = "آذر",
-                                    ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
-                                    BillExpiredTime = DateTime.Now.AddDays(1),
-                                    TotalPrice = 100
-                                },
-                                new BillDto()
-                                {
-                                    Id = 4,
-                                    Name = "دی",
-                                    ContractId = 1,
-                                    PaidPrice = 100,
-                                    PaidTime = DateTime.Now,
-                                    BillExpiredTime = DateTime.Now.AddMonths(1),
-                                    TotalPrice = 100
-                                }
-                            }
-                        },
-                }
+                Passanger = passanger
             };
             return View(admindashbord);
         }
@@ -138,15 +41,28 @@ namespace School_Manger.Controllers.Admin
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(DriverDto driver)
+        public IActionResult Create(DriverDto driver,long UserRef)
         {
-            if (ModelState.IsValid)
+            if (UserRef == null || UserRef == 0)
+                return View("UserManagement/Drivers");
+            _driverService.CreateDriver(new DriverCreateDto()
             {
-                // Save to database or list
-                driver.Id = _drivers.Max(d => d.Id) + 1;
-                _drivers.Add(driver);
-                return RedirectToAction(nameof(Index));
-            }
+                UserRef = UserRef,
+                Name = driver.Name,
+                LastName = driver.LastName,
+                NationCode = driver.NationCode,
+                Warnning = driver.Warnning,
+                Rate = driver.Rate,
+                BankRef = 0,//mustchange,
+                FatherName = driver.FutherName,
+                Education = driver.Education,
+                Descriptions = driver.Descriptions,
+                CertificateId = driver.CertificateId,
+                BirthDate = driver.BirthDate,
+                AvailableSeats = driver.AvailableSeats,
+                Address = driver.Address,
+            });
+            ControllerExtensions.ShowSuccess(this, "موفق", "راننده با موفقعیت اضافه شد");
             return View(driver);
         }
     }

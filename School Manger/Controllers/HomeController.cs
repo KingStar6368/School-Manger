@@ -23,14 +23,16 @@ namespace School_Manger.Controllers
         private readonly IChildService _CService;
         private readonly IUserService _UserService;
         private readonly IBillService _BillService;
+        private readonly ISchoolService _Sservice;
         //private readonly IContractService _ContractService;
         public HomeController(IParentService PService,IChildService CService,
-            IUserService UService,IBillService billService/*,IContractService contractService*/)
+            IUserService UService,IBillService billService,ISchoolService schoolService/*,IContractService contractService*/)
         {
             _PService = PService;
             _CService = CService;
             _UserService = UService;
             _BillService = billService;
+            _Sservice = schoolService;
             //_ContractService = contractService;
         }
 
@@ -119,9 +121,10 @@ namespace School_Manger.Controllers
             });
         }
         [HttpPost]
-        public IActionResult LocationSelector(ParentDashbordView view,string Date)
+        public async Task<IActionResult> LocationSelector(ParentDashbordView view,string Date)
         {
             view.SelectedChild.BirthDate = Date.ConvertPersianToEnglish().ToMiladi();
+            view.Schools = await _Sservice.GetSchools();
             return View(view);
         }
         [HttpPost]

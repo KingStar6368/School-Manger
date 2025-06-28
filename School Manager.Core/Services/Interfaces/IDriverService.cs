@@ -37,7 +37,7 @@ namespace School_Manager.Core.Services.Interfaces
         /// </summary>
         /// <param name="SchoolId">شناسه مدرسه</param>
         /// <returns>کلاس راننده های که در لیست رانندگان مدرسه وجود دارد</returns>
-        Task<List<DriverDto>> GetDrivers(int SchoolId);
+        Task<List<DriverDto>> GetDrivers(long SchoolId);
         /// <summary>
         /// ایجاد راننده
         /// </summary>
