@@ -188,7 +188,7 @@ namespace School_Manager.Core.Services.Implemetations
             return _unitOfWork.SaveChanges() > 0;
         }
 
-        public async Task<SavePreBillResult> CreatePreBill(CreatePreBillDto bill)
+        public async Task<SavePreBillResult> CreatePreBillAsync(CreatePreBillDto bill)
         {
             SavePreBillResult result = new SavePreBillResult { BillId =0,ServiceContractRef =0};
             var validationResult =await _createPreBillValidator.ValidateAsync(bill);
@@ -206,6 +206,11 @@ namespace School_Manager.Core.Services.Implemetations
                 result.ServiceContractRef = saveItem.Id;
             }
             return result;
+        }
+
+        public SavePreBillResult CreatePreBill(CreatePreBillDto bill)
+        {
+            return CreatePreBillAsync(bill).GetAwaiter().GetResult();
         }
     }
 }
