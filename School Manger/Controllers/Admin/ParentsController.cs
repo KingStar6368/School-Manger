@@ -60,11 +60,11 @@ namespace School_Manger.Controllers.Admin
             return View(Child);
         }
         [HttpPost]
-        public async Task<IActionResult> MakeBill(long ChildId, string Name,long TotalPrice,string StartTime,string EndTime,string Estimate, string IsPerBill)
+        public IActionResult MakeBill(long ChildId, string Name,long TotalPrice,string StartTime,string EndTime,string Estimate, string IsPerBill)
         {
             if (IsPerBill == "on")
             {
-                SavePreBillResult result = await _billService.CreatePreBill(new CreatePreBillDto()
+                SavePreBillResult result = _billService.CreatePreBill(new CreatePreBillDto()
                 {
                     ChildRef = ChildId,
                     Name = Name,
