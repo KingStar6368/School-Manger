@@ -29,6 +29,7 @@ namespace School_Manager.Core.ViewModels.FModels
     {
         public long Id { get; set; }
         public double Latitude { get; set; }
+        public bool IsActive { get; set; }
         public double Longitude { get; set; }
         public string Address { get; set; }
         public LocationType LocationType { get; set; }

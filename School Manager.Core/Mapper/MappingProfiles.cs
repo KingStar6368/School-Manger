@@ -105,7 +105,8 @@ namespace School_Manager.Core.Mapper
                 .ForMember(dest=>dest.ChildId,opt=>opt.MapFrom(src=>src.ChildRef))
                 .ForMember(dest => dest.Location1,opt => opt.MapFrom(src =>src.Locations.FirstOrDefault(l => l.LocationType == LocationType.Start)))
                 .ForMember(dest => dest.Location2,opt => opt.MapFrom(src =>src.Locations.FirstOrDefault(l => l.LocationType == LocationType.End)));
-            CreateMap<LocationPairCreateDto, LocationPair>();
+            CreateMap<LocationPairCreateDto, LocationPair>()
+                .ForMember(dest=>dest.IsActive, opt => opt.MapFrom(_ => true));
             CreateMap<LocationPairUpdateDto, LocationPair>();
             #endregion
             #region LookUp
