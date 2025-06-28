@@ -23,6 +23,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public PayType PayType { get; set; }
         /// <summary>
+        /// شماره ارجاع
+        /// </summary>
+        public string TrackingCode { get; set; }
+        /// <summary>
         /// ارتباط با قبض
         /// </summary>
         public virtual ICollection<PayBill> PayBills { get; set; }

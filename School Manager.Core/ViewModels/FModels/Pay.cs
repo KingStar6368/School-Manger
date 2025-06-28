@@ -21,6 +21,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// نحوه پرداخت
         /// </summary>
         public PayType PayType { get; set; }
+        public string TrackingCode { get; set; }
     }
     public class PayCreateDto : IPayDto
     {
@@ -28,12 +29,14 @@ namespace School_Manager.Core.ViewModels.FModels
         public DateTime BecomingTime { get; set; }
         public PayType PayType { get; set; }
         public List<long> Bills { get; set; }
+        public string TrackingCode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
     public class PayUpdateDto : IPayDto
     {
         public long Price { get; set; }
         public DateTime BecomingTime { get; set; }
         public PayType PayType { get; set; }
+        public string TrackingCode { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
     public class PayBillDto
     {
