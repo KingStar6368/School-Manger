@@ -68,7 +68,7 @@ namespace School_Manger.Extension
         {
             if (string.IsNullOrWhiteSpace(persianDate))
                 throw new ArgumentNullException(nameof(persianDate));
-
+            persianDate = persianDate.ConvertPersianToEnglish();
             var parts = persianDate.Split('/');
             if (parts.Length != 3)
                 throw new FormatException("Invalid Persian date format. Expected yyyy/MM/dd");

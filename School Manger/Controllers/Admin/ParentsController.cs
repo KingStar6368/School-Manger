@@ -18,6 +18,7 @@ namespace School_Manger.Controllers.Admin
         private readonly IBillService _billService;
         private readonly ISchoolService _schoolService;
         private readonly IDriverService _driverService;
+        private readonly IPayBillService _payBillService;
         public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, IBillService billService, ISchoolService schoolService, IDriverService driverService)
         {
             _parentService = parentService;
@@ -87,6 +88,37 @@ namespace School_Manger.Controllers.Admin
                 });
                 return View("CreateBill", ChildId);
             }
+        }
+        [HttpPost]
+        public IActionResult PayBill(long ChildId,long BillId,string TrackCode,string PaymentType,long PaidPrice,string PiadTime)
+        {
+            BillDto Bill = _billService.GetBill(BillId);
+            if(Bill ==null)
+                return View("CreateBill", ChildId);
+            PayType type = PayType.Pos;
+            switch (PaymentType)
+            {
+                case "Cash":
+                    type = PayType.Cash;
+                    break;
+                case "Pos":
+                    type = PayType.Pos;
+                    break;
+                case "Internet":
+                    type = PayType.Internet;
+                    break;
+            }
+            _payBillService.CreatePay(new PayCreateDto()
+            {
+                Bills = new List<long>()
+                {
+                    Bill.Id,
+                },
+                Price = PaidPrice,
+                BecomingTime = PiadTime.ToMiladi(),
+                PayType = type
+            });
+            return View("CreateBill", ChildId);
         }
         //[HttpPost]
         //public IActionResult test(string Child)
