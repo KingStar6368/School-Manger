@@ -67,7 +67,18 @@ namespace School_Manager.Core.Mapper
                 .ForMember(dest => dest.DriverId,opt => opt.MapFrom<ActiveDriverIdResolver>())
                 .ForMember(dest => dest.SchoolId,opt => opt.MapFrom(src => src.SchoolRef))
                 .ForMember(dest => dest.Class,opt => opt.MapFrom(src => src.Class.GetDisplayName()))
-                .ForMember(dest => dest.Path,opt => opt.MapFrom(src => src.LocationPairs.FirstOrDefault(i => i.IsActive)));
+                .ForMember(dest => dest.Path,opt => opt.MapFrom(src => src.LocationPairs.FirstOrDefault(i => i.IsActive))).ForMember(dest => dest.Bills, opt => opt.MapFrom(src =>
+                    src.ServiceContracts
+                        .Where(sc => sc.IsActive)
+                        .SelectMany(sc => sc.Bills)))
+                .ForMember(dest => dest.HasPaid, opt => opt.MapFrom(src => src.ServiceContracts
+                                .Where(sc => sc.IsActive)
+                                .SelectMany(sc => sc.Bills)
+                                .All(b =>
+                                    b.PayBills != null &&
+                                    b.PayBills.Sum(pb => pb.PayNavigation != null ? pb.PayNavigation.Price : 0) >= b.Price
+                                )
+                ));
 
             CreateMap<ChildCreateDto,Child>();
             CreateMap<ChildUpdateDto, Child>();

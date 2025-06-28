@@ -34,14 +34,11 @@ namespace School_Manager.Core.Services.Implemetations
         {
             var result = new ChildInfo();
             
-            var ds = _unitOfWork.GetRepository<Child>().Query(
-                predicate: p => p.Id == id,
-                orderBy: null,
-                includes: new List<System.Linq.Expressions.Expression<Func<Child, object>>>
-                {
-                    c=>c.LocationPairs
-                }
-                ).FirstOrDefault();
+            var ds = _unitOfWork.GetRepository<Child>()
+                                .Query(p => p.Id == id)
+                                .Include(x=>x.LocationPairs)
+                                .Include(x=>x.ServiceContracts).ThenInclude(x=>x.Bills)
+                                .FirstOrDefault();
             if (ds != null) 
             {
                 result = _mapper.Map<ChildInfo>(ds);
@@ -52,17 +49,10 @@ namespace School_Manager.Core.Services.Implemetations
         public ChildInfo GetChildByNationCode(string nationCode)
         {
             var result = new ChildInfo();
-            var ds = _unitOfWork.GetRepository<Child>().Query()
+            var ds = _unitOfWork.GetRepository<Child>().Query(p=>p.NationalCode == nationCode.Trim())
                     .Include(x=>x.LocationPairs)
-                    .FirstOrDefault(p=>p.NationalCode == nationCode.Trim());
-            //var ds = _unitOfWork.GetRepository<Child>().Query(
-            //    predicate: p => p.NationalCode == nationCode.Trim(),
-            //    orderBy: null,
-            //    includes: new List<System.Linq.Expressions.Expression<Func<Child, object>>>
-            //    {
-            //        c=>c.LocationPairs
-            //    }
-            //    ).FirstOrDefault();
+                    .Include(x => x.ServiceContracts).ThenInclude(x => x.Bills)
+                    .FirstOrDefault();
             if (ds != null)
             {
                 result = _mapper.Map<ChildInfo>(ds);
