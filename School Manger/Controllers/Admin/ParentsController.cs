@@ -19,7 +19,8 @@ namespace School_Manger.Controllers.Admin
         private readonly ISchoolService _schoolService;
         private readonly IDriverService _driverService;
         private readonly IPayBillService _payBillService;
-        public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, IBillService billService, ISchoolService schoolService, IDriverService driverService)
+        public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, IBillService billService,
+            ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService)
         {
             _parentService = parentService;
             _childService = childService;
@@ -27,6 +28,7 @@ namespace School_Manger.Controllers.Admin
             _billService = billService;
             _schoolService = schoolService;
             _driverService = driverService;
+            _payBillService = payBillService;
         }
         public async Task<IActionResult> Index()
         {
@@ -60,11 +62,11 @@ namespace School_Manger.Controllers.Admin
             return View(Child);
         }
         [HttpPost]
-        public async Task<IActionResult> MakeBill(long ChildId, string Name,long TotalPrice,string StartTime,string EndTime,string Estimate, string IsPerBill)
+        public IActionResult MakeBill(long ChildId, string Name,long TotalPrice,string StartTime,string EndTime,string Estimate, string IsPerBill)
         {
             if (IsPerBill == "on")
             {
-                SavePreBillResult result = await _billService.CreatePreBill(new CreatePreBillDto()
+                SavePreBillResult result = _billService.CreatePreBill(new CreatePreBillDto()
                 {
                     ChildRef = ChildId,
                     Name = Name,
