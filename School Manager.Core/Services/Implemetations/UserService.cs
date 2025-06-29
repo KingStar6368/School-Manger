@@ -182,5 +182,23 @@ namespace School_Manager.Core.Services.Implemetations
         {
             throw new NotImplementedException();
         }
+
+        public async Task<List<UserDTO>> GetAllAsyncDrivers()
+        {
+            var results = await _unitOfWork.GetRepository<User>().Query(x=>x.Drivers.Any()).ToListAsync();
+            return _mapper.Map<List<UserDTO>>(results);
+        }
+
+        public async Task<List<UserDTO>> GetAllAsyncParents()
+        {
+            var results = await _unitOfWork.GetRepository<User>().Query(x => x.Parents.Any()).ToListAsync();
+            return _mapper.Map<List<UserDTO>>(results);
+        }
+
+        public List<UserDTO> GetAllParents()
+        {
+            var results =  _unitOfWork.GetRepository<User>().Query(x => x.Parents.Any()).ToList();
+            return _mapper.Map<List<UserDTO>>(results);
+        }
     }
 }

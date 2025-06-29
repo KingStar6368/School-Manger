@@ -13,6 +13,7 @@ namespace School_Manager.Core.Services.Interfaces
         Task<List<UserDTO>> GetAllAsync();
         Task<List<UserDTO>> GetAllAsyncDrivers();
         Task<List<UserDTO>> GetAllAsyncParents();
+        List<UserDTO> GetAllParents();
         UserDTO CheckAuthorize(string UserName,string Password);
 		Task<List<UserDTO>> GetListAsync();
 		UserDTO GetUserDetail(long Id);
