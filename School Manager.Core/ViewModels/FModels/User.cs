@@ -26,6 +26,7 @@ namespace School_Manager.Core.ViewModels.FModels
         public string LastName { get; set; }
         public string FullName { get; set; }
         public bool IsActive { get; set; }
+        public string Mobile {  get; set; }
         public string Status => IsActive ? "فعال" : "غیرفعال";
 
     }
