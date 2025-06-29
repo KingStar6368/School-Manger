@@ -22,6 +22,7 @@ namespace School_Manager.Core.ViewModels.FModels
             set => _passwordHash = value;
         }
         public string FirstName { get; set; }
+        public string Mobile { get; set; }
         public string LastName { get; set; }
         public string FullName { get; set; }
         public bool IsActive { get; set; }
