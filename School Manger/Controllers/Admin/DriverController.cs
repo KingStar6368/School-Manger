@@ -61,6 +61,20 @@ namespace School_Manger.Controllers.Admin
                 BirthDate = driver.BirthDate,
                 AvailableSeats = driver.AvailableSeats,
                 Address = driver.Address,
+                Latitude = 0,
+                Longitude = 0,
+                CarCreateDto = new CarCreateDto()
+                {
+                    Name = driver.Car.Name,
+                    SeatNumber = driver.Car.SeatNumber,
+                    carType = (int)driver.Car.carType,
+                    ChrPlateNumber = driver.Car.PlateNumber,
+                    ColorCode = 0,
+                    FirstIntPlateNumber = int.Parse(driver.Car.PlateNumber.Substring(0,2)),
+                    SecondIntPlateNumber = int.Parse(driver.Car.PlateNumber.Substring(2,3)),
+                    ThirdIntPlateNumber = 47,
+                    IsActive = true,
+                }
             });
             ControllerExtensions.ShowSuccess(this, "موفق", "راننده با موفقعیت اضافه شد");
             return View(driver);

@@ -9,11 +9,11 @@
 <div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2">
     <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
         <h4 class="mb-0 fw-bold">
-            <i class="bi bi-people-fill me-2"></i> مدیریت والدین
+            <i class="bi bi-people-fill me-2"></i> مدیریت والدین👨‍👧‍👦
         </h4>
-        <a href="/Admin/Parent/Create" class="btn btn-success shadow-sm fw-bold">
+@*         <a href="/Admin/Parent/Create" class="btn btn-success shadow-sm fw-bold">
             <i class="bi bi-plus-circle me-1"></i> افزودن والد جدید 👨‍👧‍👦
-        </a>
+        </a> *@
     </div>
 
     <div class="card-body">
@@ -35,7 +35,7 @@
                     @for (int i = 0; i < Model.Count; i++)
                     {
                         var parent = Model[i];
-                        var debt = parent.Children.Where(x=>x.Bills != null).Sum(c => c.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice));
+                        @* var debt = parent.Children.Where(x=>x.Bills != null).Sum(c => c.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice)); *@
                         var isActive = parent.Active;
 
                         <tr>

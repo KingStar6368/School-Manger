@@ -33,8 +33,8 @@
                             <td>@(i + 1)</td>
                             <td>@Model[i].Name</td>
                             <td>@Model[i].LastName</td>
-                            @* <td>@Model[i].Car.Name</td> *@<td></td>
-                            @* <td>@Html.Partial("_CarPlate", Model[i].Car.PlateNumber)</td> *@<td></td>
+                            <td>@Model[i].Car.Name</td>
+                            <td>@Html.Partial("_CarPlate", Model[i].Car.PlateNumber)</td>
                             <td>
                                 @if (Model[i].Warnning > 0)
                                 {

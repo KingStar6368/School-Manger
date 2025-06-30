@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Entities.Catalog.Enums;
+using School_Manager.Domain.Entities.Catalog.Operation;
 using School_Manger.Models.PageView;
 using System.Threading.Tasks;
 
@@ -86,6 +87,20 @@ namespace School_Manger.Controllers.Admin
                         FatherName = Data.Driver.FutherName,
                         Rate = Data.Driver.Rate,
                         Warnning = Data.Driver.Warnning,
+                        CarCreateDto = new CarCreateDto()
+                        {
+                            Name = Data.Driver.Car.Name,
+                            SeatNumber = Data.Driver.Car.SeatNumber,
+                            carType = (int)Data.Driver.Car.carType,
+                            ChrPlateNumber = Data.Driver.Car.PlateNumber,
+                            ColorCode = 0,
+                            FirstIntPlateNumber = int.Parse(Data.Driver.Car.PlateNumber.Substring(0, 2)),
+                            SecondIntPlateNumber = int.Parse(Data.Driver.Car.PlateNumber.Substring(2, 3)),
+                            ThirdIntPlateNumber = 47,
+                            IsActive = true,
+                        },
+                        Latitude = 0,
+                        Longitude = 0
                     });
                     break;
 
