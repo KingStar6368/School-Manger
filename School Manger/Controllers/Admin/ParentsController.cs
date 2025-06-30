@@ -60,7 +60,7 @@ namespace School_Manger.Controllers.Admin
         public IActionResult CreateBill(long ChildId)
         {
             var Child = _childService.GetChild(ChildId);
-            return View(Child);
+            return View("CreateBill", Child);
         }
         [HttpPost]
         public IActionResult MakeBill(long ChildId, string Name,long TotalPrice,string StartTime,string EndTime,string Estimate, string IsPerBill)
@@ -77,7 +77,7 @@ namespace School_Manger.Controllers.Admin
                     StartTime = StartTime.ToMiladi()
                 });
                 var child = _childService.GetChild(ChildId);
-                return View("CreateBill", child);
+                return CreateBill(ChildId);
             }
             else
             {
@@ -91,7 +91,7 @@ namespace School_Manger.Controllers.Admin
                     Type = (int)BillType.Normal
                 });
                 var child = _childService.GetChild(ChildId);
-                return View("CreateBill", child);
+                return CreateBill(ChildId);
             }
         }
         [HttpPost]
@@ -100,9 +100,9 @@ namespace School_Manger.Controllers.Admin
             var child = _childService.GetChild(ChildId);
             BillDto Bill = _billService.GetBill(BillId);
             if(Bill ==null)
-                return View("CreateBill", child);
-            if(Bill.HasPaid)
-                return View("CreateBill", child);
+                return CreateBill(ChildId);
+            if (Bill.HasPaid)
+                return CreateBill(ChildId);
             PayType type = PayType.Pos;
             switch (PaymentType)
             {
@@ -126,7 +126,8 @@ namespace School_Manger.Controllers.Admin
                 BecomingTime = PiadTime.ToMiladi(),
                 PayType = type
             });
-            return View("CreateBill", child);
+            ControllerExtensions.ShowSuccess(this, "موفق", "پرداخت انجام شد");
+            return CreateBill(ChildId);
         }
         //[HttpPost]
         //public IActionResult test(string Child)

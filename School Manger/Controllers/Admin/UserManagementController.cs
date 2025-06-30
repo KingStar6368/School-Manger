@@ -90,7 +90,7 @@ namespace School_Manger.Controllers.Admin
                     break;
 
             }
-
+            ControllerExtensions.ShowSuccess(this, "موفق", "کاربر ساخته شد");
             ViewBag.UserType = Data.Type;
             return View();
         }

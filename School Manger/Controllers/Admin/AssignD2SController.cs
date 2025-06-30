@@ -27,7 +27,7 @@ namespace School_Manger.Controllers.Admin
                 AvailableDrivers = Drivers,
                 NonDivers = Childern,
             };
-            return View(Dashbord);
+            return View("Index",Dashbord);
         }
         public async Task<IActionResult> AssignDriver(long DriverId, long StudentId)
         {
