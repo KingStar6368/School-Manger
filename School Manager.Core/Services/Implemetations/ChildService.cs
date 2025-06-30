@@ -193,7 +193,7 @@ namespace School_Manager.Core.Services.Implemetations
             }
             var _new = new DriverChild
             {
-                DriverRef = ChildId,
+                DriverRef = DriverId,
                 EndDate = DateTime.Now.AddYears(1),
                 IsDeleted = false,
                 ChildRef = ChildId,
