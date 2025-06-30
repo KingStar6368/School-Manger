@@ -86,7 +86,8 @@ namespace School_Manager.Core.Mapper
                 .ForMember(dest => dest.Car, opt => opt.MapFrom(src => src.Cars.FirstOrDefault(i => i.IsActive)))
                 .ForMember(dest=>dest.Passanger, opt => opt.MapFrom(src => src.Passanger.Select(p => p.ChildRef).ToList()))
                 .ForMember(dest => dest.BankAccount,opt => opt.MapFrom<BankAccountResolver>());
-            CreateMap<DriverCreateDto, Driver>();
+            CreateMap<DriverCreateDto, Driver>()
+                .ForMember(dest => dest.Cars, opt => opt.MapFrom(src => new List<CarCreateDto> { src.CarCreateDto }));
             CreateMap<DriverUpdateDto, Driver>();
             #endregion
             #region DriverContract

@@ -38,6 +38,7 @@ namespace School_Manager.Core.Services.Implemetations
             var ds = _unitOfWork.GetRepository<Child>()
                                 .Query(p => p.Id == id)
                                 .Include(x=>x.LocationPairs)
+                                .Include(x=>x.DriverChilds).ThenInclude(x=>x.DriverNavigation)
                                 .Include(x=>x.ServiceContracts).ThenInclude(x=>x.Bills).ThenInclude(x=>x.PayBills).ThenInclude(x=> x.PayNavigation)
                                 .FirstOrDefault();
             if (ds != null) 
@@ -51,9 +52,10 @@ namespace School_Manager.Core.Services.Implemetations
         {
             var result = new ChildInfo();
             var ds = _unitOfWork.GetRepository<Child>().Query(p=>p.NationalCode == nationCode.Trim())
-                    .Include(x=>x.LocationPairs)
-                    .Include(x => x.ServiceContracts).ThenInclude(x => x.Bills).ThenInclude(x => x.PayBills).ThenInclude(x => x.PayNavigation)
-                    .FirstOrDefault();
+                                .Include(x=>x.LocationPairs)
+                                .Include(x => x.DriverChilds).ThenInclude(x => x.DriverNavigation)
+                                .Include(x => x.ServiceContracts).ThenInclude(x => x.Bills).ThenInclude(x => x.PayBills).ThenInclude(x => x.PayNavigation)
+                                .FirstOrDefault();
             if (ds != null)
             {
                 result = _mapper.Map<ChildInfo>(ds);
@@ -83,7 +85,8 @@ namespace School_Manager.Core.Services.Implemetations
 
         public async Task<List<ChildInfo>> GetChildren()
         {
-            var ds = await _unitOfWork.GetRepository<Child>().Query().Include(x=>x.LocationPairs).ToListAsync();
+            var ds = await _unitOfWork.GetRepository<Child>().Query().Include(x=>x.LocationPairs)
+                                .Include(x => x.DriverChilds).ThenInclude(x => x.DriverNavigation).ToListAsync();
             return _mapper.Map<List<ChildInfo>>(ds);
         }
 
@@ -92,6 +95,7 @@ namespace School_Manager.Core.Services.Implemetations
             var ds = _unitOfWork.GetRepository<Child>()
                 .Query()
                 .Include(x=>x.SchoolNavigation)
+                .Include(x => x.DriverChilds).ThenInclude(x => x.DriverNavigation)
                 .FirstOrDefault(x=>x.Id == ChildId);
             return _mapper.Map<SchoolDto>(ds.SchoolNavigation);
         }
@@ -128,8 +132,9 @@ namespace School_Manager.Core.Services.Implemetations
         }
         public async Task<List<DriverDto>> GetDriverFree()
         {
-            IQueryable<Driver> query = _unitOfWork.GetRepository<Driver>().Query(x =>
-                x.AvailableSeats > 0);
+            IQueryable<Driver> query = _unitOfWork.GetRepository<Driver>().Query()
+                .Where(x => x.Cars.Any(y => y.IsActive))
+                .Where(x => (x.Cars.Where(y => y.IsActive).Select(y => (int?)y.SeatNumber).FirstOrDefault() ?? x.AvailableSeats) > x.Passanger.Count);
 
             var ds = await query.ToListAsync();
             return _mapper.Map<List<DriverDto>>(ds);
@@ -220,6 +225,7 @@ namespace School_Manager.Core.Services.Implemetations
             var ds = _unitOfWork.GetRepository<Child>()
                                 .Query(p => p.ParentRef == ParentId)
                                 .Include(x => x.LocationPairs)
+                                .Include(x => x.DriverChilds).ThenInclude(x => x.DriverNavigation)
                                 .Include(x => x.ServiceContracts).ThenInclude(x => x.Bills).ThenInclude(x => x.PayBills).ThenInclude(x => x.PayNavigation)
                                 .ToList();
             if (ds != null)

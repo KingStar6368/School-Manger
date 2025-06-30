@@ -174,6 +174,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// عرض جغرافیایی
         /// </summary>
         public double? Longitude { get; set; }
+        public CarCreateDto CarCreateDto {get;set;}
     }
     public class DriverUpdateDto : IDriverDto
     {

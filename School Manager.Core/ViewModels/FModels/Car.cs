@@ -84,7 +84,7 @@ namespace School_Manager.Core.ViewModels.FModels
         public int SecondIntPlateNumber {get;set;}
         public int ThirdIntPlateNumber {get;set;}
         public int ColorCode {get;set;}
-        public bool IsActive {get;set;}
+        public bool IsActive {get;set;} = true;
         public int SeatNumber {get;set;}
         public int carType {get;set;}
     }
