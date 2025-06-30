@@ -255,19 +255,16 @@
 
         // Function to get address from coordinates (using Nominatim)
         function getAddressFromCoordinates(lat, lng, locationNumber) {
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=fa`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.display_name) {
-                        location1.address = data.display_name;
-                        updateLocationDisplay();
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching address:', error);
-                    location1.address = 'آدرس یافت نشد';
-                    updateLocationDisplay();
-                });
+        const apiKey = '7902de30b04b42558af4300bad6c27a0';
+            fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lng}&key=${apiKey}&language=fa`)
+              .then(res => res.json())
+              .then(data => {
+                if (data.results && data.results.length > 0) {
+                  const address = data.results[0].formatted;
+                  location1.address = address;
+                  updateLocationDisplay();
+                }
+              });
         }
 
         // Update location display
