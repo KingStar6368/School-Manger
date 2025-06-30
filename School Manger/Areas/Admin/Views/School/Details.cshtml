@@ -33,10 +33,11 @@
             <strong>📍 آدرس:</strong>
             <div class="ms-2">@Model.School.Address.Address</div>
         </div>
-        <div class="col-md-6 mb-3">
+        <div class="col-md-6">
             <strong>🗺️ موقعیت مکانی:</strong>
-            <div class="ms-2">📌 Lat: @Model.School.Address.Latitude, Lng: @Model.School.Address.Longitude</div>
+            <div id="schoolMap" style="height: 300px; width: 100%;" class="rounded shadow-sm border border-light mt-2"></div>
         </div>
+
 
         <div class="mt-4">
             <a asp-action="Index" class="btn btn-outline-light rounded-4">
@@ -121,3 +122,27 @@
         </table>
     </div>
 </div>
+@section Scripts {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // Get the coordinates from the Razor model
+        var lat = @Model.School.Address.Latitude;
+        var lng = @Model.School.Address.Longitude;
+
+        // Initialize the map
+        var map = L.map('schoolMap').setView([lat, lng], 15);
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Add a marker at the school location with a popup
+        L.marker([lat, lng]).addTo(map)
+            .bindPopup('📍 موقعیت مدرسه')
+            .openPopup();
+    </script>
+}
+
