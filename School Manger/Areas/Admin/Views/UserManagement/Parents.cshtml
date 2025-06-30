@@ -1,5 +1,5 @@
 ﻿@using School_Manager.Core.ViewModels.FModels
-@model List<LoginUser>
+@model List<UserDTO>
 
 @{
     ViewData["Title"] = "👨‍👩‍👧‍👦 مدیریت کاربران والدین";
@@ -36,7 +36,7 @@
                                 <tr>
                                     <td>@user.Index</td>
                                     <td>@user.User.UserName</td>
-                                    <td>@user.User.PhoneNumber</td>
+                                    <td>@user.User.Mobile</td>
                                     <td>
                                         <a asp-action="Edit" asp-route-id="@user.User.Id"
                                            class="btn text-black bg-warning btn-sm btn-outline-light rounded-pill shadow-sm" title="ویرایش">

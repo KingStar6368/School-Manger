@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manger.Extension;
 using School_Manger.Models;
@@ -9,9 +10,13 @@ namespace School_Manger.Controllers.Admin
     [Area("Admin")]
     public class AssignD2SController : Controller
     {
+        private readonly IChildService _childService;
+        private readonly IDriverService _driverService;
         private AdminNONChildDriver Dashbord;
-        public AssignD2SController() 
+        public AssignD2SController(IChildService childService,IDriverService driverService) 
         {
+            _childService = childService;
+            _driverService = driverService;
             Dashbord = new AdminNONChildDriver()
             {
                 NonDivers = new List<ChildInfo>()
@@ -122,6 +127,10 @@ namespace School_Manger.Controllers.Admin
         }
         public IActionResult Index()
         {
+            var Dashbord = new AdminNONChildDriver()
+            {
+                NonDivers = _childService.
+            }
             return View(Dashbord);
         }
     }
