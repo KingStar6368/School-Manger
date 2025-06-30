@@ -27,7 +27,7 @@
                         <th>🆔 کد ملی</th>
                         <th>👶 تعداد فرزندان</th>
                         <th>⚙️ وضعیت</th>
-                        <th>💰 وضعیت مالی</th>
+                        @* <th>💰 وضعیت مالی</th> *@
                         <th>🔧 عملیات</th>
                     </tr>
                 </thead>
@@ -53,11 +53,11 @@
                                     @(isActive ? "فعال ✅" : "غیرفعال ❌")
                                 </span>
                             </td>
-                            <td>
+@*                             <td>
                                 <span class="badge fw-bold @(debt > 0 ? "bg-danger" : "bg-success")">
                                     @(debt > 0 ? $"{debt:N0} تومان 💸" : "تسویه شده 🟢")
                                 </span>
-                            </td>
+                            </td> *@
                             <td>
                                 <a asp-action="Details" asp-controller="Parents" asp-route-id="@parent.Id"
                                    class="btn btn-sm btn-outline-light rounded-pill shadow-sm">

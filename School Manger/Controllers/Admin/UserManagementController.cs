@@ -1,28 +1,40 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Entities.Catalog.Enums;
+using School_Manger.Models.PageView;
+using System.Threading.Tasks;
 
 namespace School_Manger.Controllers.Admin
 {
     [Area("Admin")]
     public class UserManagementController : Controller
     {
+        private readonly IUserService _userService;
+        private readonly IParentService _parentService;
+        private readonly IDriverService _driverService;
+        public UserManagementController(IUserService userService, IParentService parentService, IDriverService driverService)
+        {
+            _userService = userService;
+            _parentService = parentService;
+            _driverService = driverService;
+        }
         private static List<LoginUser> _users = new()
     {
         new LoginUser { Id = 1, UserName = "parent1", Password = "123", PhoneNumber = "09123456789", Type = UserType.Parent },
         new LoginUser { Id = 2, UserName = "driver1", Password = "123", PhoneNumber = "09129876543", Type = UserType.Driver }
     };
 
-        public IActionResult Parents()
+        public async Task<IActionResult> Parents()
         {
-            var parents = _users.Where(u => u.Type == UserType.Parent).ToList();
+            var parents = await _userService.GetAllAsyncParents();
             return View(parents);
         }
 
-        public IActionResult Drivers()
+        public async Task<IActionResult> Drivers()
         {
-            var drivers = _users.Where(u => u.Type == UserType.Driver).ToList();
+            var drivers = await _userService.GetAllAsyncDrivers();
             return View(drivers);
         }
 
@@ -33,16 +45,54 @@ namespace School_Manger.Controllers.Admin
         }
 
         [HttpPost]
-        public IActionResult Create(LoginUser user)
+        public IActionResult Create(AdminUser Data)
         {
-            if (ModelState.IsValid)
+            var UserRef = _userService.CreateUser(new UserCreateDTO()
             {
-                user.Id = _users.Max(u => u.Id) + 1;
-                _users.Add(user);
-                return RedirectToAction(user.Type == UserType.Parent ? "Parents" : "Drivers");
+                FirstName = Data.User.FirstName,
+                LastName = Data.User.LastName,
+                UserName = Data.User.UserName,
+                PasswordHash = Data.User.Password,
+                IsActive = true,
+                Mobile = Data.User.Mobile
+            });
+            switch (Data.Type)
+            {
+                case UserType.Parent:
+                    _parentService.CreateParent(new ParentCreateDto()
+                    {
+                        FirstName = Data.User.FirstName,
+                        LastName = Data.User.LastName,
+                        NationalCode = Data.User.UserName,
+                        Active = true,
+                        Address = "",
+                        UserRef = UserRef
+                    });
+                    break;
+                case UserType.Driver:
+                    _driverService.CreateDriver(new DriverCreateDto()
+                    {
+                        Name = Data.User.FirstName,
+                        LastName = Data.User.LastName,
+                        NationCode = Data.User.UserName,
+                        UserRef = UserRef,
+                        Address = Data.Driver.Address,
+                        AvailableSeats = Data.Driver.Car.SeatNumber,
+                        BankRef = 0,
+                        BirthDate = Data.Driver.BirthDate,
+                        CertificateId = "0",
+                        Descriptions = Data.Driver.Descriptions,
+                        Education = Data.Driver.Education,
+                        FatherName = Data.Driver.FutherName,
+                        Rate = Data.Driver.Rate,
+                        Warnning = Data.Driver.Warnning,
+                    });
+                    break;
+
             }
-            ViewBag.UserType = user.Type;
-            return View(user);
+
+            ViewBag.UserType = Data.Type;
+            return View();
         }
 
         public IActionResult Edit(int id)

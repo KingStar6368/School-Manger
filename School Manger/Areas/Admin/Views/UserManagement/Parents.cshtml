@@ -1,5 +1,5 @@
 ﻿@using School_Manager.Core.ViewModels.FModels
-@model List<LoginUser>
+@model List<UserDTO>
 
 @{
     ViewData["Title"] = "👨‍👩‍👧‍👦 مدیریت کاربران والدین";
@@ -26,6 +26,7 @@
                             <tr>
                                 <th>🔢 ردیف</th>
                                 <th>👤 نام کاربری</th>
+                                <th>👤 نام کامل</th>
                                 <th>📞 شماره تماس</th>
                                 <th>⚙️ عملیات</th>
                             </tr>
@@ -36,8 +37,9 @@
                                 <tr>
                                     <td>@user.Index</td>
                                     <td>@user.User.UserName</td>
-                                    <td>@user.User.PhoneNumber</td>
-                                    <td>
+                                    <td>@user.User.FullName</td>
+                                    <td>@user.User.Mobile</td>
+                                    @* <td>
                                         <a asp-action="Edit" asp-route-id="@user.User.Id"
                                            class="btn text-black bg-warning btn-sm btn-outline-light rounded-pill shadow-sm" title="ویرایش">
                                             <i class="bi bi-pencil"></i> 🖊️ تغییر
@@ -46,7 +48,7 @@
                                            class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm title="حذف">
                                             <i class="bi bi-trash"></i> 🗑️ حذف
                                         </a>
-                                    </td>
+                                    </td> *@
                                 </tr>
                             }
                         </tbody>

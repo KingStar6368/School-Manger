@@ -1,4 +1,5 @@
 ﻿using School_Manager.Core.ViewModels.FModels;
+using School_Manager.Domain.Entities.Catalog.Enums;
 
 namespace School_Manger.Models.PageView
 {
@@ -35,5 +36,15 @@ namespace School_Manger.Models.PageView
         public SchoolDto School { get; set; }
         public List<DriverDto> Drivers { get; set; }
         public List<ChildInfo> Students { get; set; }
+    }
+    /// <summary>
+    /// پنل یوز
+    /// </summary>
+    public class AdminUser
+    {
+        public LoginView User { get; set; }
+        public DriverDto Driver { get; set; }
+        public ParentDto Parent { get; set; }
+        public UserType Type { get; set; }
     }
 }
