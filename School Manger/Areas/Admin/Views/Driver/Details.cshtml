@@ -18,7 +18,7 @@
                     <li class="list-group-item bg-dark text-white border-0">👤 <strong>نام کامل:</strong> @Model.Driver.Name @Model.Driver.LastName</li>
                     <li class="list-group-item bg-dark text-white border-0">🆔 <strong>کد ملی:</strong> @Model.Driver.NationCode</li>
                     <li class="list-group-item bg-dark text-white border-0">👨‍👦 <strong>نام پدر:</strong> @Model.Driver.FutherName</li>
-                    <li class="list-group-item bg-dark text-white border-0">🏦 <strong>بانک:</strong> @Model.Driver.BankAccount</li>
+                    <li class="list-group-item bg-dark text-white border-0">🏦 <strong>بانک:</strong> @* @Model.Driver.BankAccount *@</li>
                     <li class="list-group-item bg-dark text-white border-0">🔢 <strong>شماره حساب:</strong> @Model.Driver.BankNumber</li>
                     <li class="list-group-item bg-dark text-white border-0">🎂 <strong>تاریخ تولد:</strong> @Model.Driver.BirthDate</li>
                     <li class="list-group-item bg-dark text-white border-0">⭐ <strong>امتیاز:</strong> <span class="badge bg-success">@Model.Driver.Rate</span></li>
@@ -29,7 +29,7 @@
                 </ul>
             </div>
 
-            <!-- Car Info -->
+@*             <!-- Car Info -->
             <div class="col-md-6">
                 <h5 class="border-bottom pb-2 mb-3 text-info">اطلاعات خودرو</h5>
                 <ul class="list-group list-group-flush">
@@ -39,7 +39,7 @@
                     <li class="list-group-item bg-dark text-white border-0">🔢 <strong>پلاک:</strong> @Html.Partial("_CarPlate", Model.Driver.Car.PlateNumber)</li>
                     <li class="list-group-item bg-dark text-white border-0">🟢 <strong>صندلی خالی:</strong> @Model.Driver.AvailableSeats</li>
                 </ul>
-            </div>
+            </div> *@
         </div>
 
         <div class="mt-4">

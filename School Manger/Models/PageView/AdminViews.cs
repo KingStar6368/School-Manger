@@ -42,7 +42,7 @@ namespace School_Manger.Models.PageView
     /// </summary>
     public class AdminUser
     {
-        public UserDTO User { get; set; }
+        public LoginView User { get; set; }
         public DriverDto Driver { get; set; }
         public ParentDto Parent { get; set; }
         public UserType Type { get; set; }

@@ -76,16 +76,16 @@ namespace School_Manger.Controllers.Admin
                         LastName = Data.User.LastName,
                         NationCode = Data.User.UserName,
                         UserRef = UserRef,
-                        Address = "",
-                        AvailableSeats = Data.Driver.AvailableSeats,
+                        Address = Data.Driver.Address,
+                        AvailableSeats = Data.Driver.Car.SeatNumber,
                         BankRef = 0,
                         BirthDate = Data.Driver.BirthDate,
-                        CertificateId = Data.Driver.CertificateId,
+                        CertificateId = "0",
                         Descriptions = Data.Driver.Descriptions,
                         Education = Data.Driver.Education,
                         FatherName = Data.Driver.FutherName,
                         Rate = Data.Driver.Rate,
-                        Warnning = Data.Driver.Warnning
+                        Warnning = Data.Driver.Warnning,
                     });
                     break;
 

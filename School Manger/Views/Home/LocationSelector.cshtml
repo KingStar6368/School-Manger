@@ -46,19 +46,19 @@
                                 <option value="" selected>-- انتخاب مقصد --</option>
                                 @foreach(var schools in Model.Schools)
                                 {
-                                    <option value="@schools.Address.Latitude,@schools.Address.Longitude|@schools.Name">@schools.Name</option>
+                                    <option value="@schools.Id|@schools.Address.Latitude,@schools.Address.Longitude|@schools.Name">@schools.Name</option>
                                 }
                                 @if (Model.Schools == null || Model.Schools.Count == 0)
                                 {
-                                    <option value="34.0918,49.6892|مدرسه نمونه اراک">نمونه تستی</option>
-                                    <option value="34.0918,49.6892|مدرسه نمونه اراک">مدرسه نمونه اراک</option>
-                                    <option value="34.0854,49.7003|مدرسه شهید بهشتی اراک">مدرسه شهید بهشتی اراک</option>
-                                    <option value="34.0789,49.6956|مدرسه علامه حلی اراک">مدرسه علامه حلی اراک</option>
-                                    <option value="34.0723,49.6887|مدرسه فرزانگان اراک">مدرسه فرزانگان اراک</option>
-                                    <option value="34.0801,49.6815|مدرسه انرژی اتمی اراک">مدرسه انرژی اتمی اراک</option>
+                                    <option value="0|34.0918,49.6892|مدرسه نمونه اراک">نمونه تستی</option>
+                                    <option value="0|34.0918,49.6892|مدرسه نمونه اراک">مدرسه نمونه اراک</option>
+                                    <option value="0|34.0854,49.7003|مدرسه شهید بهشتی اراک">مدرسه شهید بهشتی اراک</option>
+                                    <option value="0|34.0789,49.6956|مدرسه علامه حلی اراک">مدرسه علامه حلی اراک</option>
+                                    <option value="0|34.0723,49.6887|مدرسه فرزانگان اراک">مدرسه فرزانگان اراک</option>
+                                    <option value="0|34.0801,49.6815|مدرسه انرژی اتمی اراک">مدرسه انرژی اتمی اراک</option>
                                 }
                             </select>
-
+                            <input asp-for="SelectedChild.SchoolId" hidden id="SchoolRef"/>
                             <div id="location2Info" class="p-3 bg-danger rounded mb-3" style="min-height: 100px; display: none;">
                                 <!-- اطلاعات موقعیت دوم اینجا نمایش داده می شود -->
                             </div>
@@ -192,7 +192,7 @@
         document.getElementById('location2Select').addEventListener('change', function() {
             const selectedValue = this.value;
             if (selectedValue) {
-                const [coords, address] = selectedValue.split('|');
+                const [Id,coords, address] = selectedValue.split('|');
                 const [lat, lng] = coords.split(',');
 
                 location2 = {
@@ -218,6 +218,7 @@
                 .openPopup();
 
                 // Update display
+                document.getElementById('SchoolRef').value = Id;
                 document.getElementById('location2Info').style.display = 'block';
                 document.getElementById('location2Info').innerHTML = `
                     <p><strong>موقعیت دوم:</strong></p>

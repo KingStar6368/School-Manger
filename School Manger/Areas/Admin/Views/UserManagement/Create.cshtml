@@ -10,8 +10,8 @@
         <h4 class="mb-0">@ViewData["Title"]</h4>
     </div>
     <div class="card-body">
-        <form method="post" novalidate>
-            <input type="hidden" name="userType" value="@userType" />
+        <form action="Create" method="post" novalidate>
+            <input type="hidden" asp-for="Type" value="@userType" />
 
             <div class="row g-4">
                 <div class="col-md-6">
@@ -19,19 +19,19 @@
                     {
                         <div class="mb-3">
                             <label class="form-label">👤 نام</label>
-                            <input asp-for="User.FirstName" name="ParentFirstName" class="form-control form-control-lg" required />
+                            <input asp-for="User.FirstName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">👥 نام خانوادگی</label>
-                            <input asp-for="User.LastName" name="ParentLastName" class="form-control form-control-lg" required />
+                            <input asp-for="User.LastName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🆔 کد ملی</label>
-                            <input asp-for="User.UserName" name="ParentNationalCode" class="form-control form-control-lg" required />
+                            <input asp-for="User.UserName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🏠 آدرس</label>
-                            <textarea asp-for="Parent.Address" name="Address" class="form-control" rows="2"></textarea>
+                            <textarea asp-for="Parent.Address" class="form-control" rows="2"></textarea>
                         </div>
                         <input value="@userType"  hidden />
                     }
@@ -39,35 +39,35 @@
                     {
                         <div class="mb-3">
                             <label class="form-label">👤 نام</label>
-                            <input asp-for="User.FirstName" name="Name" class="form-control form-control-lg" required />
+                            <input asp-for="User.FirstName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">👥 نام خانوادگی</label>
-                            <input asp-for="User.LastName" name="LastName" class="form-control form-control-lg" required />
+                            <input asp-for="User.LastName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">👨‍👦 نام پدر</label>
-                            <input asp-for="Driver.FutherName" name="FutherName" class="form-control form-control-lg" required />
+                            <input asp-for="Driver.FutherName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🎂 تاریخ تولد</label>
-                            <input asp-for="Driver.BirthDate" name="BirthDate" type="date" class="form-control form-control-lg" required />
+                            <input asp-for="Driver.BirthDate" type="date" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🆔 کد ملی</label>
-                            <input asp-for="User.UserName" name="NationCode" class="form-control form-control-lg" required />
+                            <input asp-for="User.UserName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🎓 مدرک تحصیلی</label>
-                            <input asp-for="Driver.Education" name="Education" class="form-control form-control-lg" />
+                            <input asp-for="Driver.Education" class="form-control form-control-lg" />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">📝 توضیحات</label>
-                            <textarea asp-for="Driver.Descriptions" name="Descriptions" class="form-control" rows="2"></textarea>
+                            <textarea asp-for="Driver.Descriptions" class="form-control" rows="2"></textarea>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🏠 آدرس</label>
-                            <textarea asp-for="Driver.Address" name="Address" class="form-control" rows="2"></textarea>
+                            <textarea asp-for="Driver.Address" class="form-control" rows="2"></textarea>
                         </div>
                         <input value="@userType"  hidden />
                     }
@@ -75,12 +75,12 @@
 
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label asp-for="User.Password" class="form-label">🔒 رمز عبور</label>
-                        <input name="Password" type="password" class="form-control form-control-lg" required />
+                        <label  class="form-label">🔒 رمز عبور</label>
+                        <input asp-for ="User.Password" type="password" class="form-control form-control-lg" required />
                     </div>
                     <div class="mb-3">
-                        <label asp-for="User.Mobile" class="form-label">📞 شماره تماس</label>
-                        <input name="Phone" class="form-control form-control-lg" required />
+                        <label  class="form-label">📞 شماره تماس</label>
+                        <input asp-for="User.Mobile" class="form-control form-control-lg" required />
                     </div>
 
                     @if (userType != "Parent")
@@ -89,30 +89,30 @@
                         <h5 class="text-info"><i class="bi bi-car-front-fill"></i> مشخصات ماشین</h5>
                         <div class="mb-3">
                             <label class="form-label">🚘 نام ماشین</label>
-                            <input asp-for="Driver.Car.Name" name="Car.Name" class="form-control form-control-lg" />
+                            <input asp-for="Driver.Car.Name" class="form-control form-control-lg" />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🔢 شماره پلاک</label>
-                            <input asp-for="Driver.Car.PlateNumber" name="Car.PlateNumber" class="form-control form-control-lg" />
+                            <input asp-for="Driver.Car.PlateNumber" class="form-control form-control-lg" />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🎨 رنگ ماشین</label>
-                            <input asp-for="Driver.Car.Color" name="Car.Color" class="form-control form-control-lg" />
+                            <input asp-for="Driver.Car.Color" class="form-control form-control-lg" />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">💺 تعداد صندلی</label>
-                            <input asp-for="Driver.Car.SeatNumber" name="Car.SeatNumber" type="number" class="form-control form-control-lg" />
+                            <input asp-for="Driver.Car.SeatNumber" type="number" class="form-control form-control-lg" />
                         </div>
 
                         <hr />
                         <h5 class="text-info"><i class="bi bi-bank2"></i> مشخصات حساب بانکی</h5>
                         <div class="mb-3">
                             <label class="form-label">🏦 شماره حساب</label>
-                            <input asp-for="Driver.BankAccount" name="BankAccount" class="form-control form-control-lg" />
+                            <input asp-for="Driver.BankAccount" class="form-control form-control-lg" />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🔢 شماره شبا</label>
-                            <input asp-for="Driver.BankNumber" name="BankNumber" class="form-control form-control-lg" />
+                            <input asp-for="Driver.BankNumber" class="form-control form-control-lg" />
                         </div>
                     }
                 </div>
