@@ -76,7 +76,7 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label  class="form-label">🔒 رمز عبور</label>
-                        <input asp-for ="User.Password" type="password" class="form-control form-control-lg" required />
+                        <input asp-for="User.Password" type="password" id="password" class="form-control form-control-lg" minlength="8" required />
                     </div>
                     <div class="mb-3">
                         <label  class="form-label">📞 شماره تماس</label>
@@ -130,3 +130,23 @@
         </form>
     </div>
 </div>
+@section Scripts {
+    <script>
+                 // Password validation
+        document.getElementById('password').addEventListener('input', function(e) {
+            const passwordHelp = document.getElementById('passwordHelp');
+
+            if (this.value.length < 8) {
+                this.classList.remove('border-success', 'is-valid');
+                this.classList.add('border-danger', 'is-invalid');
+                passwordHelp.textContent = 'رمز عبور باید حداقل ۸ کاراکتر داشته باشد';
+                passwordHelp.className = 'form-text text-danger';
+            } else {
+                this.classList.remove('border-danger', 'is-invalid');
+                this.classList.add('border-success', 'is-valid');
+                passwordHelp.textContent = 'رمز عبور معتبر است';
+                passwordHelp.className = 'form-text text-success';
+            }
+        });
+    </script>
+}
