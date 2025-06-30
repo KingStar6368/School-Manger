@@ -42,6 +42,15 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// مشحصات
         /// </summary>
         public string Descriptions { get; set; }
+
+        /// <summary>
+        /// طول جرافیایی
+        /// </summary>
+        public double? Latitude { get; set; }
+        /// <summary>
+        /// عرض جغرافیایی
+        /// </summary>
+        public double? Longitude { get; set; }
         /// <summary>
         /// آدرس
         /// </summary>

@@ -74,6 +74,14 @@ namespace School_Manager.Core.ViewModels.FModels
         /// مشخصات ماشین
         /// </summary>
         public CarInfoDto Car { get; set; }
+        /// <summary>
+        /// طول جرافیایی
+        /// </summary>
+        public double? Latitude { get; set; }
+        /// <summary>
+        /// عرض جغرافیایی
+        /// </summary>
+        public double? Longitude { get; set; }
     }
     public interface IDriverDto
     {
@@ -133,6 +141,14 @@ namespace School_Manager.Core.ViewModels.FModels
         /// صندلی خالی
         /// </summary>
         public int AvailableSeats { get; set; }
+        /// <summary>
+        /// طول جرافیایی
+        /// </summary>
+        public double? Latitude { get; set; }
+        /// <summary>
+        /// عرض جغرافیایی
+        /// </summary>
+        public double? Longitude { get; set; }
     }
     public class DriverCreateDto : IDriverDto
     {
@@ -150,6 +166,14 @@ namespace School_Manager.Core.ViewModels.FModels
         public int Rate {get;set;}
         public int Warnning {get;set;}
         public int AvailableSeats { get ; set; }
+        /// <summary>
+        /// طول جرافیایی
+        /// </summary>
+        public double? Latitude { get; set; }
+        /// <summary>
+        /// عرض جغرافیایی
+        /// </summary>
+        public double? Longitude { get; set; }
     }
     public class DriverUpdateDto : IDriverDto
     {
@@ -168,5 +192,13 @@ namespace School_Manager.Core.ViewModels.FModels
         public int Rate { get; set; }
         public int Warnning { get; set; }
         public int AvailableSeats { get ; set ; }
+        /// <summary>
+        /// طول جرافیایی
+        /// </summary>
+        public double? Latitude { get; set; }
+        /// <summary>
+        /// عرض جغرافیایی
+        /// </summary>
+        public double? Longitude { get; set; }
     }
 }

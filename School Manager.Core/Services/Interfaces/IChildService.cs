@@ -77,5 +77,18 @@ namespace School_Manager.Core.Services.Interfaces
         /// <param name="ChildId">شناسه فرزند</param>
         /// <returns>عملیات موفقیت آمیز بود؟</returns>
         public bool DeleteChild(long ChildId);
+        /// <summary>
+        /// دریافت دانش آموزان بدون راننده
+        /// </summary>
+        /// <param name="DriverId">آی دی راننده در صورت نیاز اگر انتخاب شود دانش آموزان محدوده راننده فیلتر می شود</param>
+        /// <param name="SchoolId">آی دی مدرسه در صورت نیاز اگر انتخاب شود دانش آموزان مدرسه می آید اگر راننده نداری باید صفر وارد شود</param>
+        /// <param name="radiusInMeters">محدوده به متر پیش فرض 500</param>
+        /// <returns>لیست دانش آموزان</returns>
+        Task<List<ChildInfo>> GetChildWithoutDriver(long DriverId = 0, long SchoolId = 0, double radiusInMeters = 500);
+        /// <summary>
+        /// لیست رانندگان بدون دانش آموز
+        /// </summary>
+        /// <returns>لست رانندگان</returns>
+        Task<List<DriverDto>> GetDriverFree();
     }
 }

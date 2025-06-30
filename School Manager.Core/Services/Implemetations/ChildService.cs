@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using School_Manager.Core.Classes;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.Services.Validations;
 using School_Manager.Core.ViewModels.FModels;
@@ -95,6 +96,44 @@ namespace School_Manager.Core.Services.Implemetations
             return _mapper.Map<SchoolDto>(ds.SchoolNavigation);
         }
 
+        public async Task<List<ChildInfo>> GetChildWithoutDriver(long DriverId = 0,long SchoolId = 0, double radiusInMeters = 500)
+        {
+            IQueryable<Child> query = _unitOfWork.GetRepository<Child>().Query(x =>
+                !x.DriverChilds.Any(y => y.IsEnabled && y.EndDate > DateTime.Now))
+                .Include(x => x.LocationPairs).ThenInclude(x => x.Locations);
+
+            if (SchoolId != 0)
+            {
+                query = query.Where(x => x.SchoolRef == SchoolId);
+            }
+
+            if (DriverId != 0)
+            {
+                var driver = await _unitOfWork.GetRepository<Driver>().Query(x => x.Id == DriverId).FirstOrDefaultAsync();
+                if (driver != null && driver.Latitude != null && driver.Longitude != null)
+                {
+                    var driverLat = driver.Latitude ?? 34.094092;
+                    var driverLng = driver.Longitude ?? 49.697936;
+
+                    query = query.Where(child =>
+                        child.LocationPairs.Any(pair =>
+                            pair.Locations.Any(loc =>
+                                loc.LocationType == Domain.Entities.Catalog.Enums.LocationType.Start &&
+                                GeoUtils.Haversine(driverLat, driverLng, loc.Latitude, loc.Longitude) <= radiusInMeters)));
+                }
+            }
+
+            var ds = await query.ToListAsync();
+            return _mapper.Map<List<ChildInfo>>(ds);
+        }
+        public async Task<List<DriverDto>> GetDriverFree()
+        {
+            IQueryable<Driver> query = _unitOfWork.GetRepository<Driver>().Query(x =>
+                x.AvailableSeats > 0);
+
+            var ds = await query.ToListAsync();
+            return _mapper.Map<List<DriverDto>>(ds);
+        }
         public long CreateChild(ChildCreateDto child)
         {
             long result = 0;
