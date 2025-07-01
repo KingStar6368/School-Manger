@@ -1,58 +1,56 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using School_Manager.Core.Mapper;
 using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.Services.Validations;
 using School_Manager.Core.ViewModels.FModels;
+using School_Manager.Data.Context;
 using School_Manager.Data.Repositories;
 using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Operation;
 
 namespace School_Manager.IOC
 {
-    public class Container
+    public static class Container
     {
-        private static IServiceCollection _services;
-        private static ServiceProvider ServiceProvider;
-
-        public ServiceProvider Register(IServiceCollection services = null)
+        public static IServiceCollection RegisterServices(this IServiceCollection services, IConfiguration configuration)
         {
-            if (_services == null)
-                _services = new ServiceCollection();
+            // DbContext
+            services.AddDbContext<SchMSDBContext>(options =>
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-            if (services != null)
-                _services = services;
-
-            ConfigureServices(_services);
-            ServiceProvider = _services.BuildServiceProvider();
-
-            return ServiceProvider;
-        }
-
-        private static void ConfigureServices(IServiceCollection services)
-        {
-            // Add Services
+            // AutoMapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddSingleton<IDateTimeService, SystemDateTimeService>();
+
+            // MediatR
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
-            //Add Repositories
+
+            // DateTime Service
+            services.AddSingleton<IDateTimeService, SystemDateTimeService>();
+
+            // Caching
+            services.AddMemoryCache();
+            services.AddScoped<ICachService, CachService>();
+
+            // Repositories / Services
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBillService, BillService>();
             services.AddScoped<IDriverService, DriverService>();
-            services.AddScoped<IChildService,ChildService>();
-            services.AddScoped<IParentService,ParentService>();
-            services.AddScoped<ICarService,CarService>();
-            services.AddScoped<IChequeService,ChequeService>();
-            services.AddScoped<IContractService,ContractService>();
-            services.AddScoped<IPayBillService,PayBillService>();
+            services.AddScoped<IChildService, ChildService>();
+            services.AddScoped<IParentService, ParentService>();
+            services.AddScoped<ICarService, CarService>();
+            services.AddScoped<IChequeService, ChequeService>();
+            services.AddScoped<IContractService, ContractService>();
+            services.AddScoped<IPayBillService, PayBillService>();
             services.AddScoped<IRawMaterialService, RawMaterialService>();
-            services.AddScoped<ILookupService,LookupService>();
-            services.AddScoped<ISchoolService,SchoolService>();
-            //services.AddScoped<IDateTimeService,SystemDateTimeService>();
-            services.AddMemoryCache();
-            services.AddScoped<ICachService, CachService>(); 
+            services.AddScoped<ILookupService, LookupService>();
+            services.AddScoped<ISchoolService, SchoolService>();
+
+            // Validators
             services.AddScoped<IValidator<RawMaterialDTO>, RawMaterialDTOValidator>();
             services.AddScoped<IValidator<UserCreateDTO>, UserCreateDTOValidator>();
             services.AddScoped<IValidator<UserUpdateDTO>, UserEditDTOValidator>();
@@ -69,6 +67,8 @@ namespace School_Manager.IOC
             services.AddScoped<IValidator<CreatePreBillDto>, PreBillDTOValidator>();
             services.AddScoped<IValidator<PayCreateDto>, PayCreateDtoValidator>();
             services.AddScoped<IValidator<PayUpdateDto>, PayUpdateDtoValidator>();
+
+            // Value Resolvers
             services.AddTransient<BankNameResolver>();
             services.AddTransient<ActiveDriverIdResolver>();
             services.AddTransient<BankAccountResolver>();
@@ -78,6 +78,8 @@ namespace School_Manager.IOC
             services.AddTransient<PaidTimeResolver>();
             services.AddTransient<StatusResolver>();
 
+            return services;
         }
     }
+
 }

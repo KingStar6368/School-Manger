@@ -11,24 +11,13 @@ namespace School_Manager.Data.Context
 {
     public class SchMSDBContext : DbContext
     {
-		//public SchMSDBContext(DbContextOptions<SchMSDBContext> options)
-		//    : base(options)
-		//{
+        public SchMSDBContext(DbContextOptions<SchMSDBContext> options)
+        : base(options)
+        {
+        }
+        #region -> [-- DBSETS Identity --]
 
-		//}       
-
-		//protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-		//{
-		//    optionsBuilder.UseSqlServer(@"Password=Developers@Gamarak;Persist Security Info=True;User ID=sa;Initial Catalog=MaterialWHDB;Data Source=localhost\SQLSERVERDEV3;TrustServerCertificate=True;MultipleActiveResultSets=True;");            
-		//}
-		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-		{
-			optionsBuilder.UseSqlServer(@"Password=mehrab1918;Persist Security Info=True;User ID=sa;Initial Catalog=SchMSDB;Data Source=DESKTOP-A65IC15\KINGSTAR;TrustServerCertificate=True;MultipleActiveResultSets=True;");
-		}
-
-		#region -> [-- DBSETS Identity --]
-
-		public DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Trail> AuditTrails { get; set; }
 
         #endregion

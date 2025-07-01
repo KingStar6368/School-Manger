@@ -15,10 +15,10 @@ namespace School_Manager.Data.Extensions
     {
         private readonly SchMSDBContext _dbContext;
 
-        public ApplicationDbSeeder()
-        {
-            _dbContext = new SchMSDBContext();
-        }
+        //public ApplicationDbSeeder(SchMSDBContext dbContext)
+        //{
+        //    _dbContext = new SchMSDBContext();
+        //}
         public ApplicationDbSeeder(SchMSDBContext dbContext)
         {
             _dbContext = dbContext;

@@ -14,18 +14,18 @@ namespace School_Manager.Data.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DbContext _context;        
+        private readonly SchMSDBContext _context;        
         private IDbContextTransaction _transaction;
         private bool _disposed;
         private Dictionary<Type, object> _repositories;
 
-        public UnitOfWork()
-        {
-            _context = new SchMSDBContext();
-            _repositories = new Dictionary<Type, object>();
-        }
+        //public UnitOfWork(SchMSDBContext context)
+        //{
+        //    _context = context;
+        //    _repositories = new Dictionary<Type, object>();
+        //}
 
-        public UnitOfWork(DbContext context)
+        public UnitOfWork(SchMSDBContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _repositories = new Dictionary<Type, object>();

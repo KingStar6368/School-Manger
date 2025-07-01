@@ -23,20 +23,7 @@ namespace School_Manager.Core.Services.Implemetations
 
         public UserDTO CheckAuthorize(string UserName, string Password)
         {
-            var data = _unitOfWork.GetRepository<User>().Query(
-				predicate: p=>p.UserName == UserName && p.PasswordHash == Password,
-				orderBy:null,
-				includes:new List<System.Linq.Expressions.Expression<Func<User, object>>>{
-					//c=>c.UserRoles
-				},
-                new List<Func<IQueryable<User>, IQueryable<User>>> 
-				{ 
-					//c=> c.Include(x=>x.UserRoles)
-					//.ThenInclude(x=>x.RoleNavigation)
-					//.ThenInclude(x=>x.AppRoleOperationAccess)
-					//.ThenInclude(x=>x.AppFormsOperationNavigation)
-					//.ThenInclude(x=>x.AppFormNavigation)
-				}).FirstOrDefault();
+            var data = _unitOfWork.GetRepository<User>().Query(p=>p.UserName == UserName && p.PasswordHash == Password).FirstOrDefault();
             return _mapper.Map<UserDTO>(data);
         }
 
