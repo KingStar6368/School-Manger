@@ -133,8 +133,9 @@ namespace School_Manager.Core.Services.Implemetations
         public async Task<List<DriverDto>> GetDriverFree()
         {
             IQueryable<Driver> query = _unitOfWork.GetRepository<Driver>().Query()
+                .Include(x=>x.Cars)
                 .Where(x => x.Cars.Any(y => y.IsActive))
-                .Where(x => (x.Cars.Where(y => y.IsActive).Select(y => (int?)y.SeatNumber).FirstOrDefault() ?? x.AvailableSeats) > x.Passanger.Count);
+                .Where(x => (x.Cars.Where(y => y.IsActive).Select(y => (int?)y.SeatNumber).FirstOrDefault() ?? x.AvailableSeats) > x.Passanger.Where(y=>y.IsEnabled).Count());
 
             var ds = await query.ToListAsync();
             return _mapper.Map<List<DriverDto>>(ds);

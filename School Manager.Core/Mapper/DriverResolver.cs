@@ -13,8 +13,11 @@ namespace School_Manager.Core.Mapper
     {
         public int Resolve(Driver source, DriverDto destination, int destMember, ResolutionContext context)
         {
-            var seatNumber = source.Cars.FirstOrDefault(x => x.IsActive)?.SeatNumber ?? source.AvailableSeats;
-            return seatNumber - source.Passanger.Where(x=>x.IsEnabled).ToList().Count;
+            var car = source.Cars?.FirstOrDefault(x => x.IsActive);
+            int seatNumber = car?.SeatNumber ?? source.AvailableSeats;
+            int passangerCount = source.Passanger?.Count ?? 0;
+
+            return seatNumber - passangerCount;
         }
     }
 }
