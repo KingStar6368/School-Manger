@@ -134,6 +134,7 @@ namespace School_Manager.Core.Services.Implemetations
         {
             IQueryable<Driver> query = _unitOfWork.GetRepository<Driver>().Query()
                 .Include(x=>x.Cars)
+                .Include(x=>x.Passanger)
                 .Where(x => x.Cars.Any(y => y.IsActive))
                 .Where(x => (x.Cars.Where(y => y.IsActive).Select(y => (int?)y.SeatNumber).FirstOrDefault() ?? x.AvailableSeats) > x.Passanger.Where(y=>y.IsEnabled).Count());
 
