@@ -4,6 +4,7 @@ using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Entities.Catalog.Enums;
 using School_Manager.Domain.Entities.Catalog.Operation;
+using School_Manger.Extension;
 using School_Manger.Models.PageView;
 using System.Threading.Tasks;
 
@@ -46,7 +47,7 @@ namespace School_Manger.Controllers.Admin
         }
 
         [HttpPost]
-        public IActionResult Create(AdminUser Data)
+        public IActionResult Create(AdminUser Data,string BirthDate)
         {
             var UserRef = _userService.CreateUser(new UserCreateDTO()
             {
@@ -80,7 +81,7 @@ namespace School_Manger.Controllers.Admin
                         Address = Data.Driver.Address,
                         AvailableSeats = Data.Driver.Car.SeatNumber,
                         BankRef = 0,
-                        BirthDate = Data.Driver.BirthDate,
+                        BirthDate = BirthDate.ConvertPersianToEnglish().ToMiladi(),
                         CertificateId = "0",
                         Descriptions = Data.Driver.Descriptions,
                         Education = Data.Driver.Education,

@@ -1,4 +1,5 @@
-﻿@using School_Manger.Models.PageView
+﻿@using School_Manger.Extension
+@using School_Manger.Models.PageView
 @model AdminDriver
 @{
     ViewData["Title"] = "جزئیات راننده";
@@ -20,7 +21,7 @@
                     <li class="list-group-item bg-dark text-white border-0">👨‍👦 <strong>نام پدر:</strong> @Model.Driver.FutherName</li>
                     <li class="list-group-item bg-dark text-white border-0">🏦 <strong>بانک:</strong> @* @Model.Driver.BankAccount *@</li>
                     <li class="list-group-item bg-dark text-white border-0">🔢 <strong>شماره حساب:</strong> @Model.Driver.BankNumber</li>
-                    <li class="list-group-item bg-dark text-white border-0">🎂 <strong>تاریخ تولد:</strong> @Model.Driver.BirthDate</li>
+                    <li class="list-group-item bg-dark text-white border-0">🎂 <strong>تاریخ تولد:</strong> @Model.Driver.BirthDate.ToPersianString()</li>
                     <li class="list-group-item bg-dark text-white border-0">⭐ <strong>امتیاز:</strong> <span class="badge bg-success">@Model.Driver.Rate</span></li>
                     <li class="list-group-item bg-dark text-white border-0">⚠️ <strong>اخطارها:</strong> <span class="badge bg-warning text-dark">@Model.Driver.Warnning</span></li>
                     <li class="list-group-item bg-dark text-white border-0">🏠 <strong>آدرس:</strong> @Model.Driver.Address</li>

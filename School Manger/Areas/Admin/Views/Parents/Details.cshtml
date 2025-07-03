@@ -84,7 +84,7 @@
                             <td>@child.Index</td>
                             <td>@child.Child.FirstName @child.Child.LastName</td>
                             <td>@child.Child.NationalCode</td>
-                            <td>@child.Child.BirthDate.ToShortDateString()</td>
+                            <td>@child.Child.BirthDate.ToPersain().ToString("yyyy/MM/dd")</td>
                             <td>@child.Child.Class</td>
                             <td>
                                 @if (child.Child.HasPaid && child.Child.Bills.Count >0)
