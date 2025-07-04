@@ -58,7 +58,7 @@ namespace School_Manager.Core.Services.Interfaces
         /// <param name="ChildId"></param>
         /// <param name="DriverId"></param>
         /// <returns></returns>
-        public bool RemoveDriverFromChild(long ChildId, long DriverId);
+        public bool RemoveDriverFromChild(long ChildId, long DriverId = 0);
         /// <summary>
         /// مشخص کردن مدرسه دانش آموز با کد مدرسه
         /// در فرزند باید school id تغییر پیدا کند

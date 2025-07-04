@@ -103,44 +103,69 @@ namespace School_Manager.Core.Services.Implemetations
 
         public async Task<List<ChildInfo>> GetChildWithoutDriver(long DriverId = 0,long SchoolId = 0, double radiusInMeters = 500)
         {
-            IQueryable<Child> query = _unitOfWork.GetRepository<Child>().Query()
-                                        .Where(x =>
-                                            !x.DriverChilds.Any(y => y.IsEnabled && y.EndDate > DateTime.Now) &&
+            var children = await _unitOfWork.GetRepository<Child>()
+                            .Query()
+                            .Include(x=>x.DriverChilds)
+                            .Include(x => x.ServiceContracts)
+                                .ThenInclude(sc => sc.Bills)
+                                    .ThenInclude(b => b.PayBills)
+                                        .ThenInclude(pb => pb.PayNavigation)
+                            .ToListAsync();
+
+                                    children = children
+                                        .Where(x => (x.DriverChilds == null || !x.DriverChilds.Any(y => y.IsEnabled && y.EndDate > DateTime.Now)) &&
                                             x.ServiceContracts.Any(sc =>
                                                 sc.IsActive &&
                                                 sc.Bills.Any(b =>
-                                                    b.Type == BillType.Pre &&
-                                                    b.Price <= (b.PayBills.Select(pb => pb.PayNavigation.Price).DefaultIfEmpty(0).Sum())
-                                                )
+                                                b.Type == BillType.Pre &&
+                                                b.PayBills != null &&
+                                                b.PayBills.Any(pb => pb.PayNavigation != null) &&
+                                                b.Price <= b.PayBills
+                                                    .Where(pb => pb.PayNavigation != null)
+                                                    .Select(pb => pb.PayNavigation.Price)
+                                                    .DefaultIfEmpty(0)
+                                                    .Sum()
+                                                    )
                                             )
-                                        )
-                                        .Include(x => x.LocationPairs).ThenInclude(lp => lp.Locations);
+                                        ).ToList();
+            //IQueryable<Child> query = _unitOfWork.GetRepository<Child>().Query()
+            //                            .Where(x =>
+            //                                !x.DriverChilds.Any(y => y.IsEnabled && y.EndDate > DateTime.Now) &&
+            //                                x.ServiceContracts.Any(sc =>
+            //                                    sc.IsActive &&
+            //                                    sc.Bills.Any(b =>
+            //                                        b.Type == BillType.Pre &&
+            //                                        b.Price <= (b.PayBills.Select(pb => pb.PayNavigation.Price).DefaultIfEmpty(0).Sum())
+            //                                    )
+            //                                )
+            //                            )
+            //                            .Include(x => x.LocationPairs).ThenInclude(lp => lp.Locations);
 
             if (SchoolId != 0)
             {
-                query = query.Where(x => x.SchoolRef == SchoolId);
+                children = children.Where(x => x.SchoolRef == SchoolId).ToList();
             }
 
             if (DriverId != 0)
             {
                 var driver = await _unitOfWork.GetRepository<Driver>().Query(x => x.Id == DriverId).FirstOrDefaultAsync();
-                var dsDriver = await query.ToListAsync();
+                //var dsDriver = await query.ToListAsync();
                 if (driver != null && driver.Latitude != null && driver.Longitude != null)
                 {
                     var driverLat = driver.Latitude ?? 34.094092;
                     var driverLng = driver.Longitude ?? 49.697936;
 
-                    dsDriver = dsDriver.Where(child =>
+                    children = children.Where(child =>
                         child.LocationPairs.Any(pair =>
                             pair.Locations.Any(loc =>
                                 loc.LocationType == LocationType.Start &&
                                 GeoUtils.Haversine(driverLat, driverLng, loc.Latitude, loc.Longitude) <= radiusInMeters))).ToList();
-                    return _mapper.Map<List<ChildInfo>>(dsDriver);
+                    //return _mapper.Map<List<ChildInfo>>(dsDriver);
                 }
             }
 
-            var ds = await query.ToListAsync();
-            return _mapper.Map<List<ChildInfo>>(ds);
+            //var ds = await query.ToListAsync();
+            return _mapper.Map<List<ChildInfo>>(children);
         }
         public async Task<List<DriverDto>> GetDriverFree()
         {
@@ -226,7 +251,7 @@ namespace School_Manager.Core.Services.Implemetations
             else {  _unitOfWork.Rollback(); }
             return res;
         }
-        public bool RemoveDriverFromChild(long ChildId, long DriverId)
+        public bool RemoveDriverFromChild(long ChildId, long DriverId = 0)
         {
             var last = _unitOfWork.GetRepository<DriverChild>().Query(x => x.ChildRef == ChildId && x.DriverRef == DriverId && x.IsEnabled).FirstOrDefault();
             if (last != null)
