@@ -6,6 +6,7 @@ using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.Services.Validations;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Base;
+using School_Manager.Domain.Entities.Catalog.Enums;
 using School_Manager.Domain.Entities.Catalog.Operation;
 using System;
 using System.Collections.Generic;
@@ -102,9 +103,18 @@ namespace School_Manager.Core.Services.Implemetations
 
         public async Task<List<ChildInfo>> GetChildWithoutDriver(long DriverId = 0,long SchoolId = 0, double radiusInMeters = 500)
         {
-            IQueryable<Child> query = _unitOfWork.GetRepository<Child>().Query(x =>
-                !x.DriverChilds.Any(y => y.IsEnabled && y.EndDate > DateTime.Now))
-                .Include(x => x.LocationPairs).ThenInclude(x => x.Locations);
+            IQueryable<Child> query = _unitOfWork.GetRepository<Child>().Query()
+                                        .Where(x =>
+                                            !x.DriverChilds.Any(y => y.IsEnabled && y.EndDate > DateTime.Now) &&
+                                            x.ServiceContracts.Any(sc =>
+                                                sc.IsActive &&
+                                                sc.Bills.Any(b =>
+                                                    b.Type == BillType.Pre &&
+                                                    b.Price <= (b.PayBills.Select(pb => pb.PayNavigation.Price).DefaultIfEmpty(0).Sum())
+                                                )
+                                            )
+                                        )
+                                        .Include(x => x.LocationPairs).ThenInclude(lp => lp.Locations);
 
             if (SchoolId != 0)
             {
@@ -114,16 +124,18 @@ namespace School_Manager.Core.Services.Implemetations
             if (DriverId != 0)
             {
                 var driver = await _unitOfWork.GetRepository<Driver>().Query(x => x.Id == DriverId).FirstOrDefaultAsync();
+                var dsDriver = await query.ToListAsync();
                 if (driver != null && driver.Latitude != null && driver.Longitude != null)
                 {
                     var driverLat = driver.Latitude ?? 34.094092;
                     var driverLng = driver.Longitude ?? 49.697936;
 
-                    query = query.Where(child =>
+                    dsDriver = dsDriver.Where(child =>
                         child.LocationPairs.Any(pair =>
                             pair.Locations.Any(loc =>
-                                loc.LocationType == Domain.Entities.Catalog.Enums.LocationType.Start &&
-                                GeoUtils.Haversine(driverLat, driverLng, loc.Latitude, loc.Longitude) <= radiusInMeters)));
+                                loc.LocationType == LocationType.Start &&
+                                GeoUtils.Haversine(driverLat, driverLng, loc.Latitude, loc.Longitude) <= radiusInMeters))).ToList();
+                    return _mapper.Map<List<ChildInfo>>(dsDriver);
                 }
             }
 
@@ -191,6 +203,7 @@ namespace School_Manager.Core.Services.Implemetations
 
         public bool SetDriver(long ChildId, long DriverId)
         {
+            _unitOfWork.BeginTransaction();
             var last = _unitOfWork.GetRepository<DriverChild>().Query(x=>x.ChildRef == ChildId && x.IsEnabled).FirstOrDefault();
             if (last != null)
             {
@@ -208,9 +221,23 @@ namespace School_Manager.Core.Services.Implemetations
                 Year = new PersianCalendar().GetYear(DateTime.Now)
             };
             _unitOfWork.GetRepository<DriverChild>().Add(_new);
-            return _unitOfWork.SaveChanges() > 0;
+            var res = _unitOfWork.SaveChanges() > 0;
+            if (res) {_unitOfWork.Commit(); }
+            else {  _unitOfWork.Rollback(); }
+            return res;
         }
-
+        public bool RemoveDriverFromChild(long ChildId, long DriverId)
+        {
+            var last = _unitOfWork.GetRepository<DriverChild>().Query(x => x.ChildRef == ChildId && x.DriverRef == DriverId && x.IsEnabled).FirstOrDefault();
+            if (last != null)
+            {
+                last.IsEnabled = false;
+                last.EndDate = DateTime.Now;
+                _unitOfWork.GetRepository<DriverChild>().Update(last);
+            }
+            var res = _unitOfWork.SaveChanges() > 0;
+            return res;
+        }
         public bool SetSchool(long ChildId, long SchoolId)
         {
             var child = _unitOfWork.GetRepository<Child>().Query(x=>x.Id == ChildId).FirstOrDefault();
