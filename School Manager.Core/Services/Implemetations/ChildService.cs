@@ -253,7 +253,7 @@ namespace School_Manager.Core.Services.Implemetations
         }
         public bool RemoveDriverFromChild(long ChildId, long DriverId = 0)
         {
-            var last = _unitOfWork.GetRepository<DriverChild>().Query(x => x.ChildRef == ChildId && x.DriverRef == DriverId && x.IsEnabled).FirstOrDefault();
+            var last = _unitOfWork.GetRepository<DriverChild>().Query(x => x.ChildRef == ChildId  && x.IsEnabled).FirstOrDefault();
             if (last != null)
             {
                 last.IsEnabled = false;
