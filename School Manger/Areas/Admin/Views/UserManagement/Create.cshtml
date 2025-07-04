@@ -51,7 +51,9 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🎂 تاریخ تولد</label>
-                            <input asp-for="Driver.BirthDate" type="date" class="form-control form-control-lg" required />
+                            @* <input asp-for="Driver.BirthDate" type="date" class="form-control form-control-lg" required /> *@
+                            <input name="BirthDate" class="persian-date form-control bg-secondary text-white" required />
+                            <input type="hidden" class="gregorian-date" />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🆔 کد ملی</label>
