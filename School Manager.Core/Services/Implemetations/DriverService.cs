@@ -75,7 +75,7 @@ namespace School_Manager.Core.Services.Implemetations
         public List<ChildInfo> GetPassngers(long id)
         {
             var ds =  _unitOfWork.GetRepository<Driver>().Query()
-                .Include(x => x.Passanger).ThenInclude(x => x.ChildNavigation).FirstOrDefault(x=>x.Id == id);
+                .Include(x => x.Passanger).ThenInclude(x => x.ChildNavigation).FirstOrDefault(x=>x.Passanger.Any(y=>y.IsEnabled) && x.Id == id);
             if (ds == null) return new List<ChildInfo>();
             var child = ds.Passanger.Select(x => x.ChildNavigation).ToList();
             return _mapper.Map<List<ChildInfo>>(child);

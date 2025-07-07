@@ -110,6 +110,7 @@ namespace School_Manager.Core.Services.Implemetations
                                 .ThenInclude(sc => sc.Bills)
                                     .ThenInclude(b => b.PayBills)
                                         .ThenInclude(pb => pb.PayNavigation)
+                            .Include(x=>x.LocationPairs).ThenInclude(x=>x.Locations)
                             .ToListAsync();
 
                                     children = children
