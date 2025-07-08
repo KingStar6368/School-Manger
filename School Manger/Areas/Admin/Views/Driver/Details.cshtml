@@ -87,9 +87,9 @@
                                 </a> *@
                                 <form asp-action="DeletePassanger"
                                    class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm title="حذف">
-                                    <input name="ChildId" value="@passanger.Id"/>
-                                    <input name="DriverId" value="@Model.Driver.Id"/>
-                                    <input type="submit" class="bi bi-trash" value="🗑️ حذف از لیست"/>
+                                    <input hidden name="ChildId" value="@passanger.Id"/>
+                                    <input hidden name="DriverId" value="@Model.Driver.Id"/>
+                                    <input type="submit" class="bi bi-trash" style="background-color:transparent" value="🗑️ حذف از لیست"/>
                                 </form>
                             </td>
                         </tr>
