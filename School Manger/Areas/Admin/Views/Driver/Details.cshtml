@@ -67,6 +67,7 @@
                         <th>سال تحصیلی</th>
                         <th>آدرس رفت</th>
                         <th>آدرس برگشت</th>
+                        <th>عملیات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,6 +80,18 @@
                             <td>@passanger.Class</td>
                             <td>@passanger.Path?.Location1?.Address</td>
                             <td>@passanger.Path?.Location2?.Address</td>
+                            <td>
+                                @* <a asp-action="DeletePassanger" asp-route-id="@passanger.Id"
+                                   class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm title="حذف">
+                                    <i class="bi bi-trash"></i> 🗑️ حذف از لیست
+                                </a> *@
+                                <form asp-action="DeletePassanger"
+                                   class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm title="حذف">
+                                    <input hidden name="ChildId" value="@passanger.Id"/>
+                                    <input hidden name="DriverId" value="@Model.Driver.Id"/>
+                                    <input type="submit" class="bi bi-trash" style="background-color:transparent" value="🗑️ حذف از لیست"/>
+                                </form>
+                            </td>
                         </tr>
                     }
                 </tbody>

@@ -12,11 +12,13 @@ namespace School_Manger.Controllers.Admin
     public class DriverController : Controller
     {
         private readonly IDriverService _driverService;
+        private readonly IChildService _childService;
         private readonly IUserService _userService;
-        public DriverController(IDriverService driverService,IUserService userService)
+        public DriverController(IDriverService driverService,IUserService userService, IChildService childService)
         {
             _driverService = driverService;
             _userService = userService;
+            _childService = childService;
         }
         public async Task<IActionResult> Index()
         {
@@ -33,7 +35,7 @@ namespace School_Manger.Controllers.Admin
                 Driver = driver,
                 Passanger = passanger
             };
-            return View(admindashbord);
+            return View("Details", admindashbord);
         }
         public IActionResult Create()
         {
@@ -78,6 +80,11 @@ namespace School_Manger.Controllers.Admin
             });
             ControllerExtensions.ShowSuccess(this, "موفق", "راننده با موفقعیت اضافه شد");
             return View(driver);
+        }
+        public IActionResult DeletePassanger(long ChildId,long DriverId)
+        {
+            _childService.RemoveDriverFromChild(ChildId,DriverId);
+            return Details(DriverId);
         }
     }
 }
