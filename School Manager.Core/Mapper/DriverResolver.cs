@@ -15,7 +15,7 @@ namespace School_Manager.Core.Mapper
         {
             var car = source.Cars?.FirstOrDefault(x => x.IsActive);
             int seatNumber = car?.SeatNumber ?? source.AvailableSeats;
-            int passangerCount = source.Passanger?.Count ?? 0;
+            int passangerCount = source.Passanger?.Where(x=>x.IsEnabled).ToList().Count ?? 0;
 
             return seatNumber - passangerCount;
         }
