@@ -23,10 +23,6 @@
     <ProjectReference Include="..\School Manager.Domain\School Manager.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Microsoft.EntityFrameworkCore.Relational">
-      <HintPath>..\..\..\..\..\Vsiual(ML)PACKAGE\microsoft.entityframeworkcore.relational\9.0.4\lib\net8.0\Microsoft.EntityFrameworkCore.Relational.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+  
 
 </Project>

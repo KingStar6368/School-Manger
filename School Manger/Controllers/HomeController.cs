@@ -62,7 +62,6 @@ namespace School_Manger.Controllers
         }
         public IActionResult Login(string NationalCode, string Password)
         {
-            var d = _CService.GetDriverFree().Result;
             if(NationalCode == null && Password == null) 
                 return View();
             else
