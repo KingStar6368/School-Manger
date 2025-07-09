@@ -82,6 +82,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// عرض جغرافیایی
         /// </summary>
         public double? Longitude { get; set; }
+        public string? Code { get; set; }
     }
     public interface IDriverDto
     {
@@ -149,6 +150,10 @@ namespace School_Manager.Core.ViewModels.FModels
         /// عرض جغرافیایی
         /// </summary>
         public double? Longitude { get; set; }
+        /// <summary>
+        /// کد پرونده
+        /// </summary>
+        public string? Code { get; set; }
     }
     public class DriverCreateDto : IDriverDto
     {
@@ -175,6 +180,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public double? Longitude { get; set; }
         public CarCreateDto CarCreateDto {get;set;}
+        public string? Code { get; set; }
     }
     public class DriverUpdateDto : IDriverDto
     {
@@ -201,5 +207,6 @@ namespace School_Manager.Core.ViewModels.FModels
         /// عرض جغرافیایی
         /// </summary>
         public double? Longitude { get; set; }
+        public string? Code { get; set; }
     }
 }

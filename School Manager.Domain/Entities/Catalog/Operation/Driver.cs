@@ -76,6 +76,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public int Warnning { get; set; }
         /// <summary>
+        /// کد پرونده
+        /// </summary>
+        public string? Code { get; set; }
+        /// <summary>
         /// مشخصات ماشین
         /// </summary>
         public virtual ICollection<Car> Cars { get; set; }

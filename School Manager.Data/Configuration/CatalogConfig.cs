@@ -121,6 +121,11 @@ namespace School_Manager.Data.Configuration
             .HasColumnType("nvarchar(128)")
             .HasComment("نام پدر");
 
+            builder.Property(p => p.Code)
+            .HasColumnType("nvarchar(50)")
+            .IsRequired(false)
+            .HasComment("کد پرونده");
+
             builder.HasMany(d => d.Passanger).WithOne(p => p.DriverNavigation)
                 .HasForeignKey(f => f.DriverRef)
                 .OnDelete(DeleteBehavior.Restrict);
