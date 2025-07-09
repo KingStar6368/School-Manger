@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using School_Manager.Core.Classes;
 using School_Manager.Core.ViewModels.FModels;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,12 @@ namespace School_Manager.Core.Services.Validations
         protected SchoolDtoValidator()
         {
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage("نام  الزامی است.")
-                .MaximumLength(30).WithMessage("نام نباید بیشتر از 30 کاراکتر باشد.");
+                .NotEmpty().WithMessage(ValidatorMessage.RequireName)
+                .MaximumLength(30).WithMessage(string.Format(ValidatorMessage.NameLimitCharacter,30));
 
             RuleFor(x => x.ManagerName)
-                .NotEmpty().WithMessage("نام مدیر الزامی است.")
-                .MaximumLength(30).WithMessage("نام خانوادگی نباید بیشتر از 30 کاراکتر باشد.");
+                .NotEmpty().WithMessage(ValidatorMessage.RequireManagerName)
+                .MaximumLength(30).WithMessage(string.Format(ValidatorMessage.NameLimitCharacter, 30));
 
         }
     }

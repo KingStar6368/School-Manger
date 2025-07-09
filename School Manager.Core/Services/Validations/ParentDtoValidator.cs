@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using School_Manager.Core.Classes;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Identity;
@@ -17,16 +18,16 @@ namespace School_Manager.Core.Services.Validations
         protected ParentDtoValidator()
         {
             RuleFor(x => x.FirstName)
-                .NotEmpty().WithMessage("نام  الزامی است.")
-                .MaximumLength(30).WithMessage("نام نباید بیشتر از 30 کاراکتر باشد.");
+                .NotEmpty().WithMessage(ValidatorMessage.RequireName)
+                .MaximumLength(30).WithMessage(string.Format(ValidatorMessage.NameLimitCharacter, 30));
 
             RuleFor(x => x.LastName)
-                .NotEmpty().WithMessage("نام خانوادگی الزامی است.")
-                .MaximumLength(30).WithMessage("نام خانوادگی نباید بیشتر از 30 کاراکتر باشد.");
+                .NotEmpty().WithMessage(ValidatorMessage.RequireLastName)
+                .MaximumLength(30).WithMessage(string.Format(ValidatorMessage.LastNameLimitCharacter, 30));
 
             RuleFor(x => x.NationalCode)
-                .NotEmpty().WithMessage("نام خانوادگی الزامی است.")
-                .MaximumLength(11).WithMessage("نام خانوادگی نباید بیشتر از 30 کاراکتر باشد.");
+                .NotEmpty().WithMessage(ValidatorMessage.RequireNationalCode)
+                .MaximumLength(11).WithMessage(string.Format(ValidatorMessage.NationalLimitCharacter, 11));
 
         }
     }
@@ -44,7 +45,7 @@ namespace School_Manager.Core.Services.Validations
                     var repo = _unitOfWork.GetRepository<Parent>();
                     return !await repo.Query().AnyAsync(u => u.UserRef == userRef, cancellation);
                 })
-                .WithMessage("کاربر وارد شده قبلاً برای والدین ثبت شده است.");
+                .WithMessage(ValidatorMessage.DuplicatedParent);
         }
     }
     public class ParentUpdateDtoValidator : ParentDtoValidator<ParentUpdateDto> 
@@ -61,7 +62,7 @@ namespace School_Manager.Core.Services.Validations
                     var repo = _unitOfWork.GetRepository<Parent>();
                     return !await repo.Query().AnyAsync(u => u.UserRef == userRef && u.Id != dto.Id, cancellation);
                 })
-                .WithMessage("کاربر وارد شده قبلاً برای والدین ثبت شده است.");
+                .WithMessage(ValidatorMessage.DuplicatedParent);
         }
     }
 }

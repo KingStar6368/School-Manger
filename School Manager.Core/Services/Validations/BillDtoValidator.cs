@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using School_Manager.Core.Classes;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Identity;
@@ -17,7 +18,7 @@ namespace School_Manager.Core.Services.Validations
         protected BillDtoValidator()
         {
             RuleFor(x => x.Price)
-                .GreaterThan(0).WithMessage("باید بیشتر از صفر باشد.");
+                .GreaterThan(0).WithMessage(ValidatorMessage.PriceGreaterThanZero);
         }
     }
     public class BillCreateDtoValidator : BillDtoValidator<BillCreateDto> { }
@@ -29,9 +30,9 @@ namespace School_Manager.Core.Services.Validations
         {
             _unitOfWork = unitOfWork;
             RuleFor(x => x.ChildRef)
-                .GreaterThan(0).WithMessage("باید بیشتر از صفر باشد.")
+                .GreaterThan(0).WithMessage(ValidatorMessage.IdGreatorThanZero)
                 .MustAsync(HasNoActiveContract)
-                .WithMessage("قرارداد فعال برای این فرزند در بازه مشخص شده وجود دارد.");
+                .WithMessage(ValidatorMessage.DuplicatedContract);
         }
         private async Task<bool> HasNoActiveContract(CreatePreBillDto dto, long childRef, CancellationToken cancellationToken)
         {

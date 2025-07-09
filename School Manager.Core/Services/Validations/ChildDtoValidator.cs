@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using School_Manager.Core.Classes;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Entities.Catalog.Identity;
 using System;
@@ -14,16 +15,16 @@ namespace School_Manager.Core.Services.Validations
         protected ChildDtoValidator()
         {
             RuleFor(x => x.FirstName)
-                .NotEmpty().WithMessage("نام  الزامی است.")
-                .MaximumLength(30).WithMessage("نام نباید بیشتر از 30 کاراکتر باشد.");
+                .NotEmpty().WithMessage(ValidatorMessage.RequireName)
+                .MaximumLength(30).WithMessage(string.Format(ValidatorMessage.NameLimitCharacter,30));
 
             RuleFor(x => x.LastName)
-                .NotEmpty().WithMessage("نام خانوادگی الزامی است.")
-                .MaximumLength(30).WithMessage("نام خانوادگی نباید بیشتر از 30 کاراکتر باشد.");
+                .NotEmpty().WithMessage(ValidatorMessage.RequireLastName)
+                .MaximumLength(30).WithMessage(string.Format(ValidatorMessage.LastNameLimitCharacter,30));
 
             RuleFor(x => x.NationalCode)
-                .NotEmpty().WithMessage("نام خانوادگی الزامی است.")
-                .MaximumLength(11).WithMessage("کد ملی نباید بیشتر از 11 کاراکتر باشد.");
+                .NotEmpty().WithMessage(ValidatorMessage.RequireNationalCode)
+                .MaximumLength(11).WithMessage(string.Format(ValidatorMessage.NationalLimitCharacter,11));
 
         }
     }

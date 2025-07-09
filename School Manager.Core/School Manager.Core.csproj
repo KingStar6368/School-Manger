@@ -20,4 +20,19 @@
     <ProjectReference Include="..\School Manager.Domain\School Manager.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Classes\ValidatorMessage.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ValidatorMessage.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Classes\ValidatorMessage.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ValidatorMessage.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

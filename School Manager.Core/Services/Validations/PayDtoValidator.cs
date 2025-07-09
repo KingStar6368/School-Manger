@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using School_Manager.Core.Classes;
 using School_Manager.Core.ViewModels.FModels;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace School_Manager.Core.Services.Validations
         protected PayDtoValidator()
         {
             RuleFor(x => x.Price)
-                .GreaterThan(0).WithMessage("مبلغ باید از بیشتر از صفر باشد.");
+                .GreaterThan(0).WithMessage(ValidatorMessage.PriceGreaterThanZero);
 
 
         }
