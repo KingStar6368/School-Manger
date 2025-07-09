@@ -67,6 +67,10 @@ namespace School_Manager.Core.Services.Implemetations
 		{
 			try
 			{
+				if(_unitOfWork.GetRepository<User>().Query(x=>x.UserName == User.UserName).Any())
+				{
+					return _unitOfWork.GetRepository<User>().Query(x => x.UserName == User.UserName).FirstOrDefault()?.Id ?? 0;
+				}
 				_unitOfWork.BeginTransaction();
 				var newUser = _mapper.Map<User>(User);
 				_unitOfWork.GetRepository<User>().Add(newUser);
