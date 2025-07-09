@@ -187,5 +187,11 @@ namespace School_Manager.Core.Services.Implemetations
             var results =  _unitOfWork.GetRepository<User>().Query(x => x.Parents.Any()).ToList();
             return _mapper.Map<List<UserDTO>>(results);
         }
+
+        public bool UserHaveNationalCode(string NationalCode)
+        {
+            var results =  _unitOfWork.GetRepository<User>().Query(x => x.UserName == NationalCode.Trim());
+			return results.Any();
+        }
     }
 }

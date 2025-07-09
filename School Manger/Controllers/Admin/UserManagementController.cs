@@ -96,7 +96,7 @@ namespace School_Manger.Controllers.Admin
                             ChrPlateNumber = Data.Driver.Car.PlateNumber,
                             ColorCode = 0,
                             FirstIntPlateNumber = int.Parse(Data.Driver.Car.PlateNumber.Substring(0, 2)),
-                            SecondIntPlateNumber = int.Parse(Data.Driver.Car.PlateNumber.Substring(2, 3)),
+                            SecondIntPlateNumber = int.Parse(Data.Driver.Car.PlateNumber.Substring(3, 3)),
                             ThirdIntPlateNumber = 47,
                             IsActive = true,
                         },
