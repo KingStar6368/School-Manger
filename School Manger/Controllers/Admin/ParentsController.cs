@@ -41,11 +41,11 @@ namespace School_Manger.Controllers.Admin
             Model.Children = _childService.GetChildrenParent(Model.Id);
             List<DriverDto> drivers = new List<DriverDto>();
             List<SchoolDto> schools = new List<SchoolDto>();
-            foreach(var child in Model.Children)
+            foreach (var child in Model.Children)
             {
                 if (child.DriverId != null)
                     drivers.Add(_driverService.GetDriver((long)child.DriverId));
-                if(child.SchoolId != null)
+                if (child.SchoolId != null)
                     schools.Add(_schoolService.GetSchool((long)child.SchoolId));
             }
             AdminParent admindashbord = new AdminParent()
@@ -63,7 +63,7 @@ namespace School_Manger.Controllers.Admin
             return View("CreateBill", Child);
         }
         [HttpPost]
-        public IActionResult MakeBill(long ChildId, string Name,long TotalPrice,string StartTime,string EndTime,string Estimate, string IsPerBill)
+        public IActionResult MakeBill(long ChildId, string Name, long TotalPrice, string StartTime, string EndTime, string Estimate, string IsPerBill)
         {
             if (IsPerBill == "on")
             {
@@ -95,11 +95,11 @@ namespace School_Manger.Controllers.Admin
             }
         }
         [HttpPost]
-        public IActionResult PayBill(long ChildId,long BillId,string TrackCode,string PaymentType,long PaidPrice,string PiadTime)
+        public IActionResult PayBill(long ChildId, long BillId, string TrackCode, string PaymentType, long PaidPrice, string PiadTime)
         {
             var child = _childService.GetChild(ChildId);
             BillDto Bill = _billService.GetBill(BillId);
-            if(Bill ==null)
+            if (Bill == null)
                 return CreateBill(ChildId);
             if (Bill.HasPaid)
                 return CreateBill(ChildId);
@@ -129,12 +129,14 @@ namespace School_Manger.Controllers.Admin
             ControllerExtensions.ShowSuccess(this, "موفق", "پرداخت انجام شد");
             return CreateBill(ChildId);
         }
-        //[HttpPost]
-        //public IActionResult test(string Child)
-        //{
-        //    return StatusCode(200);
-        //}
-        //<iframe>
-        //<form target = iframe name
+        public IActionResult DeleteBill(long Id)
+        {
+            _payBillService.
+            if (_billService.Delete(Id))
+                ControllerExtensions.ShowSuccess(this, "موفق", "قبض حذف شد");
+            else
+                ControllerExtensions.ShowError(this, "خطا", "مشکلی پیش آمده");
+            return RedirectToAction();
+        }
     }
 }

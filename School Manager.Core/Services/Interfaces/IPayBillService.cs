@@ -10,5 +10,8 @@ namespace School_Manager.Core.Services.Interfaces
     public interface IPayBillService
     {
         long CreatePay(PayCreateDto pay);
+        List<PayBillDto> GetAllPays(long BillId);
+        PayBillDto GetPay(long Id);
+        bool DeletePay(long PayId);
     }
 }
