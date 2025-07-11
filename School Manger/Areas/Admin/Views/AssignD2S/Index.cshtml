@@ -35,7 +35,7 @@
                             <tbody>
                                 @foreach (var Driver in Model.AvailableDrivers)
                                 {
-                                    <tr>
+                                    <tr onclick="DriverRowClick(@Driver.Id)">
                                         <td>@Driver.Id</td>
                                         <td>@Driver.Name</td>
                                         <td>@Driver.LastName</td>
@@ -101,7 +101,7 @@
                             <tbody>
                                 @foreach (var Child in Model.NonDivers)
                                 {
-                                    <tr>
+                                    <tr onclick="ChildRowClick(@Child.Id)">
                                         <td>@Child.Id</td>
                                         <td>@Child.FirstName</td>
                                         <td>@Child.LastName</td>
@@ -120,3 +120,13 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        function ChildRowClick(Id){
+            document.getElementById('StudentId').value = Id;
+        }
+        function DriverRowClick(Id){
+            document.getElementById('DriverId').value = Id
+        }
+    </script>
+} 
