@@ -50,5 +50,11 @@ namespace School_Manager.Core.Services.Interfaces
         /// <param name="id">شناسه والد</param>
         /// <returns>آیا موفق بود؟</returns>
         bool DeleteParent(long id);
+        /// <summary>
+        /// حذف والد با کد یوزر
+        /// </summary>
+        /// <param name="UserId">کد یوزر</param>
+        /// <returns></returns>
+        bool DeleteParentByUserId(long UserId);
     }
 }

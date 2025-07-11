@@ -51,6 +51,12 @@ namespace School_Manager.Core.Services.Interfaces
         /// <returns>آیا موفق بود؟</returns>
         bool DeleteDriver(long id);
         /// <summary>
+        /// حذف راننده با کد بوزر
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        bool DeleteDriverByUserId(long userId);
+        /// <summary>
         /// بروز رسانی
         /// </summary>
         /// <param name="driver"></param>

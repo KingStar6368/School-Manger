@@ -31,13 +31,13 @@ namespace School_Manger.Controllers.Admin
         public async Task<IActionResult> Parents()
         {
             var parents = await _userService.GetAllAsyncParents();
-            return View(parents);
+            return View("Parents", parents);
         }
 
         public async Task<IActionResult> Drivers()
         {
             var drivers = await _userService.GetAllAsyncDrivers();
-            return View(drivers);
+            return View("_UsersTable", drivers);
         }
 
         public IActionResult Create(UserType type)
@@ -163,6 +163,36 @@ namespace School_Manger.Controllers.Admin
                 _users.Remove(user);
             }
             return RedirectToAction(user.Type == UserType.Parent ? "Parents" : "Drivers");
+        }
+        public async Task<IActionResult> DeleteDriver(long Id)
+        {
+            try
+            {
+                if (_driverService.DeleteDriverByUserId(Id))
+                    ControllerExtensions.ShowSuccess(this, "موفق", "راننده حذف شد");
+                else
+                    ControllerExtensions.ShowError(this, "خطا", "مشکلی پیش آمده");
+            }
+            catch (Exception ex)
+            {
+                ControllerExtensions.ShowError(this, "خطا", ex.Message);
+            }
+            return await Drivers();
+        }
+        public async Task<IActionResult> DeleteParent(long Id)
+        {
+            try
+            {
+                if (_parentService.DeleteParentByUserId(Id))
+                    ControllerExtensions.ShowSuccess(this, "موفق", "والد حذف شد");
+                else
+                    ControllerExtensions.ShowError(this, "خطا", "مشکلی پیش آمده");
+            }
+            catch (Exception ex)
+            {
+                ControllerExtensions.ShowError(this, "خطا", ex.Message);
+            }
+            return await Parents();
         }
     }
 }

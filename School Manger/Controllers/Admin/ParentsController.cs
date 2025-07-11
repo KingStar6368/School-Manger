@@ -129,8 +129,7 @@ namespace School_Manger.Controllers.Admin
             ControllerExtensions.ShowSuccess(this, "موفق", "پرداخت انجام شد");
             return CreateBill(ChildId);
         }
-        [HttpPost]
-        public IActionResult DeleteBill(long Id, long ChildId)
+        public IActionResult DeleteBill(long Id, long secondId)
         {
             try
             {
@@ -143,7 +142,7 @@ namespace School_Manger.Controllers.Admin
             {
                 ControllerExtensions.ShowError(this, "خطا", ex.Message);
             }
-            return CreateBill(ChildId);
+            return CreateBill(secondId);
         }
     }
 }

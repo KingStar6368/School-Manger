@@ -39,6 +39,13 @@
                                     <td>@user.User.UserName</td>
                                     <td>@user.User.FullName</td>
                                     <td>@user.User.Mobile</td>
+                                    <td>
+                                        <a asp-action="DeleteParent" asp-route-id="@user.User.Id"
+                                           class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف"
+                                           onclick="return confirm('آیا از حذف این والد مطمئن هستید؟')">
+                                            <i class="bi bi-trash"></i> 🗑️ حذف
+                                        </a>
+                                    </td>
                                     @* <td>
                                         <a asp-action="Edit" asp-route-id="@user.User.Id"
                                            class="btn text-black bg-warning btn-sm btn-outline-light rounded-pill shadow-sm" title="ویرایش">

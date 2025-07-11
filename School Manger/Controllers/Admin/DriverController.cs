@@ -14,7 +14,7 @@ namespace School_Manger.Controllers.Admin
         private readonly IDriverService _driverService;
         private readonly IChildService _childService;
         private readonly IUserService _userService;
-        public DriverController(IDriverService driverService,IUserService userService, IChildService childService)
+        public DriverController(IDriverService driverService, IUserService userService, IChildService childService)
         {
             _driverService = driverService;
             _userService = userService;
@@ -23,7 +23,7 @@ namespace School_Manger.Controllers.Admin
         public async Task<IActionResult> Index()
         {
             var Drivers = await _driverService.GetDrivers();
-            return View(Drivers);
+            return View("Index",Drivers);
         }
         public IActionResult Details(long id)
         {
@@ -43,7 +43,7 @@ namespace School_Manger.Controllers.Admin
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(DriverDto driver,long UserRef)
+        public IActionResult Create(DriverDto driver, long UserRef)
         {
             if (UserRef == null || UserRef == 0)
                 return View("UserManagement/Drivers");
@@ -72,8 +72,8 @@ namespace School_Manger.Controllers.Admin
                     carType = (int)driver.Car.carType,
                     ChrPlateNumber = driver.Car.PlateNumber,
                     ColorCode = 0,
-                    FirstIntPlateNumber = int.Parse(driver.Car.PlateNumber.Substring(0,2)),
-                    SecondIntPlateNumber = int.Parse(driver.Car.PlateNumber.Substring(2,3)),
+                    FirstIntPlateNumber = int.Parse(driver.Car.PlateNumber.Substring(0, 2)),
+                    SecondIntPlateNumber = int.Parse(driver.Car.PlateNumber.Substring(2, 3)),
                     ThirdIntPlateNumber = 47,
                     IsActive = true,
                 }
@@ -81,10 +81,10 @@ namespace School_Manger.Controllers.Admin
             ControllerExtensions.ShowSuccess(this, "موفق", "راننده با موفقعیت اضافه شد");
             return View(driver);
         }
-        public IActionResult DeletePassanger(long ChildId,long DriverId)
+        public IActionResult DeletePassanger(long ChildId, long DriverId)
         {
-            _childService.RemoveDriverFromChild(ChildId,DriverId);
+            _childService.RemoveDriverFromChild(ChildId, DriverId);
             return Details(DriverId);
         }
-    }
+        }
 }
