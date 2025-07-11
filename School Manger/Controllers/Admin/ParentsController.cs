@@ -131,7 +131,6 @@ namespace School_Manger.Controllers.Admin
         }
         public IActionResult DeleteBill(long Id)
         {
-            _payBillService.
             if (_billService.Delete(Id))
                 ControllerExtensions.ShowSuccess(this, "موفق", "قبض حذف شد");
             else
