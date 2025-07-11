@@ -42,7 +42,7 @@ namespace School_Manager.Core.Services.Validations
             RuleFor(x => x.UserRef)
                 .MustAsync(async (userRef, cancellation) =>
                 {
-                    var repo = _unitOfWork.GetRepository<Parent>();
+                    var repo = _unitOfWork.GetRepository<Driver>();
                     return !await repo.Query().AnyAsync(u => u.UserRef == userRef, cancellation);
                 })
                 .WithMessage(ValidatorMessage.DuplicatedDriver);
@@ -59,7 +59,7 @@ namespace School_Manager.Core.Services.Validations
             RuleFor(x => x.UserRef)
                 .MustAsync(async (dto, userRef, cancellation) =>
                 {
-                    var repo = _unitOfWork.GetRepository<Parent>();
+                    var repo = _unitOfWork.GetRepository<Driver>();
                     return !await repo.Query().AnyAsync(u => u.UserRef == userRef && u.Id != dto.Id, cancellation);
                 })
                 .WithMessage(ValidatorMessage.DuplicatedDriver);
