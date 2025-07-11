@@ -64,7 +64,6 @@ namespace School_Manger.Controllers
         }
         public IActionResult Login(string NationalCode, string Password)
         {
-            var d = _DriverService.CreateDriver(new DriverCreateDto());
             if(NationalCode == null && Password == null) 
                 return View();
             else

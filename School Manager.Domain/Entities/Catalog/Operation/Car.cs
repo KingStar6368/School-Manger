@@ -37,7 +37,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// <summary>
         /// رنگ
         /// </summary>
-        public int ColorCode { get; set; }
+        public int? ColorCode { get; set; }
         /// <summary>
         /// فعال
         /// </summary>
