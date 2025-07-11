@@ -129,13 +129,21 @@ namespace School_Manger.Controllers.Admin
             ControllerExtensions.ShowSuccess(this, "موفق", "پرداخت انجام شد");
             return CreateBill(ChildId);
         }
-        public IActionResult DeleteBill(long Id)
+        [HttpPost]
+        public IActionResult DeleteBill(long Id, long ChildId)
         {
-            if (_billService.Delete(Id))
-                ControllerExtensions.ShowSuccess(this, "موفق", "قبض حذف شد");
-            else
-                ControllerExtensions.ShowError(this, "خطا", "مشکلی پیش آمده");
-            return RedirectToAction();
+            try
+            {
+                if (_billService.Delete(Id))
+                    ControllerExtensions.ShowSuccess(this, "موفق", "قبض حذف شد");
+                else
+                    ControllerExtensions.ShowError(this, "خطا", "مشکلی پیش آمده");
+            }
+            catch (Exception ex)
+            {
+                ControllerExtensions.ShowError(this, "خطا", ex.Message);
+            }
+            return CreateBill(ChildId);
         }
     }
 }

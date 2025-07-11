@@ -155,8 +155,8 @@
                                             : DateConverter.ToPersianString(bill.BillExpiredTime))
                                     </td>
                                     <td>
-                                    <a asp-action="DeleteBill" asp-route-id="@bill.Id"
-                                       class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm title="حذف">
+                                    <a asp-action="DeleteBill" asp-route-id="@bill.Id"  asp-route-secondId="@Model.Id"
+                                       class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف">
                                         <i class="bi bi-trash"></i> 🗑️ حذف
                                     </a>
                                     </td>
