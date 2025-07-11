@@ -12,8 +12,8 @@ using School_Manager.Data.Context;
 namespace School_Manager.Data.Migrations
 {
     [DbContext(typeof(SchMSDBContext))]
-    [Migration("20250711144541_description_IsRequired_false")]
-    partial class description_IsRequired_false
+    [Migration("20250711151202_acountnumber")]
+    partial class acountnumber
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -391,6 +391,10 @@ namespace School_Manager.Data.Migrations
 
                     b.Property<int>("AvailableSeats")
                         .HasColumnType("int");
+
+                    b.Property<string>("BankAccountNumber")
+                        .HasColumnType("nvarchar(128)")
+                        .HasComment("شماره حساب");
 
                     b.Property<int>("BankRef")
                         .HasColumnType("int");

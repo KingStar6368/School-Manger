@@ -5,7 +5,7 @@
 namespace School_Manager.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class description_IsRequired_false : Migration
+    public partial class acountnumber : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,11 +17,22 @@ namespace School_Manager.Data.Migrations
                 nullable: true,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)");
+
+            migrationBuilder.AddColumn<string>(
+                name: "BankAccountNumber",
+                table: "Drivers",
+                type: "nvarchar(128)",
+                nullable: true,
+                comment: "شماره حساب");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "BankAccountNumber",
+                table: "Drivers");
+
             migrationBuilder.AlterColumn<string>(
                 name: "Descriptions",
                 table: "Drivers",

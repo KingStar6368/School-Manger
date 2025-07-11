@@ -121,6 +121,11 @@ namespace School_Manager.Data.Configuration
             .HasColumnType("nvarchar(128)")
             .HasComment("نام پدر");
 
+            builder.Property(p => p.BankAccountNumber)
+            .HasColumnType("nvarchar(128)")
+            .IsRequired(false)
+            .HasComment("شماره حساب");
+
 
             builder.Property(p => p.Education)
             .HasColumnType("nvarchar(64)")
