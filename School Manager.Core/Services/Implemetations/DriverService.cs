@@ -81,10 +81,10 @@ namespace School_Manager.Core.Services.Implemetations
             return _mapper.Map<List<ChildInfo>>(child);
         }
 
-        public long CreateDriver(DriverCreateDto driver)
+        public async Task<long> CreateDriverAsync(DriverCreateDto driver)
         {
             long result = 0;
-            var validationResult = _createValidator.Validate(driver);
+            var validationResult = await _createValidator.ValidateAsync(driver);
             if (!validationResult.IsValid)
             {
                 var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
@@ -115,10 +115,10 @@ namespace School_Manager.Core.Services.Implemetations
             return _unitOfWork.SaveChanges() > 0;
         }
 
-        public bool UpdateDriver(DriverUpdateDto driver)
+        public async Task<bool> UpdateDriverAsync(DriverUpdateDto driver)
         {
             var mainDriver = _unitOfWork.GetRepository<Driver>().GetById(driver.Id);
-            var validationResult = _UpdateValidator.Validate(driver);
+            var validationResult = await _UpdateValidator.ValidateAsync(driver);
             if (!validationResult.IsValid)
             {
                 var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
@@ -127,6 +127,15 @@ namespace School_Manager.Core.Services.Implemetations
             _mapper.Map(driver, mainDriver);
             _unitOfWork.GetRepository<Driver>().Update(mainDriver);
             return _unitOfWork.SaveChanges() > 0;
+        }
+        public long CreateDriver(DriverCreateDto driver)
+        {
+            return CreateDriverAsync(driver).Result;
+        }
+
+        public bool UpdateDriver(DriverUpdateDto driver)
+        {
+            return UpdateDriverAsync(driver).Result;
         }
     }
 }
