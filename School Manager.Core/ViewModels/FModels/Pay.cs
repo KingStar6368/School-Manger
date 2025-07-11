@@ -40,7 +40,11 @@ namespace School_Manager.Core.ViewModels.FModels
     }
     public class PayBillDto
     {
-        public long PayRef {  get; set; }
+        public long PayRef { get; set; }
         public long BillRef { get; set; }
+        public DateTime PayDate { get; set; }
+        public string TrackingCode { get; set; }
+        public decimal PayAmount { get; set; }
+        public PayType PayType { get; set; }
     }
 }

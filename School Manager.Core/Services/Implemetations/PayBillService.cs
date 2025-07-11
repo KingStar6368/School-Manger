@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Base;
@@ -34,6 +35,43 @@ namespace School_Manager.Core.Services.Implemetations
                 result = saveItem.Id;
             }
             return result;
+        }
+
+        public bool DeletePay(long PayId)
+        {
+            _unitOfWork.BeginTransaction();
+            try
+            {
+                var Pay = _unitOfWork.GetRepository<Pay>()
+                            .Query(x => x.Id == PayId)
+                            .FirstOrDefault();
+
+                if (Pay == null) return false;
+
+                var payBills = _unitOfWork.GetRepository<PayBill>().Query(x => x.Id == PayId).ToList();
+                _unitOfWork.GetRepository<PayBill>().RemoveRange(payBills);
+                _unitOfWork.GetRepository<Pay>().Remove(Pay);
+                var saveResult = _unitOfWork.SaveChanges() > 0;
+                _unitOfWork.Commit();
+                return saveResult;
+            }
+            catch
+            {
+                _unitOfWork.Rollback();
+                return false;
+            }
+        }
+
+        public List<PayBillDto> GetAllPays(long BillId)
+        {
+            var result = _unitOfWork.GetRepository<PayBill>().Query(x=>x.BillRef ==  BillId).Include(x=>x.PayNavigation).ToList();
+            return _mapper.Map<List<PayBillDto>>(result);
+        }
+
+        public PayBillDto GetPay(long Id)
+        {
+            var result = _unitOfWork.GetRepository<PayBill>().Query(x => x.Id == Id).Include(x => x.PayNavigation).FirstOrDefault();
+            return _mapper.Map<PayBillDto>(result);
         }
     }
 }

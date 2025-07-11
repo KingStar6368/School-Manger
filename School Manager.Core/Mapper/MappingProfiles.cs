@@ -134,6 +134,13 @@ namespace School_Manager.Core.Mapper
                     BillRef = billId
                 }).ToList()));
             #endregion
+            #region PayBill
+            CreateMap<PayBill, PayBillDto>()
+            .ForMember(dest => dest.PayDate,opt => opt.MapFrom(src => src.PayNavigation.BecomingTime))
+            .ForMember(dest => dest.TrackingCode, opt => opt.MapFrom(src => src.PayNavigation.TrackingCode))
+            .ForMember(dest => dest.PayAmount, opt => opt.MapFrom(src => src.PayNavigation.Price))
+            .ForMember(dest => dest.PayType, opt => opt.MapFrom(src => src.PayNavigation.PayType));
+            #endregion
             #region RawMaterial
             CreateMap<RawMaterial, RawMaterialCombo>()
                 .ForMember(dest => dest.DisplayMember, opt => opt.MapFrom(src => src.MaterialCode + " " + src.Name))

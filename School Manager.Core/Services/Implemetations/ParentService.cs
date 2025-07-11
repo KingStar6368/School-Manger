@@ -112,5 +112,23 @@ namespace School_Manager.Core.Services.Implemetations
         {
             return UpdateParentAsync(parent).Result;
         }
+
+        public bool DeleteParentByUserId(long UserId)
+        {
+            var Parent = _unitOfWork.GetRepository<Parent>()
+                        .Query(x => x.UserRef == UserId)
+                        .Include(x => x.Children)
+                        .FirstOrDefault();
+
+            if (Parent == null) return false;
+
+            // بررسی وجود اطلاعات وابسته
+            if (Parent.Children?.Any() ?? false)
+            {
+                throw new InvalidOperationException("این والد دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
+            }
+            _unitOfWork.GetRepository<Parent>().Remove(Parent);
+            return _unitOfWork.SaveChanges() > 0;
+        }
     }
 }

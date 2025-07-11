@@ -51,10 +51,14 @@ namespace School_Manager.Core.Services.Implemetations
         public bool DeleteServiceContract(long Id)
         {
             var serviceContract = _unitOfWork.GetRepository<ServiceContract>()
-                        .Query(x => x.Id == Id)
+                        .Query(x => x.Id == Id).Include(x=>x.Bills)
                         .FirstOrDefault();
 
             if (serviceContract == null) return false;
+            if (serviceContract.Bills.Any())
+            {
+                throw new InvalidOperationException("این قرارداد دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
+            }
 
             _unitOfWork.GetRepository<ServiceContract>().Remove(serviceContract);
             return _unitOfWork.SaveChanges() > 0;

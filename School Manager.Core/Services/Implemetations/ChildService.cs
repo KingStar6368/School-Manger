@@ -80,7 +80,7 @@ namespace School_Manager.Core.Services.Implemetations
                         .ThenInclude(d => d.DriverNavigation)
                             .ThenInclude(d => d.Cars)
                     .FirstOrDefault(c => c.Id == ChildId);
-            var driverResult = (ds?.DriverChilds?.FirstOrDefault(x => x.IsEnabled)?.DriverNavigation)?? new Driver();
+            var driverResult = (ds?.DriverChilds?.FirstOrDefault(x => x.IsEnabled && x.EndDate < DateTime.Now)?.DriverNavigation)?? new Driver();
             return _mapper.Map<DriverDto>(driverResult);
         }
 
@@ -174,7 +174,7 @@ namespace School_Manager.Core.Services.Implemetations
                 .Include(x=>x.Cars)
                 .Include(x=>x.Passanger)
                 .Where(x => x.Cars.Any(y => y.IsActive))
-                .Where(x => (x.Cars.Where(y => y.IsActive).Select(y => (int?)y.SeatNumber).FirstOrDefault() ?? x.AvailableSeats) > x.Passanger.Where(y=>y.IsEnabled).Count());
+                .Where(x => (x.Cars.Where(y => y.IsActive).Select(y => (int?)y.SeatNumber).FirstOrDefault() ?? x.AvailableSeats) > x.Passanger.Where(y=>y.IsEnabled && y.EndDate < DateTime.Now).Count());
 
             var ds = await query.ToListAsync();
             return _mapper.Map<List<DriverDto>>(ds);
@@ -205,7 +205,7 @@ namespace School_Manager.Core.Services.Implemetations
             if (child == null) return false;
 
             // بررسی وجود اطلاعات وابسته
-            if ((child.ServiceContracts?.Any() ?? false))
+            if ((child.ServiceContracts?.Any(x=>x.IsActive && x.EndTime < DateTime.Now) ?? false))
             {
                 throw new InvalidOperationException("این قبض دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
             }
@@ -230,7 +230,7 @@ namespace School_Manager.Core.Services.Implemetations
         public bool SetDriver(long ChildId, long DriverId)
         {
             _unitOfWork.BeginTransaction();
-            var last = _unitOfWork.GetRepository<DriverChild>().Query(x=>x.ChildRef == ChildId && x.IsEnabled).FirstOrDefault();
+            var last = _unitOfWork.GetRepository<DriverChild>().Query(x=>x.ChildRef == ChildId && x.IsEnabled && x.EndDate < DateTime.Now).FirstOrDefault();
             if (last != null)
             {
                 last.IsEnabled = false;
@@ -254,7 +254,7 @@ namespace School_Manager.Core.Services.Implemetations
         }
         public bool RemoveDriverFromChild(long ChildId, long DriverId = 0)
         {
-            var last = _unitOfWork.GetRepository<DriverChild>().Query(x => x.ChildRef == ChildId  && x.IsEnabled).FirstOrDefault();
+            var last = _unitOfWork.GetRepository<DriverChild>().Query(x => x.ChildRef == ChildId  && x.IsEnabled && x.EndDate < DateTime.Now).FirstOrDefault();
             if (last != null)
             {
                 last.IsEnabled = false;
