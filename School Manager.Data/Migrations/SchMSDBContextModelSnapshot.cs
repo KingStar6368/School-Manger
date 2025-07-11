@@ -389,6 +389,10 @@ namespace School_Manager.Data.Migrations
                     b.Property<int>("AvailableSeats")
                         .HasColumnType("int");
 
+                    b.Property<string>("BankAccountNumber")
+                        .HasColumnType("nvarchar(128)")
+                        .HasComment("شماره حساب");
+
                     b.Property<int>("BankRef")
                         .HasColumnType("int");
 

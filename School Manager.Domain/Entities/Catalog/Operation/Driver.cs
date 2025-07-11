@@ -31,6 +31,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public string FatherName { get; set; }
         /// <summary>
+        /// شماره حساب
+        /// </summary>
+        public string BankAccountNumber {  get; set; }
+        /// <summary>
         /// شماره گواهی
         /// </summary>
         public string CertificateId { get; set; }

@@ -83,6 +83,10 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public double? Longitude { get; set; }
         public string? Code { get; set; }
+        /// <summary>
+        /// شماره حساب
+        /// </summary>
+        public string BankAccountNumber { get; set; }
     }
     public interface IDriverDto
     {
@@ -154,6 +158,10 @@ namespace School_Manager.Core.ViewModels.FModels
         /// کد پرونده
         /// </summary>
         public string? Code { get; set; }
+        /// <summary>
+        /// شماره حساب
+        /// </summary>
+        public string BankAccountNumber { get; set; }
     }
     public class DriverCreateDto : IDriverDto
     {
@@ -181,6 +189,10 @@ namespace School_Manager.Core.ViewModels.FModels
         public double? Longitude { get; set; }
         public CarCreateDto CarCreateDto {get;set;}
         public string? Code { get; set; }
+        /// <summary>
+        /// شماره حساب
+        /// </summary>
+        public string BankAccountNumber { get; set; }
     }
     public class DriverUpdateDto : IDriverDto
     {
@@ -208,5 +220,9 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public double? Longitude { get; set; }
         public string? Code { get; set; }
+        /// <summary>
+        /// شماره حساب
+        /// </summary>
+        public string BankAccountNumber { get; set; }
     }
 }
