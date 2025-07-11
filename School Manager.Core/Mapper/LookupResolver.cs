@@ -37,7 +37,7 @@ namespace School_Manager.Core.Mapper
 
         public string Resolve(Car source, CarInfoDto destination, string destMember, ResolutionContext context)
         {
-            var lookup = _lookUp.GetLookUp(StaticString.LookUpColorType, source.ColorCode);
+            var lookup = _lookUp.GetLookUp(StaticString.LookUpColorType, source.ColorCode ?? 0);
 
             return  lookup?.Name ?? "نامشخص";
         }

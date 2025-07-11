@@ -57,10 +57,10 @@ namespace School_Manager.Core.Services.Implemetations
                 .Include(x=>x.Children).ThenInclude(x => x.LocationPairs).ThenInclude(x => x.Locations).ToListAsync();
             return _mapper.Map<List<ParentDto>>(ds);
         }
-        public long CreateParent(ParentCreateDto parent)
+        public async Task<long> CreateParentAsync(ParentCreateDto parent)
         {
             long result = 0;
-            var validationResult = _createValidator.Validate(parent);
+            var validationResult = await _createValidator.ValidateAsync(parent);
             if (!validationResult.IsValid)
             {
                 var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
@@ -72,10 +72,10 @@ namespace School_Manager.Core.Services.Implemetations
                 result = mParent.Id;
             return result;
         }
-        public bool UpdateParent(ParentUpdateDto parent)
+        public async Task<bool> UpdateParentAsync(ParentUpdateDto parent)
         {
             var mainParent = _unitOfWork.GetRepository<Parent>().GetById(parent.Id);
-            var validationResult = _UpdateValidator.Validate(parent);
+            var validationResult =await _UpdateValidator.ValidateAsync(parent);
             if (!validationResult.IsValid)
             {
                 var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
@@ -101,6 +101,16 @@ namespace School_Manager.Core.Services.Implemetations
             }
             _unitOfWork.GetRepository<Parent>().Remove(Parent);
             return _unitOfWork.SaveChanges() > 0;
+        }
+
+        public long CreateParent(ParentCreateDto parent)
+        {
+            return CreateParentAsync(parent).Result;    
+        }
+
+        public bool UpdateParent(ParentUpdateDto parent)
+        {
+            return UpdateParentAsync(parent).Result;
         }
     }
 }
