@@ -50,66 +50,75 @@ namespace School_Manger.Controllers.Admin
         public IActionResult Create(AdminUser Data,string BirthDate,
             string Last_Digits,string Third,string PChar,string First)
         {
-            var UserRef = _userService.CreateUser(new UserCreateDTO()
+            try
             {
-                FirstName = Data.User.FirstName,
-                LastName = Data.User.LastName,
-                UserName = Data.User.UserName,
-                PasswordHash = Data.User.Password,
-                IsActive = true,
-                Mobile = Data.User.Mobile
-            });
-            switch (Data.Type)
-            {
-                case UserType.Parent:
-                    _parentService.CreateParent(new ParentCreateDto()
-                    {
-                        FirstName = Data.User.FirstName,
-                        LastName = Data.User.LastName,
-                        NationalCode = Data.User.UserName,
-                        Active = true,
-                        Address = "",
-                        UserRef = UserRef
-                    });
-                    break;
-                case UserType.Driver:
-                    _driverService.CreateDriver(new DriverCreateDto()
-                    {
-                        Name = Data.User.FirstName,
-                        LastName = Data.User.LastName,
-                        NationCode = Data.User.UserName,
-                        UserRef = UserRef,
-                        Address = Data.Driver.Address,
-                        AvailableSeats = Data.Driver.Car.SeatNumber,
-                        BankRef = 0,
-                        BirthDate = BirthDate.ConvertPersianToEnglish().ToMiladi(),
-                        CertificateId = "0",
-                        Descriptions = Data.Driver.Descriptions,
-                        Education = Data.Driver.Education,
-                        FatherName = Data.Driver.FutherName,
-                        Rate = Data.Driver.Rate,
-                        Warnning = Data.Driver.Warnning,
-                        CarCreateDto = new CarCreateDto()
+                var UserRef = _userService.CreateUser(new UserCreateDTO()
+                {
+                    FirstName = Data.User.FirstName,
+                    LastName = Data.User.LastName,
+                    UserName = Data.User.UserName,
+                    PasswordHash = Data.User.Password,
+                    IsActive = true,
+                    Mobile = Data.User.Mobile
+                });
+                switch (Data.Type)
+                {
+                    case UserType.Parent:
+                        _parentService.CreateParent(new ParentCreateDto()
                         {
-                            Name = Data.Driver.Car.Name,
-                            SeatNumber = Data.Driver.Car.SeatNumber,
-                            carType = (int)Data.Driver.Car.carType,
-                            ChrPlateNumber = PChar,
-                            ColorCode = 0,
-                            FirstIntPlateNumber = int.Parse(First),
-                            SecondIntPlateNumber = int.Parse(Third),
-                            ThirdIntPlateNumber = int.Parse(Last_Digits),
-                            IsActive = true,
-                        },
-                        Latitude = 0,
-                        Longitude = 0
-                    });
-                    break;
+                            FirstName = Data.User.FirstName,
+                            LastName = Data.User.LastName,
+                            NationalCode = Data.User.UserName,
+                            Active = true,
+                            Address = "",
+                            UserRef = UserRef
+                        });
+                        break;
+                    case UserType.Driver:
+                        _driverService.CreateDriver(new DriverCreateDto()
+                        {
+                            Name = Data.User.FirstName,
+                            LastName = Data.User.LastName,
+                            NationCode = Data.User.UserName,
+                            UserRef = UserRef,
+                            Address = Data.Driver.Address,
+                            AvailableSeats = Data.Driver.Car.SeatNumber,
+                            BankRef = 0,
+                            BirthDate = BirthDate.ConvertPersianToEnglish().ToMiladi(),
+                            CertificateId = "0",
+                            Descriptions = Data.Driver.Descriptions,
+                            Education = Data.Driver.Education,
+                            FatherName = Data.Driver.FutherName,
+                            Rate = Data.Driver.Rate,
+                            Warnning = Data.Driver.Warnning,
+                            CarCreateDto = new CarCreateDto()
+                            {
+                                Name = Data.Driver.Car.Name,
+                                SeatNumber = Data.Driver.Car.SeatNumber,
+                                carType = (int)Data.Driver.Car.carType,
+                                ChrPlateNumber = PChar,
+                                ColorCode = 0,
+                                FirstIntPlateNumber = int.Parse(First),
+                                SecondIntPlateNumber = int.Parse(Third),
+                                ThirdIntPlateNumber = int.Parse(Last_Digits),
+                                IsActive = true,
+                            },
+                            Latitude = 0,
+                            Longitude = 0
+                        });
+                        break;
 
+                }
+                ControllerExtensions.ShowSuccess(this, "موفق", "کاربر ساخته شد");
+                ViewBag.UserType = Data.Type;
+                return View();
             }
-            ControllerExtensions.ShowSuccess(this, "موفق", "کاربر ساخته شد");
-            ViewBag.UserType = Data.Type;
-            return View();
+            catch(Exception ex)
+            {
+                ControllerExtensions.ShowError(this, "خطا", ex.Message);
+                ViewBag.UserType = Data.Type;
+                return View();
+            }
         }
 
         public IActionResult Edit(int id)
