@@ -13,37 +13,12 @@ namespace School_Manger.Controllers.Admin
         private readonly ISchoolService _schoolService;
         private readonly IChildService _childService;
         private readonly IDriverService _driverService;
-        public SchoolController(ISchoolService schoolService,IChildService childService,IDriverService driverService)
+        public SchoolController(ISchoolService schoolService, IChildService childService, IDriverService driverService)
         {
-           _schoolService = schoolService;
+            _schoolService = schoolService;
             _childService = childService;
             _driverService = driverService;
         }
-        private static List<SchoolDto> _schools = new()
-        {
-            new SchoolDto {
-                Id = 1,
-                Name = "دبیرستان نمونه دولتی البرز",
-                ManagerName = "دکتر محمدی",
-                Rate = 4,
-                Address = new LocationDataDto {
-                    Address = "تهران، خیابان انقلاب",
-                    Latitude = 35.7025,
-                    Longitude = 51.4356
-                }
-            },
-            new SchoolDto {
-                Id = 2,
-                Name = "مدرسه غیرانتفاعی مهر",
-                ManagerName = "خانم رضایی",
-                Rate = 5,
-                Address = new LocationDataDto {
-                    Address = "تهران، خیابان ولیعصر",
-                    Latitude = 35.7152,
-                    Longitude = 51.4053
-                }
-            }
-        };
 
         public async Task<IActionResult> Index()
         {
@@ -85,6 +60,21 @@ namespace School_Manger.Controllers.Admin
                 Students = Childern
             };
             return View(dashbord);
+        }
+        public async Task<IActionResult> DeleteSchool(long id)
+        {
+            try
+            {
+                if (_schoolService.DeleteSchool(id))
+                    ControllerExtensions.ShowSuccess(this, "موفق", "مدرسه حذف شد");
+                else
+                    ControllerExtensions.ShowError(this, "خطا", "مشکلی در حذف پیش آمده");
+            }
+            catch (Exception ex)
+            {
+                ControllerExtensions.ShowError(this, "خطا", ex.Message);
+            }
+            return await Index();
         }
     }
 }

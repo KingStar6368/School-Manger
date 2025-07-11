@@ -38,7 +38,13 @@
             <div id="schoolMap" style="height: 300px; width: 100%;" class="rounded shadow-sm border border-light mt-2"></div>
         </div>
 
-
+        <div class="mt-4">
+            <a asp-action="DeleteSchool" asp-route-id="@Model.School.Id"
+               class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف"
+               onclick="return confirm('آیا از حذف این مدرسه مطمئن هستید؟')">
+                <i class="bi bi-trash"></i> 🗑️ حذف
+            </a>
+        </div>
         <div class="mt-4">
             <a asp-action="Index" class="btn btn-outline-light rounded-4">
                 <i class="bi bi-arrow-right"></i> بازگشت به لیست
