@@ -68,7 +68,7 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">🆔 شماره قبض</label>
-                        <input type="number" name="BillId" class="form-control bg-dark text-white shadow-sm" required />
+                        <input type="number" id="BillId" name="BillId" class="form-control bg-dark text-white shadow-sm" required />
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">🔖 کد رهگیری (اختیاری)</label>
@@ -85,7 +85,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">💵 مبلغ پرداخت شده</label>
-                        <input type="number" name="PaidPrice" class="form-control bg-dark text-white shadow-sm" required />
+                        <input type="number" id="PayPrice" name="PaidPrice" class="form-control bg-dark text-white shadow-sm" required />
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">📆زمان پرداخت</label>
@@ -132,7 +132,7 @@
                             @for (int i = 0; i < Model.Bills.Count; i++)
                             {
                                 var bill = Model.Bills[i];
-                                <tr>
+                                <tr onclick="BillRowId(@bill.Id,@bill.TotalPrice - @bill.PaidPrice)">
                                     <td>@(i + 1)</td>
                                     <td>@bill.Id</td>
                                     <td>@bill.ContractId</td>
@@ -215,6 +215,10 @@
                 });
                 Lbl.textContent = "📆 مهلت قبض";
             }
+        }
+        function BillRowId(Id,TotalPrice){
+            document.getElementById('BillId').value = Id;
+            document.getElementById('PayPrice').value = TotalPrice;
         }
     </script>
 }
