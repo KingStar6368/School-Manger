@@ -47,7 +47,8 @@ namespace School_Manger.Controllers.Admin
         }
 
         [HttpPost]
-        public IActionResult Create(AdminUser Data,string BirthDate)
+        public IActionResult Create(AdminUser Data,string BirthDate,
+            string Last_Digits,string Third,string PChar,string First)
         {
             var UserRef = _userService.CreateUser(new UserCreateDTO()
             {
@@ -93,11 +94,11 @@ namespace School_Manger.Controllers.Admin
                             Name = Data.Driver.Car.Name,
                             SeatNumber = Data.Driver.Car.SeatNumber,
                             carType = (int)Data.Driver.Car.carType,
-                            ChrPlateNumber = Data.Driver.Car.PlateNumber,
+                            ChrPlateNumber = PChar,
                             ColorCode = 0,
-                            FirstIntPlateNumber = int.Parse(Data.Driver.Car.PlateNumber.Substring(0, 2)),
-                            SecondIntPlateNumber = int.Parse(Data.Driver.Car.PlateNumber.Substring(3, 3)),
-                            ThirdIntPlateNumber = 47,
+                            FirstIntPlateNumber = int.Parse(First),
+                            SecondIntPlateNumber = int.Parse(Third),
+                            ThirdIntPlateNumber = int.Parse(Last_Digits),
                             IsActive = true,
                         },
                         Latitude = 0,
