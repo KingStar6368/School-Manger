@@ -127,6 +127,9 @@ namespace School_Manager.Data.Configuration
             .IsRequired(false)
             .HasComment("مدرک تحصیلی");
 
+            builder.Property(p => p.Descriptions)
+                .IsRequired(false);
+
             builder.Property(p => p.Code)
             .HasColumnType("nvarchar(50)")
             .IsRequired(false)
