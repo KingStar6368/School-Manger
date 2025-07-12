@@ -23,7 +23,7 @@ namespace School_Manger.Controllers.Admin
         public async Task<IActionResult> Index()
         {
             var Schools = await _schoolService.GetSchools();
-            return View(Schools);
+            return View("Index",Schools);
         }
 
         public IActionResult Create()

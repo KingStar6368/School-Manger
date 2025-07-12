@@ -35,7 +35,7 @@ namespace School_Manger.Controllers.Admin
             var Parents = await _parentService.GetParents();
             return View(Parents);
         }
-        public IActionResult Details(int id)
+        public IActionResult Details(long id)
         {
             var Model = _parentService.GetParent(id);
             Model.Children = _childService.GetChildrenParent(Model.Id);
@@ -54,7 +54,7 @@ namespace School_Manger.Controllers.Admin
                 Drivers = drivers,
                 Schools = schools
             };
-            return View(admindashbord);
+            return View("Details",admindashbord);
         }
         [HttpPost]
         public IActionResult CreateBill(long ChildId)
@@ -143,6 +143,21 @@ namespace School_Manger.Controllers.Admin
                 ControllerExtensions.ShowError(this, "خطا", ex.Message);
             }
             return CreateBill(secondId);
+        }
+        public IActionResult DeleteChild(long Id,long PId)
+        {
+            try
+            {
+                if (_childService.DeleteChild(Id))
+                    ControllerExtensions.ShowSuccess(this, "موفق", "قبض حذف شد");
+                else
+                    ControllerExtensions.ShowError(this, "خطا", "مشکلی پیش آمده");
+            }
+            catch (Exception ex)
+            {
+                ControllerExtensions.ShowError(this, "خطا", ex.Message);
+            }
+            return Details(PId);
         }
     }
 }

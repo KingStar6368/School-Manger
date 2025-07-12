@@ -175,7 +175,7 @@ namespace School_Manger.Controllers.Admin
             }
             catch (Exception ex)
             {
-                ControllerExtensions.ShowError(this, "خطا", ex.Message);
+                ControllerExtensions.ShowError(this, "خطا", "این راننده اطلاعات وابسته دارد امکان حذف آن ممکن نیست");
             }
             return await Drivers();
         }
@@ -190,7 +190,7 @@ namespace School_Manger.Controllers.Admin
             }
             catch (Exception ex)
             {
-                ControllerExtensions.ShowError(this, "خطا", ex.Message);
+                ControllerExtensions.ShowError(this, "خطا", "این والد اطلاعات وابسته دارد امکان حذف آن ممکن نیست");
             }
             return await Parents();
         }

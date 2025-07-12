@@ -74,6 +74,7 @@
                         <th>🧑‍✈️ راننده</th>
                         <th>🗺 مسیر</th>
                         <th>🧾 قبض</th>
+                        <th>⚙️ عملیات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -131,6 +132,13 @@
                                         <i class="bi bi-file-earmark-text"></i> صدور
                                     </button>
                                 </form>
+                            </td>
+                            <td>
+                                <a asp-action="DeleteChild" asp-route-id="@child.Child.Id" asp-route-PId="@Model.Parent.Id"
+                                   class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف"
+                                   onclick="return confirm('آیا از حذف این فرزند مطمئن هستید؟')">
+                                    <i class="bi bi-trash"></i> 🗑️ حذف
+                                </a>
                             </td>
                         </tr>
                     }
