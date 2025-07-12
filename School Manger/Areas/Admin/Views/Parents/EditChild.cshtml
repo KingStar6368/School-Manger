@@ -1,8 +1,11 @@
 ﻿@model School_Manager.Core.ViewModels.FModels.ChildUpdateDto
+@using System.Collections.Generic
+@using School_Manager.Core.ViewModels.FModels
 @{
     ViewData["Title"] = "ویرایش فرزند";
     Layout = "_AdminLayout";
     var parentId = ViewBag.ParentId;
+    var schools = ViewBag.Schools as List<SchoolDto>;
 }
 <div class="container mt-4 text-white">
     <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
@@ -19,6 +22,16 @@
                 <input type="hidden" name="Id" value="@Model.Id" />
                 <input type="hidden" name="ParentRef" value="@Model.ParentRef" />
                 <input type="hidden" name="parentId" value="@parentId" />
+                <input type="hidden" name="LocationPairs[0].ChildRef" value="@Model.Id" />
+                <input type="hidden" id="location1Lat" name="LocationPairs[0].Locations[0].Latitude" />
+                <input type="hidden" id="location1Lng" name="LocationPairs[0].Locations[0].Longitude" />
+                <input type="hidden" id="location1Address" name="LocationPairs[0].Locations[0].Address" />
+                <input type="hidden" id="location2Lat" name="LocationPairs[0].Locations[1].Latitude" />
+                <input type="hidden" id="location2Lng" name="LocationPairs[0].Locations[1].Longitude" />
+                <input type="hidden" id="location2Address" name="LocationPairs[0].Locations[1].Address" />
+                <input type="hidden" id="Time1" name="LocationPairs[0].PickTime1" />
+                <input type="hidden" id="Time2" name="LocationPairs[0].PickTime2" />
+                <input type="hidden" value="End" name="LocationPairs[0].Locations[1].LocationType" />
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">🧑‍🦱 نام</label>
@@ -54,6 +67,294 @@
                     </div>
                 </div>
             </form>
+            <button type="button" class="btn btn-outline-info mb-3" data-bs-toggle="modal" data-bs-target="#locationModal">
+                🗺️ ویرایش مسیر خانه تا مدرسه
+            </button>
+            <div id="locationSummary" class="text-info"></div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="locationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title">🗺️ انتخاب مسیر خانه تا مدرسه</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="locationSearch" class="form-label">جستجوی آدرس</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control bg-dark text-white border-secondary" id="locationSearch" placeholder="آدرس یا نام مکان">
+                        <button class="btn btn-outline-secondary" type="button" id="searchButton">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="map" style="height: 400px; width: 100%; border-radius: 8px;"></div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div id="location1Info" class="p-3 bg-success rounded mb-2 text-dark" style="min-height: 100px;">
+                            <p class="text-muted mb-1">موقعیت اول انتخاب نشده است</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">⏰ زمان رفت (PickTime1):</label>
+                            <input type="time" class="form-control bg-dark text-white border-secondary" id="PickTime1" name="LocationPairs[0].PickTime1" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">موقعیت دوم (مقصد):</label>
+                        <select class="form-select bg-dark text-white border-secondary mb-3" id="location2Select">
+                            <option value="" selected>-- انتخاب مقصد --</option>
+                            @if (schools != null && schools.Count > 0)
+                            {
+                                foreach (var school in schools)
+                                {
+                                    <option value="@school.Id|@school.Address.Latitude,@school.Address.Longitude|@school.Name">@school.Name</option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="0|34.0918,49.6892|مدرسه نمونه اراک">مدرسه نمونه اراک</option>
+                                <option value="0|34.0854,49.7003|مدرسه شهید بهشتی اراک">مدرسه شهید بهشتی اراک</option>
+                                <option value="0|34.0789,49.6956|مدرسه علامه حلی اراک">مدرسه علامه حلی اراک</option>
+                                <option value="0|34.0723,49.6887|مدرسه فرزانگان اراک">مدرسه فرزانگان اراک</option>
+                                <option value="0|34.0801,49.6815|مدرسه انرژی اتمی اراک">مدرسه انرژی اتمی اراک</option>
+                            }
+                        </select>
+                        <input type="hidden" id="SchoolRef" name="SchoolRef" />
+                        <div id="location2Info" class="p-3 bg-danger rounded mb-2 text-dark" style="min-height: 100px; display: none;"></div>
+                        <div class="mb-3">
+                            <label class="form-label">⏰ زمان برگشت (PickTime2):</label>
+                            <input type="time" class="form-control bg-dark text-white border-secondary" id="PickTime2" name="LocationPairs[0].PickTime2" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <div>
+                    <button type="button" class="btn btn-outline-danger" id="clearLocations">
+                        <i class="bi bi-x-circle"></i> پاک کردن انتخاب‌ها
+                    </button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-primary" id="saveLocations" disabled data-bs-dismiss="modal">
+                        <i class="bi bi-check-circle"></i> تایید موقعیت‌ها
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        .leaflet-container {
+            background-color: #121212 !important;
+        }
+        .location1-marker {
+            background-color: #4CAF50;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+        }
+        .location2-marker {
+            background-color: #FF5722;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+        }
+        .leaflet-popup-content {
+            color: #fff;
+            background-color: #222;
+            padding: 1rem;
+            border-radius: 5px;
+        }
+    </style>
+}
+@section Scripts {
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    let map;
+    let location1 = null;
+    let location2 = null;
+    let location1Marker = null;
+    let location2Marker = null;
+    function updateLocationDisplay() {
+        const location1Div = document.getElementById('location1Info');
+        if (location1) {
+            location1Div.innerHTML = `
+                <p><strong>موقعیت اول:</strong></p>
+                <p><small>عرض: ${location1.lat.toFixed(6)}</small></p>
+                <p><small>طول: ${location1.lng.toFixed(6)}</small></p>
+                <p><small>آدرس: ${location1.address}</small></p>
+            `;
+            document.getElementById('location1Lat').value = location1.lat;
+            document.getElementById('location1Lng').value = location1.lng;
+            document.getElementById('location1Address').value = location1.address;
+        } else {
+            location1Div.innerHTML = '<p class="text-muted mb-1">موقعیت اول انتخاب نشده است</p>';
+            document.getElementById('location1Lat').value = '';
+            document.getElementById('location1Lng').value = '';
+            document.getElementById('location1Address').value = '';
+        }
+        if (location1 && location2) {
+            document.getElementById('saveLocations').disabled = false;
+        } else {
+            document.getElementById('saveLocations').disabled = true;
+        }
+    }
+    function updateLocation2Display() {
+        const location2Div = document.getElementById('location2Info');
+        if (location2) {
+            location2Div.style.display = 'block';
+            location2Div.innerHTML = `
+                <p><strong>موقعیت دوم:</strong></p>
+                <p><small>عرض: ${location2.lat.toFixed(6)}</small></p>
+                <p><small>طول: ${location2.lng.toFixed(6)}</small></p>
+                <p><small>آدرس: ${location2.address}</small></p>
+            `;
+            document.getElementById('location2Lat').value = location2.lat;
+            document.getElementById('location2Lng').value = location2.lng;
+            document.getElementById('location2Address').value = location2.address;
+        } else {
+            location2Div.style.display = 'none';
+            document.getElementById('location2Lat').value = '';
+            document.getElementById('location2Lng').value = '';
+            document.getElementById('location2Address').value = '';
+        }
+        if (location1 && location2) {
+            document.getElementById('saveLocations').disabled = false;
+        } else {
+            document.getElementById('saveLocations').disabled = true;
+        }
+    }
+    function getAddressFromCoordinates(lat, lng, locationNumber) {
+        const apiKey = '7902de30b04b42558af4300bad6c27a0';
+        fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lng}&key=${apiKey}&language=fa`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.results && data.results.length > 0) {
+                    const address = data.results[0].formatted;
+                    if (locationNumber === 1) {
+                        location1.address = address;
+                        updateLocationDisplay();
+                    } else {
+                        location2.address = address;
+                        updateLocation2Display();
+                    }
+                }
+            });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        var modal = document.getElementById('locationModal');
+        modal.addEventListener('shown.bs.modal', function () {
+            if (!map) {
+                map = L.map('map').setView([34.0918, 49.6892], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors'
+                }).addTo(map);
+                map.on('click', function(e) {
+                    if (!location1) {
+                        if (location1Marker) map.removeLayer(location1Marker);
+                        location1 = { lat: e.latlng.lat, lng: e.latlng.lng, address: 'در حال دریافت آدرس...' };
+                        location1Marker = L.marker(e.latlng, {
+                            icon: L.divIcon({
+                                className: 'location1-marker',
+                                html: '1',
+                                iconSize: [24, 24]
+                            })
+                        }).addTo(map).bindPopup('<div class="bg-success">موقعیت اول (مبدا)</div>').openPopup();
+                        getAddressFromCoordinates(e.latlng.lat, e.latlng.lng, 1);
+                        updateLocationDisplay();
+                    }
+                });
+            }
+        });
+        document.getElementById('searchButton').addEventListener('click', function() {
+            const query = document.getElementById('locationSearch').value;
+            if (query.trim() === '') return;
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&accept-language=fa`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        const firstResult = data[0];
+                        const lat = parseFloat(firstResult.lat);
+                        const lng = parseFloat(firstResult.lon);
+                        map.setView([lat, lng], 15);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error searching location:', error);
+                    alert('خطا در جستجوی مکان');
+                });
+        });
+        document.getElementById('location2Select').addEventListener('change', function() {
+            const selectedValue = this.value;
+            if (selectedValue) {
+                const [Id,coords, address] = selectedValue.split('|');
+                const [lat, lng] = coords.split(',');
+                location2 = {
+                    lat: parseFloat(lat),
+                    lng: parseFloat(lng),
+                    address: address
+                };
+                if (location2Marker) {
+                    map.removeLayer(location2Marker);
+                }
+                location2Marker = L.marker([lat, lng], {
+                    icon: L.divIcon({
+                        className: 'location2-marker',
+                        html: '2',
+                        iconSize: [24, 24]
+                    })
+                }).addTo(map).bindPopup('<div class="bg-danger">موقعیت دوم (مقصد)</div>').openPopup();
+                document.getElementById('SchoolRef').value = Id;
+                updateLocation2Display();
+                if (location1 && location2) {
+                    document.getElementById('saveLocations').disabled = false;
+                }
+            } else {
+                if (location2Marker) {
+                    map.removeLayer(location2Marker);
+                    location2Marker = null;
+                }
+                location2 = null;
+                updateLocation2Display();
+            }
+        });
+        document.getElementById('clearLocations').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (location1Marker) {
+                map.removeLayer(location1Marker);
+                location1Marker = null;
+            }
+            if (location2Marker) {
+                map.removeLayer(location2Marker);
+                location2Marker = null;
+            }
+            location1 = null;
+            location2 = null;
+            document.getElementById('location2Select').value = '';
+            updateLocationDisplay();
+            updateLocation2Display();
+        });
+        document.getElementById('saveLocations').onclick = function() {
+            if(location1 && location2) {
+                document.getElementById('location1Lat').value = location1.lat;
+                document.getElementById('location1Lng').value = location1.lng;
+                document.getElementById('location1Address').value = location1.address;
+                document.getElementById('location2Lat').value = location2.lat;
+                document.getElementById('location2Lng').value = location2.lng;
+                document.getElementById('location2Address').value = location2.address;
+                document.getElementById('Time1').value = document.getElementById('PickTime1').value;
+                document.getElementById('Time2').value = document.getElementById('PickTime2').value;
+                document.getElementById('locationSummary').innerHTML = `مبدا: ${location1.address} <br/>مقصد: ${location2.address}`;
+            }
+        };
+    });
+</script>
+}

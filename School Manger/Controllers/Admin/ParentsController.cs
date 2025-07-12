@@ -182,7 +182,7 @@ namespace School_Manger.Controllers.Admin
             return View("EditBill", model);
         }
         [HttpGet]
-        public IActionResult UpdateChild(long id, long parentId)
+        public async Task<IActionResult> UpdateChild(long id, long parentId)
         {
             var child = _childService.GetChild(id);
             if (child == null)
@@ -199,11 +199,12 @@ namespace School_Manger.Controllers.Admin
                 Class = int.TryParse(child.Class, out var c) ? c : 0
             };
             ViewBag.ParentId = parentId;
+            ViewBag.Schools = await _schoolService.GetSchools();
             return View("EditChild", model);
         }
 
         [HttpPost]
-        public IActionResult UpdateChild(ChildUpdateDto model, long parentId)
+        public async Task<IActionResult> UpdateChild(ChildUpdateDto model, long parentId)
         {
             if (ModelState.IsValid)
             {
@@ -219,6 +220,7 @@ namespace School_Manger.Controllers.Admin
                 }
             }
             ViewBag.ParentId = parentId;
+            ViewBag.Schools = await _schoolService.GetSchools();
             return View("EditChild", model);
         }
     }
