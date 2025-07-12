@@ -24,12 +24,12 @@ namespace School_Manger.Controllers
         private readonly IUserService _UserService;
         private readonly IBillService _BillService;
         private readonly ISchoolService _Sservice;
-        private readonly IDriverService _DriverService;
+        //private readonly IDriverService _DriverService;
         //private readonly IContractService _ContractService;
         public HomeController(IParentService PService,IChildService CService,
-            IUserService UService,IBillService billService,ISchoolService schoolService,IDriverService driverService/*,IContractService contractService*/)
+            IUserService UService,IBillService billService,ISchoolService schoolService/*,IDriverService driverService,IContractService contractService*/)
         {
-            _DriverService = driverService;
+            //_DriverService = driverService;
             _PService = PService;
             _CService = CService;
             _UserService = UService;
@@ -64,6 +64,7 @@ namespace School_Manger.Controllers
         }
         public IActionResult Login(string NationalCode, string Password)
         {
+            var d = _PService.GetParent(1);
             if(NationalCode == null && Password == null) 
                 return View();
             else
