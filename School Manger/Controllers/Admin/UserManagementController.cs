@@ -22,11 +22,6 @@ namespace School_Manger.Controllers.Admin
             _parentService = parentService;
             _driverService = driverService;
         }
-        private static List<LoginUser> _users = new()
-    {
-        new LoginUser { Id = 1, UserName = "parent1", Password = "123", PhoneNumber = "09123456789", Type = UserType.Parent },
-        new LoginUser { Id = 2, UserName = "driver1", Password = "123", PhoneNumber = "09129876543", Type = UserType.Driver }
-    };
 
         public async Task<IActionResult> Parents()
         {
@@ -123,47 +118,6 @@ namespace School_Manger.Controllers.Admin
             }
         }
 
-        public IActionResult Edit(int id)
-        {
-            var user = _users.FirstOrDefault(u => u.Id == id);
-            if (user == null) return NotFound();
-            return View(user);
-        }
-
-        [HttpPost]
-        public IActionResult Edit(LoginUser user)
-        {
-            if (ModelState.IsValid)
-            {
-                var existing = _users.FirstOrDefault(u => u.Id == user.Id);
-                if (existing != null)
-                {
-                    existing.UserName = user.UserName;
-                    existing.Password = user.Password;
-                    existing.PhoneNumber = user.PhoneNumber;
-                }
-                return RedirectToAction(user.Type == UserType.Parent ? "Parents" : "Drivers");
-            }
-            return View(user);
-        }
-
-        public IActionResult Delete(int id)
-        {
-            var user = _users.FirstOrDefault(u => u.Id == id);
-            if (user == null) return NotFound();
-            return View(user);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            var user = _users.FirstOrDefault(u => u.Id == id);
-            if (user != null)
-            {
-                _users.Remove(user);
-            }
-            return RedirectToAction(user.Type == UserType.Parent ? "Parents" : "Drivers");
-        }
         public async Task<IActionResult> DeleteDriver(long Id)
         {
             try

@@ -149,13 +149,13 @@ namespace School_Manger.Controllers.Admin
             try
             {
                 if (_childService.DeleteChild(Id))
-                    ControllerExtensions.ShowSuccess(this, "موفق", "قبض حذف شد");
+                    ControllerExtensions.ShowSuccess(this, "موفق", "فرزند حذف شد");
                 else
                     ControllerExtensions.ShowError(this, "خطا", "مشکلی پیش آمده");
             }
             catch (Exception ex)
             {
-                ControllerExtensions.ShowError(this, "خطا", ex.Message);
+                ControllerExtensions.ShowError(this, "خطا", "این فرزند داده های وابسته دارد امکان حذف آن نیست");
             }
             return Details(PId);
         }
