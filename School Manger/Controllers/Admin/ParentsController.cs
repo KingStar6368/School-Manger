@@ -159,5 +159,27 @@ namespace School_Manger.Controllers.Admin
             }
             return Details(PId);
         }
+        [HttpGet]
+        public IActionResult EditBill(long billId, long childId)
+        {
+            var bill = _billService.GetBill(billId);
+            if (bill == null)
+                return NotFound();
+            ViewBag.ChildId = childId;
+            return View("EditBill", bill);
+        }
+
+        [HttpPost]
+        public IActionResult EditBill(long billId, long childId, BillUpdateDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                _billService.Update(model);
+                ControllerExtensions.ShowSuccess(this, "موفق", "تغییرات اعمال شد");
+                return CreateBill(childId);
+            }
+            ViewBag.ChildId = childId;
+            return View("EditBill", model);
+        }
     }
 }

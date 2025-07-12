@@ -161,6 +161,10 @@
                                onclick="return confirm('آیا از حذف این قبض مطمئن هستید؟')">
                                 <i class="bi bi-trash"></i> 🗑️ حذف
                             </a>
+                            <a asp-action="EditBill" asp-route-billId="@bill.Id" asp-route-childId="@Model.Id"
+                               class="btn btn-sm btn-outline-info rounded-pill shadow-sm ms-2" title="ویرایش">
+                                <i class="bi bi-pencil-square"></i> ویرایش
+                            </a>
                         </td>
                     </tr>
                                         }

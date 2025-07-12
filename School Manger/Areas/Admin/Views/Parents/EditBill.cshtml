@@ -1,0 +1,50 @@
+﻿@model School_Manager.Core.ViewModels.FModels.BillDto
+@{
+    ViewData["Title"] = "ویرایش قبض";
+    Layout = "_AdminLayout";
+    var childId = ViewBag.ChildId;
+}
+<div class="container mt-4 text-white">
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">
+                ✏️ ویرایش قبض: <span class="text-warning">@Model.Name</span>
+            </h4>
+            <form asp-action="CreateBill" method="post">
+                <input hidden name="ChildId" value="@childId" />
+                <input type="submit" class="btn btn-secondary fw-bold shadow-sm" value="🔙 بازگشت" />
+            </form>
+        </div>
+        <div class="card-body">
+            <form asp-action="EditBill" method="post">
+                <input type="hidden" name="billId" value="@Model.Id" />
+                <input type="hidden" name="childId" value="@childId" />
+                <input type="hidden" name="Id" value="@Model.Id" />
+                <input type="hidden" name="ServiceContractRef" value="@Model.ContractId" />
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">📝 عنوان قبض</label>
+                        <input type="text" name="Name" class="form-control bg-dark text-white shadow-sm" value="@Model.Name" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">💰 مبلغ کل (تومان)</label>
+                        <input type="number" name="Price" class="form-control bg-dark text-white shadow-sm" value="@Model.TotalPrice" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">📆 مهلت پرداخت</label>
+                        <input type="date" name="EstimateTime" class="form-control bg-secondary text-white" value="@Model.BillExpiredTime.ToString("yyyy-MM-dd")" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">نوع قبض</label>
+                        <input type="number" name="Type" class="form-control bg-dark text-white shadow-sm" value="0" required />
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm">
+                            💾 ذخیره تغییرات
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
