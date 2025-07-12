@@ -106,71 +106,74 @@
     </div>
 </div>
 
-    <!-- 📜 Bills List -->
-    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary">
-        <div class="card-header bg-primary bg-gradient fw-bold">
-            📜 لیست قبوض <span class="text-warning">@Model.FirstName @Model.LastName</span>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                @if(Model.Bills != null && Model.Bills.Count > 0){
-                    <table class="table table-dark table-bordered table-hover text-center align-middle mb-0">
-                        <thead class="table-light text-dark">
-                            <tr>
-                                <th>🔢 ردیف</th>
-                                <th>🆔 شناسه قبض</th>
-                                <th>🆔 شناسه قرارداد</th>
-                                <th>📄 نام قبض</th>
-                                <th>💵 مبلغ کل</th>
-                                <th>💳 مبلغ پرداخت شده</th>
-                                <th>✅ وضعیت</th>
-                                <th>⏰ زمان پرداخت/مهلت</th>
-                                <th>⚙️ عملیات</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for (int i = 0; i < Model.Bills.Count; i++)
-                            {
-                                var bill = Model.Bills[i];
-                                <tr onclick="BillRowId(@bill.Id,@bill.TotalPrice - @bill.PaidPrice)">
-                                    <td>@(i + 1)</td>
-                                    <td>@bill.Id</td>
-                                    <td>@bill.ContractId</td>
-                                    <td>@bill.Name</td>
-                                    <td>@bill.TotalPrice.ToString("N0")</td>
-                                    <td>@bill.PaidPrice.ToString("N0")</td>
-                                    <td>
-                                        @if (bill.HasPaid)
-                                        {
-                                            <span class="badge bg-success rounded-pill fw-bold shadow-sm">✅ پرداخت شده</span>
+<!-- 📜 Bills List -->
+<div class="card bg-dark text-white shadow-lg rounded-4 border-primary">
+    <div class="card-header bg-primary bg-gradient fw-bold">
+        📜 لیست قبوض <span class="text-warning">@Model.FirstName @Model.LastName</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            @if (Model.Bills != null && Model.Bills.Count > 0)
+            {
+                <table class="table table-dark table-bordered table-hover text-center align-middle mb-0">
+                    <thead class="table-light text-dark">
+                        <tr>
+                            <th>🔢 ردیف</th>
+                            <th>🆔 شناسه قبض</th>
+                            <th>🆔 شناسه قرارداد</th>
+                            <th>📄 نام قبض</th>
+                            <th>💵 مبلغ کل</th>
+                            <th>💳 مبلغ پرداخت شده</th>
+                            <th>✅ وضعیت</th>
+                            <th>⏰ زمان پرداخت/مهلت</th>
+                            <th>⚙️ عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Bills.Count; i++)
+                        {
+                            var bill = Model.Bills[i];
+                            <tr onclick="BillRowId(@bill.Id,@bill.TotalPrice - @bill.PaidPrice)">
+                                <td>@(i + 1)</td>
+                                <td>@bill.Id</td>
+                                <td>@bill.ContractId</td>
+                                <td>@bill.Name</td>
+                                <td>@bill.TotalPrice.ToString("N0")</td>
+                                <td>@bill.PaidPrice.ToString("N0")</td>
+                                <td>
+                                    @if (bill.HasPaid)
+                                    {
+                                        <span class="badge bg-success rounded-pill fw-bold shadow-sm">✅ پرداخت شده</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger rounded-pill fw-bold shadow-sm">❌ @bill.Status</span>
+                                    }
+                            </td>
+                            <td>
+                                @(bill.HasPaid
+                                                            ? DateConverter.ToPersianString((DateTime)bill.PaidTime)
+                                                            : DateConverter.ToPersianString(bill.BillExpiredTime))
+                        </td>
+                        <td>
+                            <a asp-action="DeleteBill" asp-route-id="@bill.Id" asp-route-secondId="@Model.Id"
+                               class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف"
+                               onclick="return confirm('آیا از حذف این قبض مطمئن هستید؟')">
+                                <i class="bi bi-trash"></i> 🗑️ حذف
+                            </a>
+                        </td>
+                    </tr>
                                         }
-                                        else
-                                        {
-                                            <span class="badge bg-danger rounded-pill fw-bold shadow-sm">❌ @bill.Status</span>
-                                        }
-                                    </td>
-                                    <td>
-                                        @(bill.HasPaid
-                                            ? DateConverter.ToPersianString((DateTime)bill.PaidTime)
-                                            : DateConverter.ToPersianString(bill.BillExpiredTime))
-                                    </td>
-                                    <td>
-                                        <a asp-action="DeleteBill" asp-route-id="@bill.Id"  asp-route-secondId="@Model.Id"
-                                           class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف"
-                                           onclick="return confirm('آیا از حذف این قبض مطمئن هستید؟')">
-                                            <i class="bi bi-trash"></i> 🗑️ حذف
-                                        </a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                }else{
-                    <div class="alert alert-warning text-center fw-bold">🚫 هیچ قبضی ثبت نشده است.</div>
-                }
-            </div>
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-warning text-center fw-bold">🚫 هیچ قبضی ثبت نشده است.</div>
+            }
         </div>
     </div>
+</div>
 </div>
 
 @section Scripts {
