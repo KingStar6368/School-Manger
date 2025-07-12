@@ -181,5 +181,45 @@ namespace School_Manger.Controllers.Admin
             ViewBag.ChildId = childId;
             return View("EditBill", model);
         }
+        [HttpGet]
+        public IActionResult UpdateChild(long id, long parentId)
+        {
+            var child = _childService.GetChild(id);
+            if (child == null)
+                return NotFound();
+            var model = new ChildUpdateDto
+            {
+                Id = child.Id,
+                ParentRef = parentId,
+                SchoolRef = child.SchoolId,
+                FirstName = child.FirstName,
+                LastName = child.LastName,
+                NationalCode = child.NationalCode,
+                BirthDate = child.BirthDate,
+                Class = int.TryParse(child.Class, out var c) ? c : 0
+            };
+            ViewBag.ParentId = parentId;
+            return View("EditChild", model);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateChild(ChildUpdateDto model, long parentId)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = _childService.UpdateChild(model);
+                if (result)
+                {
+                    ControllerExtensions.ShowSuccess(this, "موفق", "تغییرات فرزند ذخیره شد");
+                    return RedirectToAction("Details", new { id = parentId });
+                }
+                else
+                {
+                    ControllerExtensions.ShowError(this, "خطا", "خطا در ذخیره تغییرات");
+                }
+            }
+            ViewBag.ParentId = parentId;
+            return View("EditChild", model);
+        }
     }
 }

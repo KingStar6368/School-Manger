@@ -75,6 +75,7 @@
                         <th>🗺 مسیر</th>
                         <th>🧾 قبض</th>
                         <th>⚙️ عملیات</th>
+                        <th>✏️ ویرایش</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -138,6 +139,12 @@
                                    class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف"
                                    onclick="return confirm('آیا از حذف این فرزند مطمئن هستید؟')">
                                     <i class="bi bi-trash"></i> 🗑️ حذف
+                                </a>
+                            </td>
+                            <td>
+                                <a asp-action="UpdateChild" asp-route-id="@child.Child.Id" asp-route-parentId="@Model.Parent.Id"
+                                   class="btn btn-sm btn-outline-info rounded-pill shadow-sm ms-2" title="ویرایش فرزند">
+                                    <i class="bi bi-pencil-square"></i> ویرایش
                                 </a>
                             </td>
                         </tr>
