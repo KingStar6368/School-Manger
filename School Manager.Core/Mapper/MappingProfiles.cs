@@ -79,7 +79,7 @@ namespace School_Manager.Core.Mapper
                 ));
 
             CreateMap<ChildCreateDto,Child>();
-            CreateMap<ChildUpdateDto, Child>();
+            CreateMap<ChildUpdateDto, Child>().ForMember(dest => dest.LocationPairs, opt =>opt.Ignore());
             #endregion
             #region Driver
             CreateMap<Driver, DriverDto>()
@@ -110,7 +110,7 @@ namespace School_Manager.Core.Mapper
                 .ForMember(dest => dest.Location2,opt => opt.MapFrom(src =>src.Locations.FirstOrDefault(l => l.LocationType == LocationType.End)));
             CreateMap<LocationPairCreateDto, LocationPair>()
                 .ForMember(dest=>dest.IsActive, opt => opt.MapFrom(_ => true));
-            CreateMap<LocationPairUpdateDto, LocationPair>();
+            CreateMap<LocationPairUpdateDto, LocationPair>().ForMember(dest => dest.Locations, opt =>opt.Ignore());
             #endregion
             #region LookUp
             CreateMap<Lookup, LookupComboViewModel>()

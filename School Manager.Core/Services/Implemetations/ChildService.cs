@@ -215,7 +215,11 @@ namespace School_Manager.Core.Services.Implemetations
 
         public bool UpdateChild(ChildUpdateDto child)
         {
-            var mainchild = _unitOfWork.GetRepository<Child>().GetById(child.Id);
+            var mainchild = _unitOfWork.GetRepository<Child>().Query(x=>x.Id == child.Id).Include(x=>x.LocationPairs).ThenInclude(x=>x.Locations).FirstOrDefault();
+            if (mainchild == null)
+            {
+                return false;
+            }
             var validationResult = _UpdateValidator.Validate(child);
             if (!validationResult.IsValid)
             {
@@ -223,6 +227,23 @@ namespace School_Manager.Core.Services.Implemetations
                 throw new ValidationException(errors);
             }
             _mapper.Map(child, mainchild);
+            foreach (var pairDto in child.LocationPairs)
+            {
+                var existPair = mainchild.LocationPairs.FirstOrDefault(x => x.Id == pairDto.Id);
+                if (existPair != null)
+                {
+                    _mapper.Map(pairDto, existPair);
+
+                    foreach (var location in pairDto.Locations)
+                    {
+                        var existLocation = existPair.Locations.FirstOrDefault(x => x.Id == location.Id);
+                        if (existLocation != null)
+                        {
+                            _mapper.Map(location, existLocation);
+                        }
+                    }
+                }
+            }
             _unitOfWork.GetRepository<Child>().Update(mainchild);
             return _unitOfWork.SaveChanges() > 0;
         }
