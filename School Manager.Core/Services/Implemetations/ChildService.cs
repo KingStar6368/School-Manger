@@ -38,7 +38,7 @@ namespace School_Manager.Core.Services.Implemetations
             
             var ds = _unitOfWork.GetRepository<Child>()
                                 .Query(p => p.Id == id)
-                                .Include(x=>x.LocationPairs)
+                                .Include(x=>x.LocationPairs).ThenInclude(x=>x.Locations)
                                 .Include(x=>x.DriverChilds).ThenInclude(x=>x.DriverNavigation)
                                 .Include(x=>x.ServiceContracts).ThenInclude(x=>x.Bills).ThenInclude(x=>x.PayBills).ThenInclude(x=> x.PayNavigation)
                                 .FirstOrDefault();

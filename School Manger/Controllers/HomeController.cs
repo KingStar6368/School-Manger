@@ -64,7 +64,6 @@ namespace School_Manger.Controllers
         }
         public IActionResult Login(string NationalCode, string Password)
         {
-            var d = _PService.GetParent(1);
             if(NationalCode == null && Password == null) 
                 return View();
             else

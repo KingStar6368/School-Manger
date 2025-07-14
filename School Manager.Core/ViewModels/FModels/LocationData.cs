@@ -7,6 +7,7 @@ namespace School_Manager.Core.ViewModels.FModels
     /// </summary>
     public class LocationDataDto
     {
+        public int Id { get; set; }
         /// <summary>
         /// نام آدرس 
         /// </summary>
