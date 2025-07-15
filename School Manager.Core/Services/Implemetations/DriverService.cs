@@ -33,7 +33,7 @@ namespace School_Manager.Core.Services.Implemetations
                 .Query()
                 .Include(x => x.Cars)
                 .Include(x => x.Passanger).ThenInclude(x => x.ChildNavigation)
-                .FirstOrDefault(x=>x.Id == Id);
+                .FirstOrDefault(x=>x.Id == Id && x.Passanger.Any(y=>y.IsEnabled));
             return _mapper.Map<DriverDto>(ds);
         }
 
@@ -75,9 +75,9 @@ namespace School_Manager.Core.Services.Implemetations
         public List<ChildInfo> GetPassngers(long id)
         {
             var ds =  _unitOfWork.GetRepository<Driver>().Query()
-                .Include(x => x.Passanger).ThenInclude(x => x.ChildNavigation).FirstOrDefault(x=>x.Passanger.Any(y=>y.IsEnabled && y.EndDate < DateTime.Now) && x.Id == id);
+                .Include(x => x.Passanger).ThenInclude(x => x.ChildNavigation).FirstOrDefault(x=>x.Passanger.Any(y=>y.IsEnabled && y.EndDate > DateTime.Now) && x.Id == id);
             if (ds == null) return new List<ChildInfo>();
-            var child = ds.Passanger.Where(x=>x.IsEnabled && x.EndDate < DateTime.Now).Select(x => x.ChildNavigation).ToList();
+            var child = ds.Passanger.Where(x=>x.IsEnabled && x.EndDate > DateTime.Now).Select(x => x.ChildNavigation).ToList();
             return _mapper.Map<List<ChildInfo>>(child);
         }
 
@@ -108,7 +108,7 @@ namespace School_Manager.Core.Services.Implemetations
             if (Driver == null) return false;
 
             // بررسی وجود اطلاعات وابسته
-            if ((Driver.DriverContracts?.Any() ?? false) && Driver.Passanger.Any(x=>x.IsEnabled && x.EndDate < DateTime.Now))
+            if ((Driver.DriverContracts?.Any() ?? false) && Driver.Passanger.Any(x=>x.IsEnabled && x.EndDate > DateTime.Now))
             {
                 throw new InvalidOperationException("این قبض دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
             }
@@ -150,7 +150,7 @@ namespace School_Manager.Core.Services.Implemetations
             if (Driver == null) return false;
 
             // بررسی وجود اطلاعات وابسته
-            if ((Driver.DriverContracts?.Any() ?? false) && Driver.Passanger.Any(x => x.IsEnabled && x.EndDate < DateTime.Now))
+            if ((Driver.DriverContracts?.Any() ?? false) && Driver.Passanger.Any(x => x.IsEnabled && x.EndDate > DateTime.Now))
             {
                 throw new InvalidOperationException("این قبض دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
             }
