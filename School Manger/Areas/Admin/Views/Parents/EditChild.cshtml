@@ -23,12 +23,15 @@
                 <input type="hidden" name="ParentRef" value="@Model.ParentRef" />
                 <input type="hidden" name="parentId" value="@parentId" />
                 <input type="hidden" name="LocationPairs[0].ChildRef" value="@Model.Id" />
-                <input type="hidden" id="location1Lat" name="LocationPairs[0].Locations[0].Latitude" />
-                <input type="hidden" id="location1Lng" name="LocationPairs[0].Locations[0].Longitude" />
-                <input type="hidden" id="location1Address" name="LocationPairs[0].Locations[0].Address" />
-                <input type="hidden" id="location2Lat" name="LocationPairs[0].Locations[1].Latitude" />
-                <input type="hidden" id="location2Lng" name="LocationPairs[0].Locations[1].Longitude" />
-                <input type="hidden" id="location2Address" name="LocationPairs[0].Locations[1].Address" />
+                <input type="hidden" value="@Model.LocationPairs[0].Id" name="LocationPairs[0].Id" />
+                <input type="hidden" value="@Model.LocationPairs[0].Locations[0].Id" name="LocationPairs[0].Locations[0].Id" />
+                <input type="hidden" value="@Model.LocationPairs[0].Locations[1].Id" name="LocationPairs[0].Locations[1].Id" />
+                <input type="hidden" id="location1Lat" name="LocationPairs[0].Locations[0].Latitude" value="@Model.LocationPairs[0].Locations[0].Latitude" />
+                <input type="hidden" id="location1Lng" name="LocationPairs[0].Locations[0].Longitude" value="@Model.LocationPairs[0].Locations[0].Longitude" />
+                <input type="hidden" id="location1Address" name="LocationPairs[0].Locations[0].Address" value="@Model.LocationPairs[0].Locations[0].Address" />
+                <input type="hidden" id="location2Lat" name="LocationPairs[0].Locations[1].Latitude" value="@Model.LocationPairs[0].Locations[1].Latitude" />
+                <input type="hidden" id="location2Lng" name="LocationPairs[0].Locations[1].Longitude" value="@Model.LocationPairs[0].Locations[1].Longitude" />
+                <input type="hidden" id="location2Address" name="LocationPairs[0].Locations[1].Address" value="@Model.LocationPairs[0].Locations[1].Address" />
                 <input type="hidden" id="Time1" name="LocationPairs[0].PickTime1" />
                 <input type="hidden" id="Time2" name="LocationPairs[0].PickTime2" />
                 <input type="hidden" value="End" name="LocationPairs[0].Locations[1].LocationType" />
@@ -99,7 +102,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">⏰ زمان رفت (PickTime1):</label>
-                            <input type="time" class="form-control bg-dark text-white border-secondary" id="PickTime1" name="LocationPairs[0].PickTime1" />
+                            <input type="time" class="form-control bg-dark text-white border-secondary" id="PickTime1" name="LocationPairs[0].PickTime1" value="@Model.LocationPairs[0].PickTime1" />
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -126,7 +129,7 @@
                         <div id="location2Info" class="p-3 bg-danger rounded mb-2 text-dark" style="min-height: 100px; display: none;"></div>
                         <div class="mb-3">
                             <label class="form-label">⏰ زمان برگشت (PickTime2):</label>
-                            <input type="time" class="form-control bg-dark text-white border-secondary" id="PickTime2" name="LocationPairs[0].PickTime2" />
+                            <input type="time" class="form-control bg-dark text-white border-secondary" id="PickTime2" name="LocationPairs[0].PickTime2" value="@Model.LocationPairs[0].PickTime2"/>
                         </div>
                     </div>
                 </div>

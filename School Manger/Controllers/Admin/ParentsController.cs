@@ -196,7 +196,38 @@ namespace School_Manger.Controllers.Admin
                 LastName = child.LastName,
                 NationalCode = child.NationalCode,
                 BirthDate = child.BirthDate,
-                Class = int.TryParse(child.Class, out var c) ? c : 0
+                Class = int.TryParse(child.Class, out var c) ? c : 0,
+                LocationPairs = new List<LocationPairUpdateDto>()
+                {
+                    new()
+                    {
+                        Id = child.Path.Id,
+                        ChildRef = child.Path.ChildId,
+                        PickTime1 = child.Path.PickTime1,
+                        PickTime2 = child.Path.PickTime2,
+                        Locations = new List<LocationDataUpdateDto>()
+                        {
+                            new()
+                            {
+                                Id = child.Path.Location1.Id,
+                                Address = child.Path.Location1.Address,
+                                IsActive = true,
+                                Latitude = child.Path.Location1.Latitude,
+                                Longitude = child.Path.Location1.Longitude,
+                                LocationType = LocationType.Start,
+                            },
+                            new()
+                            {
+                                Id = child.Path.Location2.Id,
+                                Address = child.Path.Location2.Address,
+                                IsActive = true,
+                                Latitude = child.Path.Location2.Latitude,
+                                Longitude = child.Path.Location2.Longitude,
+                                LocationType = LocationType.End,
+                            }
+                        }
+                    }
+                }
             };
             ViewBag.ParentId = parentId;
             ViewBag.Schools = await _schoolService.GetSchools();
