@@ -23,7 +23,7 @@ namespace School_Manger.Controllers.Admin
         public async Task<IActionResult> Index()
         {
             var Schools = await _schoolService.GetSchools();
-            return View("Index",Schools);
+            return View("Index", Schools);
         }
 
         public IActionResult Create()
@@ -75,6 +75,38 @@ namespace School_Manger.Controllers.Admin
                 ControllerExtensions.ShowError(this, "خطا", ex.Message);
             }
             return await Index();
+        }
+        [HttpGet]
+        public IActionResult EditSchool(long SchoolId)
+        {
+            var school = _schoolService.GetSchool(SchoolId);
+            return View(new SchoolUpdateDto()
+            {
+                Id = school.Id,
+                Address = school.Address.Address,
+                Latitude = school.Address.Latitude,
+                Longitude = school.Address.Longitude,
+                ManagerName = school.ManagerName,
+                Name = school.Name,
+                Rate = school.Rate
+            });
+        }
+        [HttpPost]
+        public IActionResult EditSchool(SchoolUpdateDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (_schoolService.UpdateSchool(model))
+                {
+                    ControllerExtensions.ShowSuccess(this, "موفق", "مدرسه با موفقیت ویرایش شد");
+                    return RedirectToAction("Details", new { id = model.Id });
+                }
+                else
+                {
+                    ControllerExtensions.ShowError(this, "خطا", "مشکلی در ویرایش پیش آمده");
+                }
+            }
+            return View("Index");
         }
     }
 }
