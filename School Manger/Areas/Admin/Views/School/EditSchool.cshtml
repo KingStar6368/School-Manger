@@ -1,0 +1,122 @@
+﻿@using School_Manager.Core.ViewModels.FModels
+@model SchoolUpdateDto
+@{
+    ViewData["Title"] = "ویرایش مدرسه";
+    Layout = "_AdminLayout";
+}
+
+<!-- Leaflet Styles -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<div class="container mt-4 text-white">
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">
+                ✏️ ویرایش قبض: <span class="text-warning">@Model.Name</span>
+            </h4>
+            <form asp-action="Index">
+                <input type="submit" class="btn btn-secondary fw-bold shadow-sm" value="🔙 بازگشت" />
+            </form>
+        </div>
+        <div class="card-body">
+            <form asp-action="EditSchool" method="post">
+                <input type="hidden" asp-for="@Model.Id" value="@Model.Id" />
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">📝 نام مدرسه</label>
+                        <input type="text" class="form-control bg-dark text-white shadow-sm" asp-for="@Model.Name" value="@Model.Name" required />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">💰 نام مدیر</label>
+                        <input type="number" class="form-control bg-dark text-white shadow-sm" asp-for="@Model.ManagerName" value="@Model.ManagerName" required />
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label">⭐ امتیاز</label>
+                        <select asp-for="Rate" class="form-control shadow-sm">
+                            @for (int i = 0; i <= 5; i++)
+                            {
+                                <option value="@i">@i ⭐</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Rate" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="control-label">📍 آدرس مدرسه</label>
+                            <textarea asp-for="@Model.Address" class="form-control shadow-sm" rows="3"></textarea>
+                            <span asp-validation-for="@Model.Address" class="text-danger small"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label class="control-label">🗺️ انتخاب موقعیت روی نقشه</label>
+                            <div id="map" style="height: 300px;" class="rounded shadow-sm border border-light mb-2"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="control-label">🌐 عرض جغرافیایی</label>
+                                    <input asp-for="@Model.Latitude" id="Latitude" class="form-control shadow-sm" readonly />
+                                    <span asp-validation-for="@Model.Latitude" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="control-label">🌐 طول جغرافیایی</label>
+                                    <input asp-for="@Model.Longitude" id="Longitude" class="form-control shadow-sm" readonly />
+                                    <span asp-validation-for="@Model.Longitude" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm">
+                            💾 ذخیره تغییرات
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        // Initialize Leaflet map
+        var map = L.map('map').setView([34.094, 49.698], 13); // Default to Arak
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        var marker;
+
+        function onMapClick(e) {
+            var lat = e.latlng.lat.toFixed(6);
+            var lon = e.latlng.lng.toFixed(6);
+
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng).addTo(map);
+            }
+
+            document.getElementById('Latitude').value = lat;
+            document.getElementById('Longitude').value = lon;
+        }
+
+        map.on('click', onMapClick);
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial marker position if latitude and longitude are available
+            var lat = document.getElementById('Latitude').value;
+            var lon = document.getElementById('Longitude').value;
+            if (lat && lon) {
+                var initialLatLng = L.latLng(lat, lon);
+                marker = L.marker(initialLatLng).addTo(map);
+                map.setView(initialLatLng, 13);
+            }
+        });
+    </script>
+}
