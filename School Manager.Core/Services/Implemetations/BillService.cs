@@ -158,7 +158,12 @@ namespace School_Manager.Core.Services.Implemetations
 
         public bool Update(BillUpdateDto bill)
         {
-            var mainBill = _unitOfWork.GetRepository<Bill>().GetById(bill.Id);
+            var mainBill = _unitOfWork.GetRepository<Bill>().Query(x=>x.Id == bill.Id).Include(x=>x.PayBills).FirstOrDefault();
+            if(mainBill == null)  return false; 
+            if (mainBill.PayBills != null && mainBill.Price != bill.Price)
+            {
+                throw new InvalidOperationException("این قبض دارای پرداختی است و امکان بروزرسانی مبلغ آن وجود ندارد.");
+            }
             var validationResult = _UpdateValidator.Validate(bill);
             if (!validationResult.IsValid)
             {
