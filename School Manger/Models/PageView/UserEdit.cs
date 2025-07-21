@@ -9,7 +9,7 @@ namespace School_Manger.Models.PageView
     }
     public class UserEditParent
     {
-        public ParentUpdateDto DriverUpdateDto { get; set; }
+        public ParentUpdateDto ParentUpdateDto { get; set; }
         public UserUpdateDTO UserUpdateDto { get; set; }
     }
 }
