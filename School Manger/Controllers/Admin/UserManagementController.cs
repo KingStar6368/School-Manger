@@ -190,8 +190,9 @@ namespace School_Manger.Controllers.Admin
             });
         }
         [HttpPost]
-        public async Task<IActionResult> EditDriver(UserEditDriver Data)
+        public async Task<IActionResult> EditDriver(UserEditDriver Data,string BirthDate)
         {
+            Data.DriverUpdateDto.BirthDate = BirthDate.ConvertPersianToEnglish().ToMiladi();
             if (_userService.UpdateUser(Data.UserUpdateDto))
                 ControllerExtensions.ShowSuccess(this, "موفق", "تغییرات کاربری راننده اعمال شد");
             else

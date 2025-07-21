@@ -1,4 +1,5 @@
 ﻿@using School_Manger.Models.PageView
+@using School_Manger.Extension;
 @model UserEditDriver
 @{
     ViewData["Title"] = "ویرایش راننده";
@@ -38,7 +39,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🎂 تاریخ تولد</label><label style="color:red;font-size:20px">*</label>
-                            <input name="BirthDate" class="persian-date form-control bg-secondary text-white" required />
+                            <input name="BirthDate" value="@Model.DriverUpdateDto.BirthDate.ToPersain()" class="persian-date form-control bg-secondary text-white" required />
                             <input type="hidden" class="gregorian-date" />
                         </div>
                         <div class="mb-3">
