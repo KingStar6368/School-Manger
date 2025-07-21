@@ -33,7 +33,7 @@ namespace School_Manager.Core.Services.Implemetations
                 .Query()
                 .Include(x => x.Cars)
                 .Include(x => x.Passanger).ThenInclude(x => x.ChildNavigation)
-                .FirstOrDefault(x=>x.Id == Id && x.Passanger.Any(y=>y.IsEnabled));
+                .FirstOrDefault(x=>x.Id == Id /*&& x.Passanger.Any(y=>y.IsEnabled)*/);
             return _mapper.Map<DriverDto>(ds);
         }
 
