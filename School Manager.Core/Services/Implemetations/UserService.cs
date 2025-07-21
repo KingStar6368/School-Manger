@@ -43,26 +43,6 @@ namespace School_Manager.Core.Services.Implemetations
 			return _mapper.Map<List<UserDTO>>(data);
 		}
 
-
-
-
-		public UserDTO GetUserById(int id)
-        {
-            var d = _unitOfWork.GetRepository<User>().GetByIdAsync(id).Result;
-            return new UserDTO
-            {
-                Id = d.Id,
-            }; 
-        }
-
-
-		public UserDTO GetUserDetail(int Id)
-		{
-			var result = _unitOfWork.GetRepository<User>().GetByIdAsync(Id).Result;
-			return _mapper.Map<UserDTO>(result);
-		}
-
-
 		public long SaveUser(UserCreateDTO User)
 		{
 			try
@@ -151,12 +131,14 @@ namespace School_Manager.Core.Services.Implemetations
 
         public UserDTO GetUserById(long id)
         {
-            throw new NotImplementedException();
+            var d = _unitOfWork.GetRepository<User>().GetById(id);
+            return _mapper.Map<UserDTO>(d);
         }
 
         public UserDTO GetUserDetail(long Id)
         {
-            throw new NotImplementedException();
+            var d = _unitOfWork.GetRepository<User>().GetById(Id);
+            return _mapper.Map<UserDTO>(d);
         }
 
         long IUserService.CreateUser(UserCreateDTO User)
@@ -166,12 +148,38 @@ namespace School_Manager.Core.Services.Implemetations
 
         public bool DeleteUser(long UserId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _unitOfWork.BeginTransaction();
+                var user = _unitOfWork.GetRepository<User>().Query(
+                predicate: p => p.Id == UserId).FirstOrDefault();
+
+                if (user != null)
+                {
+                    _unitOfWork.GetRepository<User>().Remove(user);
+                    //var existingRoles = _unitOfWork.GetRepository<UserRole>().Query(r => r.UserRef == UserId).ToList();
+                    //_unitOfWork.GetRepository<UserRole>().RemoveRange(existingRoles);
+                }
+
+
+                _unitOfWork.SaveChanges();
+
+                _unitOfWork.Commit();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                throw;
+            }
         }
 
         public long GetPanretId(long id)
         {
-            throw new NotImplementedException();
+            var ds = _unitOfWork.GetRepository<Parent>().Query(x=>x.UserRef == id).FirstOrDefault();
+			if(ds == null) return 0;
+			return ds.Id;
         }
 
         public async Task<List<UserDTO>> GetAllAsyncDrivers()
