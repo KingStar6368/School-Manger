@@ -84,6 +84,7 @@ namespace School_Manager.Core.Mapper
             #region Driver
             CreateMap<Driver, DriverDto>()
                 .ForMember(dest => dest.Car, opt => opt.MapFrom(src => src.Cars.FirstOrDefault(i => i.IsActive)))
+                .ForMember(dest => dest.FutherName, opt => opt.MapFrom(src => src.FatherName))
                 .ForMember(dest=>dest.Passanger, opt => opt.MapFrom(src => src.Passanger.Where(x=>x.IsEnabled && x.EndDate >= DateTime.Now).Select(p => p.ChildRef)))
                 .ForMember(dest => dest.AvailableSeats, opt => opt.MapFrom<AvailableSeatsResolver>())
                 .ForMember(dest => dest.BankAccount,opt => opt.MapFrom<BankAccountResolver>());
