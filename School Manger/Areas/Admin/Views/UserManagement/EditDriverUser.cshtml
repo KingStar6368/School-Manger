@@ -1,0 +1,121 @@
+﻿@using School_Manger.Models.PageView
+@model UserEditDriver
+@{
+    ViewData["Title"] = "ویرایش راننده";
+    Layout = "_AdminLayout";
+}
+<div class="container mt-4 text-white">
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">
+                ✏️ ویرایش کاربر راننده: <span class="text-warning">@Model.DriverUpdateDto.Name</span>
+            </h4>
+            <form asp-action="Index" method="post">
+                <input type="submit" class="btn btn-secondary fw-bold shadow-sm" value="🔙 بازگشت" />
+            </form>
+        </div>
+        <div class="card-body">
+            <form asp-action="EditDriver" onsubmit="FillHidden()" method="post">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <input type="hidden" asp-for="@Model.DriverUpdateDto.Id" value="@Model.DriverUpdateDto.Id" />
+                        <input type="hidden" asp-for="@Model.UserUpdateDto.Id" value="@Model.UserUpdateDto.Id" />
+                        <div class="mb-3">
+                            <label class="form-label">👤 نام</label><label style="color:red;font-size:20px">*</label>
+                            <input asp-for="@Model.DriverUpdateDto.Name" asp-for="@Model.UserUpdateDto.FirstName" id="DName" value="@Model.DriverUpdateDto.Name" class="form-control form-control-lg" required />
+                            <input asp-for="@Model.UserUpdateDto.FirstName" value="@Model.DriverUpdateDto.Name" id="UName" hidden required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">👥 نام خانوادگی</label><label style="color:red;font-size:20px">*</label>
+                            <input asp-for="@Model.DriverUpdateDto.LastName" value="@Model.DriverUpdateDto.LastName" id="DLastName" class="form-control form-control-lg" required />
+                            <input asp-for="@Model.UserUpdateDto.LastName" value="@Model.DriverUpdateDto.LastName" id="ULastName" hidden required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">👨‍👦 نام پدر</label><label style="color:red;font-size:20px">*</label>
+                            <input asp-for="@Model.DriverUpdateDto.FatherName" value="@Model.DriverUpdateDto.FatherName" class="form-control form-control-lg" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🎂 تاریخ تولد</label><label style="color:red;font-size:20px">*</label>
+                            <input name="BirthDate" class="persian-date form-control bg-secondary text-white" required />
+                            <input type="hidden" class="gregorian-date" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🆔 کد ملی</label><label style="color:red;font-size:20px">*</label>
+                            <input asp-for="@Model.DriverUpdateDto.NationCode" asp-for="@Model.UserUpdateDto.UserName" id="DserName" value="@Model.DriverUpdateDto.NationCode" class="form-control form-control-lg" required />
+                            <input asp-for="@Model.UserUpdateDto.UserName" value="@Model.DriverUpdateDto.NationCode" id="UserName" hidden required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🎓 مدرک تحصیلی</label>
+                            <input asp-for="@Model.DriverUpdateDto.Education" value="@Model.DriverUpdateDto.Education" class="form-control form-control-lg" data-val="false" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🎓 شماره گواهینامه</label>
+                            <input asp-for="@Model.DriverUpdateDto.CertificateId" value="@Model.DriverUpdateDto.CertificateId" class="form-control form-control-lg" data-val="false" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">📝 توضیحات</label>
+                            <textarea asp-for="@Model.DriverUpdateDto.Descriptions" value="@Model.DriverUpdateDto.Descriptions" data-val="false" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🏠 آدرس</label><label style="color:red;font-size:20px">*</label>
+                            <textarea asp-for="@Model.DriverUpdateDto.Address" value="@Model.DriverUpdateDto.Address" data-val="false" class="form-control" rows="2" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🆔 شماره پرونده</label>
+                            <textarea asp-for="@Model.DriverUpdateDto.Code" value="@Model.DriverUpdateDto.Code" data-val="false" class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">🔒 رمز عبور</label><label style="color:red;font-size:20px">*</label>
+                            <input asp-for="@Model.UserUpdateDto.PasswordHash" type="password" id="password" class="form-control form-control-lg" minlength="8" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">📞 شماره تماس</label><label style="color:red;font-size:20px">*</label>
+                            <input asp-for="@Model.UserUpdateDto.Mobile" value="@Model.UserUpdateDto.Mobile" class="form-control form-control-lg" required />
+                        </div>
+                        <h5 class="text-info"><i class="bi bi-bank2"></i> مشخصات حساب بانکی</h5>
+                        <div class="mb-3">
+                            <label class="form-label">🏦 شماره حساب</label>
+                            <input asp-for="@Model.DriverUpdateDto.BankRef" data-val="false" class="form-control form-control-lg" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🔢 شماره شبا/کارت</label><label style="color:red;font-size:20px">*</label>
+                            <input asp-for="@Model.DriverUpdateDto.BankAccountNumber" class="form-control form-control-lg" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group text-center mt-4 d-flex justify-content-center gap-3">
+                    <button type="submit" class="btn btn-success col-md-2">
+                        <i class="bi bi-save2 me-1"></i> ذخیره
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        function FillHidden(){
+            document.getElementById('UName').value = document.getElementById('DName').value;
+            document.getElementById('ULastName').value = document.getElementById('DLastName').value;
+            document.getElementById('UserName').value = document.getElementById('DerName').value;
+        }
+                 // Password validation
+        document.getElementById('password').addEventListener('input', function(e) {
+            const passwordHelp = document.getElementById('passwordHelp');
+
+            if (this.value.length < 8) {
+                this.classList.remove('border-success', 'is-valid');
+                this.classList.add('border-danger', 'is-invalid');
+                passwordHelp.textContent = 'رمز عبور باید حداقل ۸ کاراکتر داشته باشد';
+                passwordHelp.className = 'form-text text-danger';
+            } else {
+                this.classList.remove('border-danger', 'is-invalid');
+                this.classList.add('border-success', 'is-valid');
+                passwordHelp.textContent = 'رمز عبور معتبر است';
+                passwordHelp.className = 'form-text text-success';
+            }
+        });
+    </script>
+}

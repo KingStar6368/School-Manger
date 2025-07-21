@@ -1,0 +1,86 @@
+﻿@model School_Manger.Models.PageView.UserEditParent;
+@{
+    ViewData["Title"] = "ویرایش والدین";
+    Layout = "_AdminLayout";
+}
+<div class="container mt-4 text-white">
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">
+                ✏️ ویرایش قبض: <span class="text-warning">@Model.ParentUpdateDto.FirstName</span>
+            </h4>
+            <form asp-action="Index" method="post">
+                <input type="submit" class="btn btn-secondary fw-bold shadow-sm" value="🔙 بازگشت" />
+            </form>
+        </div>
+        <div class="card-body">
+            <form asp-action="EditParent" method="post">
+                <input type="hidden" asp-for="@Model.ParentUpdateDto.Id" value="@Model.ParentUpdateDto.Id" />
+                <input type="hidden" asp-for="@Model.UserUpdateDto.Id" value="@Model.UserUpdateDto.Id" />
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">👤 نام</label><label style="color:red;font-size:20px">*</label>
+                            <input asp-for="@Model.ParentUpdateDto.FirstName" id="PName" value="@Model.ParentUpdateDto.FirstName" class="form-control form-control-lg" required />
+                            <input asp-for="@Model.UserUpdateDto.FirstName" id="UName" hidden value="@Model.ParentUpdateDto.FirstName" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">👥 نام خانوادگی</label><label style="color:red;font-size:20px">*</label>
+                            <input asp-for="@Model.ParentUpdateDto.LastName" id="PLastName" value="@Model.ParentUpdateDto.LastName" class="form-control form-control-lg" required />
+                            <input asp-for="@Model.UserUpdateDto.LastName" id="ULastName" hidden value="@Model.ParentUpdateDto.LastName" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🆔 کد ملی</label><label style="color:red;font-size:20px">*</label>
+                            <input asp-for="@Model.ParentUpdateDto.NationalCode" id="PerName" value="@Model.ParentUpdateDto.NationalCode" class="form-control form-control-lg" required />
+                            <input asp-for="@Model.UserUpdateDto.UserName" id="UserName" hidden value="@Model.ParentUpdateDto.NationalCode" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">🏠 آدرس</label>
+                            <textarea asp-for="@Model.ParentUpdateDto.Address" value="@Model.ParentUpdateDto.Address" class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">🔒 رمز عبور</label><label style="color:red;font-size:20px">*</label>
+                            <input asp-for="@Model.UserUpdateDto.PasswordHash" type="password" id="password" class="form-control form-control-lg" minlength="8" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">📞 شماره تماس</label><label style="color:red;font-size:20px">*</label>
+                            <input asp-for="@Model.UserUpdateDto.Mobile" class="form-control form-control-lg" required />
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm">
+                            💾 ذخیره تغییرات
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        function FillHidden(){
+            document.getElementById('UName').value = document.getElementById('PName').value;
+            document.getElementById('ULastName').value = document.getElementById('PLastName').value;
+            document.getElementById('UserName').value = document.getElementById('PerName').value;
+        }
+                 // Password validation
+        document.getElementById('password').addEventListener('input', function(e) {
+            const passwordHelp = document.getElementById('passwordHelp');
+
+            if (this.value.length < 8) {
+                this.classList.remove('border-success', 'is-valid');
+                this.classList.add('border-danger', 'is-invalid');
+                passwordHelp.textContent = 'رمز عبور باید حداقل ۸ کاراکتر داشته باشد';
+                passwordHelp.className = 'form-text text-danger';
+            } else {
+                this.classList.remove('border-danger', 'is-invalid');
+                this.classList.add('border-success', 'is-valid');
+                passwordHelp.textContent = 'رمز عبور معتبر است';
+                passwordHelp.className = 'form-text text-success';
+            }
+        });
+    </script>
+}

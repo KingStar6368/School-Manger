@@ -45,17 +45,11 @@
                                            onclick="return confirm('آیا از حذف این راننده مطمئن هستید؟')">
                                             <i class="bi bi-trash"></i> 🗑️ حذف
                                         </a>
-                                    </td>
-                                    @* <td>
-                                        <a asp-action="Edit" asp-route-id="@user.User.Id"
+                                        <a asp-action="EditDriver" asp-route-UserId="@user.User.Id" asp-route-NationCode="@user.User.UserName"
                                            class="btn text-black bg-warning btn-sm btn-outline-light rounded-pill shadow-sm" title="ویرایش">
                                             <i class="bi bi-pencil"></i> 🖊️ تغییر
                                         </a>
-                                        <a asp-action="Delete" asp-route-id="@user.User.Id"
-                                           class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm title="حذف">
-                                            <i class="bi bi-trash"></i> 🗑️ حذف
-                                        </a>
-                                    </td> *@
+                                    </td>
                                 </tr>
                             }
                         </tbody>
