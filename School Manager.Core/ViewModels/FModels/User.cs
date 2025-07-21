@@ -41,7 +41,7 @@ namespace School_Manager.Core.ViewModels.FModels
     }
     public class UserUpdateDTO
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public  string UserName { get; set; }
         public string PasswordHash{ get; set; }
         public string Mobile { get; set; }

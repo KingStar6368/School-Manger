@@ -1,0 +1,61 @@
+﻿@using School_Manger.Models.PageView
+@model UserEditDriver
+@{
+    ViewData["Title"] = "ویرایش راننده";
+    Layout = "_AdminLayout";
+}
+<div class="container mt-4 text-white">
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">
+                ✏️ ویرایش کاربر راننده: <span class="text-warning">@Model.DriverUpdateDto.Name</span>
+            </h4>
+            <form asp-action="Index" method="post">
+                <input type="submit" class="btn btn-secondary fw-bold shadow-sm" value="🔙 بازگشت" />
+            </form>
+        </div>
+        <div class="card-body">
+            <form asp-action="EditDriver" method="post">
+                <input type="hidden" asp-for="@Model.DriverUpdateDto.Id" value="@Model.DriverUpdateDto.Id" />
+                <input type="hidden" asp-for="@Model.UserUpdateDto.Id" value="@Model.UserUpdateDto.Id" />
+                <div class="mb-3">
+                    <label class="form-label">👤 نام</label><label style="color:red;font-size:20px">*</label>
+                    <input asp-for="@Model.DriverUpdateDto.Name" value="@Model.DriverUpdateDto.Name" class="form-control form-control-lg" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">👥 نام خانوادگی</label><label style="color:red;font-size:20px">*</label>
+                    <input asp-for="@Model.DriverUpdateDto.LastName" value="@Model.DriverUpdateDto.LastName" class="form-control form-control-lg" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">👨‍👦 نام پدر</label><label style="color:red;font-size:20px">*</label>
+                    <input asp-for="@Model.DriverUpdateDto.FatherName" value="@Model.DriverUpdateDto.FatherName" class="form-control form-control-lg" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">🎂 تاریخ تولد</label><label style="color:red;font-size:20px">*</label>
+                    <input name="BirthDate" class="persian-date form-control bg-secondary text-white" required />
+                    <input type="hidden" class="gregorian-date" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">🆔 کد ملی</label><label style="color:red;font-size:20px">*</label>
+                    <input asp-for="@Model.DriverUpdateDto.NationCode" asp-for="@Model.UserUpdateDto.UserName" value="@Model.DriverUpdateDto.NationCode" class="form-control form-control-lg" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">🎓 مدرک تحصیلی</label>
+                    <input asp-for="@Model.DriverUpdateDto.Education" value="@Model.DriverUpdateDto.Education" class="form-control form-control-lg" data-val="false" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">📝 توضیحات</label>
+                    <textarea asp-for="@Model.DriverUpdateDto.Descriptions" value="@Model.DriverUpdateDto.Descriptions" data-val="false" class="form-control" rows="2"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">🏠 آدرس</label><label style="color:red;font-size:20px">*</label>
+                    <textarea asp-for="@Model.DriverUpdateDto.Address" value="@Model.DriverUpdateDto.Address" data-val="false" class="form-control" rows="2" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">🆔 شماره پرونده</label>
+                    <textarea asp-for="@Model.DriverUpdateDto.Code" value="@Model.DriverUpdateDto.Code" data-val="false" class="form-control" rows="2"></textarea>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

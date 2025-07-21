@@ -148,5 +148,59 @@ namespace School_Manger.Controllers.Admin
             }
             return await Parents();
         }
+        [HttpGet]
+        public IActionResult EditDriver(long UserId,string NationCode)
+        {
+            var user = _userService.GetUserDetail(UserId);
+            var driver = _driverService.GetDriverNationCode(NationCode);
+            return View("EditDriverUser",new UserEditDriver()
+            {
+                DriverUpdateDto = new DriverUpdateDto
+                {
+                    Id = driver.Id,
+                    Name = driver.Name,
+                    LastName = driver.LastName,
+                    NationCode = driver.NationCode,
+                    FatherName = driver.FutherName,
+                    Address = driver.Address,
+                    AvailableSeats = driver.AvailableSeats,
+                    BankAccountNumber = driver.BankAccountNumber,
+                    BirthDate = driver.BirthDate,
+                    CertificateId = driver.CertificateId,
+                    Code = driver.Code,
+                    Descriptions = driver.Descriptions,
+                    Education = driver.Education,
+                    Latitude = driver.Latitude,
+                    Longitude = driver.Longitude,
+                    Rate = driver.Rate,
+                    Warnning = driver.Warnning,
+                    //UserRef = 
+                    //BankRef
+                },
+                UserUpdateDto = new UserUpdateDTO()
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    IsActive = user.IsActive,
+                    Mobile = user.Mobile,
+                    UserName = user.UserName,
+                    PasswordHash = user.PasswordHash
+                }
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditDriverAsync(UserEditDriver Data)
+        {
+            if (_driverService.UpdateDriver(Data.DriverUpdateDto))
+                ControllerExtensions.ShowSuccess(this, "موفق", "تغییرات راننده اعمال شد");
+            else
+                ControllerExtensions.ShowError(this, "خطا", "مشکلی در کاربری راننده پیش آمده");
+            if (_userService.UpdateUser(Data.UserUpdateDto))
+                ControllerExtensions.ShowSuccess(this, "موفق", "تغییرات کاربری راننده اعمال شد");
+            else
+                ControllerExtensions.ShowSuccess(this, "موفق", "مشکلی در کاربری راننده پیش آمده");
+            return await Drivers();
+        }
     }
 }

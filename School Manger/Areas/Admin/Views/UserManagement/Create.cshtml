@@ -69,10 +69,10 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🏠 آدرس</label>
-                            <textarea asp-for="Driver.Address" data-val="false" class="form-control" rows="2"></textarea>
+                            <textarea asp-for="Driver.Address" data-val="false" class="form-control" rows="2" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🆔 شماره پرونده</label>
+                            <label class="form-label">🆔 شماره پرونده</label><label style="color:red;font-size:20px">*</label>
                             <textarea asp-for="Driver.Code" data-val="false" class="form-control" rows="2"></textarea>
                         </div>
                         <input value="@userType"  hidden />
