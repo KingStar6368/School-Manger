@@ -10,7 +10,7 @@
             <h4 class="mb-0 fw-bold">
                 ✏️ ویرایش کاربر راننده: <span class="text-warning">@Model.DriverUpdateDto.Name</span>
             </h4>
-            <form asp-action="Index" method="post">
+            <form asp-action="Drivers" method="post">
                 <input type="submit" class="btn btn-secondary fw-bold shadow-sm" value="🔙 بازگشت" />
             </form>
         </div>
@@ -20,6 +20,7 @@
                     <div class="col-md-6">
                         <input type="hidden" asp-for="@Model.DriverUpdateDto.Id" value="@Model.DriverUpdateDto.Id" />
                         <input type="hidden" asp-for="@Model.UserUpdateDto.Id" value="@Model.UserUpdateDto.Id" />
+                        <input type="hidden" asp-for="@Model.DriverUpdateDto.UserRef" value="@Model.UserUpdateDto.Id" />
                         <div class="mb-3">
                             <label class="form-label">👤 نام</label><label style="color:red;font-size:20px">*</label>
                             <input asp-for="@Model.DriverUpdateDto.Name" asp-for="@Model.UserUpdateDto.FirstName" id="DName" value="@Model.DriverUpdateDto.Name" class="form-control form-control-lg" required />
@@ -68,7 +69,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label">🔒 رمز عبور</label><label style="color:red;font-size:20px">*</label>
-                            <input asp-for="@Model.UserUpdateDto.PasswordHash" type="password" id="password" class="form-control form-control-lg" minlength="8" required />
+                            <input asp-for="@Model.UserUpdateDto.PasswordHash" value="@Model.UserUpdateDto.PasswordHash" type="password" id="password" class="form-control form-control-lg" minlength="8" required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">📞 شماره تماس</label><label style="color:red;font-size:20px">*</label>

@@ -9,7 +9,7 @@
             <h4 class="mb-0 fw-bold">
                 ✏️ ویرایش والد: <span class="text-warning">@Model.ParentUpdateDto.FirstName</span>
             </h4>
-            <form asp-action="Index" method="post">
+            <form asp-action="Parents" method="post">
                 <input type="submit" class="btn btn-secondary fw-bold shadow-sm" value="🔙 بازگشت" />
             </form>
         </div>
@@ -17,6 +17,7 @@
             <form asp-action="EditParent" method="post">
                 <input type="hidden" asp-for="@Model.ParentUpdateDto.Id" value="@Model.ParentUpdateDto.Id" />
                 <input type="hidden" asp-for="@Model.UserUpdateDto.Id" value="@Model.UserUpdateDto.Id" />
+                <input type="hidden" asp-for="@Model.ParentUpdateDto.UserRef" value="@Model.UserUpdateDto.Id" />
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="mb-3">
@@ -42,7 +43,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label">🔒 رمز عبور</label><label style="color:red;font-size:20px">*</label>
-                            <input asp-for="@Model.UserUpdateDto.PasswordHash" type="password" id="password" class="form-control form-control-lg" minlength="8" required />
+                            <input asp-for="@Model.UserUpdateDto.PasswordHash" value="@Model.UserUpdateDto.PasswordHash" type="password" id="password" class="form-control form-control-lg" minlength="8" required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">📞 شماره تماس</label><label style="color:red;font-size:20px">*</label>
