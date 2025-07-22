@@ -39,8 +39,9 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🎂 تاریخ تولد</label><label style="color:red;font-size:20px">*</label>
-                            <input name="BirthDate" value="@Model.DriverUpdateDto.BirthDate.ToPersain()" class="persian-date form-control bg-secondary text-white" required />
-                            <input type="hidden" class="gregorian-date" />
+                            <label class="form-label">@Model.DriverUpdateDto.BirthDate.ToPersianString()</label>
+                            <input name="BirthDate" class="persian-date form-control bg-secondary text-white" required />
+                            <input type="hidden" value="@Model.DriverUpdateDto.BirthDate.ToPersianString()" class="gregorian-date" />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🆔 کد ملی</label><label style="color:red;font-size:20px">*</label>

@@ -1,4 +1,5 @@
 ﻿@model School_Manager.Core.ViewModels.FModels.BillDto
+@using School_Manger.Extension;
 @{
     ViewData["Title"] = "ویرایش قبض";
     Layout = "_AdminLayout";
@@ -32,7 +33,10 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">📆 مهلت پرداخت</label>
-                        <input type="date" name="EstimateTime" class="form-control bg-secondary text-white" value="@Model.BillExpiredTime.ToString("yyyy-MM-dd")" required />
+                        @* <input type="date" name="EstimateTime" class="form-control bg-secondary text-white" value="@Model.BillExpiredTime.ToString("yyyy-MM-dd")" required /> *@
+                        <label class="form-label">@Model.BillExpiredTime.ToPersianString()</label>
+                        <input name="EstimateTime" class="persian-date form-control bg-secondary text-white" required />
+                        <input type="hidden" value="@Model.BillExpiredTime.ToPersianString()" class="gregorian-date" />
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">نوع قبض</label>

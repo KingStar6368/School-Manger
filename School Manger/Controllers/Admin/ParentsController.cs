@@ -170,16 +170,20 @@ namespace School_Manger.Controllers.Admin
         }
 
         [HttpPost]
-        public IActionResult EditBill(long billId, long childId, BillUpdateDto model)
+        public IActionResult EditBill(long billId, long childId, BillUpdateDto model,string EstimateTime)
         {
-            if (ModelState.IsValid)
+            try
             {
+                model.EstimateTime = EstimateTime.ConvertPersianToEnglish().ToMiladi();
                 _billService.Update(model);
                 ControllerExtensions.ShowSuccess(this, "موفق", "تغییرات اعمال شد");
                 return CreateBill(childId);
             }
-            ViewBag.ChildId = childId;
-            return View("EditBill", model);
+            catch
+            {
+                ViewBag.ChildId = childId;
+                return View("EditBill", model);
+            }
         }
         [HttpGet]
         public async Task<IActionResult> UpdateChild(long id, long parentId)
@@ -235,10 +239,13 @@ namespace School_Manger.Controllers.Admin
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateChild(ChildUpdateDto model, long parentId)
+        public async Task<IActionResult> UpdateChild(ChildUpdateDto model, long parentId,string BirthDate)
         {
-            if (ModelState.IsValid)
+            try
             {
+                model.LocationPairs[0].Locations[0].IsActive = true;
+                model.LocationPairs[0].Locations[1].IsActive = true;
+                model.BirthDate = BirthDate.ConvertEnglishToPersian().ToMiladi();
                 var result = _childService.UpdateChild(model);
                 if (result)
                 {
@@ -250,9 +257,12 @@ namespace School_Manger.Controllers.Admin
                     ControllerExtensions.ShowError(this, "خطا", "خطا در ذخیره تغییرات");
                 }
             }
-            ViewBag.ParentId = parentId;
-            ViewBag.Schools = await _schoolService.GetSchools();
-            return View("EditChild", model);
+            catch
+            {
+            }
+                ViewBag.ParentId = parentId;
+                ViewBag.Schools = await _schoolService.GetSchools();
+                return View("EditChild", model);
         }
     }
 }
