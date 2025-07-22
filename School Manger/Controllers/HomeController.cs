@@ -13,6 +13,7 @@ using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models;
 using School_Manger.Models.PageView;
+using SMS.Base;
 
 namespace School_Manger.Controllers
 {
@@ -26,8 +27,9 @@ namespace School_Manger.Controllers
         private readonly ISchoolService _Sservice;
         //private readonly IDriverService _DriverService;
         //private readonly IContractService _ContractService;
+        private readonly ISMSService SMSService;
         public HomeController(IParentService PService,IChildService CService,
-            IUserService UService,IBillService billService,ISchoolService schoolService/*,IDriverService driverService,IContractService contractService*/)
+            IUserService UService,IBillService billService,ISchoolService schoolService,ISMSService sMSService/*,IDriverService driverService,IContractService contractService*/)
         {
             //_DriverService = driverService;
             _PService = PService;
@@ -35,6 +37,7 @@ namespace School_Manger.Controllers
             _UserService = UService;
             _BillService = billService;
             _Sservice = schoolService;
+            SMSService = sMSService;
             //_ContractService = contractService;
         }
 

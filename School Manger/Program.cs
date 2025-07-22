@@ -2,6 +2,7 @@ using Microsoft.Win32;
 using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.IOC;
+using SMS.Base;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,11 @@ builder.Services.RegisterServices(builder.Configuration);
 builder.Services.AddControllersWithViews();
 builder.Services.AddAuthorization();
 builder.Services.AddSession();
-
+builder.Services.AddSingleton<ISMSService>(provider =>
+{
+    string apiKey = builder.Configuration["Sms:ApiKey"];
+    return new SMSService(apiKey);
+});
 //Container.Register(builder.Services);
 var app = builder.Build();
 app.UseSession();

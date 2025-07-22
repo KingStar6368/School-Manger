@@ -31,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\School Manager.Core\School Manager.Core.csproj" />
     <ProjectReference Include="..\School Manager.IOC\School Manager.IOC.csproj" />
+    <ProjectReference Include="..\SMS\SMS.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -40,25 +40,39 @@ namespace SMS.Base
             return null;
         }
     }
-    public class SMSBase
+    public class SMSService : ISMSService
     {
         private readonly SmsIr SMS;
-        public SMSBase(string _APIKEY)
+        public SMSService(string _APIKEY,string[] Temples)
         {
             SMS = new SmsIr(_APIKEY);
         }
-        public bool SendMessage(string[] Phone, string Message)
+
+        public bool Send(long Line, string Phone, string Message)
         {
-            SmsIrResult result = SMS.BulkSend(300000000000, Message, Phone);
-            return result.Status == 1 ? true : false;
+            SmsIrResult result = SMS.BulkSend(Line, Message, new string[] {Phone});
+            return result.Status == 1;
         }
-        public bool SendOTP(string Phone,string Message)
+
+        public async Task<bool> Send2All(long Line, string[] Phones, string Message)
         {
-            SmsIrResult result = SMS.VerifySend(Phone, 0, new VerifySendParameter[]
+            SmsIrResult result = await SMS.BulkSendAsync(Line, Message, Phones);
+            return result.Status == 1;
+        }
+
+        public async Task<bool> Send2Grup(long Line, string[] Phones, string Message)
+        {
+            SmsIrResult result = await SMS.BulkSendAsync(Line, Message, Phones);
+            return result.Status == 1;
+        }
+
+        public bool SendCode(string Phone, string Code)
+        {
+            SmsIrResult result = SMS.VerifySend(Phone, 583741, new VerifySendParameter[]
             {
-                new VerifySendParameter("Code", Message)
+                new VerifySendParameter("Code",Code)
             });
-            return result.Status == 1 ? true : false;
+            return result.Status == 1;
         }
     }
 }
