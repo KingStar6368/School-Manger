@@ -50,7 +50,13 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult SignIn(string PhoneNumber)
         {
-            SMSService.Send(30007732008772, PhoneNumber,$"والد گرامی کد تایدد شما \n"+ new Random().Next(1111,9999).ToString());
+            int RandomCode = new Random().Next(111111, 999999);
+            ControllerExtensions.AddKey(this, "Code", RandomCode);
+            if (!SMSService.Send(30007732008772, PhoneNumber, $"والد گرامی کد تایدد شما \n" + RandomCode))
+            {
+                ControllerExtensions.ShowError(this, "خطا", "کد تاییدی به شماره ارسال نشد");
+                return View("Index");
+            }
             ControllerExtensions.AddKey(this, "PhoneNumber", PhoneNumber);
             if (_UserService.IsMobileRegistered(ControllerExtensions.GetKey<string>(this, "PhoneNumber")))
             {
@@ -61,10 +67,14 @@ namespace School_Manger.Controllers
             return View("OTPConfirmation");
         }
         [HttpPost]
-        public IActionResult VerifyOtp()
+        public IActionResult VerifyOtp(int otpCode)
         {
-            //OtpCode Confirm
-            return View("UserInfo");
+            otpCode = int.Parse(new string(otpCode.ToString().Reverse().ToArray()));
+            int Code = ControllerExtensions.GetKey<int>(this, "Code");
+            if(Code == otpCode)
+                return View("UserInfo");
+            ControllerExtensions.ShowError(this, "خطا", "کد وارد شده اشتباه است");
+            return View("OTPConfirmation");
         }
         public IActionResult Login(string NationalCode, string Password)
         {
