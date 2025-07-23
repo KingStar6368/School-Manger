@@ -50,6 +50,7 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult SignIn(string PhoneNumber)
         {
+            SMSService.Send(30007732008772, PhoneNumber,$"والد گرامی کد تایدد شما \n"+ new Random().Next(1111,9999).ToString());
             ControllerExtensions.AddKey(this, "PhoneNumber", PhoneNumber);
             if (_UserService.IsMobileRegistered(ControllerExtensions.GetKey<string>(this, "PhoneNumber")))
             {
