@@ -43,7 +43,7 @@ namespace SMS.Base
     public class SMSService : ISMSService
     {
         private readonly SmsIr SMS;
-        public SMSService(string _APIKEY,string[] Temples)
+        public SMSService(string _APIKEY)
         {
             SMS = new SmsIr(_APIKEY);
         }

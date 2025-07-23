@@ -219,6 +219,10 @@ namespace School_Manager.Core.Mapper
             .ForMember(dest => dest.CheckTime, opt => opt.MapFrom(src => src.ChequeNavigation.CheckTime));
 
             #endregion
+            #region sms
+            CreateMap<SMSTemple, SMSTempleDto>();
+            CreateMap<SMSTempleUpdateDto, SMSTemple>();
+            #endregion
             #region User
             //CreateMap<User, UserVM>()
             //    .ForMember(dest => dest.formOprs, opt => opt.MapFrom(src => src.UserRoles.SelectMany(x=>x.RoleNavigation.AppRoleOperationAccess)));

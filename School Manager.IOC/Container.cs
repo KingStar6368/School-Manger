@@ -49,6 +49,7 @@ namespace School_Manager.IOC
             services.AddScoped<IRawMaterialService, RawMaterialService>();
             services.AddScoped<ILookupService, LookupService>();
             services.AddScoped<ISchoolService, SchoolService>();
+            services.AddScoped<ISMSTempleService,SMSTempleService>();
 
             // Validators
             services.AddScoped<IValidator<RawMaterialDTO>, RawMaterialDTOValidator>();

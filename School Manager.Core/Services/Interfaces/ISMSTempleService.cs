@@ -1,4 +1,5 @@
 ﻿using School_Manager.Core.Services.Implemetations;
+using School_Manager.Core.ViewModels.FModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,10 @@ namespace School_Manager.Core.Services.Interfaces
     public interface ISMSTempleService
     {
         public Task<List<SMSTempleDto>> GetTemples();
-        public SMSTempleDto GetTemple(int Id);
+        public SMSTempleDto GetTemple(long Id);
         public SMSTempleDto GetTempleByName(string Name);
         public SMSTempleDto GetTempleByTempleID(long TempleId);
         public bool UpdateTemple(SMSTempleUpdateDto updateDto);
-        public bool DeleteTemple(int Id);
+        public bool DeleteTemple(long Id);
     }
 }
