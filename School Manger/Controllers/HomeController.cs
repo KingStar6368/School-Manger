@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
-using DNTPersianUtils.Core;
+﻿using DNTPersianUtils.Core;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Reporting.NETCore;
 using PersianTextShaper;
 using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
@@ -14,6 +14,10 @@ using School_Manger.Extension;
 using School_Manger.Models;
 using School_Manger.Models.PageView;
 using SMS.Base;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace School_Manger.Controllers
 {
@@ -28,8 +32,9 @@ namespace School_Manger.Controllers
         //private readonly IDriverService _DriverService;
         //private readonly IContractService _ContractService;
         private readonly ISMSService SMSService;
+        private readonly IWebHostEnvironment _env;
         public HomeController(IParentService PService,IChildService CService,
-            IUserService UService,IBillService billService,ISchoolService schoolService,ISMSService sMSService/*,IDriverService driverService,IContractService contractService*/)
+            IUserService UService,IBillService billService,ISchoolService schoolService,ISMSService sMSService, IWebHostEnvironment env/*,IDriverService driverService,IContractService contractService*/)
         {
             //_DriverService = driverService;
             _PService = PService;
@@ -38,6 +43,7 @@ namespace School_Manger.Controllers
             _BillService = billService;
             _Sservice = schoolService;
             SMSService = sMSService;
+            _env = env;
             //_ContractService = contractService;
         }
 
@@ -50,6 +56,13 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult SignIn(string PhoneNumber)
         {
+            int RandomCode = new Random().Next(111111, 999999);
+            ControllerExtensions.AddKey(this, "Code", RandomCode);
+            if (!SMSService.Send(30007732008772, PhoneNumber, $"والد گرامی کد تایدد شما \n" + RandomCode))
+            {
+                ControllerExtensions.ShowError(this, "خطا", "کد تاییدی به شماره ارسال نشد");
+                return View("Index");
+            }
             ControllerExtensions.AddKey(this, "PhoneNumber", PhoneNumber);
             if (_UserService.IsMobileRegistered(ControllerExtensions.GetKey<string>(this, "PhoneNumber")))
             {
@@ -60,10 +73,14 @@ namespace School_Manger.Controllers
             return View("OTPConfirmation");
         }
         [HttpPost]
-        public IActionResult VerifyOtp()
+        public IActionResult VerifyOtp(int otpCode)
         {
-            //OtpCode Confirm
-            return View("UserInfo");
+            otpCode = int.Parse(new string(otpCode.ToString().Reverse().ToArray()));
+            int Code = ControllerExtensions.GetKey<int>(this, "Code");
+            if(Code == otpCode)
+                return View("UserInfo");
+            ControllerExtensions.ShowError(this, "خطا", "کد وارد شده اشتباه است");
+            return View("OTPConfirmation");
         }
         public IActionResult Login(string NationalCode, string Password)
         {
@@ -205,69 +222,41 @@ namespace School_Manger.Controllers
             return View(dashbord);
         }
         [HttpPost]
-        public IActionResult ShowBillPDF(BillDashbord index)
+        public IActionResult ShowBillPDF(long BillId)
         {
-            List<BillDto> bills = new List<BillDto>()
-            {
-                  new BillDto()
-                {
-                    Id = 3,
-                    Name = "مهر",
-                    ContractId = 1,
-                    PaidPrice = 100,
-                    PaidTime = DateTime.Now,
-                    BillExpiredTime = DateTime.Now,
-                    TotalPrice = 100
-                },
-                new BillDto()
-                {
-                    Id = 3,
-                    Name = "آبان",
-                    ContractId = 1,
-                    PaidPrice = 10,
-                    BillExpiredTime = DateTime.Now.AddMonths(-1),
-                    TotalPrice = 100
-                },
-                new BillDto()
-                {
-                    Id = 3,
-                    Name = "آذر",
-                    ContractId = 1,
-                    PaidPrice = 10,
-                    BillExpiredTime = DateTime.Now.AddDays(1),
-                    TotalPrice = 100
-                },
-                new BillDto()
-                {
-                    Id = 3,
-                    Name = "دی",
-                    ContractId = 1,
-                    PaidPrice = 10,
-                    BillExpiredTime = DateTime.Now.AddMonths(1),
-                    TotalPrice = 100
-                }
-            };
+            var bill = _BillService.GetBill(BillId);
+            if (bill == null)
+                return BadRequest("No bill data.");
 
-            BillDto bill = bills.FirstOrDefault();
-            PDFGenerator PDF = new PDFGenerator();
-            PDF.TitlesPer = new List<Paragraph>()
+            // Path to the RDLC file
+            string rdlcPath = Path.Combine(_env.WebRootPath, "reports", "Bill.rdlc");
+
+            // Prepare report parameters
+            var parameters = new List<ReportParameter>
+    {
+        new ReportParameter("Title", bill.Name),
+        new ReportParameter("TotalPrice", bill.TotalPrice.ToString()),
+        new ReportParameter("PaidPrice", bill.PaidPrice.ToString()),
+        new ReportParameter("Estimatetime", bill.BillExpiredTime.ToString("yyyy/MM/dd")),
+        new ReportParameter("Status", bill.HasPaid ? "پرداخت شده" : "پرداخت نشده")
+    };
+
+            // Load and render report
+            byte[] pdfBytes;
+            using (var report = new LocalReport())
             {
-                new Paragraph("نمایش قبض".Fix())
-                .SetTextAlignment(TextAlignment.CENTER)
-                .SetFontSize(24),
-            };
-            PDF.TblPer = new List<PDFTable>()
-            {
-                new PDFTable(2,60,HorizontalAlignment.CENTER)
-                .AddRow("شمار قبض :",bill.Id)
-                .AddRow("عنوان :",bill.Name)
-                .AddRow("مبلق پرداخت شده :",bill.PaidPrice)
-                .AddRow("مبلغ کل :",bill.TotalPrice)
-                .AddRow("کامل پرداخت شده :",bill.HasPaid)
-                .AddRow("وضعیت :",bill.HasPaid)
-                .AddRow("تاریخ پرداخت :",bill.PaidTime)
-            };
-            return File(PDF.Generate(), "application/pdf");
+                using var fs = new FileStream(rdlcPath, FileMode.Open, FileAccess.Read);
+                report.LoadReportDefinition(fs);
+
+                // NOTE: Add your data source name and object here
+                // For example:
+                // report.DataSources.Add(new ReportDataSource("BillDataSet", new List<BillModel> { bill }));
+
+                report.SetParameters(parameters);
+                pdfBytes = report.Render("PDF");
+            }
+
+            return File(pdfBytes, "application/pdf", "Bill.pdf");
         }
     }
 }
