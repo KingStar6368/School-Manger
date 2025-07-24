@@ -1,4 +1,5 @@
-﻿using School_Manager.Core.Utilities;
+﻿using DNTPersianUtils.Core;
+using School_Manager.Core.Utilities;
 
 namespace School_Manager.Core.ViewModels.FModels
 {
@@ -47,6 +48,33 @@ namespace School_Manager.Core.ViewModels.FModels
         /// تاریخ انقضای فرار داد
         /// </summary>
         public DateTime BillExpiredTime { get; set; }
+    }
+    public class BillInstallmentDto
+    {
+        /// <summary>
+        /// تعداد قسط
+        /// </summary>
+        public int InstallmentCount { get; set; } = 6;
+        /// <summary>
+        /// مبلغ ماهیانه
+        /// </summary>
+        public int Price { get; set; }
+        /// <summary>
+        /// آی دی قرارداد
+        /// </summary>
+        public int ServiceContractRef {  get; set; }
+        /// <summary>
+        /// تاریخ اولین قبض
+        /// </summary>
+        public DateTime StartDate{ get; set; } 
+        /// <summary>
+        /// تاریخ آخرین قبض اگر تاریخی وارد نشود آخرین روز سال را در نظر می گیرد
+        /// </summary>
+        public DateTime EndDate { get; set; } = DateTime.Now.GetPersianYearStartAndEndDates(true).EndDate;
+        /// <summary>
+        /// تعداد روزها برای مهلت پرداخت
+        /// </summary>
+        public int DeadLine { get; set; } = 5;
     }
     public interface IBillDto
     {

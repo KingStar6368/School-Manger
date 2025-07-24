@@ -42,6 +42,8 @@ namespace School_Manager.Core.Services.Interfaces
         /// ثبت قبض جدید
         /// </summary>
         long Create(BillCreateDto bill);
+        List<BillDto> Create(BillInstallmentDto billDto);
+        bool Create(List<BillCreateDto> bills);
         /// <summary>
         /// بروز رسانی قبض
         /// </summary>
@@ -52,6 +54,7 @@ namespace School_Manager.Core.Services.Interfaces
         /// حذف قبض
         /// </summary>
         bool Delete(long billId);
+        bool Delete(List<long> billIds);
         /// <summary>
         /// ذخیره قبض پیش پرداخت
         /// </summary>

@@ -32,7 +32,7 @@ namespace School_Manager.Core.Mapper
                 .ForMember(dest => dest.Type,opt=>opt.MapFrom(src=>(BillType)src.Type));
             CreateMap<BillUpdateDto, Bill>()
                 .ForMember(dest => dest.Type,opt=>opt.MapFrom(src=>(BillType)src.Type));
-
+            
             CreateMap<CreatePreBillDto, ServiceContract>()
             .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Price))
             .ForMember(dest => dest.MonthPrice, opt => opt.MapFrom(_ => 0))

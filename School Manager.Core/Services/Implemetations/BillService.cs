@@ -2,6 +2,7 @@
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using School_Manager.Core.Classes;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Base;
@@ -156,6 +157,12 @@ namespace School_Manager.Core.Services.Implemetations
             return result;
         }
 
+        public bool Create(List<BillCreateDto> bills)
+        {
+            var mBill = _mapper.Map<List<Bill>>(bills);
+            _unitOfWork.GetRepository<Bill>().AddRange(mBill);
+            return _unitOfWork.SaveChanges() > 0;
+        }
         public bool Update(BillUpdateDto bill)
         {
             var mainBill = _unitOfWork.GetRepository<Bill>().Query(x=>x.Id == bill.Id).Include(x=>x.PayBills).FirstOrDefault();
@@ -217,5 +224,92 @@ namespace School_Manager.Core.Services.Implemetations
         {
             return CreatePreBillAsync(bill).GetAwaiter().GetResult();
         }
+        public List<BillDto> Create(BillInstallmentDto billInstallmentDto)
+        {
+            var result = new List<Bill>();
+            var service = _unitOfWork.GetRepository<ServiceContract>()
+                .Query(x => x.Id == billInstallmentDto.ServiceContractRef)
+                .Include(x => x.Bills)
+                .Include(x => x.ChildNavigation)
+                .FirstOrDefault();
+
+            if (service == null) return new List<BillDto>();
+
+            var monthCount = 8;
+            if (service.ChildNavigation.Class == ClassNumber.Twelfth)
+                monthCount = 7;
+
+            var totalPaid = service.Bills.Select(x => x.Price).DefaultIfEmpty(0).Sum();
+            var totalPrice = (billInstallmentDto.Price * monthCount) - totalPaid;
+
+            var perInstallment = totalPrice / billInstallmentDto.InstallmentCount;
+            var remainInstallment = totalPrice % billInstallmentDto.InstallmentCount;
+
+            var startDate = billInstallmentDto.StartDate;
+            var endDate = billInstallmentDto.EndDate;
+
+            int totalMonths = (endDate.Year - startDate.Year) * 12 + (endDate.Month - startDate.Month) + 1;
+            if (billInstallmentDto.InstallmentCount > totalMonths)
+                return new List<BillDto>();
+
+            double step = (double)totalMonths / billInstallmentDto.InstallmentCount;
+
+            for (int i = 0; i < billInstallmentDto.InstallmentCount; i++)
+            {
+                int offsetMonth = (int)Math.Round(i * step);
+                var current = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(offsetMonth);
+
+                var estimateTime = PersianDateHelper.GetBillEstimateTime(current, billInstallmentDto.DeadLine);
+                var monthName = PersianDateHelper.PersianMonthNames[current.GetPersianMonth()];
+                var bill = new Bill
+                {
+                    Name = $"قسط {monthName}",
+                    ServiceContractRef = billInstallmentDto.ServiceContractRef,
+                    Price = (i == billInstallmentDto.InstallmentCount - 1) ? perInstallment + remainInstallment : perInstallment,
+                    EstimateTime = estimateTime,
+                    Type = BillType.Normal
+                };
+
+                result.Add(bill);
+            }
+            return _mapper.Map<List<BillDto>>(result);
+        }
+
+        public bool Delete(List<long> billIds)
+        {
+            var ds = _unitOfWork.GetRepository<Bill>().Query(x=>billIds.Contains(x.Id)).ToList();
+            if (ds == null)
+            {
+                return false;
+            }
+            if (ds.Any(x => x.PayBills.Any())) return false;
+            _unitOfWork.GetRepository<Bill>().RemoveRange(ds);
+            return _unitOfWork.SaveChanges() > 0;
+        }
+
+        //    public bool Create(BillInstallmentDto billInstallmentDto)
+        //    {
+        //        var service = _unitOfWork.GetRepository<ServiceContract>()
+        //                      .Query(x => x.Id == billInstallmentDto.ServiceContractRef)
+        //                      .Include(x=>x.Bills)
+        //                      .Include(x=>x.ChildNavigation)
+        //                      .FirstOrDefault();
+        //        if (service == null) return false;
+        //        var MonthCount = 8;
+        //        if (service.ChildNavigation.Class == ClassNumber.Twelfth)
+        //        {
+        //            MonthCount = 7;
+        //        }
+        //        var totalPrice = (billInstallmentDto.Price * MonthCount) - service.Bills.Select(x=>x.Price).DefaultIfEmpty(0).Sum();
+        //        var perInstallment = totalPrice / billInstallmentDto.InstallmentCount;
+        //        var remainInstallment = totalPrice % billInstallmentDto.InstallmentCount;
+        //        var startYear = billInstallmentDto.StartDate.GetPersianYear();
+        //        var startMonth = billInstallmentDto.StartDate.GetPersianMonth();
+        //        var endYear = billInstallmentDto.EndDate.GetPersianYear();
+        //        var endMonth = billInstallmentDto.EndDate.GetPersianMonth();
+        //        var totalMonth = (endMonth - startMonth) + ((endYear - startYear) * 12);
+        //        ?
+        //        return true;
+        //    }
     }
 }

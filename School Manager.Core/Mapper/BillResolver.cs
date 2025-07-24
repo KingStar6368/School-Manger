@@ -57,8 +57,8 @@ namespace School_Manager.Core.Mapper
             var estimateDate = source.EstimateTime;
             bool hasPaid = paid == price;
             if (hasPaid) { return "پرداخت شده"; }
-            if (estimateDate > DateTime.Now) { return "معوقه"; }
-            if (estimateDate < DateTime.Now) { return "سر رسید نشده"; }
+            if (estimateDate < DateTime.Now) { return "معوقه"; }
+            if (estimateDate > DateTime.Now) { return "سر رسید نشده"; }
             return "نا مشخص";
         }
     }

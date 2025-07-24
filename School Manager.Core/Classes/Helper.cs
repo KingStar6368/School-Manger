@@ -1,6 +1,8 @@
-﻿using System;
+﻿using DNTPersianUtils.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,6 +53,101 @@ namespace School_Manager.Core.Classes
                 .FirstOrDefault();
 
             return displayAttribute?.Name ?? enumValue.ToString();
+        }
+    }
+
+    public static class PersianDateHelper
+    {
+        public static IDictionary<int, string> PersianMonthNames { get; } = new Dictionary<int, string>
+    {
+        {
+            1, "فروردین"
+        },
+        {
+            2, "اردیبهشت"
+        },
+        {
+            3, "خرداد"
+        },
+        {
+            4, "تیر"
+        },
+        {
+            5, "مرداد"
+        },
+        {
+            6, "شهریور"
+        },
+        {
+            7, "مهر"
+        },
+        {
+            8, "آبان"
+        },
+        {
+            9, "آذر"
+        },
+        {
+            10, "دی"
+        },
+        {
+            11, "بهمن"
+        },
+        {
+            12, "اسفند"
+        }
+    };
+        /// <summary>
+        /// تبدیل یک تاریخ شمسی به میلادی
+        /// </summary>
+        public static DateTime ToMiladi(int year, int month, int day)
+        {
+            return $"{year}/{month:00}/{day:00}".ToGregorianDateTime() ?? DateTime.Now;
+        }
+
+        /// <summary>
+        /// گرفتن سال شمسی از تاریخ میلادی
+        /// </summary>
+        public static int GetPersianYear(DateTime date)
+        {
+            return new PersianCalendar().GetYear(date);
+        }
+
+        /// <summary>
+        /// گرفتن ماه شمسی از تاریخ میلادی
+        /// </summary>
+        public static int GetPersianMonth(DateTime date)
+        {
+            return new PersianCalendar().GetMonth(date);
+        }
+
+        /// <summary>
+        /// برگرداندن تاریخ پرداخت با توجه به منطق قبض‌ها:
+        /// - ماه بعد با DeadLine
+        /// - اگر اسفند باشد، 25 اسفند
+        /// </summary>
+        public static DateTime GetBillEstimateTime(DateTime currentMonthDate, int deadlineDays)
+        {
+            int year = GetPersianYear(currentMonthDate);
+            int month = GetPersianMonth(currentMonthDate);
+
+            if (month == 12) // اسفند
+            {
+                return ToMiladi(year, 12, 25);
+            }
+            else
+            {
+                int nextMonth = month + 1;
+                int nextYear = year;
+                if (nextMonth > 12)
+                {
+                    nextMonth = 1;
+                    nextYear++;
+                }
+
+                var baseDate = ToMiladi(nextYear, nextMonth, 1);
+                return baseDate.AddDays(deadlineDays);
+            }
         }
     }
 }
