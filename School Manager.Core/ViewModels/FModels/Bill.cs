@@ -62,7 +62,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// <summary>
         /// آی دی قرارداد
         /// </summary>
-        public int ServiceContractRef {  get; set; }
+        public long ServiceContractRef {  get; set; }
         /// <summary>
         /// تاریخ اولین قبض
         /// </summary>

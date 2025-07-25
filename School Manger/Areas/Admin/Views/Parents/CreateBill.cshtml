@@ -13,6 +13,12 @@
             <h4 class="mb-0 fw-bold">
                 📄 صدور قبض برای: <span class="text-warning">@Model.FirstName @Model.LastName</span>
             </h4>
+            @if (Model.Bills != null)
+            {
+                <a asp-action="BillCal" asp-route-ServiceId="@Model.Id" class="btn btn-outline-light mt-3">
+                    <i class="bi bi-arrow-right-circle"></i> ساخت قبض و قرارداد با محاسبه گر
+                </a>
+            }
             <a asp-controller="Parents" asp-action="Index" class="btn btn-outline-light shadow-sm fw-bold">
                 <i class="bi bi-arrow-right"></i> بازگشت
             </a>
@@ -177,7 +183,6 @@
             }
         </div>
     </div>
-</div>
 </div>
 
 @section Scripts {

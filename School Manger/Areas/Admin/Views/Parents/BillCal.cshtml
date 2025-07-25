@@ -1,0 +1,88 @@
+﻿@using School_Manger.Models.PageView;
+@model BillCalViewModel
+@{
+    ViewData["Title"] = "📄 صدور قبض";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4" dir="rtl">
+    <div class="card shadow-lg rounded-4 border-primary mb-4">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">
+                📄 صدور قبض اقساطی
+            </h4>
+            <a asp-controller="Parents" asp-action="Index" class="btn btn-outline-light shadow-sm fw-bold">
+                <i class="bi bi-arrow-right"></i> بازگشت
+            </a>
+        </div>
+        <div class="card-body">
+            <form id="billInstallmentForm" method="post" asp-action="BillCalPerView">
+                <input type="hidden" asp-for="@Model.Installment.ServiceContractRef" />
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">تعداد قسط</label>
+                        <input asp-for="@Model.Installment.InstallmentCount" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">مبلغ ماهیانه (تومان)</label>
+                        <input asp-for="@Model.Installment.Price" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">مهلت پرداخت (روز)</label>
+                        <input asp-for="@Model.Installment.DeadLine" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">تاریخ اولین قبض</label>
+                        <input asp-for="@Model.Installment.StartDate" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">تاریخ آخرین قبض</label>
+                        <input asp-for="@Model.Installment.EndDate" type="date" class="form-control" />
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-warning fw-bold">پیش نمایش قبض ها</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model?.Bills != null && Model.Bills.Any())
+    {
+        <div class="card shadow-lg rounded-4 border-success mb-4">
+            <div class="card-header bg-success bg-gradient text-white fw-bold">
+                پیش نمایش قبض های صادر شده
+            </div>
+            <div class="card-body">
+                <form method="post" asp-action="BillCal">
+                    <input type="hidden" name="ServiceContractRef" value="@Model.Installment.ServiceContractRef" />
+                    <input type="hidden" name="InstallmentCount" value="@Model.Installment.InstallmentCount" />
+                    <input type="hidden" name="Price" value="@Model.Installment.Price" />
+                    <input type="hidden" name="DeadLine" value="@Model.Installment.DeadLine" />
+                    <input type="hidden" name="StartDate" value="@Model.Installment.StartDate.ToString("yyyy-MM-dd")" />
+                    <input type="hidden" name="EndDate" value="@Model.Installment.EndDate.ToString("yyyy-MM-dd")" />
+                    <table class="table table-bordered table-striped text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>عنوان قبض</th>
+                                <th>مبلغ کل</th>
+                                <th>تاریخ سررسید</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var bill in Model.Bills)
+                        {
+                            <tr>
+                                <td>@bill.Name</td>
+                                <td>@bill.TotalPrice.ToString("N0")</td>
+                                <td>@bill.BillExpiredTime.ToString("yyyy/MM/dd")</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                    <button type="submit" class="btn btn-success fw-bold">صدور نهایی قبض ها</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>

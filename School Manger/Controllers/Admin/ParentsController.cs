@@ -54,7 +54,7 @@ namespace School_Manger.Controllers.Admin
                 Drivers = drivers,
                 Schools = schools
             };
-            return View("Details",admindashbord);
+            return View("Details", admindashbord);
         }
         [HttpPost]
         public IActionResult CreateBill(long ChildId)
@@ -93,6 +93,50 @@ namespace School_Manger.Controllers.Admin
                 var child = _childService.GetChild(ChildId);
                 return CreateBill(ChildId);
             }
+        }
+        [HttpGet]
+        public IActionResult BillCal(long Id)
+        {
+            var contractId = _contractService.GetContractWithChild(Id).Id;
+            ControllerExtensions.AddKey(this, "ChildId",Id);
+            return View(
+            new BillCalViewModel()
+            {
+                Installment = new BillInstallmentDto()
+                {
+                    ServiceContractRef = contractId,
+                },
+                Bills = null
+            });
+        }
+        [HttpPost]
+        public IActionResult BillCalPerView(BillCalViewModel data)
+        {
+            data.Bills = _billService.Create(data.Installment);
+            return View("BillCal", data);
+        }
+        [HttpPost]
+        public IActionResult BillCal(BillInstallmentDto data)
+        {
+            var bills = _billService.Create(data);
+            List<BillCreateDto> createDtos = new List<BillCreateDto>();
+            foreach (BillDto bill in bills)
+            {
+                createDtos.Add(new BillCreateDto()
+                {
+                    Name = bill.Name,
+                    EstimateTime = bill.BillExpiredTime,
+                    Price = bill.TotalPrice,
+                    ServiceContractRef = bill.ContractId,
+                    Type = (int)BillType.Normal,
+                });
+            }
+            if (_billService.Create(createDtos))
+                ControllerExtensions.ShowSuccess(this, "موفق", "قبض ها صادر شد");
+            else
+                ControllerExtensions.ShowSuccess(this, "خطا", "مشکلی در صادر قبض ها پیش آمده");
+            long id = ControllerExtensions.GetKey<long>(this, "ChildId");
+            return CreateBill(id);
         }
         [HttpPost]
         public IActionResult PayBill(long ChildId, long BillId, string TrackCode, string PaymentType, long PaidPrice, string PiadTime)
@@ -144,7 +188,7 @@ namespace School_Manger.Controllers.Admin
             }
             return CreateBill(secondId);
         }
-        public IActionResult DeleteChild(long Id,long PId)
+        public IActionResult DeleteChild(long Id, long PId)
         {
             try
             {
@@ -170,7 +214,7 @@ namespace School_Manger.Controllers.Admin
         }
 
         [HttpPost]
-        public IActionResult EditBill(long billId, long childId, BillUpdateDto model,string EstimateTime)
+        public IActionResult EditBill(long billId, long childId, BillUpdateDto model, string EstimateTime)
         {
             try
             {
@@ -239,7 +283,7 @@ namespace School_Manger.Controllers.Admin
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateChild(ChildUpdateDto model, long parentId,string BirthDate)
+        public async Task<IActionResult> UpdateChild(ChildUpdateDto model, long parentId, string BirthDate)
         {
             try
             {
@@ -260,9 +304,9 @@ namespace School_Manger.Controllers.Admin
             catch
             {
             }
-                ViewBag.ParentId = parentId;
-                ViewBag.Schools = await _schoolService.GetSchools();
-                return View("EditChild", model);
+            ViewBag.ParentId = parentId;
+            ViewBag.Schools = await _schoolService.GetSchools();
+            return View("EditChild", model);
         }
     }
 }
