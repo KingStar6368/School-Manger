@@ -26,7 +26,7 @@
             <Top>0.25396in</Top>
             <Left>3.36854in</Left>
             <Height>0.33333in</Height>
-            <Width>0.68229in</Width>
+            <Width>0.85416in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -58,7 +58,7 @@
             <Top>0.65674in</Top>
             <Left>3.23313in</Left>
             <Height>0.27083in</Height>
-            <Width>0.81771in</Width>
+            <Width>0.98959in</Width>
             <ZIndex>1</ZIndex>
             <Style>
               <Border>
@@ -91,7 +91,7 @@
             <Top>0.99701in</Top>
             <Left>3.12896in</Left>
             <Height>0.29688in</Height>
-            <Width>0.92188in</Width>
+            <Width>1.09376in</Width>
             <ZIndex>2</ZIndex>
             <Style>
               <Border>
@@ -124,7 +124,7 @@
             <Top>1.36333in</Top>
             <Left>2.86333in</Left>
             <Height>0.3125in</Height>
-            <Width>1.1875in</Width>
+            <Width>1.35938in</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>
@@ -285,9 +285,49 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
+          <Line Name="Line1">
+            <Top>0.6359in</Top>
+            <Left>0.37896in</Left>
+            <Height>0in</Height>
+            <Width>3.96354in</Width>
+            <ZIndex>9</ZIndex>
+            <Style>
+              <Border>
+                <Style>Solid</Style>
+              </Border>
+            </Style>
+          </Line>
+          <Line Name="Line2">
+            <Top>0.97445in</Top>
+            <Left>0.37896in</Left>
+            <Height>0in</Height>
+            <Width>3.96354in</Width>
+            <ZIndex>10</ZIndex>
+            <Style>
+              <Border>
+                <Style>Solid</Style>
+              </Border>
+            </Style>
+          </Line>
+          <Line Name="Line3">
+            <Top>1.37027in</Top>
+            <Left>0.37896in</Left>
+            <Height>0in</Height>
+            <Width>3.96354in</Width>
+            <ZIndex>11</ZIndex>
+            <Style>
+              <Border>
+                <Style>Solid</Style>
+              </Border>
+            </Style>
+          </Line>
         </ReportItems>
         <Height>2.16542in</Height>
-        <Style />
+        <Style>
+          <Border>
+            <Style>None</Style>
+          </Border>
+        </Style>
       </Body>
       <Width>4.52479in</Width>
       <Page>
