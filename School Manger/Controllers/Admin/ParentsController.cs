@@ -98,6 +98,8 @@ namespace School_Manger.Controllers.Admin
         public IActionResult BillCal(long Id)
         {
             var contractId = _contractService.GetContractWithChild(Id).Id;
+            var child = _childService.GetChild(Id);
+            ControllerExtensions.AddKey(this, "Path", child.Path);
             ControllerExtensions.AddKey(this, "ChildId",Id);
             return View(
             new BillCalViewModel()
@@ -106,12 +108,14 @@ namespace School_Manger.Controllers.Admin
                 {
                     ServiceContractRef = contractId,
                 },
+                Location = child.Path,
                 Bills = null
             });
         }
         [HttpPost]
         public IActionResult BillCalPerView(BillCalViewModel data)
         {
+            data.Location = ControllerExtensions.GetKey<LocationPairModel>(this, "Path");
             data.Bills = _billService.Create(data.Installment);
             return View("BillCal", data);
         }
