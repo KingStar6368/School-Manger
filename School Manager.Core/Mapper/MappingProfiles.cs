@@ -10,6 +10,7 @@ using School_Manager.Domain.Entities.Catalog.Identity;
 using School_Manager.Domain.Entities.Catalog.Operation;
 using School_Manager.Core.Classes;
 using School_Manager.Domain.Entities.Catalog.Enums;
+using DNTPersianUtils.Core;
 
 namespace School_Manager.Core.Mapper
 {
@@ -19,10 +20,11 @@ namespace School_Manager.Core.Mapper
         {
             #region Bill
             CreateMap<Bill, BillDto>()
-                .ForMember(dest => dest.ContractId, opt => opt.MapFrom(dest => dest.ServiceContractRef))
+                .ForMember(dest => dest.ContractId, opt => opt.MapFrom(src => src.ServiceContractRef))
                 .ForMember(dest => dest.TypeOfBill, opt => opt.MapFrom(src => src.Type.GetDisplayName()))
-                .ForMember(dest => dest.BillExpiredTime, opt => opt.MapFrom(dest => dest.EstimateTime))
-                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(dest => dest.Price))
+                .ForMember(dest => dest.BillExpiredTime, opt => opt.MapFrom(src => src.EstimateTime))
+                .ForMember(dest => dest.BillExpiredTimePer, opt => opt.MapFrom(src => src.EstimateTime.ToPersianDateTextify(true)))
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Price))
                 .ForMember(dest => dest.PaidPrice, opt => opt.MapFrom<PaidPriceResolver>())
                 .ForMember(dest => dest.PaidTime, opt => opt.MapFrom<PaidTimeResolver>())
                 .ForMember(dest => dest.HasPaid, opt => opt.MapFrom<HasPaidResolver>())

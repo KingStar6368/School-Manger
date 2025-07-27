@@ -241,9 +241,10 @@ namespace School_Manager.Core.Services.Implemetations
 
             var totalPaid = service.Bills.Select(x => x.Price).DefaultIfEmpty(0).Sum();
             var totalPrice = (billInstallmentDto.Price * monthCount) - totalPaid;
-
-            var perInstallment = totalPrice / billInstallmentDto.InstallmentCount;
-            var remainInstallment = totalPrice % billInstallmentDto.InstallmentCount;
+            var perInstallmentUnrounded = totalPrice / billInstallmentDto.InstallmentCount;
+            var perInstallmentRounded = (totalPrice / (billInstallmentDto.InstallmentCount * 1000000)) * 1000000;
+            var perInstallment = perInstallmentRounded;
+            var remainInstallment = totalPrice % billInstallmentDto.InstallmentCount + ((perInstallmentUnrounded - perInstallmentRounded) * billInstallmentDto.InstallmentCount) ;
 
             var startDate = billInstallmentDto.StartDate;
             var endDate = billInstallmentDto.EndDate;

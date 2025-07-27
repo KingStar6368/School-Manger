@@ -48,6 +48,10 @@ namespace School_Manager.Core.ViewModels.FModels
         /// تاریخ انقضای فرار داد
         /// </summary>
         public DateTime BillExpiredTime { get; set; }
+        /// <summary>
+        /// تاریخ انقضای فرار داد
+        /// </summary>
+        public string BillExpiredTimePer { get; set; }
     }
     public class BillInstallmentDto
     {
@@ -58,7 +62,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// <summary>
         /// مبلغ ماهیانه
         /// </summary>
-        public int Price { get; set; }
+        public int Price { get; set; } = 15000000;
         /// <summary>
         /// آی دی قرارداد
         /// </summary>
@@ -66,7 +70,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// <summary>
         /// تاریخ اولین قبض
         /// </summary>
-        public DateTime StartDate{ get; set; } 
+        public DateTime StartDate { get; set; } = DateTime.Now.GetPersianYearStartAndEndDates(true).StartDate.AddMonths(7);
         /// <summary>
         /// تاریخ آخرین قبض اگر تاریخی وارد نشود آخرین روز سال را در نظر می گیرد
         /// </summary>
