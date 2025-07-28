@@ -107,23 +107,18 @@
     </div>
     <div class="card-body bg-dark row g-3">
         <div class="col-md-4">
-            <label class="form-label fw-bold text-white">مبلغ بر اساس ۱ کیلومتر (تومان)</label>
-            <input class="form-control" type="number" id="Price" placeholder="مبلغ بر اساس کیلومتر تومان"/>
-        </div>
-        <div class="col-md-4">
             <label class="form-label fw-bold text-white">کیلومتر</label>
             <input class="form-control" type="number" id="Km" placeholder="کیلومتر"/>
+            <input hidden class="form-control" type="number" id="Km1" placeholder="کیلومتر"/>
+            <input hidden class="form-control" type="number" id="Km2" placeholder="کیلومتر"/>
         </div>
         <div class="col-md-4">
-            <label class="form-label fw-bold text-white">مبلغ محاسبه شده یک مسیر</label>
+            <label class="form-label fw-bold text-white">مبلغ محاسبه شده</label>
             <input class="form-control" type="number" id="PriceLbl" placeholder="مبلغ محاسبه شده" />
-            <label class="form-label fw-bold text-white">مبلغ محاسبه شده رفت و برگشت</label>
-            <input class="form-control" type="number" id="PriceLblTow" placeholder="مبلغ محاسبه شده" />
-            <label class="form-label text-white fw-bold">مبلغ محاسبه شده ماهانه</label>
-            <input class="form-control" type="number" id="PriceLblMoth" placeholder="مبلغ محاسبه شده" />
         </div>
         <button class="form-control bg-info col-md-4" onclick="Calculator()">محاسبه</button>
         <label id="info" class="text-white"></label>
+        <label id="info2" class="text-white"></label>
         <div id="map" />
     </div>
 </div>
@@ -131,11 +126,9 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     function Calculator(){
-        Km = parseFloat(document.getElementById('Km').value);
-        Price = parseFloat(document.getElementById('Price').value);
-        document.getElementById('PriceLbl').value = (Price * Km).toFixed(2);
-        document.getElementById('PriceLblTow').value = (Price * Km).toFixed(2) * 2;
-        document.getElementById('PriceLblMoth').value = ((Price * Km).toFixed(2) * 2)*30;
+        Km1 = parseFloat(document.getElementById('Km1').value);
+        Km2 = parseFloat(document.getElementById('Km2').value);
+        document.getElementById('Km').value = ((Km1 + Km2)/2)+1;
     }
     document.addEventListener('DOMContentLoaded', async function () {
         const map = L.map("map").setView([34.09, 49.678], 16);
@@ -153,7 +146,7 @@
             Lng: parseFloat(document.getElementById('Lng2').value)
         };
 
-        const url = `http://localhost:5000/Route?fromLat=${from.Lat}&fromLon=${from.Lng}&toLat=${to.Lat}&toLon=${to.Lng}`;
+        let url = `http://localhost:5000/Route?fromLat=${from.Lat}&fromLon=${from.Lng}&toLat=${to.Lat}&toLon=${to.Lng}`;
         L.marker({lat:from.Lat,lng:from.Lng}).addTo(map).bindPopup('<div class="bg-success">موقعیت خانه</div>').openPopup();
         L.marker({lat:to.Lat,lng:to.Lng}).addTo(map).bindPopup('<div class="bg-danger">موقعیت مدرسه</div>').openPopup();
         try {
@@ -169,11 +162,34 @@
 
             // Show distance and time
             document.getElementById('info').textContent =
-                `مسافت: ${data.distance_km.toFixed(2)} کیلومتر، زمان تقریبی: ${data.estimated_time_min.toFixed(2)} دقیقه`;
-            document.getElementById('Km').value = parseFloat(data.distance_km).toFixed(2);
+                `مسافت رفت: ${data.distance_km.toFixed(2)} کیلومتر، زمان تقریبی: ${data.estimated_time_min.toFixed(2)} دقیقه`;
+            document.getElementById('Km1').value = parseFloat(data.distance_km).toFixed(2);
 
         } catch (err) {
             document.getElementById('info').textContent = 'خطا در دریافت مسیر: ' + err.message;
+        }
+        // مسیر برگشت
+        url = `http://localhost:5000/Route?fromLat=${to.Lat}&fromLon=${to.Lng}&toLat=${from.Lat}&toLon=${from.Lng}`;
+        L.marker({lat:from.Lat,lng:from.Lng}).addTo(map).bindPopup('<div class="bg-success">موقعیت خانه</div>').openPopup();
+        L.marker({lat:to.Lat,lng:to.Lng}).addTo(map).bindPopup('<div class="bg-danger">موقعیت مدرسه</div>').openPopup();
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`API error: ${res.status}`);
+
+            const data = await res.json();
+
+            // Draw polyline
+            const latlngs = data.route.map(coord => [coord[0], coord[1]]);
+            const polyline = L.polyline(latlngs, { color: 'red' }).addTo(map);
+            map.fitBounds(polyline.getBounds());
+
+            // Show distance and time
+            document.getElementById('info2').textContent =
+                `مسافت بازگشت: ${data.distance_km.toFixed(2)} کیلومتر، زمان تقریبی: ${data.estimated_time_min.toFixed(2)} دقیقه`;
+            document.getElementById('Km2').value = parseFloat(data.distance_km).toFixed(2);
+
+        } catch (err) {
+            document.getElementById('info2').textContent = 'خطا در دریافت مسیر: ' + err.message;
         }
     });
 </script>
