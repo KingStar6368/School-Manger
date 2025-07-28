@@ -4,6 +4,16 @@
     ViewData["Title"] = "📄 صدور قبض";
     Layout = "_AdminLayout";
 }
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    #map {
+        height: 400px;
+        margin-bottom: 20px;
+        border: 2px solid #ccc;
+        border-radius: 10px;
+    }
+</style>
 
 <div class="container mt-4" dir="rtl">
     <div class="card shadow-lg rounded-4 border-primary mb-4">
@@ -18,6 +28,10 @@
         <div class="card-body">
             <form id="billInstallmentForm" method="post" asp-action="BillCalPerView">
                 <input type="hidden" asp-for="@Model.Installment.ServiceContractRef" />
+                <input type="hidden" id="Lat1" value="@Model.Location.Location1.Latitude" />
+                <input type="hidden" id="Lng1" value="@Model.Location.Location1.Longitude" />
+                <input type="hidden" id="Lat2" value="@Model.Location.Location2.Latitude" />
+                <input type="hidden" id="Lng2" value="@Model.Location.Location2.Longitude" />
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label class="form-label fw-bold">تعداد قسط</label>
@@ -86,3 +100,96 @@
         </div>
     }
 </div>
+
+<div class="card">
+    <div class="card-header bg-info">
+        <h3>محاسبه قیمت بر اساس کیلو متر</h3>
+    </div>
+    <div class="card-body bg-dark row g-3">
+        <div class="col-md-4">
+            <label class="form-label fw-bold text-white">کیلومتر</label>
+            <input class="form-control" type="number" id="Km" placeholder="کیلومتر"/>
+            <input hidden class="form-control" type="number" id="Km1" placeholder="کیلومتر"/>
+            <input hidden class="form-control" type="number" id="Km2" placeholder="کیلومتر"/>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-bold text-white">مبلغ محاسبه شده</label>
+            <input class="form-control" type="number" id="PriceLbl" placeholder="مبلغ محاسبه شده" />
+        </div>
+        <button class="form-control bg-info col-md-4" onclick="Calculator()">محاسبه</button>
+        <label id="info" class="text-white"></label>
+        <label id="info2" class="text-white"></label>
+        <div id="map" />
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    function Calculator(){
+        Km1 = parseFloat(document.getElementById('Km1').value);
+        Km2 = parseFloat(document.getElementById('Km2').value);
+        document.getElementById('Km').value = ((Km1 + Km2)/2)+1;
+    }
+    document.addEventListener('DOMContentLoaded', async function () {
+        const map = L.map("map").setView([34.09, 49.678], 16);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 19,
+        }).addTo(map);
+
+        const from = {
+            Lat: parseFloat(document.getElementById("Lat1").value),
+            Lng: parseFloat(document.getElementById('Lng1').value)
+        };
+        const to = {
+            Lat: parseFloat(document.getElementById("Lat2").value),
+            Lng: parseFloat(document.getElementById('Lng2').value)
+        };
+
+        let url = `http://localhost:5000/Route?fromLat=${from.Lat}&fromLon=${from.Lng}&toLat=${to.Lat}&toLon=${to.Lng}`;
+        L.marker({lat:from.Lat,lng:from.Lng}).addTo(map).bindPopup('<div class="bg-success">موقعیت خانه</div>').openPopup();
+        L.marker({lat:to.Lat,lng:to.Lng}).addTo(map).bindPopup('<div class="bg-danger">موقعیت مدرسه</div>').openPopup();
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`API error: ${res.status}`);
+
+            const data = await res.json();
+
+            // Draw polyline
+            const latlngs = data.route.map(coord => [coord[0], coord[1]]);
+            const polyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
+            map.fitBounds(polyline.getBounds());
+
+            // Show distance and time
+            document.getElementById('info').textContent =
+                `مسافت رفت: ${data.distance_km.toFixed(2)} کیلومتر، زمان تقریبی: ${data.estimated_time_min.toFixed(2)} دقیقه`;
+            document.getElementById('Km1').value = parseFloat(data.distance_km).toFixed(2);
+
+        } catch (err) {
+            document.getElementById('info').textContent = 'خطا در دریافت مسیر: ' + err.message;
+        }
+        // مسیر برگشت
+        url = `http://localhost:5000/Route?fromLat=${to.Lat}&fromLon=${to.Lng}&toLat=${from.Lat}&toLon=${from.Lng}`;
+        L.marker({lat:from.Lat,lng:from.Lng}).addTo(map).bindPopup('<div class="bg-success">موقعیت خانه</div>').openPopup();
+        L.marker({lat:to.Lat,lng:to.Lng}).addTo(map).bindPopup('<div class="bg-danger">موقعیت مدرسه</div>').openPopup();
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`API error: ${res.status}`);
+
+            const data = await res.json();
+
+            // Draw polyline
+            const latlngs = data.route.map(coord => [coord[0], coord[1]]);
+            const polyline = L.polyline(latlngs, { color: 'red' }).addTo(map);
+            map.fitBounds(polyline.getBounds());
+
+            // Show distance and time
+            document.getElementById('info2').textContent =
+                `مسافت بازگشت: ${data.distance_km.toFixed(2)} کیلومتر، زمان تقریبی: ${data.estimated_time_min.toFixed(2)} دقیقه`;
+            document.getElementById('Km2').value = parseFloat(data.distance_km).toFixed(2);
+
+        } catch (err) {
+            document.getElementById('info2').textContent = 'خطا در دریافت مسیر: ' + err.message;
+        }
+    });
+</script>
