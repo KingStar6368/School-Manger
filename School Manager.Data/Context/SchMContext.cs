@@ -41,6 +41,7 @@ namespace School_Manager.Data.Context
         public DbSet<School> Schools { get; set; }
         public DbSet<ServiceContract> ServiceContracts { get; set; }
         public DbSet<SMSTemple> SMSTemples { get; set; }
+        public DbSet<Tariff> Tariffs { get; set; }
 
         #endregion
         

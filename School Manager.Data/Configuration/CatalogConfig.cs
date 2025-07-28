@@ -66,6 +66,16 @@ namespace School_Manager.Data.Configuration
             //builder.HasQueryFilter(x => !x.IsDeleted);
 
         }
+    }public class TriffConfig : IEntityTypeConfiguration<Tariff>
+    {
+        public void Configure(EntityTypeBuilder<Tariff> builder)
+        {
+            builder.Property(p => p.FromKilometer)
+            .HasColumnType("decimal(18,4)");
+
+            builder.Property(p => p.ToKilometer)
+                .HasColumnType("decimal(18,4)");
+        }
     }
     public class ChildConfig : IEntityTypeConfiguration<Child>
     {

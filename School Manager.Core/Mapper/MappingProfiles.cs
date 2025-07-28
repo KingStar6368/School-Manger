@@ -225,6 +225,10 @@ namespace School_Manager.Core.Mapper
             CreateMap<SMSTemple, SMSTempleDto>();
             CreateMap<SMSTempleUpdateDto, SMSTemple>();
             #endregion
+            #region tariff
+            CreateMap<Tariff, TariffDto>();
+            CreateMap<TariffDto, Tariff>();
+            #endregion
             #region User
             //CreateMap<User, UserVM>()
             //    .ForMember(dest => dest.formOprs, opt => opt.MapFrom(src => src.UserRoles.SelectMany(x=>x.RoleNavigation.AppRoleOperationAccess)));

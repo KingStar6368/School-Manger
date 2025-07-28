@@ -10,7 +10,6 @@ using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Data.Context;
 using School_Manager.Data.Repositories;
 using School_Manager.Domain.Base;
-using School_Manager.Domain.Entities.Catalog.Operation;
 
 namespace School_Manager.IOC
 {
@@ -50,6 +49,7 @@ namespace School_Manager.IOC
             services.AddScoped<ILookupService, LookupService>();
             services.AddScoped<ISchoolService, SchoolService>();
             services.AddScoped<ISMSTempleService,SMSTempleService>();
+            services.AddScoped<ITariffService,TariffService>();
 
             // Validators
             services.AddScoped<IValidator<RawMaterialDTO>, RawMaterialDTOValidator>();
