@@ -4,30 +4,36 @@
     ViewData["Title"] = "ویرایش تعرفه";
 }
 
-<h2>ویرایش تعرفه</h2>
+<div class="card">
+    <div class="card-header bg-warning">
+        <h2>ویرایش تعرفه</h2>
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
-    <div class="mb-3">
-        <label asp-for="FromKilometer" class="form-label">از کیلومتر</label>
-        <input asp-for="FromKilometer" class="form-control" type="number" step="0.01" required />
     </div>
-    <div class="mb-3">
-        <label asp-for="ToKilometer" class="form-label">تا کیلومتر</label>
-        <input asp-for="ToKilometer" class="form-control" type="number" step="0.01" required />
+    <div class="card-body bg-dark">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="mb-3">
+                <label asp-for="FromKilometer" class="form-label">از کیلومتر</label>
+                <input asp-for="FromKilometer" class="form-control" type="number" step="0.01" required />
+            </div>
+            <div class="mb-3">
+                <label asp-for="ToKilometer" class="form-label">تا کیلومتر</label>
+                <input asp-for="ToKilometer" class="form-control" type="number" step="0.01" required />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Price" class="form-label">قیمت (ریال)</label>
+                <input asp-for="Price" class="form-control" type="number" required />
+            </div>
+            <div class="mb-3">
+                <label asp-for="FromDate" class="form-label">از تاریخ</label>
+                <input asp-for="FromDate" class="form-control" type="date" required />
+            </div>
+            <div class="mb-3">
+                <label asp-for="ToDate" class="form-label">تا تاریخ</label>
+                <input asp-for="ToDate" class="form-control" type="date" required />
+            </div>
+            <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+            <a asp-action="Index" class="btn btn-secondary">بازگشت</a>
+        </form>
     </div>
-    <div class="mb-3">
-        <label asp-for="Price" class="form-label">قیمت (ریال)</label>
-        <input asp-for="Price" class="form-control" type="number" required />
-    </div>
-    <div class="mb-3">
-        <label asp-for="FromDate" class="form-label">از تاریخ</label>
-        <input asp-for="FromDate" class="form-control" type="date" required />
-    </div>
-    <div class="mb-3">
-        <label asp-for="ToDate" class="form-label">تا تاریخ</label>
-        <input asp-for="ToDate" class="form-control" type="date" required />
-    </div>
-    <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
-    <a asp-action="Index" class="btn btn-secondary">بازگشت</a>
-</form>
+</div>
