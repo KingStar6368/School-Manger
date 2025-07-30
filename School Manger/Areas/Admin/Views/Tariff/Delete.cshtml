@@ -1,0 +1,25 @@
+﻿@model School_Manager.Core.ViewModels.FModels.TariffDto
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "حذف تعرفه";
+}
+
+<h2>حذف تعرفه</h2>
+<div class="alert alert-danger">آیا مطمئن هستید که می‌خواهید این تعرفه را حذف کنید؟</div>
+<dl class="row">
+    <dt class="col-sm-3">از کیلومتر</dt>
+    <dd class="col-sm-9">@Model.FromKilometer</dd>
+    <dt class="col-sm-3">تا کیلومتر</dt>
+    <dd class="col-sm-9">@Model.ToKilometer</dd>
+    <dt class="col-sm-3">قیمت</dt>
+    <dd class="col-sm-9">@Model.Price</dd>
+    <dt class="col-sm-3">از تاریخ</dt>
+    <dd class="col-sm-9">@Model.FromDate.ToShortDateString()</dd>
+    <dt class="col-sm-3">تا تاریخ</dt>
+    <dd class="col-sm-9">@Model.ToDate.ToShortDateString()</dd>
+</dl>
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">حذف</button>
+    <a asp-action="Index" class="btn btn-secondary">انصراف</a>
+</form>
