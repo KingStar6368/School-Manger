@@ -19,8 +19,9 @@ namespace School_Manger.Controllers.Admin
         private readonly ISchoolService _schoolService;
         private readonly IDriverService _driverService;
         private readonly IPayBillService _payBillService;
+        private readonly ITariffService _tariffService;
         public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, IBillService billService,
-            ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService)
+            ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService, ITariffService tariffService)
         {
             _parentService = parentService;
             _childService = childService;
@@ -29,6 +30,7 @@ namespace School_Manger.Controllers.Admin
             _schoolService = schoolService;
             _driverService = driverService;
             _payBillService = payBillService;
+            _tariffService = tariffService;
         }
         public async Task<IActionResult> Index()
         {
@@ -311,6 +313,17 @@ namespace School_Manger.Controllers.Admin
             ViewBag.ParentId = parentId;
             ViewBag.Schools = await _schoolService.GetSchools();
             return View("EditChild", model);
+        }
+        [HttpPost]
+        public JsonResult GetPriceByKm([FromBody]float km)
+        {
+            var tariffsTask = _tariffService.GetActiveTariff();
+            tariffsTask.Wait();
+            var tariffs = tariffsTask.Result;
+            decimal kmDecimal = (decimal)km;
+            var tariff = tariffs.FirstOrDefault(t => kmDecimal >= t.FromKilometer && kmDecimal <= t.ToKilometer);
+            int price = tariff != null ? tariff.Price : 0;
+            return Json(new { price });
         }
     }
 }

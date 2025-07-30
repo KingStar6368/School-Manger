@@ -127,9 +127,27 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     function Calculator(){
-        Km1 = parseFloat(document.getElementById('Km1').value);
-        Km2 = parseFloat(document.getElementById('Km2').value);
-        document.getElementById('Km').value = ((Km1 + Km2)/2)+1;
+        var Km1 = parseFloat(document.getElementById('Km1').value);
+        var Km2 = parseFloat(document.getElementById('Km2').value);
+        var totalkm = ((Km1 + Km2)/2)+1;
+        document.getElementById('Km').value = totalkm;
+        // Call backend to get price by km
+alert(totalkm);
+        fetch('/Admin/Parents/GetPriceByKm', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name=__RequestVerificationToken]')?.value || ''
+            },
+            body: JSON.stringify(totalkm)
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('PriceLbl').value = data.price;
+        })
+        .catch(err => {
+            document.getElementById('PriceLbl').value = '';
+        });
     }
     function formatNumberWithCommas(x) {
         if (!x) return '';
