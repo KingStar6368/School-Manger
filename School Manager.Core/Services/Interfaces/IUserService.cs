@@ -29,5 +29,11 @@ namespace School_Manager.Core.Services.Interfaces
         /// <param name="id">کد یوزر</param>
         /// <returns>کد والد</returns>
         long GetPanretId(long id);
+        /// <summary>
+        /// گرفتن کد راننده با کد یوزر
+        /// </summary>
+        /// <param name="id"> کد یوزر</param>
+        /// <returns>کد راننده</returns>
+        long GetDriverId(long id);
 	}
 }
