@@ -1,0 +1,44 @@
+﻿@using ServiceBase.Setting
+@model ServiceBase.Setting.SettingDto
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "افزودن تنظیم جدید";
+    var settingTypes = Enum.GetValues(typeof(SettingType)).Cast<SettingType>().Where(x => x != SettingType.None);
+}
+
+<h2>افزودن تنظیم جدید</h2>
+
+<form asp-action="Create" enctype="multipart/form-data" method="post">
+    <div class="mb-3">
+        <label for="SettingType" class="form-label">نوع تنظیم</label>
+        <select asp-for="SettingType" class="form-control" id="SettingType" onchange="onSettingTypeChange()">
+            <option value="">انتخاب کنید</option>
+            @foreach (var type in settingTypes)
+            {
+                <option value="@((int)type)">@type</option>
+            }
+        </select>
+    </div>
+    <div class="mb-3" id="valueInputContainer">
+        <!-- Value input will be rendered here -->
+    </div>
+    <button type="submit" class="btn btn-success">ذخیره</button>
+    <a asp-action="Index" class="btn btn-secondary">بازگشت</a>
+</form>
+
+@section Scripts {
+<script>
+    function onSettingTypeChange() {
+        var type = document.getElementById('SettingType').value;
+        var container = document.getElementById('valueInputContainer');
+        container.innerHTML = '';
+        if (type >= 70) {
+            container.innerHTML = '<label class="form-label">لوگو (تصویر)</label><input type="file" name="LogoFile" accept="image/*" class="form-control" required />';
+        }
+        else
+        {
+            container.innerHTML = '<label class="form-label">مقدار (متن)</label><input type="text" name="Value" class="form-control" required />';
+        }
+    }
+</script>
+}
