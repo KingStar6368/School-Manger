@@ -50,7 +50,7 @@
                 else
                 {
                     var unpaidTotal = Model.Parent.Children.Where(x=>x.Bills != null).Sum(x => x.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice));
-                    <span class="badge bg-danger px-3 py-2">💸 @unpaidTotal.ToString("N0") تومان</span>
+                    <span class="badge bg-danger px-3 py-2">💸 @unpaidTotal.ToString("N0") ریال</span>
                 }
             </div>
         </div>
@@ -96,7 +96,7 @@
                                 else if(child.Child.Bills != null && child.Child.Bills.Count >0)
                                 {
                                     var unpaid = child.Child.Bills.Where(x => !x.HasPaid).Sum(x => x.TotalPrice - x.PaidPrice);
-                                    <span class="badge bg-danger">💳 @unpaid.ToString("N0") تومان</span>
+                                    <span class="badge bg-danger">💳 @unpaid.ToString("N0") ریال</span>
                                 }
                                 else
                                 {

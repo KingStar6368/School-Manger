@@ -1,5 +1,6 @@
 ﻿@using School_Manger.Models.PageView
 @using School_Manger.Extension
+@using School_Manager.Core.Classes
 @{
     ViewData["Title"] = "مدیریت صورتحساب‌ها";
     Layout = "_Layout";
@@ -48,8 +49,8 @@
                                         <td>@(i + 1)</td>
                                         <td>@bill.ContractId</td>
                                         <td>@bill.Name</td>
-                                        <td>@bill.TotalPrice.ToString("N0") تومان</td>
-                                        <td>@bill.PaidPrice.ToString("N0") تومان</td>
+                                        <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.TotalPrice) ریال</td>
+                                        <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.PaidPrice) ریال</td>
                                         <td>
                                             @if (bill.HasPaid)
                                             {

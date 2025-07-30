@@ -150,4 +150,22 @@ namespace School_Manager.Core.Classes
             }
         }
     }
+    public static class Helper
+    {
+        /// <summary>
+        /// Format a number as price with thousands separator (e.g., 1,234,567)
+        /// </summary>
+        public static string FormatPrice(decimal price)
+        {
+            return price.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        public static string FormatPrice(long price)
+        {
+            return price.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        public static string FormatPrice(int price)
+        {
+            return price.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
+        }
+    }
 }

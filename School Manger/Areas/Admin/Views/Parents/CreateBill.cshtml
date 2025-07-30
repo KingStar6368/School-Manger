@@ -1,5 +1,6 @@
 ﻿@using School_Manger.Extension
 @using School_Manager.Core.ViewModels.FModels
+@using School_Manager.Core.Classes
 @model ChildInfo
 @{
     ViewData["Title"] = "📄 صدور قبض";
@@ -37,8 +38,8 @@
                         <input type="text" name="Name" class="form-control bg-dark text-white shadow-sm" placeholder="مثلاً شهریه مهر ماه" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">💰 مبلغ کل (تومان)</label>
-                        <input type="number" name="TotalPrice" class="form-control bg-dark text-white shadow-sm" required />
+                        <label class="form-label fw-bold">💰 مبلغ کل (ریال)</label>
+                        <input type="text" name="TotalPrice" class="form-control bg-dark text-white shadow-sm price-separator" required />
                     </div>
                     <div class="col-md-6">
                         <label id="LblEndTime" class="form-label fw-bold">📆 مهلت قبض</label>
@@ -91,7 +92,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">💵 مبلغ پرداخت شده</label>
-                        <input type="number" id="PayPrice" name="PaidPrice" class="form-control bg-dark text-white shadow-sm" required />
+                        <input type="text" id="PayPrice" name="PaidPrice" class="form-control bg-dark text-white shadow-sm price-separator" required />
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">📆زمان پرداخت</label>
@@ -144,8 +145,8 @@
                                 <td>@bill.Id</td>
                                 <td>@bill.ContractId</td>
                                 <td>@bill.Name</td>
-                                <td>@bill.TotalPrice.ToString("N0")</td>
-                                <td>@bill.PaidPrice.ToString("N0")</td>
+                                <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.TotalPrice)</td>
+                                <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.PaidPrice)</td>
                                 <td>
                                     @if (bill.HasPaid)
                                     {
@@ -236,5 +237,34 @@
             document.getElementById('BillId').value = Id;
             document.getElementById('PayPrice').value = TotalPrice;
         }
+        // Price input separator logic
+        function formatNumberWithCommas(x) {
+            if (!x) return '';
+            x = x.toString().replace(/[^\d]/g, '');
+            return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+        function unformatNumber(x) {
+            return x.replace(/,/g, '');
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.price-separator').forEach(function(input) {
+                input.addEventListener('input', function(e) {
+                    var cursorPos = input.selectionStart;
+                    var originalLength = input.value.length;
+                    var unformatted = unformatNumber(input.value);
+                    if (unformatted) {
+                        input.value = formatNumberWithCommas(unformatted);
+                    } else {
+                        input.value = '';
+                    }
+                    var newLength = input.value.length;
+                    input.setSelectionRange(cursorPos + (newLength - originalLength), cursorPos + (newLength - originalLength));
+                });
+                // On form submit, unformat the value
+                input.form && input.form.addEventListener('submit', function() {
+                    input.value = unformatNumber(input.value);
+                });
+            });
+        });
     </script>
 }

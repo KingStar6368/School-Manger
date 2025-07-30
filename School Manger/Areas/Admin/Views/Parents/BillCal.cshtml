@@ -1,4 +1,5 @@
 ﻿@using School_Manger.Models.PageView;
+@using School_Manager.Core.Classes
 @model BillCalViewModel
 @{
     ViewData["Title"] = "📄 صدور قبض";
@@ -38,9 +39,9 @@
                         <input asp-for="@Model.Installment.InstallmentCount" class="form-control" />
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">مبلغ ماهیانه (تومان)</label>
-                        <input asp-for="@Model.Installment.Price" class="form-control" />
-                    </div>
+                        <label class="form-label fw-bold">مبلغ ماهیانه (ریال)</label>
+                        <input type="text" asp-for="@Model.Installment.Price" class="form-control price-separator" />
+                    </div> 
                     <div class="col-md-4">
                         <label class="form-label fw-bold">مهلت پرداخت (روز)</label>
                         <input asp-for="@Model.Installment.DeadLine" class="form-control" />
@@ -88,7 +89,7 @@
                         {
                             <tr>
                                 <td>@bill.Name</td>
-                                <td>@bill.TotalPrice.ToString("N0")</td>
+                                <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.TotalPrice)</td>
                                 <td>@bill.BillExpiredTimePer</td>
                             </tr>
                         }
@@ -114,7 +115,7 @@
         </div>
         <div class="col-md-4">
             <label class="form-label fw-bold text-white">مبلغ محاسبه شده</label>
-            <input class="form-control" type="number" id="PriceLbl" placeholder="مبلغ محاسبه شده" />
+            <input class="form-control price-separator" type="number" id="PriceLbl" placeholder="مبلغ محاسبه شده" />
         </div>
         <button class="form-control bg-info col-md-4" onclick="Calculator()">محاسبه</button>
         <label id="info" class="text-white"></label>
@@ -129,6 +130,14 @@
         Km1 = parseFloat(document.getElementById('Km1').value);
         Km2 = parseFloat(document.getElementById('Km2').value);
         document.getElementById('Km').value = ((Km1 + Km2)/2)+1;
+    }
+    function formatNumberWithCommas(x) {
+        if (!x) return '';
+        x = x.toString().replace(/[^\d]/g, '');
+        return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    function unformatNumber(x) {
+        return x.replace(/,/g, '');
     }
     document.addEventListener('DOMContentLoaded', async function () {
         const map = L.map("map").setView([34.09, 49.678], 16);
@@ -191,5 +200,23 @@
         } catch (err) {
             document.getElementById('info2').textContent = 'خطا در دریافت مسیر: ' + err.message;
         }
+        document.querySelectorAll('.price-separator').forEach(function(input) {
+            input.addEventListener('input', function(e) {
+                var cursorPos = input.selectionStart;
+                var originalLength = input.value.length;
+                var unformatted = unformatNumber(input.value);
+                if (unformatted) {
+                    input.value = formatNumberWithCommas(unformatted);
+                } else {
+                    input.value = '';
+                }
+                var newLength = input.value.length;
+                input.setSelectionRange(cursorPos + (newLength - originalLength), cursorPos + (newLength - originalLength));
+            });
+            // On form submit, unformat the value
+            input.form && input.form.addEventListener('submit', function() {
+                input.value = unformatNumber(input.value);
+            });
+        });
     });
 </script>
