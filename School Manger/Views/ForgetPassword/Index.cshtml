@@ -1,5 +1,24 @@
 ﻿@{
     ViewData["Title"] = "بازیابی رمز عبور";
+    // Generate simple captcha numbers
+    var rand = new Random();
+    int oprator = rand.Next(1, 10);
+    char opratorSymbol = '+';
+    int num1 = rand.Next(1, 10);
+    int num2 = rand.Next(1, 10);
+    int captchaAnswer = num1 + num2;
+    switch (oprator % 2)
+    {
+        case 0:
+            opratorSymbol = '+';
+            captchaAnswer = num1 + num2;
+            break;
+        case 1:
+            opratorSymbol = '-';
+            captchaAnswer = num1 - num2;
+            break;
+    }
+    string encodedAnswer = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(captchaAnswer.ToString()));
 }
 
 <div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-dark">
@@ -25,6 +44,15 @@
                     </div>
                     <div class="form-text text-white-50">مثال: 9123456789</div>
                 </div>
+                <!-- Simple Captcha -->
+                <div class="mb-3">
+                    <label class="form-label text-white">سوال امنیتی: چند می‌شود؟</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control bg-dark text-white border-secondary" name="captchaInput" id="captchaInput" required autocomplete="off" />
+                        <span class="input-group-text bg-dark text-white border-secondary">= @num2 @opratorSymbol @num1 </span>
+                    </div>
+                </div>
+                <input type="hidden" name="captchaExpected" id="captchaExpected" value="@encodedAnswer" />
 
                 <button type="submit" class="btn btn-primary w-100 py-2">دریافت کد تایید</button>
             </form>
@@ -35,3 +63,23 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        function decodeBase64(str) {
+            try {
+                return decodeURIComponent(escape(window.atob(str)));
+            } catch (e) {
+                return '';
+            }
+        }
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            var answer = document.getElementById('captchaInput').value;
+            var encoded = document.getElementById('captchaExpected').value;
+            var expected = decodeBase64(encoded);
+            if (answer !== expected) {
+                alert('پاسخ سوال امنیتی اشتباه است.');
+                e.preventDefault();
+            }
+        });
+    </script>
+}

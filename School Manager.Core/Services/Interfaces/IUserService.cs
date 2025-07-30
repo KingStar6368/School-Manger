@@ -18,6 +18,7 @@ namespace School_Manager.Core.Services.Interfaces
         UserDTO CheckAuthorize(string UserName,string Password);
 		Task<List<UserDTO>> GetListAsync();
 		UserDTO GetUserDetail(long Id);
+        UserDTO GetUserByMobile(string Mobile);
         long CreateUser(UserCreateDTO User);
         bool UpdateUser(UserUpdateDTO User);
         bool DeleteUser(long UserId);
