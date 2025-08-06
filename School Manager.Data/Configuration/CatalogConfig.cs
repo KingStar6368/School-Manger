@@ -351,6 +351,20 @@ namespace School_Manager.Data.Configuration
             builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
+    public class SettingConfig : IEntityTypeConfiguration<Setting>
+    {
+        public void Configure(EntityTypeBuilder<Setting> builder)
+        {
+            builder.HasKey(p => p.Key);
+            builder.Property(p => p.Key)
+                .HasColumnType("NVARCHAR(100)");
+            builder.Property(p => p.Value)
+                .HasColumnType("NVARCHAR(MAX)");
+            builder.Property(p => p.Type)
+                .HasColumnType("NVARCHAR(20)");
+
+        }
+    }
     public class ServiceContractConfig : IEntityTypeConfiguration<ServiceContract>
     {
         public void Configure(EntityTypeBuilder<ServiceContract> builder)

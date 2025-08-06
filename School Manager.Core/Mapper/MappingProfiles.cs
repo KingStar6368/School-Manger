@@ -225,6 +225,10 @@ namespace School_Manager.Core.Mapper
             CreateMap<SMSTemple, SMSTempleDto>();
             CreateMap<SMSTempleUpdateDto, SMSTemple>();
             #endregion
+            #region Setting
+            CreateMap<SettingDto, Setting>()
+                .ForMember(dest=>dest.Value,opt=>opt.MapFrom(src=>src.Value));
+            #endregion
             #region tariff
             CreateMap<Tariff, TariffDto>();
             CreateMap<TariffDto, Tariff>();

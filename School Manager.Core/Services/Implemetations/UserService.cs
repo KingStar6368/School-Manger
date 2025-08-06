@@ -7,6 +7,7 @@ using School_Manager.Domain.Base;
 using School_Manager.Domain.Entities.Catalog.Identity;
 using School_Manager.Domain.Entities.Catalog.Operation;
 using School_Manager.Domain.Interfaces;
+using System.Reflection;
 
 namespace School_Manager.Core.Services.Implemetations
 {
@@ -204,6 +205,18 @@ namespace School_Manager.Core.Services.Implemetations
         {
             var results =  _unitOfWork.GetRepository<User>().Query(x => x.UserName == NationalCode.Trim());
 			return results.Any();
+        }
+
+        public UserDTO GetUserByMobile(string Mobile)
+        {
+            var d = _unitOfWork.GetRepository<User>().Query(x=>x.Mobile == Mobile);
+            return _mapper.Map<UserDTO>(d);
+        }
+
+        public long GetDriverId(long id)
+        {
+            var d = _unitOfWork.GetRepository<Driver>().Query(x => x.UserRef == id).Select(x=>x.Id).FirstOrDefault();
+            return d;
         }
     }
 }

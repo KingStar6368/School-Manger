@@ -40,6 +40,7 @@ namespace School_Manager.Data.Context
         public DbSet<PayBill> PayBills { get; set; }
         public DbSet<School> Schools { get; set; }
         public DbSet<ServiceContract> ServiceContracts { get; set; }
+        public DbSet<Setting> Settings { get; set; }
         public DbSet<SMSTemple> SMSTemples { get; set; }
         public DbSet<Tariff> Tariffs { get; set; }
 
