@@ -18,7 +18,7 @@ namespace School_Manager.Core.Services.Implemetations
         private readonly Dictionary<string, (string Value, string Type)> _settings;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public DynamicSettingService(IUnitOfWork unitOfWork,IMapper mapper)
+        public DynamicSettingService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -27,7 +27,7 @@ namespace School_Manager.Core.Services.Implemetations
 
         private Dictionary<string, (string, string)> LoadSettingsFromDatabase()
         {
-                return _unitOfWork.GetRepository<Setting>().GetAll().ToDictionary(x => x.Key, x => (x.Value, x.Type));
+            return _unitOfWork.GetRepository<Setting>().GetAll().ToDictionary(x => x.Key, x => (x.Value, x.Type));
         }
 
         public string Get(string key)
@@ -62,7 +62,7 @@ namespace School_Manager.Core.Services.Implemetations
                 _mapper.Map(dto, mainSetting);
                 _unitOfWork.GetRepository<Setting>().Update(mainSetting);
             }
-                return _unitOfWork.SaveChanges() > 0;
+            return _unitOfWork.SaveChanges() > 0;
         }
         public async Task<bool> SaveSettingImage(SettingDto dto)
         {

@@ -1,0 +1,37 @@
+﻿@using School_Manager.Core.ViewModels.FModels
+@model List<SettingDto>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "تنظیمات";
+}
+<div class="card">
+    <div class="card-header bg-info">
+        <h3>تنظیمات</h3>
+    </div>
+    <div class="card-body bg-dark">
+        @foreach (SettingDto setting in Model)
+        {
+            <div class="form-control">
+                <label class="col-md-4">@setting.Key</label>
+                @if(setting.Type == "Text")
+                {
+                    <input type="text" class="form-control" value="@setting.Value"/>
+                }
+                else if(setting.Type == "Number")
+                {
+                    <input type="number" class="form-control" value="@setting.Value"/>
+                }
+                else
+                {
+                    <input type="file" class="form-control" value="@setting.File?.FileName"/>
+                }
+            </div>
+            <a asp-action="Edit" class="bg-warning" asp-route-Key="@setting.Key">
+                ویرایش
+            </a>
+            <a asp-action="Delete" class="bg-danger" asp-route-Key="@setting.Key">
+                حذف
+            </a>
+        }
+    </div>
+</div>

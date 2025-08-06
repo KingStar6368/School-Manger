@@ -115,6 +115,12 @@
                         <i class="bi bi-gear-fill me-2"></i> تنظیمات تعرفه
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Setting") ? "active" : "")"
+                       asp-area="Admin" asp-controller="Setting" asp-action="Index">
+                        <i class="bi bi-gear-fill me-2"></i> تنظیمات
+                    </a>
+                </li>
             </ul>
         </div>
 

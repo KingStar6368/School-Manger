@@ -9,6 +9,7 @@ namespace School_Manager.Core.Services.Interfaces
 {
     public interface ISettingService
     {
+        List<SettingDto> GetAllSetting();
         string Get(string key);
         byte[] GetImage(string key);
         bool SaveSetting(SettingDto dto);
