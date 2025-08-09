@@ -1,6 +1,8 @@
-﻿@using School_Manger.Models.PageView
+﻿@using School_Manager.Core.Services.Interfaces
+@using School_Manger.Models.PageView
 @using School_Manger.Extension
 @using School_Manager.Core.Classes
+@inject ISettingService setting
 @{
     ViewData["Title"] = "مدیریت صورتحساب‌ها";
     Layout = "_Layout";
@@ -69,9 +71,14 @@
                                         <td>
                                             @if (!bill.HasPaid)
                                             {
-                                                <button class="btn btn-sm btn-outline-success w-100 my-1" onclick="payBill('@bill.Id')">
+                                                
+                                                <a href="@setting.Get("PayUrl")" class="btn btn-sm btn-outline-success w-100 my-1">
                                                     💳 پرداخت
-                                                </button>
+                                                </a>
+                                                <label>درهنگام پرداخت مبلغ را به درستی وارد کرد و سپس از پرداختی عکس گرفته و تحویل شرکت دهید</label>
+                                             @*    <button class="btn btn-sm btn-outline-success w-100 my-1" onclick="payBill('@bill.Id')">
+                                                    💳 پرداخت
+                                                </button> *@
                                             }
                                             else
                                             {
