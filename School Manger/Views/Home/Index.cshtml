@@ -64,22 +64,22 @@
 </div>
 
 @section Scripts {
-<script>
-    function decodeBase64(str) {
-        try {
-            return decodeURIComponent(escape(window.atob(str)));
-        } catch (e) {
-            return '';
+    <script>
+        function decodeBase64(str) {
+            try {
+                return decodeURIComponent(escape(window.atob(str)));
+            } catch (e) {
+                return '';
+            }
         }
-    }
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        var answer = document.getElementById('captchaInput').value;
-        var encoded = document.getElementById('captchaExpected').value;
-        var expected = decodeBase64(encoded);
-        if (answer !== expected) {
-            alert('پاسخ سوال امنیتی اشتباه است.');
-            e.preventDefault();
-        }
-    });
-</script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            var answer = document.getElementById('captchaInput').value;
+            var encoded = document.getElementById('captchaExpected').value;
+            var expected = decodeBase64(encoded);
+            if (answer !== expected) {
+                alert('پاسخ سوال امنیتی اشتباه است.');
+                e.preventDefault();
+            }
+        });
+    </script>
 }

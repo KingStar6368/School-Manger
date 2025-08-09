@@ -1,5 +1,15 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@using School_Manager.Core.Services.Interfaces
+@inject ISettingService setting
+
+<footer class="bg-black text-white-50 small py-2 border-top border-secondary mt-auto">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start">
+                © @DateTime.Now.Year @setting.Get("CompanyName")
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                طراحی: <a href="#" target="_blank" class="text-info">آرکاسافت.ابول فضل یوسفی , محراب احمدی</a>
+            </div>
+        </div>
+    </div>
+</footer>

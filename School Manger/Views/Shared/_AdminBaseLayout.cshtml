@@ -1,0 +1,59 @@
+﻿@using System.Text.Json
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@ViewData["Title"] - School_Manger</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/School_Manger.styles.css" asp-append-version="true" />
+
+    <link href="~/css/persian-datepicker.min.css" rel="stylesheet" />
+
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+
+    @{
+        Notification notification = null;
+        if (TempData["Notification"] is string jsonNotification)
+        {
+            notification = JsonSerializer.Deserialize<Notification>(jsonNotification);
+        }
+    }
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @await Html.PartialAsync("_NotificationPartial", notification);
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/js/persian-date.min.js"></script>
+    <script src="~/js/persian-datepicker.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        $(document).ready(function() {
+            // Initialize Persian datepicker for all elements with class 'persian-date'
+            $('.persian-date').persianDatepicker({
+                observer: true,  // Automatically detects new date inputs added dynamically
+                format: 'YYYY/MM/DD',
+                altField: '.gregorian-date',
+                altFormat: 'X',  // Unix timestamp
+                autoClose: true
+            });
+        });
+    </script>
+
+</body>
+</html>

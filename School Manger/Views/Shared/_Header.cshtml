@@ -1,1 +1,31 @@
-﻿
+﻿@using School_Manager.Core.Services.Interfaces
+@inject ISettingService setting
+
+@{
+    var logoBytes = setting.GetImage("LogoPath");
+    var logoUrl = logoBytes != null ? $"data:image/png;base64,{Convert.ToBase64String(logoBytes)}" : "";
+}
+
+<header class="bg-dark text-white py-2 border-bottom border-secondary">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-6">
+                <img src="@logoUrl" alt="@setting.Get("CompanyName")" style="height:40px">
+            </div>
+            <div class="col-6 text-end">
+                <small>@setting.Get("CompanySlogan")</small>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="bg-black text-white-50 small py-1">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3">@setting.Get("CompanyName")</div>
+            <div class="col-md-3">مدیر: @setting.Get("CompanyOwner")</div>
+            <div class="col-md-3">@setting.Get("CompanyPhone")</div>
+            <div class="col-md-3">@setting.Get("CompanyAddress")</div>
+        </div>
+    </div>
+</div>

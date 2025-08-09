@@ -2,6 +2,7 @@ using Microsoft.Win32;
 using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.IOC;
+using School_Manger.Class;
 using SMS.Base;
 
 var builder = WebApplication.CreateBuilder(args);
