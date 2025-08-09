@@ -25,7 +25,7 @@ namespace School_Manager.Core.Services.Implemetations
             _settings = LoadSettingsFromDatabase();
         }
 
-        private Dictionary<string, (string, string)> LoadSettingsFromDatabase()
+        public Dictionary<string, (string, string)> LoadSettingsFromDatabase()
         {
             return _unitOfWork.GetRepository<Setting>().GetAll().ToDictionary(x => x.Key, x => (x.Value, x.Type));
         }

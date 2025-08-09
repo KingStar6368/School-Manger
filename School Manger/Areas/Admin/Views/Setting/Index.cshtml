@@ -1,5 +1,5 @@
 ﻿@using School_Manager.Core.ViewModels.FModels
-@model List<SettingDto>
+@model Dictionary<string, (string, string)>
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "تنظیمات";
@@ -9,29 +9,30 @@
         <h3>تنظیمات</h3>
     </div>
     <div class="card-body bg-dark">
-        @foreach (SettingDto setting in Model)
+        @foreach (var setting in Model)
         {
-            <div class="form-control">
-                <label class="col-md-4">@setting.Key</label>
-                @if(setting.Type == "Text")
-                {
-                    <input type="text" class="form-control" value="@setting.Value"/>
-                }
-                else if(setting.Type == "Number")
-                {
-                    <input type="number" class="form-control" value="@setting.Value"/>
-                }
-                else
-                {
-                    <input type="file" class="form-control" value="@setting.File?.FileName"/>
-                }
-            </div>
-            <a asp-action="Edit" class="bg-warning" asp-route-Key="@setting.Key">
-                ویرایش
-            </a>
-            <a asp-action="Delete" class="bg-danger" asp-route-Key="@setting.Key">
-                حذف
-            </a>
+            <form method="post" asp-controller="Setting" asp-action="Edit" enctype="multipart/form-data">
+                <div class="form-control">
+                    <label class="col-md-4">@setting.Key</label>
+                    @if(setting.Value.Item2 == "Text")
+                    {
+                        <input name="Value" type="text" class="form-control" value="@setting.Value.Item1"/>
+                        <input hidden name="Type" value="Text"/>
+                    }
+                    else
+                    {
+                        <input name="IFile" type="file" class="form-control"/>
+                        <input hidden name="Type" value="Image"/>
+                    }
+                </div>
+                <div class="col-md-4 mb-2 mt-2">
+                    <input hidden name="Key" value="@setting.Key"/>
+                    <input type="submit" class="btn btn-sm rounded-pill shadow-sm ms-2 bg-warning bi bi-pencil-square" value=" ویرایش"/>
+                    <a asp-action="Delete" class="btn btn-sm rounded-pill shadow-sm ms-2 bg-danger" asp-route-Key="@setting.Key">
+                        <i class="bi bi-trash"></i> حذف
+                    </a>
+                </div>
+            </form>
         }
     </div>
 </div>

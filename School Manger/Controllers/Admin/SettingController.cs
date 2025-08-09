@@ -14,73 +14,68 @@ namespace School_Manger.Controllers.Admin
         }
         public IActionResult Index()
         {
-            return View("Index", _settingService.GetAllSetting());
-        }
-        [HttpGet]
-        public IActionResult Edit(string key)
-        {
-            var setting = _settingService.GetAllSetting().FirstOrDefault(x => x.Key == key);
-            if (setting == null)
-            {
-                ControllerExtensions.ShowError(this, "پیدا نشد", "تنظیمات مورد نظر یافت نشد.");
-                return Index();
-            }
-            return View(setting);
+            return View("Index", _settingService.LoadSettingsFromDatabase());
         }
         [HttpPost]
-        public IActionResult Edit(SettingDto dto)
+        public IActionResult Edit(string Key, string Value, string Type, IFormFile IFile)
         {
-            if (ModelState.IsValid)
+            var dto = new SettingDto()
             {
-                if (dto.Type == "Image")
+                Key = Key,
+                Type = Type,
+                Value = Value,
+                File = IFile
+            };
+            if (Type == "Image")
+            {
+                if (_settingService.SaveSettingImage(dto).Result)
                 {
-                    if (_settingService.SaveSettingImage(dto).Result)
-                    {
-                        ControllerExtensions.ShowSuccess(this, "ذخیره شد", "تنظیمات با موفقیت ذخیره شد.");
-                        return RedirectToAction("Index");
-                    }
+                    ControllerExtensions.ShowSuccess(this, "ذخیره شد", "تنظیمات با موفقیت ذخیره شد.");
+                    return RedirectToAction("Index");
                 }
-                else
+            }
+            else
+            {
+                if (_settingService.SaveSetting(dto))
                 {
-                    if (_settingService.SaveSetting(dto))
-                    {
-                        ControllerExtensions.ShowSuccess(this, "ذخیره شد", "تنظیمات با موفقیت ذخیره شد.");
-                        return RedirectToAction("Index");
-                    }
+                    ControllerExtensions.ShowSuccess(this, "ذخیره شد", "تنظیمات با موفقیت ذخیره شد.");
+                    return RedirectToAction("Index");
                 }
             }
             ControllerExtensions.ShowError(this, "خطا", "خطایی در ذخیره سازی رخ داده است.");
-            return View(dto);
+            return Index();
         }
         [HttpGet]
-        public IActionResult Delete(string key)
+        public IActionResult Delete(string Key)
         {
-            var setting = _settingService.GetAllSetting().FirstOrDefault(x => x.Key == key);
-            if (setting == null)
-            {
-                ControllerExtensions.ShowError(this, "پیدا نشد", "تنظیمات مورد نظر یافت نشد.");
-                return Index();
-            }
-            return View(setting);
-        }
-        [HttpPost]
-        public IActionResult Delete(SettingDto dto)
-        {
+            var setting = _settingService.LoadSettingsFromDatabase().FirstOrDefault(x => x.Key == Key);
             SettingDto nulldto = new SettingDto
             {
-                Key = dto.Key,
-                Type = dto.Type,
+                Key = setting.Key,
+                Type = setting.Value.Item2,
                 Value = null,
                 File = null
             };
-            dto = nulldto;
-            if (_settingService.SaveSetting(dto))
+            if (nulldto.Type == "Image")
             {
-                ControllerExtensions.ShowSuccess(this, "حذف شد", "تنظیمات با موفقیت حذف شد.");
-                return RedirectToAction("Index");
+                nulldto.Value = ""; // Clear the value for image type
+                if (_settingService.SaveSettingImage(nulldto).Result)
+                {
+                    ControllerExtensions.ShowSuccess(this, "حذف شد", "تنظیمات با موفقیت حذف شد.");
+                    return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                nulldto.Value = ""; // Clear the value for text type
+                if (_settingService.SaveSetting(nulldto))
+                {
+                    ControllerExtensions.ShowSuccess(this, "حذف شد", "تنظیمات با موفقیت حذف شد.");
+                    return RedirectToAction("Index");
+                }
             }
             ControllerExtensions.ShowError(this, "خطا", "خطایی در حذف تنظیمات رخ داده است.");
-            return View(dto);
+            return Index();
         }
     }
 }
