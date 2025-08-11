@@ -101,7 +101,7 @@ namespace School_Manger.Controllers.Admin
         {
             var contractId = _contractService.GetContractWithChild(Id).Id;
             var child = _childService.GetChild(Id);
-            ControllerExtensions.AddKey(this, "Path", child.Path);
+            ControllerExtensions.AddObject(this, "Path", child.Path);
             ControllerExtensions.AddKey(this, "ChildId",Id);
             return View(
             new BillCalViewModel()
@@ -115,8 +115,10 @@ namespace School_Manger.Controllers.Admin
             });
         }
         [HttpPost]
-        public IActionResult BillCalPerView(BillCalViewModel data)
+        public IActionResult BillCalPerView(BillCalViewModel data,string PreStartDate,string PreEndDate)
         {
+            data.Installment.StartDate = PreStartDate.ToMiladi();
+            data.Installment.EndDate = PreEndDate.ToMiladi();
             data.Location = ControllerExtensions.GetKey<LocationPairModel>(this, "Path");
             data.Bills = _billService.Create(data.Installment);
             return View("BillCal", data);

@@ -46,13 +46,16 @@
                         <label class="form-label fw-bold">مهلت پرداخت (روز)</label>
                         <input asp-for="@Model.Installment.DeadLine" class="form-control" />
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">تاریخ اولین قبض</label>
-                        <input asp-for="@Model.Installment.StartDate" type="date" class="form-control" />
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">📅 تاریخ اولین قبض</label>
+                        <input name="PreStartDate" type="text" class="form-control persian-date bg-secondary text-white" placeholder="انتخاب تاریخ" required />
+                        <input type="hidden" class="gregorian-date" />
                     </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">تاریخ آخرین قبض</label>
-                        <input asp-for="@Model.Installment.EndDate" type="date" class="form-control" />
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">📅 تاریخ آخرین قبض</label>
+                        <input name="PreEndDate" type="text" class="form-control persian-date bg-secondary text-white" placeholder="انتخاب تاریخ" required />
+                        <input type="hidden" class="gregorian-date" />
                     </div>
                 </div>
                 <div class="mt-4">

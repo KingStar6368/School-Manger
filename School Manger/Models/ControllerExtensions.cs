@@ -7,22 +7,33 @@ public static class ControllerExtensions
     {
         controller.HttpContext.Session.SetString(key, Value.ToString());
     }
+    public static void AddObject(this Controller controller, string key, object Value)
+    {
+        controller.HttpContext.Session.SetString(key, JsonSerializer.Serialize(Value));
+    }
     public static T GetKey<T>(this Controller controller, string key)
     {
-        if (controller.HttpContext.Session.GetString(key) == null)
-            throw new InvalidOperationException("NUll Value On GetKey");
-        string value = controller.HttpContext.Session.GetString(key);
-        Type type = typeof(T);
-        if (type == typeof(string))
-            return (T)(object)value;
-        if(type == typeof(long))
-            return (T)(object)long.Parse(value);
-        if (type == typeof(int))
-            return (T)(object)int.Parse(value);
-        if (type == typeof(float))
-            return (T)(object)float.Parse(value);
-        else
+        try
+        {
+            if (controller.HttpContext.Session.GetString(key) == null)
+                throw new InvalidOperationException("NUll Value On GetKey");
+            string value = controller.HttpContext.Session.GetString(key);
+            Type type = typeof(T);
+            if (type == typeof(string))
+                return (T)(object)value;
+            if (type == typeof(long))
+                return (T)(object)long.Parse(value);
+            if (type == typeof(int))
+                return (T)(object)int.Parse(value);
+            if (type == typeof(float))
+                return (T)(object)float.Parse(value);
+            else
+                return JsonSerializer.Deserialize<T>(value);
+        }
+        catch
+        {
             throw new InvalidOperationException("Can Not Format Value (Convert)");
+        }
     }
 
     public static void ShowSuccess(this Controller controller, string title, string message)
