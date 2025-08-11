@@ -56,18 +56,19 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult SignIn(string PhoneNumber)
         {
+            ControllerExtensions.AddKey(this, "PhoneNumber", PhoneNumber);
+            if (_UserService.IsMobileRegistered(ControllerExtensions.GetKey<string>(this, "PhoneNumber")))
+            {
+                ControllerExtensions.ShowError(this,"خطا", "این شماره موبایل در سیستم موجود است");
+                return Redirect("Index");
+            }
+            //send code
             int RandomCode = new Random().Next(111111, 999999);
             ControllerExtensions.AddKey(this, "Code", RandomCode);
             if (!SMSService.Send(30007732008772, PhoneNumber, $"والد گرامی کد تایدد شما \n" + RandomCode))
             {
                 ControllerExtensions.ShowError(this, "خطا", "کد تاییدی به شماره ارسال نشد");
                 return View("Index");
-            }
-            ControllerExtensions.AddKey(this, "PhoneNumber", PhoneNumber);
-            if (_UserService.IsMobileRegistered(ControllerExtensions.GetKey<string>(this, "PhoneNumber")))
-            {
-                ControllerExtensions.ShowError(this,"خطا", "این شماره موبایل در سیستم موجود است");
-                return Redirect("Index");
             }
             //Otp
             return View("OTPConfirmation");
@@ -237,7 +238,7 @@ namespace School_Manger.Controllers
         new ReportParameter("Title", bill.Name),
         new ReportParameter("TotalPrice", bill.TotalPrice.ToString()),
         new ReportParameter("PaidPrice", bill.PaidPrice.ToString()),
-        new ReportParameter("Estimatetime", bill.BillExpiredTime.ToString("yyyy/MM/dd")),
+        new ReportParameter("Estimatetime", bill.BillExpiredTime.ToPersianString()),
         new ReportParameter("Status", bill.HasPaid ? "پرداخت شده" : "پرداخت نشده")
     };
 

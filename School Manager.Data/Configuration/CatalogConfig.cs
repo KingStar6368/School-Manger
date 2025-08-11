@@ -66,7 +66,8 @@ namespace School_Manager.Data.Configuration
             //builder.HasQueryFilter(x => !x.IsDeleted);
 
         }
-    }public class TriffConfig : IEntityTypeConfiguration<Tariff>
+    }
+    public class TriffConfig : IEntityTypeConfiguration<Tariff>
     {
         public void Configure(EntityTypeBuilder<Tariff> builder)
         {
