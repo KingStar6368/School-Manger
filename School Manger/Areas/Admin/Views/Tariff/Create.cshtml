@@ -14,24 +14,26 @@
 
         <form asp-action="Create" method="post">
             <div class="mb-3">
-                <label asp-for="FromKilometer" class="form-label">از کیلومتر</label>
+                <label asp-for="FromKilometer" class="form-lable text-white ">از کیلومتر</label>
                 <input asp-for="FromKilometer" class="form-control" type="number" step="0.01" required />
             </div>
             <div class="mb-3">
-                <label asp-for="ToKilometer" class="form-label">تا کیلومتر</label>
+                <label asp-for="ToKilometer" class="form-lable text-white ">تا کیلومتر</label>
                 <input asp-for="ToKilometer" class="form-control" type="number" step="0.01" required />
             </div>
             <div class="mb-3">
-                <label asp-for="Price" class="form-label">قیمت (ریال)</label>
+                <label asp-for="Price" class="form-lable text-white ">قیمت (ریال)</label>
                 <input asp-for="Price" class="form-control" type="number" required />
             </div>
             <div class="mb-3">
-                <label asp-for="FromDate" class="form-label">از تاریخ</label>
-                <input asp-for="FromDate" class="form-control" type="date" required />
+                <label asp-for="FromDate" class="form-lable text-white ">از تاریخ</label>
+                <input name="StartDate" type="text" class="form-control persian-date bg-secondary text-white" placeholder="انتخاب تاریخ" required />
+                <input type="hidden" class="gregorian-date" />
             </div>
             <div class="mb-3">
-                <label asp-for="ToDate" class="form-label">تا تاریخ</label>
-                <input asp-for="ToDate" class="form-control" type="date" required />
+                <label asp-for="ToDate" class="form-lable text-white ">تا تاریخ</label>
+                <input name="EndDate" type="text" class="form-control persian-date bg-secondary text-white" placeholder="انتخاب تاریخ" required />
+                <input type="hidden" class="gregorian-date" />
             </div>
             <button type="submit" class="btn btn-success">ذخیره</button>
             <a asp-action="Index" class="btn btn-secondary">بازگشت</a>

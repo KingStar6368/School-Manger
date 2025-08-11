@@ -3,6 +3,7 @@ using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using System.Threading.Tasks;
 using System.Linq;
+using School_Manger.Extension;
 
 namespace School_Manger.Controllers.Admin
 {
@@ -27,18 +28,23 @@ namespace School_Manger.Controllers.Admin
         }
 
         [HttpPost]
-        public IActionResult Create(TariffDto model)
+        public IActionResult Create(TariffDto model, string StartDate, string EndDate)
         {
-            if (ModelState.IsValid)
+            try
             {
+                model.FromDate = StartDate.ToMiladi();
+                model.ToDate = EndDate.ToMiladi();
                 _tariffService.CreateTariff(model);
                 return RedirectToAction("Index");
             }
-            return View(model);
+            catch
+            {
+                return View(model);
+            }
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id, string StartDate, string EndDate)
         {
             var tariffs = await _tariffService.GetActiveTariff();
             var tariff = tariffs.FirstOrDefault(x => x.Id == id);
@@ -47,14 +53,19 @@ namespace School_Manger.Controllers.Admin
         }
 
         [HttpPost]
-        public IActionResult Edit(TariffDto model)
+        public IActionResult Edit(TariffDto model, string StartDate, string EndDate)
         {
-            if (ModelState.IsValid)
+            try
             {
+                model.FromDate = StartDate.ToMiladi();
+                model.ToDate = EndDate.ToMiladi();
                 _tariffService.UpdateTariff(model);
                 return RedirectToAction("Index");
             }
-            return View(model);
+            catch
+            {
+                return View(model);
+            }
         }
 
         [HttpGet]
