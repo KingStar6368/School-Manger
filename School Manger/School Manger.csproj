@@ -36,6 +36,7 @@
     <PackageReference Include="ReportViewerCore.NETCore" Version="15.1.26" />
     <PackageReference Include="System.CodeDom" Version="9.0.6" />
     <PackageReference Include="System.Security.Permissions" Version="9.0.7" />
+    <PackageReference Include="ZarinpalSandbox" Version="2.0.4" />
   </ItemGroup>
 
   <ItemGroup>
