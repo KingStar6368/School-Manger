@@ -401,7 +401,7 @@ namespace School_Manager.Data.Configuration
                 .HasConversion<int>();
 
             builder.HasOne(d => d.UserNavigation).WithMany(p => p.SMSLogs)
-                .HasForeignKey(fk => fk.UserRef)
+                .HasForeignKey(fk => fk.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

@@ -14,7 +14,6 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         public long UserId { get; set; }
         public SMSType type { get; set; }
         public DateTime SMSTime { get; set; }
-        public long UserRef {  get; set; }
         public virtual User UserNavigation { get; set; }
     }
 }
