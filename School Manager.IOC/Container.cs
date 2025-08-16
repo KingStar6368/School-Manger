@@ -51,6 +51,7 @@ namespace School_Manager.IOC
             services.AddScoped<ISMSTempleService,SMSTempleService>();
             services.AddScoped<ITariffService,TariffService>();
             services.AddScoped<ISettingService,DynamicSettingService>();
+            services.AddScoped<ISMSLogService,SMSLogService>();
 
             // Validators
             services.AddScoped<IValidator<RawMaterialDTO>, RawMaterialDTOValidator>();

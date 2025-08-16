@@ -19,5 +19,6 @@ namespace School_Manager.Domain.Entities.Catalog.Identity
         public bool IsActive { get; set; }
         public virtual ICollection<Parent> Parents { get; set; }
         public virtual ICollection<Driver> Drivers { get; set; }
+        public virtual ICollection<SMSLog> SMSLogs { get; set; }
     }
 }

@@ -393,6 +393,18 @@ namespace School_Manager.Data.Configuration
             builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
+    public class SMSLogConfig : IEntityTypeConfiguration<SMSLog>
+    {
+        public void Configure(EntityTypeBuilder<SMSLog> builder)
+        {
+            builder.Property(p => p.type)
+                .HasConversion<int>();
+
+            builder.HasOne(d => d.UserNavigation).WithMany(p => p.SMSLogs)
+                .HasForeignKey(fk => fk.UserRef)
+                .OnDelete(DeleteBehavior.NoAction);
+        }
+    }
     public class TrialConfig : IEntityTypeConfiguration<Trail>
     {    
         public void Configure(EntityTypeBuilder<Trail> builder) 

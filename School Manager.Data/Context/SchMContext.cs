@@ -43,6 +43,7 @@ namespace School_Manager.Data.Context
         public DbSet<Setting> Settings { get; set; }
         public DbSet<SMSTemple> SMSTemples { get; set; }
         public DbSet<Tariff> Tariffs { get; set; }
+        public DbSet<SMSLog> SMSLogs { get; set; }
 
         #endregion
         

@@ -224,6 +224,8 @@ namespace School_Manager.Core.Mapper
             #region sms
             CreateMap<SMSTemple, SMSTempleDto>();
             CreateMap<SMSTempleUpdateDto, SMSTemple>();
+            CreateMap<SMSLogDto, SMSLog>();
+            CreateMap<SMSLog, SMSLogDto>();
             #endregion
             #region Setting
             CreateMap<SettingDto, Setting>()

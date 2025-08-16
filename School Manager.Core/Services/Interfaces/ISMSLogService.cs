@@ -9,7 +9,7 @@ namespace School_Manager.Core.Services.Interfaces
 {
     public interface ISMSLogService
     {
-        public Task<SMSLogDto> GetSMSLog();
+        public Task<List<SMSLogDto>> GetSMSLog();
         public SMSLogDto GetDto(int id);
         public int GetWarningCount(long UserId);
         public int GetBillCount(long UserId);
