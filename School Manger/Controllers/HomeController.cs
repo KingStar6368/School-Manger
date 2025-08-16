@@ -266,14 +266,18 @@ namespace School_Manger.Controllers
         public IActionResult PayBill(long BillId)
         {
             BillDto bill = _BillService.GetBill(BillId);
-            if (bill == null)
+            if (bill == null || bill.HasPaid)
+            {
+                ControllerExtensions.ShowError(this, "خطا", "قبض پیدا نشد");
                 return ParentMenu();
+            }
             var payment = new Payment((int)(bill.TotalPrice - bill.PaidPrice));
             var respance = payment.PaymentRequest("پرداخت قبض " + bill.Name, settingService.Get("PayUrl"));
             if(respance.Result.code == 100)
             {
                 return Redirect("https://sandbox.zarinpal.com/pg/StartPay/"+respance.Result.authority);
             }
+            ControllerExtensions.ShowError(this, "خطا", "مشکلی در انتفال به درگاه شده لطفا بعدا امتحان کنید");
             return ParentMenu();
         }
     }
