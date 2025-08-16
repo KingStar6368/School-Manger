@@ -33,19 +33,29 @@
 <footer class="bg-black text-white-50 small py-2 border-top border-secondary mt-auto">
     <div class="container">
         <div class="row">
-            <div class="col-md-6 text-center text-md-start">
-                © @DateTime.Now.Year @setting.Get("CompanyName")
+            <div class="col-6">
+                <div class="col-md-6 text-center text-md-start">
+                    © @DateTime.Now.Year @setting.Get("CompanyName")
+                </div>
+                <div class="col-md-6 text-center text-md-start">
+                    <div id="map"></div>
+                </div>
             </div>
-            <div class="col-md-6 text-center text-md-start">
-                آدرس شرکت : @setting.Get("CompanyAddress")
-            </div>
-            <div class="col-md-6 text-center text-md-start">
-                <div id="map"></div>
+            <div class="col-6">
+                <div class="col-md-6 text-center text-md-start">
+                    آدرس شرکت : @setting.Get("CompanyAddress")
+                </div>
+                <div class="col-md-6 text-center text-md-start">
+                    شماره تماس ثابت : @setting.Get("CompanyStaticPhone")
+                </div>
+                <div class="col-md-6 text-center text-md-start">
+                    شمار همراه : @setting.Get("CompanyPhone")
+                </div>
             </div>
         </div>
-            <div class="col-md-6 text-center text-md-end">
-                طراحی: <a href="#" target="_blank" class="text-info">آرکاسافت.ابول فضل یوسفی , محراب احمدی</a>
-            </div>
+    </div>
+    <div class="col-md-6 text-center text-md-end">
+        طراحی: <a href="#" target="_blank" class="text-info">آرکاسافت.ابول فضل یوسفی , محراب احمدی</a>
     </div>
 </footer>
 
