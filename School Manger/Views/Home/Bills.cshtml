@@ -71,11 +71,14 @@
                                         <td>
                                             @if (!bill.HasPaid)
                                             {
-                                                
-                                                <a href="@setting.Get("PayUrl")" class="btn btn-sm btn-outline-success w-100 my-1">
+                                                <form action="PayBill" method="post">
+                                                    <input hidden value="@bill.Id" name="BillId"/>
+                                                    <button type="submit">💳 پرداخت</button>
+                                                </form>
+                                             @*    <a href="@setting.Get("PayUrl")" class="btn btn-sm btn-outline-success w-100 my-1">
                                                     💳 پرداخت
                                                 </a>
-                                                <label>درهنگام پرداخت مبلغ را به درستی وارد کرد و سپس از پرداختی عکس گرفته و تحویل شرکت دهید</label>
+                                                <label>درهنگام پرداخت مبلغ را به درستی وارد کرد و سپس از پرداختی عکس گرفته و تحویل شرکت دهید</label> *@
                                              @*    <button class="btn btn-sm btn-outline-success w-100 my-1" onclick="payBill('@bill.Id')">
                                                     💳 پرداخت
                                                 </button> *@
