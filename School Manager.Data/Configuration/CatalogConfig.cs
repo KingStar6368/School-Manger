@@ -14,7 +14,7 @@ namespace School_Manager.Data.Configuration
                 .HasComment("مبلغ");
 
             builder.Property(p => p.Name)
-            .HasColumnType("nvarchar(50)")
+            .HasColumnType("nvarchar(512)")
             .HasComment("نام قبض");
 
             builder.HasMany(d => d.PayBills).WithOne(p => p.BillNavigation)
@@ -35,7 +35,7 @@ namespace School_Manager.Data.Configuration
         public void Configure(EntityTypeBuilder<Car> builder)
         {
             builder.Property(p => p.Name)
-            .HasColumnType("nvarchar(50)")
+            .HasColumnType("nvarchar(512)")
             .HasComment("نام ماشین");
 
             builder.Property(e => e.carType)
@@ -335,7 +335,7 @@ namespace School_Manager.Data.Configuration
         public void Configure(EntityTypeBuilder<School> builder)
         {
             builder.Property(p => p.Name)
-            .HasColumnType("nvarchar(128)")
+            .HasColumnType("nvarchar(1024)")
             .HasComment("نام مدرسه");
 
             builder.Property(p => p.ManagerName)
@@ -431,11 +431,11 @@ namespace School_Manager.Data.Configuration
 
 
             builder.Property(p => p.FirstName)
-                .HasColumnType("nvarchar(50)")
+                .HasColumnType("nvarchar(128)")
                 .HasComment("نام");
 
             builder.Property(p => p.LastName)
-                .HasColumnType("nvarchar(50)")
+                .HasColumnType("nvarchar(128)")
                 .HasComment("نام خانوادگی");
 
             builder.HasMany(p => p.Parents).WithOne(b => b.UserNavigation)
