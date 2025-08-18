@@ -8,7 +8,7 @@ using School_Manger.Models.PageView;
 
 namespace School_Manger.Controllers.Admin
 {
-    [Area("Admin")]
+    [Area("Admin")][Authorize(Roles = "Admin")]
     public class ParentsController : Controller
     {
         private readonly IUserService _userService;

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace School_Manger.Controllers.Admin
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class UserManagementController : Controller
     {
         private readonly IUserService _userService;

@@ -1,6 +1,8 @@
 ﻿using DNTPersianUtils.Core;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using King;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Reporting.NETCore;
@@ -17,8 +19,8 @@ using SMS.Base;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using King;
 
 namespace School_Manger.Controllers
 {
@@ -86,24 +88,58 @@ namespace School_Manger.Controllers
             ControllerExtensions.ShowError(this, "خطا", "کد وارد شده اشتباه است");
             return View("OTPConfirmation");
         }
-        public IActionResult Login(string NationalCode, string Password)
+        public async Task<IActionResult> Login(string NationalCode, string Password)
         {
-            if(NationalCode == null && Password == null) 
+            if (NationalCode == null && Password == null)
                 return View();
-            else
+
+            UserDTO user = _UserService.CheckAuthorize(NationalCode, Password);
+            if (user == null)
             {
-                UserDTO user = _UserService.CheckAuthorize(NationalCode, Password);
-                if (user != null)
-                {
-                    ControllerExtensions.AddKey(this,"Uref",user.Id);
-                    ControllerExtensions.AddKey(this,"Pref", _PService.GetParentByNationCode(NationalCode).Id);
-                    return ParentMenu();
-                }
-                else
-                {
-                    ControllerExtensions.ShowError(this, "خطا در ورود", "کد ملی یا رمز عبور صحیح نیست!");
+                ControllerExtensions.ShowError(this, "خطا در ورود", "کد ملی یا رمز عبور صحیح نیست!");
+                return View();
+            }
+
+            // Create claims
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim("FullName", $"{user.FirstName} {user.LastName}"),
+                new Claim(ClaimTypes.Role, user.Type.ToString())
+            };
+
+            // Add additional references based on user type
+            switch (user.Type)
+            {
+                case UserType.Parent:
+                    var parent = _PService.GetParentByNationCode(NationalCode);
+                    claims.Add(new Claim("ParentId", parent.Id.ToString()));
+                    break;
+
+                case UserType.Admin:
+                    claims.Add(new Claim("AdminId", "Admin")); // Or actual admin ID if available
+                    break;
+            }
+
+            // Create identity and principal
+            var claimsIdentity = new ClaimsIdentity(claims, "CookieAuth");
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            // Sign in
+            await HttpContext.SignInAsync("CookieAuth", claimsPrincipal);
+
+            // Redirect based on role
+            switch (user.Type)
+            {
+                case UserType.Parent:
+                    return RedirectToAction("ParentMenu");
+
+                case UserType.Admin:
+                    return RedirectToAction("Index", "Parents", new { area = "Admin" });
+
+                default:
                     return View();
-                }
             }
         }
         [HttpPost]

@@ -12,7 +12,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.RegisterServices(builder.Configuration);
 //Container.Register(builder.Services);
 builder.Services.AddControllersWithViews();
-builder.Services.AddAuthorization();
+builder.Services.AddAuthentication("CookieAuth")
+    .AddCookie("CookieAuth", options =>
+    {
+        options.Cookie.Name = "YourAppCookie";
+        options.LoginPath = "/Home/Login";
+        options.AccessDeniedPath = "/Home/AccessDenied";
+    });
 builder.Services.AddSession();
 builder.Services.AddSingleton<ISMSService>(provider =>
 {

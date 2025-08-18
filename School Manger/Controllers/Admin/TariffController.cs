@@ -4,10 +4,11 @@ using School_Manager.Core.ViewModels.FModels;
 using System.Threading.Tasks;
 using System.Linq;
 using School_Manger.Extension;
+using Microsoft.AspNetCore.Authorization;
 
 namespace School_Manger.Controllers.Admin
 {
-    [Area("Admin")]
+    [Area("Admin")][Authorize(Roles = "Admin")]
     public class TariffController : Controller
     {
         private readonly ITariffService _tariffService;

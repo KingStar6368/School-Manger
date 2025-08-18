@@ -1,4 +1,5 @@
-﻿using System;
+﻿using School_Manager.Domain.Entities.Catalog.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,7 +31,7 @@ namespace School_Manager.Core.ViewModels.FModels
         }
         public bool IsActive { get; set; }
         public string Status => IsActive ? "فعال" : "غیرفعال";
-
+        public UserType Type { get; set; }
     }
 
     public class UserCreateDTO

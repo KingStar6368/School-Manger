@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 
 namespace School_Manger.Controllers.Admin
 {
-    [Area("Admin")]
+    [Area("Admin")][Authorize(Roles = "Admin")]
     public class SettingController : Controller
     {
         private readonly ISettingService _settingService;
