@@ -99,7 +99,7 @@ namespace School_Manger.Controllers
                 ControllerExtensions.ShowError(this, "خطا در ورود", "کد ملی یا رمز عبور صحیح نیست!");
                 return View();
             }
-
+            ControllerExtensions.AddKey(this, "Uref", user.Id);
             // Create claims
             var claims = new List<Claim>
             {
@@ -115,6 +115,7 @@ namespace School_Manger.Controllers
                 case UserType.Parent:
                     var parent = _PService.GetParentByNationCode(NationalCode);
                     claims.Add(new Claim("ParentId", parent.Id.ToString()));
+                    ControllerExtensions.AddKey(this, "Pref", parent.Id);
                     break;
 
                 case UserType.Admin:
@@ -133,7 +134,7 @@ namespace School_Manger.Controllers
             switch (user.Type)
             {
                 case UserType.Parent:
-                    return RedirectToAction("ParentMenu");
+                    return ParentMenu();
 
                 case UserType.Admin:
                     return RedirectToAction("Index", "Parents", new { area = "Admin" });
