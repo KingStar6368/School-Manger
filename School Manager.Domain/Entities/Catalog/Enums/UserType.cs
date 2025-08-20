@@ -8,7 +8,8 @@ namespace School_Manager.Domain.Entities.Catalog.Enums
 {
     public enum UserType
     {
-        User = 0,
-        Admin = 1
+        Parent = 0,
+        Admin,
+        Driver
     }
 }

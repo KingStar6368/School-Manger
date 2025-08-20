@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using School_Manager.Domain.Entities.Catalog.App;
+using School_Manager.Domain.Entities.Catalog.Enums;
 using School_Manager.Domain.Entities.Catalog.Identity;
 using School_Manager.Domain.Entities.Catalog.Operation;
 
@@ -437,6 +438,10 @@ namespace School_Manager.Data.Configuration
             builder.Property(p => p.LastName)
                 .HasColumnType("nvarchar(128)")
                 .HasComment("نام خانوادگی");
+
+            builder.Property(p => p.Type)
+                .HasConversion<int>()
+                .HasDefaultValue(UserType.Parent);
 
             builder.HasMany(p => p.Parents).WithOne(b => b.UserNavigation)
                 .HasForeignKey(fk => fk.UserRef)
