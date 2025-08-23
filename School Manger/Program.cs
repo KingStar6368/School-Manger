@@ -3,6 +3,7 @@ using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.IOC;
 using School_Manger.Class;
+using School_Manger.PaymentService;
 using SMS.Base;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,7 @@ builder.Services.AddSingleton<ISMSService>(provider =>
     string apiKey = builder.Configuration["Sms:ApiKey"];
     return new SMSService(apiKey);
 });
+builder.Services.AddSingleton<IPayment>(new PaymentService());
 //Container.Register(builder.Services);
 var app = builder.Build();
 app.UseSession();
