@@ -15,6 +15,7 @@ using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models;
 using School_Manger.Models.PageView;
+using School_Manger.PaymentService;
 using SMS.Base;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -37,8 +38,11 @@ namespace School_Manger.Controllers
         private readonly ISMSService SMSService;
         private readonly IWebHostEnvironment _env;
         private readonly ISettingService settingService;
+        private readonly IPayment PaymentService;
         public HomeController(IParentService PService,IChildService CService,
-            IUserService UService,IBillService billService,ISchoolService schoolService,ISMSService sMSService, IWebHostEnvironment env,ISettingService _settingservice/*,IDriverService driverService,IContractService contractService*/)
+            IUserService UService,IBillService billService,
+            ISchoolService schoolService,ISMSService sMSService, IWebHostEnvironment env,ISettingService _settingservice,
+            IPayment _payment/*,IDriverService driverService,IContractService contractService*/)
         {
             //_DriverService = driverService;
             _PService = PService;
@@ -49,6 +53,7 @@ namespace School_Manger.Controllers
             SMSService = sMSService;
             _env = env;
             settingService = _settingservice;
+            PaymentService = _payment;
             //_ContractService = contractService;
         }
 
@@ -312,6 +317,14 @@ namespace School_Manger.Controllers
             var respance = payment.PaymentRequest("پرداخت قبض " + bill.Name, settingService.Get("PayUrl"));
             if(respance.Result.code == 100)
             {
+                PaymentService.Add(new PayData()
+                {
+                    Autratory = respance.Result.authority,
+                    BillIds = new List<long>()
+                    {
+                        bill.Id
+                    }
+                });
                 return Redirect("https://sandbox.zarinpal.com/pg/StartPay/"+respance.Result.authority);
             }
             ControllerExtensions.ShowError(this, "خطا", "مشکلی در انتفال به درگاه شده لطفا بعدا امتحان کنید");

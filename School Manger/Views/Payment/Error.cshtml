@@ -1,0 +1,14 @@
+﻿@using School_Manager.Core.Services.Interfaces
+@using School_Manger.PaymentService;
+@model string
+@{
+    Layout = "_Layout";
+}
+<div class="card">
+    <div class="card-header bg-danger">
+        عملیات ناموفق
+    </div>
+    <div class="card-body bg-dark">
+        <h3 class="text-white">شناسه پرداخت : @Model.Replace("0000","")</h3>
+    </div>
+</div>

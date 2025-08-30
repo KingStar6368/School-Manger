@@ -1,0 +1,39 @@
+﻿@using School_Manager.Core.Services.Interfaces
+@using School_Manger.PaymentService;
+@inject IBillService BillService;
+@model PayData
+@{
+    Layout = "_Layout";
+}
+
+<div class="card">
+    <div class="card-header bg-info"> 
+        عملیات موفق
+    </div>
+    <div class="card-body bg-dark">
+         <h3 class="text-white">شناسه پرداخت : @Model.Autratory.Replace("0000","")</h3>
+        @if (Model.BillIds != null)
+        {
+             <table class="table-bordered table">
+                 <thead>
+                     <td>شماره قبض</td>
+                     <td>نام قبض</td>
+                     <td>مبلغ</td>
+                 </thead>
+                 <tbody>
+                     @foreach(long BillId in Model.BillIds){
+                        <tr>
+                            <td>@BillService.GetBill(BillId).Id</td>
+                            <td>@BillService.GetBill(BillId).Name</td>
+                            <td>@BillService.GetBill(BillId).TotalPrice</td>
+                        </tr>
+                     }
+                 </tbody>
+             </table>
+        }
+        else
+        {
+            <h3 class="text-white">عملیات به پایان رسیده</h3>
+        }
+    </div>
+</div>
