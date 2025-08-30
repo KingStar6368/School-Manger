@@ -226,7 +226,6 @@ namespace School_Manager.Core.Services.Implemetations
         }
         public List<BillDto> Create(BillInstallmentDto billInstallmentDto)
         {
-            var result = new List<Bill>();
             var service = _unitOfWork.GetRepository<ServiceContract>()
                 .Query(x => x.Id == billInstallmentDto.ServiceContractRef)
                 .Include(x => x.Bills)
@@ -235,45 +234,21 @@ namespace School_Manager.Core.Services.Implemetations
 
             if (service == null) return new List<BillDto>();
 
-            var monthCount = 8;
-            if (service.ChildNavigation.Class == ClassNumber.Twelfth)
-                monthCount = 7;
-
+            var monthCount = service.ChildNavigation.Class == ClassNumber.Twelfth ? 7 : 8;
             var totalPaid = service.Bills.Select(x => x.Price).DefaultIfEmpty(0).Sum();
-            var totalPrice = (billInstallmentDto.Price * monthCount) - totalPaid;
-            var perInstallmentUnrounded = totalPrice / billInstallmentDto.InstallmentCount;
-            var perInstallmentRounded = (totalPrice / (billInstallmentDto.InstallmentCount * 1000000)) * 1000000;
-            var perInstallment = perInstallmentRounded;
-            var remainInstallment = totalPrice % billInstallmentDto.InstallmentCount + ((perInstallmentUnrounded - perInstallmentRounded) * billInstallmentDto.InstallmentCount) ;
 
-            var startDate = billInstallmentDto.StartDate;
-            var endDate = billInstallmentDto.EndDate;
+            var bills = InstallmentCalculator.CalculateInstallments(
+                billInstallmentDto.InstallmentCount,
+                billInstallmentDto.Price,
+                monthCount,
+                totalPaid,
+                billInstallmentDto.StartDate,
+                billInstallmentDto.EndDate,
+                billInstallmentDto.DeadLine,
+                billInstallmentDto.ServiceContractRef
+            );
 
-            int totalMonths = (endDate.Year - startDate.Year) * 12 + (endDate.Month - startDate.Month) + 1;
-            if (billInstallmentDto.InstallmentCount > totalMonths)
-                return new List<BillDto>();
-
-            double step = (double)totalMonths / billInstallmentDto.InstallmentCount;
-
-            for (int i = 0; i < billInstallmentDto.InstallmentCount; i++)
-            {
-                int offsetMonth = (int)Math.Round(i * step);
-                var current = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(offsetMonth);
-
-                var estimateTime = PersianDateHelper.GetBillEstimateTime(current, billInstallmentDto.DeadLine);
-                var monthName = PersianDateHelper.PersianMonthNames[current.GetPersianMonth()];
-                var bill = new Bill
-                {
-                    Name = $"قسط {monthName}",
-                    ServiceContractRef = billInstallmentDto.ServiceContractRef,
-                    Price = (i == billInstallmentDto.InstallmentCount - 1) ? perInstallment + remainInstallment : perInstallment,
-                    EstimateTime = estimateTime,
-                    Type = BillType.Normal
-                };
-
-                result.Add(bill);
-            }
-            return _mapper.Map<List<BillDto>>(result);
+            return _mapper.Map<List<BillDto>>(bills);
         }
 
         public bool Delete(List<long> billIds)
