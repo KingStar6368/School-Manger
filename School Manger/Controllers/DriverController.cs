@@ -44,7 +44,7 @@ namespace School_Manger.Controllers
                 Driver = driver,
                 Passanger = driverService.GetPassngers(driver.Id)
             };
-            return View("DriverPannel");
+            return View("DriverPannel",dashbord);
         }
     }
 }

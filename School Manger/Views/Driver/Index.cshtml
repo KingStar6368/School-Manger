@@ -16,7 +16,7 @@
                     <input type="text"
                            class="form-control bg-dark text-white border-secondary"
                            id="nationalCode"
-                           name="nationalCode"
+                           name="UserName"
                            placeholder="۰۱۲۳۴۵۶۷۸۹"
                            maxlength="10"
                            required
@@ -33,7 +33,7 @@
                            placeholder="رمز عبور خود را وارد کنید"
                            required
                            minlength="6">
-                    <div class="form-text text-white-50">حداقل ۶ کاراکتر</div>
+                    <div class="form-text text-white-50">حداقل ۸ کاراکتر</div>
                 </div>
 
                 <div class="mb-3 form-check">
@@ -121,6 +121,22 @@
                 document.getElementById('nationalCodeFeedback').textContent = 'لطفاً کد ملی معتبر وارد کنید';
                 document.getElementById('nationalCodeFeedback').className = 'form-text text-danger';
                 nationalCode.focus();
+            }
+        });
+        // Password validation
+        document.getElementById('password').addEventListener('input', function(e) {
+            const passwordHelp = document.getElementById('passwordHelp');
+
+            if (this.value.length < 8) {
+                this.classList.remove('border-success', 'is-valid');
+                this.classList.add('border-danger', 'is-invalid');
+                passwordHelp.textContent = 'رمز عبور باید حداقل ۸ کاراکتر داشته باشد';
+                passwordHelp.className = 'form-text text-danger';
+            } else {
+                this.classList.remove('border-danger', 'is-invalid');
+                this.classList.add('border-success', 'is-valid');
+                passwordHelp.textContent = 'رمز عبور معتبر است';
+                passwordHelp.className = 'form-text text-success';
             }
         });
     </script>

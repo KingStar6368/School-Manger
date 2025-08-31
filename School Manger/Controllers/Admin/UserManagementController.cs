@@ -77,7 +77,7 @@ namespace School_Manger.Controllers.Admin
                             LastName = Data.User.LastName,
                             NationCode = Data.User.UserName,
                             UserRef = UserRef,
-                            Address = Data.Driver.Address,
+                            Address = string.IsNullOrEmpty(Data.Driver.Address)?"خالی":Data.Driver.Address,
                             AvailableSeats = Data.Driver.Car.SeatNumber,
                             BankRef = 0,
                             BankAccountNumber = Data.Driver.BankAccountNumber,
