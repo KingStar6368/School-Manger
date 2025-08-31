@@ -1,5 +1,7 @@
-﻿@using School_Manger.Models.PageView;
+﻿@using SMS.Base
+@using School_Manger.Models.PageView
 @using School_Manager.Core.Classes
+@inject IAppConfigService ConfigService
 @model BillCalViewModel
 @{
     ViewData["Title"] = "📄 صدور قبض";
@@ -176,7 +178,7 @@ alert(totalkm);
             Lng: parseFloat(document.getElementById('Lng2').value)
         };
 
-        let url = `http://localhost:5000/Route?fromLat=${from.Lat}&fromLon=${from.Lng}&toLat=${to.Lat}&toLon=${to.Lng}`;
+        let url = `@ConfigService.ApiUrl()/Route?fromLat=${from.Lat}&fromLon=${from.Lng}&toLat=${to.Lat}&toLon=${to.Lng}`;
         L.marker({lat:from.Lat,lng:from.Lng}).addTo(map).bindPopup('<div class="bg-success">موقعیت خانه</div>').openPopup();
         L.marker({lat:to.Lat,lng:to.Lng}).addTo(map).bindPopup('<div class="bg-danger">موقعیت مدرسه</div>').openPopup();
         try {

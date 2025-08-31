@@ -7,17 +7,6 @@
     int num1 = rand.Next(1, 10);
     int num2 = rand.Next(1, 10);
     int captchaAnswer = num1 + num2;
-    switch (oprator % 2)
-    {
-        case 0:
-            opratorSymbol = '+';
-            captchaAnswer = num1 + num2;
-            break;
-        case 1:
-            opratorSymbol = '-';
-            captchaAnswer = num1 - num2;
-            break;
-    }
     string encodedAnswer = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(captchaAnswer.ToString()));
 }
 

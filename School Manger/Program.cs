@@ -26,7 +26,9 @@ builder.Services.AddSingleton<ISMSService>(provider =>
     string apiKey = builder.Configuration["Sms:ApiKey"];
     return new SMSService(apiKey);
 });
+
 builder.Services.AddSingleton<IPayment>(new PaymentService());
+builder.Services.AddSingleton<IAppConfigService>(new AppConfigService(builder.Configuration));
 //Container.Register(builder.Services);
 var app = builder.Build();
 app.UseSession();
