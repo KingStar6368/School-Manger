@@ -23,7 +23,7 @@ namespace School_Manager.Core.Events
 
         public async Task Handle(RawMaterialUpdatedEvent notification, CancellationToken cancellationToken)
         {
-            await _cacheService.RemoveAsync(new { CacheKey = "RawMaterial" });
+            await _cacheService.RemoveAsync("RawMaterial");
         }
     }
 }

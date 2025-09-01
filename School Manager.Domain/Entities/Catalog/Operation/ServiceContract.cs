@@ -42,9 +42,16 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public virtual Child ChildNavigation { get; set; }
         /// <summary>
+        /// توضیحات
+        /// </summary>
+        public string Description {  get; set; }
+        /// <summary>
         /// کلاس چک
         /// </summary>
         public virtual ICollection<ServiceContractCheque> ServiceContractCheques { get; set; }
+        /// <summary>
+        /// قبض
+        /// </summary>
         public virtual ICollection<Bill> Bills { get; set; }
     }
 }

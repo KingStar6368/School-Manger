@@ -41,6 +41,7 @@ namespace School_Manager.Domain.Base
         TEntity GetById(long id);
         TEntity GetById(Guid id);
         IEnumerable<TEntity> GetAll();
+        IQueryable<TEntity> FindAll();
         IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
         void Add(TEntity entity);
         void AddRange(IEnumerable<TEntity> entities);

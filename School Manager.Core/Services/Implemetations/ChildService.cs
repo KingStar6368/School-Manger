@@ -312,14 +312,37 @@ namespace School_Manager.Core.Services.Implemetations
             return result;
         }
 
-        public Task<List<ChildInfo>> SearchChild(IQueryable queryable)
+        public async Task<List<ChildInfo>> SearchChild(SearchDto filter)
         {
-            throw new NotImplementedException();
-        }
+            var query = _unitOfWork.GetRepository<Child>().FindAll(); // IQueryable<Parent>
 
-        public Task<List<ChildInfo>> GetNonPiadChilds()
+            if (!string.IsNullOrEmpty(filter.FirstName))
+                query = query.Where(p => p.FirstName.Contains(filter.FirstName));
+
+            if (!string.IsNullOrEmpty(filter.LastName))
+                query = query.Where(p => p.LastName.Contains(filter.LastName));
+
+            if (!string.IsNullOrEmpty(filter.NationalCode))
+                query = query.Where(p => p.NationalCode.Contains(filter.NationalCode));
+
+            if (!string.IsNullOrEmpty(filter.Mobile))
+                query = query.Where(p => p.ParentNavigation.UserNavigation.Mobile.Contains(filter.Mobile));
+
+            var result = await query.ToListAsync();
+
+            return _mapper.Map<List<ChildInfo>>(result);
+        }
+        public async Task<List<ChildInfo>> GetNonPaidChildren()
         {
-            throw new NotImplementedException();
+            var ds = await _unitOfWork.GetRepository<Child>()
+                .Query(child => child.ServiceContracts
+                    .Any(contract => contract.Bills
+                        .Any(bill =>
+                            bill.EstimateTime < DateTime.Now &&
+                            bill.PayBills.Sum(p => p.PayNavigation.Price) < bill.Price)))
+                .ToListAsync();
+
+            return _mapper.Map<List<ChildInfo>>(ds);
         }
     }
 }

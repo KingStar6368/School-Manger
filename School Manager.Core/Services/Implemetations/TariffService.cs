@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using School_Manager.Core.Classes;
 using School_Manager.Core.Events;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
@@ -43,13 +44,14 @@ namespace School_Manager.Core.Services.Implemetations
 
         public async Task<List<TariffDto>> GetActiveTariff()
         {
-            var ds = await  _cachService.GetOrSetAsync
+            var ds = await _cachService.GetOrSetAsync
                 (
-                new { CacheKey = "TariffList" },
-                async () => await _unitOfWork.GetRepository<Tariff>().Query(x=>x.FromDate < DateTime.Now && x.ToDate > DateTime.Now).ToListAsync(),
+                 StaticString.TariffList,
+                async () => await _unitOfWork.GetRepository<Tariff>().Query(x => x.FromDate < DateTime.Now.AddDays(7) && x.ToDate > DateTime.Now).ToListAsync(),
                 absoluteExpireTime: TimeSpan.FromMinutes(30),
                 slidingExpireTime: TimeSpan.FromMinutes(10)
                 );
+            //var ds = await _unitOfWork.GetRepository<Tariff>().Query(x => x.FromDate < DateTime.Now.AddDays(7) && x.ToDate > DateTime.Now).ToListAsync();
             return _mapper.Map<List<TariffDto>>(ds);
         }
 

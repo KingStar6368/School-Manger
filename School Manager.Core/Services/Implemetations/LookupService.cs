@@ -36,7 +36,7 @@ namespace School_Manager.Core.Services.Implemetations
         {
             var ds = await _cachService.GetOrSetAsync
                (
-                   new { CacheKey = StaticString.LookUpBankType },
+                   StaticString.LookUpBankType,
                    async () => await _unitOfWork.GetRepository<Lookup>().Query
                                         (
                                             predicate: p => p.Type == Type

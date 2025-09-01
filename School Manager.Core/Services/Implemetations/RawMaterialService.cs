@@ -240,7 +240,7 @@ namespace School_Manager.Core.Services.Implemetations
         {
             var ds = await _cachService.GetOrSetAsync
                 (
-                new { CacheKey = "RawMaterial" },
+                "RawMaterial",
                 async () => await _unitOfWork.GetRepository<RawMaterial>().GetAllAsync(),
                 absoluteExpireTime: TimeSpan.FromMinutes(10),
                 slidingExpireTime: TimeSpan.FromMinutes(2)

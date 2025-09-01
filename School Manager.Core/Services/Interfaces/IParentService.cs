@@ -18,7 +18,7 @@ namespace School_Manager.Core.Services.Interfaces
         /// سرچ خانواده بر اساس داده ورودی
         /// </summary>
         /// <returns></returns>
-        Task<List<ParentDto>> SearchParents(IQueryable queryable);
+        Task<List<ParentDto>> SearchParents(SearchDto parentSearchDto);
         /// <summary>
         /// لیست خانواده های که قبض فرزنده پرداخت نشده دارند
         /// </summary>

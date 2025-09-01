@@ -19,12 +19,12 @@ namespace School_Manager.Core.Services.Interfaces
         /// </summary>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        public Task<List<ChildInfo>> SearchChild(IQueryable queryable);
+        public Task<List<ChildInfo>> SearchChild(SearchDto filter);
         /// <summary>
         /// لیست دانش آموزان پرداخت نشده
         /// </summary>
         /// <returns></returns>
-        public Task<List<ChildInfo>> GetNonPiadChilds();
+        public Task<List<ChildInfo>> GetNonPaidChildren();
         /// <summary>
         /// گرفتن یک فرزند
         /// </summary>

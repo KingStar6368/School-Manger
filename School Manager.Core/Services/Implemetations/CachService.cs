@@ -20,9 +20,9 @@ namespace School_Manager.Core.Services.Implemetations
             _memoryCache = memoryCache;
         }
 
-        public async Task<T> GetOrSetAsync<T>(object keyData, Func<Task<T>> acquire, TimeSpan? absoluteExpireTime = null, TimeSpan? slidingExpireTime = null)
+        public async Task<T> GetOrSetAsync<T>(string keyData, Func<Task<T>> acquire, TimeSpan? absoluteExpireTime = null, TimeSpan? slidingExpireTime = null)
         {
-            var key = GenerateKey<T>(keyData);
+            var key = GenerateKey(keyData);
 
             if (_memoryCache.TryGetValue(key, out T cacheEntry))
             {
@@ -58,32 +58,32 @@ namespace School_Manager.Core.Services.Implemetations
             }
         }
 
-        public void Remove(object keyData)
+        public void Remove(string keyData)
         {
-            var key = GenerateKey<object>(keyData);
+            var key = GenerateKey(keyData);
             _memoryCache.Remove(key);
         }
-        private static string GenerateKey<T>(object keyData)
+        private static string GenerateKey(object keyData)
         {
             var json = JsonSerializer.Serialize(keyData);
             using var sha256 = SHA256.Create();
-            var bytes = Encoding.UTF8.GetBytes($"{typeof(T).FullName}:{json}");
+            var bytes = Encoding.UTF8.GetBytes(json);
             var hash = sha256.ComputeHash(bytes);
             return Convert.ToBase64String(hash);
         }
 
-        public async Task<T> GetOrSetByKeyAsync<T>(string key, Func<Task<T>> acquire, TimeSpan? absoluteExpireTime = null, TimeSpan? slidingExpireTime = null)
-        {
-            return await GetOrSetAsync
-                (
-                    new { CacheKey = key }, // اینجا خودش keyData میسازه
-                    acquire,
-                    absoluteExpireTime,
-                    slidingExpireTime
-                );
-        }
+        //public async Task<T> GetOrSetByKeyAsync<T>(object key, Func<Task<T>> acquire, TimeSpan? absoluteExpireTime = null, TimeSpan? slidingExpireTime = null)
+        //{
+        //    return await GetOrSetAsync
+        //        (
+        //            new { CacheKey = key }, // اینجا خودش keyData میسازه
+        //            acquire,
+        //            absoluteExpireTime,
+        //            slidingExpireTime
+        //        );
+        //}
 
-        public Task RemoveAsync(object keyData)
+        public Task RemoveAsync(string keyData)
         {
             Remove(keyData);
             return Task.CompletedTask;

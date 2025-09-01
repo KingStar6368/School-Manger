@@ -19,7 +19,7 @@ namespace School_Manager.Core.Services.Interfaces
         /// </summary>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        Task<List<DriverDto>> SearchDriver(IQueryable queryable);
+        Task<List<DriverDto>> SearchDriver(SearchDto filter);
         /// <summary>
         /// گرفتن یک راننده با کد
         /// </summary>

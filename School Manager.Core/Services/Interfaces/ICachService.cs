@@ -9,16 +9,17 @@ namespace School_Manager.Core.Services.Interfaces
     public interface ICachService
     {
         Task<T> GetOrSetAsync<T>(
-        object key,
-        Func<Task<T>> acquire,
-        TimeSpan? absoluteExpireTime = null,
-        TimeSpan? slidingExpireTime = null);
-        Task<T> GetOrSetByKeyAsync<T>(
         string key,
         Func<Task<T>> acquire,
         TimeSpan? absoluteExpireTime = null,
         TimeSpan? slidingExpireTime = null);
-        void Remove(object key);
-        Task RemoveAsync(object value);
+        Task RemoveAsync(string key);
+        //Task<T> GetOrSetByKeyAsync<T>(
+        //object key,
+        //Func<Task<T>> acquire,
+        //TimeSpan? absoluteExpireTime = null,
+        //TimeSpan? slidingExpireTime = null);
+        //void Remove(object key);
+        //Task RemoveAsync(string value);
     }
 }

@@ -131,14 +131,40 @@ namespace School_Manager.Core.Services.Implemetations
             return _unitOfWork.SaveChanges() > 0;
         }
 
-        public Task<List<ParentDto>> SearchParents(IQueryable queryable)
+        public async Task<List<ParentDto>> SearchParents(SearchDto filter)
         {
-            throw new NotImplementedException();
+            var query = _unitOfWork.GetRepository<Parent>().FindAll(); // IQueryable<Parent>
+
+            if (!string.IsNullOrEmpty(filter.FirstName))
+                query = query.Where(p => p.FirstName.Contains(filter.FirstName));
+
+            if (!string.IsNullOrEmpty(filter.LastName))
+                query = query.Where(p => p.LastName.Contains(filter.LastName));
+
+            if (!string.IsNullOrEmpty(filter.NationalCode))
+                query = query.Where(p => p.NationalCode.Contains(filter.NationalCode));
+
+            if (!string.IsNullOrEmpty(filter.Mobile))
+                query = query.Where(p => p.UserNavigation.Mobile.Contains(filter.Mobile));
+
+            var result = await query.ToListAsync();
+
+            return _mapper.Map<List<ParentDto>>(result);
         }
 
-        public Task<List<ParentDto>> GetNonPiadParents()
+        public async Task<List<ParentDto>> GetNonPiadParents()
         {
-            throw new NotImplementedException();
+            var ds = await _unitOfWork.GetRepository<Parent>()
+                .Query(parent => parent
+                    .Children
+                    .Any(child => child.ServiceContracts
+                    .Any(contract => contract.Bills
+                        .Any(bill =>
+                            bill.EstimateTime < DateTime.Now &&
+                            bill.PayBills.Sum(p => p.PayNavigation.Price) < bill.Price))))
+                .ToListAsync();
+
+            return _mapper.Map<List<ParentDto>>(ds);
         }
     }
 }

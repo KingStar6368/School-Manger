@@ -189,7 +189,10 @@ namespace School_Manager.Data.Repositories
         {
             return _dbSet.ToList();
         }
-
+        public IQueryable<TEntity> FindAll()
+        {
+            return _dbSet.AsQueryable();
+        }
         public IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate)
         {
             return _dbSet.Where(predicate).ToList();

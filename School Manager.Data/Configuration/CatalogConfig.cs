@@ -371,6 +371,10 @@ namespace School_Manager.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<ServiceContract> builder)
         {
+            builder.Property(x => x.Description)
+                .IsRequired(false)
+                .HasColumnType("NVARCHAR(MAX)");
+
             builder.HasMany(p => p.ServiceContractCheques).WithOne(b => b.ServiceContractNavigation)
                 .HasForeignKey(fk => fk.ServiceContractRef)
                 .OnDelete(DeleteBehavior.Restrict);

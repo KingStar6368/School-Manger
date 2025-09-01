@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using School_Manager.Core.Classes;
 using School_Manager.Core.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace School_Manager.Core.Events
         }
         public async Task Handle(TariffChangeEvent notification, CancellationToken cancellationToken)
         {
-            await _cacheService.RemoveAsync(new { CacheKey = "TariffList" });
+            await _cacheService.RemoveAsync(StaticString.TariffList);
         }
     }
 }
