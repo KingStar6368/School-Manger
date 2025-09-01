@@ -77,6 +77,9 @@ namespace School_Manger.Extension
             int month = int.Parse(parts[1]);
             int day = int.Parse(parts[2]);
 
+            if (month == 12 && day == 30 && !PersianCal.IsLeapYear(year))
+                day = 29; // fallback to last valid day
+
             return PersianCal.ToDateTime(year, month, day, 0, 0, 0, 0);
         }
 
