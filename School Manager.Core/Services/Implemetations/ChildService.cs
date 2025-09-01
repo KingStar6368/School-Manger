@@ -311,5 +311,15 @@ namespace School_Manager.Core.Services.Implemetations
 
             return result;
         }
+
+        public Task<List<ChildInfo>> SearchChild(IQueryable queryable)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<ChildInfo>> GetNonPiadChilds()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

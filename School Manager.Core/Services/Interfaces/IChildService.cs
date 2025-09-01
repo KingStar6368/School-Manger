@@ -15,6 +15,17 @@ namespace School_Manager.Core.Services.Interfaces
         /// <returns></returns>
         public Task<List<ChildInfo>> GetChildren();
         /// <summary>
+        /// سرچ کردن دانش آموزان ها با داده های ورودی
+        /// </summary>
+        /// <param name="queryable"></param>
+        /// <returns></returns>
+        public Task<List<ChildInfo>> SearchChild(IQueryable queryable);
+        /// <summary>
+        /// لیست دانش آموزان پرداخت نشده
+        /// </summary>
+        /// <returns></returns>
+        public Task<List<ChildInfo>> GetNonPiadChilds();
+        /// <summary>
         /// گرفتن یک فرزند
         /// </summary>
         /// <param name="id">کد فرزند</param>

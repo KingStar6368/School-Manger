@@ -157,5 +157,10 @@ namespace School_Manager.Core.Services.Implemetations
             _unitOfWork.GetRepository<Driver>().Remove(Driver);
             return _unitOfWork.SaveChanges() > 0;
         }
+
+        public Task<List<DriverDto>> SearchDriver(IQueryable queryable)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -15,6 +15,16 @@ namespace School_Manager.Core.Services.Interfaces
         /// <returns></returns>
         Task<List<ParentDto>> GetParents();
         /// <summary>
+        /// سرچ خانواده بر اساس داده ورودی
+        /// </summary>
+        /// <returns></returns>
+        Task<List<ParentDto>> SearchParents(IQueryable queryable);
+        /// <summary>
+        /// لیست خانواده های که قبض فرزنده پرداخت نشده دارند
+        /// </summary>
+        /// <returns></returns>
+        Task<List<ParentDto>> GetNonPiadParents();
+        /// <summary>
         /// گرفتن یک والد
         /// </summary>
         /// <param name="Id">کد والد</param>

@@ -130,5 +130,15 @@ namespace School_Manager.Core.Services.Implemetations
             _unitOfWork.GetRepository<Parent>().Remove(Parent);
             return _unitOfWork.SaveChanges() > 0;
         }
+
+        public Task<List<ParentDto>> SearchParents(IQueryable queryable)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<ParentDto>> GetNonPiadParents()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

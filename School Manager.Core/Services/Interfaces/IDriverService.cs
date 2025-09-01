@@ -15,6 +15,12 @@ namespace School_Manager.Core.Services.Interfaces
         /// <returns></returns>
         Task<List<DriverDto>> GetDrivers();
         /// <summary>
+        /// سرچ کردن راننده با استفاده از داده های ورودی
+        /// </summary>
+        /// <param name="queryable"></param>
+        /// <returns></returns>
+        Task<List<DriverDto>> SearchDriver(IQueryable queryable);
+        /// <summary>
         /// گرفتن یک راننده با کد
         /// </summary>
         /// <param name="Id">کد راننده</param>
