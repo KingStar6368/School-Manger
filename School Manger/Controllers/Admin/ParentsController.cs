@@ -84,6 +84,11 @@ namespace School_Manger.Controllers.Admin
             else
             {
                 long contractref = _contractService.GetContractWithChild(ChildId).Id;
+                if (contractref == 0 || contractref == null)
+                {
+                    ControllerExtensions.ShowError(this, "خطا", "این دانش آموز قرار داد فعال ندارد");
+                    return CreateBill(ChildId);
+                }
                 _billService.Create(new BillCreateDto()
                 {
                     Name = Name,
