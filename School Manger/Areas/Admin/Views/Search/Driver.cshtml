@@ -1,0 +1,155 @@
+﻿@using School_Manager.Core.ViewModels.FModels
+@model List<DriverDto>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "🔎 جستجو پیشرفته راننده";
+}
+<div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2">
+    <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+        <h4 class="mb-0 fw-bold">
+            <i class="bi bi-people-fill me-2"></i> 🔎 جستجو راننده
+        </h4>
+    </div>
+    <div class="card-body">
+        <div class="container">
+            @* جستجو راننده *@
+            <form method="post" id="DriverPnl" asp-action="Driver" style="visibility:visible;display:none">
+                <div class="row mb-4">
+                    <div class="col-sm">
+                        <label class="form-label fw-bold">نام</label>
+                        <input name="FirstName" type="text" class="form-control price-separator" />
+                    </div>
+                    <div class="col-sm">
+                        <label class="form-label fw-bold">نام خانوادگی</label>
+                        <input name="LastName" type="text" class="form-control price-separator" />
+                    </div>
+                    <div class="col-sm">
+                        <label class="form-label fw-bold">کدملی</label>
+                        <input name="NationalCode" type="text" class="form-control price-separator" />
+                    </div>
+                    <div class="col-sm">
+                        <label class="form-label fw-bold">موبایل</label>
+                        <input name="Mobile" type="text" class="form-control price-separator" />
+                    </div>
+                </div>
+                <div class="row justify-content-center container">
+                    <button type="submit" class="col-4 btn btn-warning fw-bold">🔎 جستجو</button>
+                </div>
+            </form>
+            @* جستجو خانواده *@
+            <form method="post" id="ParentPnl" asp-action="Parent" style="visibility:visible;display:none">
+                <div class="row mb-4">
+                    <div class="col-sm">
+                        <label class="form-label fw-bold">نام</label>
+                        <input name="FirstName" type="text" class="form-control price-separator" />
+                    </div>
+                    <div class="col-sm">
+                        <label class="form-label fw-bold">نام خانوادگی</label>
+                        <input name="LastName" type="text" class="form-control price-separator" />
+                    </div>
+                    <div class="col-sm">
+                        <label class="form-label fw-bold">کدملی</label>
+                        <input name="NationalCode" type="text" class="form-control price-separator" />
+                    </div>
+                    <div class="col-sm">
+                        <label class="form-label fw-bold">موبایل</label>
+                        <input name="Mobile" type="text" class="form-control price-separator" />
+                    </div>
+                </div>
+                <div class="row justify-content-center container">
+                    <button type="submit" class="col-4 btn btn-warning fw-bold">🔎 جستجو</button>
+                </div>
+            </form>
+            @* جستجو دانش آموزان *@
+            <form method="post" id="ChildPnl" asp-action="Child" style="visibility:visible;display:inline">
+                <div class="row mb-4">
+                    <div class="col-sm">
+                        <label class="form-label fw-bold">نام</label>
+                        <input name="FirstName" type="text" class="form-control price-separator" />
+                    </div>
+                    <div class="col-sm">
+                        <label class="form-label fw-bold">نام خانوادگی</label>
+                        <input name="LastName" type="text" class="form-control price-separator" />
+                    </div>
+                    <div class="col-sm">
+                        <label class="form-label fw-bold">کدملی</label>
+                        <input name="NationalCode" type="text" class="form-control price-separator" />
+                    </div>
+                </div>
+                <div class="row justify-content-center container">
+                    <button type="submit" class="col-4 btn btn-warning fw-bold">🔎 جستجو</button>
+                </div>
+            </form>
+        </div>
+        <select id="PDropBox" onchange="">
+            <option value="Child">دانش آموزان</option>
+            <option value="Parent">خانواده</option>
+            <option value="Driver" selected>راننده</option>
+        </select>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden">
+                <thead class="table-light text-dark">
+                    <tr>
+                        <th>#ردیف</th>
+                        <th>نام</th>
+                        <th>نام خانوادگی</th>
+                        <th>کدملی</th>
+                        <th>مدل ماشین</th>
+                        <th>پلاک ماشین</th>
+                        <th>صندلی خالی</th>
+                        <th>اخطار ها</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        try{
+                            var SelectedModel = Model[i];
+                            <tr>
+                                <td>@(i + 1)</td>
+                                <td>@SelectedModel.Name</td>
+                                <td>@SelectedModel.LastName</td>
+                                <td>@SelectedModel.NationCode</td>
+                                <td>@SelectedModel.Car.Name</td>
+                                <td>@Html.Partial("_CarPlate", SelectedModel.Car.PlateNumber)</td>
+                                <td><i class="badge bg-warning">@SelectedModel.AvailableSeats</i></td>
+                                <td>@SelectedModel.Warnning</td>
+                            </tr>
+                        }
+                        catch
+                        {
+                            
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+
+                    const ParentPnl = document.getElementById('ParentPnl');
+        const ChildPnl = document.getElementById('ChildPnl');
+        const DriverPnl = document.getElementById('DriverPnl');
+        document.getElementById('PDropBox').addEventListener('change', function()
+        {
+            const Selectedvalue = this.value;
+            if(Selectedvalue == "Driver"){
+                ParentPnl.style.display = "none";
+                ChildPnl.style.display = "none";
+                DriverPnl.style.display = "inline";
+            }
+            if(Selectedvalue == "Parent"){
+                DriverPnl.style.display = "none";
+                ChildPnl.style.display = "none";
+                ParentPnl.style.display = "inline";
+            }
+            if(Selectedvalue == "Child"){
+                ParentPnl.style.display = "none";
+                DriverPnl.style.display = "none";
+                ChildPnl.style.display = "inline";
+            }
+        });
+    </script>
+}

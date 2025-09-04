@@ -87,6 +87,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Search" ? "active" : "")" href="/Admin/Search">
+                        <i class="bi bi-steering me-2"></i> جستجو
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a style="pointer-events:none;cursor:not-allowed;" class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "DriverContract" ? "active" : "")" href="/Admin/DriverContract">
                         <i class="bi bi-file-earmark-text me-2"></i> قرارداد رانندگان
                     </a>
