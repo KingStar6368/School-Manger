@@ -43,26 +43,28 @@ namespace SMS.Base
     public class SMSService : ISMSService
     {
         private readonly SmsIr SMS;
-        public SMSService(string _APIKEY)
+        private readonly IAppConfigService appConfigService;
+        public SMSService(string _APIKEY, IAppConfigService appConfigService)
         {
             SMS = new SmsIr(_APIKEY);
+            this.appConfigService = appConfigService;
         }
 
-        public bool Send(long Line, string Phone, string Message)
+        public bool Send(string Phone, string Message)
         {
-            SmsIrResult result = SMS.BulkSend(Line, Message, new string[] {Phone});
+            SmsIrResult result = SMS.BulkSend(appConfigService.SMSLine(), Message, new string[] {Phone});
             return result.Status == 1;
         }
 
-        public async Task<bool> Send2All(long Line, string[] Phones, string Message)
+        public async Task<bool> Send2All(string[] Phones, string Message)
         {
-            SmsIrResult result = await SMS.BulkSendAsync(Line, Message, Phones);
+            SmsIrResult result = await SMS.BulkSendAsync(appConfigService.SMSLine(), Message, Phones);
             return result.Status == 1;
         }
 
-        public async Task<bool> Send2Grup(long Line, string[] Phones, string Message)
+        public async Task<bool> Send2Grup(string[] Phones, string Message)
         {
-            SmsIrResult result = await SMS.BulkSendAsync(Line, Message, Phones);
+            SmsIrResult result = await SMS.BulkSendAsync(appConfigService.SMSLine(), Message, Phones);
             return result.Status == 1;
         }
 

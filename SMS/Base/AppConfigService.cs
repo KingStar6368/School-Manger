@@ -6,6 +6,7 @@ namespace SMS.Base
     {
         string ConnectionString();
         string SMSKey();
+        long SMSLine();
         string ApiUrl();
     }
 
@@ -28,9 +29,15 @@ namespace SMS.Base
             return _configuration["Sms:ApiKey"];
         }
 
+        public long SMSLine()
+        {
+            return long.Parse(_configuration["Sms:Line"]);
+        }
+
         public string ApiUrl()
         {
             return _configuration["WebSetting:ApiUrl"];
         }
+
     }
 }

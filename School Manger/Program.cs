@@ -21,14 +21,14 @@ builder.Services.AddAuthentication("CookieAuth")
         options.AccessDeniedPath = "/Home/AccessDenied";
     });
 builder.Services.AddSession();
+builder.Services.AddSingleton<IAppConfigService>(new AppConfigService(builder.Configuration));
 builder.Services.AddSingleton<ISMSService>(provider =>
 {
     string apiKey = builder.Configuration["Sms:ApiKey"];
-    return new SMSService(apiKey);
+    return new SMSService(apiKey,provider.GetRequiredService<IAppConfigService>());
 });
 
 builder.Services.AddSingleton<IPayment>(new PaymentService());
-builder.Services.AddSingleton<IAppConfigService>(new AppConfigService(builder.Configuration));
 //Container.Register(builder.Services);
 var app = builder.Build();
 app.UseSession();

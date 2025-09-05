@@ -8,9 +8,9 @@ namespace SMS.Base
 {
     public interface ISMSService
     {
-        public bool Send(long Line,string Phone,string Message);
+        public bool Send(string Phone,string Message);
         public bool SendCode(string Phone,string Code);
-        public Task<bool> Send2All(long Line, string[] Phones,string Message);
-        public Task<bool> Send2Grup(long Line, string[] Phones,string Message);
+        public Task<bool> Send2All(string[] Phones,string Message);
+        public Task<bool> Send2Grup(string[] Phones,string Message);
     }
 }

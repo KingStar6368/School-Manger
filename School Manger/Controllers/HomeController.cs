@@ -75,7 +75,7 @@ namespace School_Manger.Controllers
             //send code
             int RandomCode = new Random().Next(111111, 999999);
             ControllerExtensions.AddKey(this, "Code", RandomCode);
-            if (!SMSService.Send(30007732008772, PhoneNumber, $"والد گرامی کد تایدد شما \n" + RandomCode))
+            if (!SMSService.Send(PhoneNumber, $"والد گرامی کد تایدد شما \n" + RandomCode))
             {
                 ControllerExtensions.ShowError(this, "خطا", "کد تاییدی به شماره ارسال نشد");
                 return View("Index");

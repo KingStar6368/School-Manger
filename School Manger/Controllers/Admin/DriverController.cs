@@ -5,6 +5,7 @@ using School_Manager.Core.ViewModels.FModels;
 using School_Manger.Extension;
 using School_Manger.Models;
 using School_Manger.Models.PageView;
+using SMS.Base;
 using System.Threading.Tasks;
 
 namespace School_Manger.Controllers.Admin
@@ -15,11 +16,15 @@ namespace School_Manger.Controllers.Admin
         private readonly IDriverService _driverService;
         private readonly IChildService _childService;
         private readonly IUserService _userService;
-        public DriverController(IDriverService driverService, IUserService userService, IChildService childService)
+        private readonly ISMSService _smsservice;
+        private readonly ISettingService _settingService;
+        public DriverController(IDriverService driverService, IUserService userService, IChildService childService,ISMSService sMSService, ISettingService settingService)
         {
             _driverService = driverService;
             _userService = userService;
             _childService = childService;
+            _smsservice = sMSService;
+            _settingService = settingService;
         }
         public async Task<IActionResult> Index()
         {
@@ -79,6 +84,7 @@ namespace School_Manger.Controllers.Admin
                     IsActive = true,
                 }
             });
+            _smsservice.Send(_userService.GetUserById(UserRef).Mobile, $"راننده گرامی شما در سیستم {_settingService.Get("CompanyName")} ثبت نام شدید لینک ورود شما" + Environment.NewLine + _settingService.Get("DriverSMSLink"));
             ControllerExtensions.ShowSuccess(this, "موفق", "راننده با موفقعیت اضافه شد");
             return View(driver);
         }
