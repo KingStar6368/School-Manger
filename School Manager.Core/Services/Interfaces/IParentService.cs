@@ -37,6 +37,12 @@ namespace School_Manager.Core.Services.Interfaces
         /// <returns></returns>
         ParentDto GetParentByNationCode(string NationCode);
         /// <summary>
+        /// گرفتن والد با کد فرزند
+        /// </summary>
+        /// <param name="ChildId"></param>
+        /// <returns></returns>
+        ParentDto GetParentWithChild(long ChildId);
+        /// <summary>
         /// گرفتن والد با شماره تلفن
         /// </summary>
         /// <param name="Phone"></param>
