@@ -9,10 +9,14 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\Reports\Bill.rdlc" />
+    <Content Remove="wwwroot\Reports\ContractDlc.rdlc" />
+    <Content Remove="wwwroot\Reports\ContractDlc2.rdlc" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\Reports\Bill.rdlc" />
+    <EmbeddedResource Include="wwwroot\Reports\ContractDlc.rdlc" />
+    <EmbeddedResource Include="wwwroot\Reports\ContractDlc2.rdlc" />
   </ItemGroup>
 
   <ItemGroup>
