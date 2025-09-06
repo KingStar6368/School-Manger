@@ -1,14 +1,21 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Reporting.NETCore;
+using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Entities.Catalog.Enums;
+using School_Manager.Domain.Entities.Catalog.Operation;
+using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models.PageView;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace School_Manger.Controllers.Admin
 {
-    [Area("Admin")][Authorize(Roles = "Admin")]
+    [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class ParentsController : Controller
     {
         private readonly IUserService _userService;
@@ -20,8 +27,9 @@ namespace School_Manger.Controllers.Admin
         private readonly IDriverService _driverService;
         private readonly IPayBillService _payBillService;
         private readonly ITariffService _tariffService;
+        private readonly IWebHostEnvironment _env;
         public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, IBillService billService,
-            ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService, ITariffService tariffService)
+            ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService, ITariffService tariffService, IWebHostEnvironment env)
         {
             _parentService = parentService;
             _childService = childService;
@@ -31,6 +39,7 @@ namespace School_Manger.Controllers.Admin
             _driverService = driverService;
             _payBillService = payBillService;
             _tariffService = tariffService;
+            _env = env;
         }
         public async Task<IActionResult> Index()
         {
@@ -106,8 +115,10 @@ namespace School_Manger.Controllers.Admin
         {
             var contractId = _contractService.GetContractWithChild(Id).Id;
             var child = _childService.GetChild(Id);
+            var parent = _parentService.GetParentWithChild(Id);
             ControllerExtensions.AddObject(this, "Path", child.Path);
-            ControllerExtensions.AddKey(this, "ChildId",Id);
+            ControllerExtensions.AddKey(this, "ChildId", Id);
+            ControllerExtensions.AddKey(this, "ParentId", Id);
             return View(
             new BillCalViewModel()
             {
@@ -120,7 +131,7 @@ namespace School_Manger.Controllers.Admin
             });
         }
         [HttpPost]
-        public IActionResult BillCalPerView(BillCalViewModel data,string PreStartDate,string PreEndDate)
+        public IActionResult BillCalPerView(BillCalViewModel data, string PreStartDate, string PreEndDate)
         {
             data.Installment.StartDate = PreStartDate.ToMiladi();
             data.Installment.EndDate = PreEndDate.ToMiladi();
@@ -145,12 +156,67 @@ namespace School_Manger.Controllers.Admin
                 });
             }
             if (_billService.Create(createDtos))
+            {
                 ControllerExtensions.ShowSuccess(this, "موفق", "قبض ها صادر شد");
+                //todo Generate One use link with auto login to parent page and send it to parent
+            }
             else
                 ControllerExtensions.ShowSuccess(this, "خطا", "مشکلی در صادر قبض ها پیش آمده");
             long id = ControllerExtensions.GetKey<long>(this, "ChildId");
             return CreateBill(id);
         }
+        [HttpPost]
+        public async Task<IActionResult> ShowContractPDF(BillInstallmentDto data)
+        {
+            var ChildId = ControllerExtensions.GetKey<long>(this, "ChildId");
+            var ParentId = ControllerExtensions.GetKey<long>(this, "ParentId");
+
+            // دریافت لیست قبوض
+            var bills = _billService.Create(data);
+            bills.AddRange(await _billService.GetChildBills(ChildId));
+
+            if (bills == null || bills.Count == 0)
+                return BadRequest("No bill data.");
+
+            // مسیر فایل RDLC
+            string rdlcPath = Path.Combine(_env.WebRootPath, "reports", "Bill.rdlc");
+
+            // پارامترهای گزارش
+            var parameters = new List<ReportParameter>
+            {
+                new ReportParameter("TotalPrice", bills.Sum(x => x.TotalPrice).ToString()),
+                new ReportParameter("PaidPrice", (await _billService.GetChildBills(ChildId)).Sum(x => x.TotalPrice).ToString()),
+                new ReportParameter("MonthPrice", data.Price.ToString()),
+            };
+            List<Contract1TableData> TableData = new List<Contract1TableData>();
+            foreach(var bill in bills)
+            {
+                TableData.Add(new Contract1TableData()
+                {
+                    Amount = bill.TotalPrice.ToString(),
+                    BillName = bill.Name,
+                    CurrentYear = data.StartDate.ToPersain().Year.ToString()
+                });
+            }
+            byte[] pdfBytes;
+            using (var report = new LocalReport())
+            {
+                using var fs = new FileStream(rdlcPath, FileMode.Open, FileAccess.Read);
+                report.LoadReportDefinition(fs);
+
+                // ⚡ این قسمت مهم است → اضافه کردن لیست قبوض به دیتا سورس
+                report.DataSources.Add(new ReportDataSource("BillDataSet", TableData));
+
+                // تنظیم پارامترها
+                report.SetParameters(parameters);
+
+                // خروجی PDF
+                pdfBytes = report.Render("PDF");
+            }
+
+            return File(pdfBytes, "application/pdf", "Bill.pdf");
+        }
+
         [HttpPost]
         public IActionResult PayBill(long ChildId, long BillId, string TrackCode, string PaymentType, long PaidPrice, string PiadTime)
         {
@@ -322,7 +388,7 @@ namespace School_Manger.Controllers.Admin
             return View("EditChild", model);
         }
         [HttpPost]
-        public JsonResult GetPriceByKm([FromBody]float km)
+        public JsonResult GetPriceByKm([FromBody] float km)
         {
             var tariffsTask = _tariffService.GetActiveTariff();
             tariffsTask.Wait();

@@ -15,8 +15,12 @@
 
   <ItemGroup>
     <EmbeddedResource Include="wwwroot\Reports\Bill.rdlc" />
-    <EmbeddedResource Include="wwwroot\Reports\ContractDlc.rdlc" />
-    <EmbeddedResource Include="wwwroot\Reports\ContractDlc2.rdlc" />
+    <EmbeddedResource Include="wwwroot\Reports\ContractDlc.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\Reports\ContractDlc2.rdlc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
