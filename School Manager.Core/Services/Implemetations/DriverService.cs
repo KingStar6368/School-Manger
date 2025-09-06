@@ -162,21 +162,21 @@ namespace School_Manager.Core.Services.Implemetations
 
         public async Task<List<DriverDto>> SearchDriver(SearchDto filter)
         {
-            var query = _unitOfWork.GetRepository<Driver>()
+            IQueryable <Driver> query = _unitOfWork.GetRepository<Driver>()
                             .FindAll()
                             .Include(x => x.Cars);
 
             if (!string.IsNullOrEmpty(filter.FirstName))
-                query = (IIncludableQueryable<Driver, ICollection<Car>>)query.Where(p => p.Name.Contains(filter.FirstName));
+                query = query.Where(p => p.Name.Contains(filter.FirstName));
 
             if (!string.IsNullOrEmpty(filter.LastName))
-                query = (IIncludableQueryable<Driver, ICollection<Car>>)query.Where(p => p.LastName.Contains(filter.LastName));
+                query = query.Where(p => p.LastName.Contains(filter.LastName));
 
             if (!string.IsNullOrEmpty(filter.NationalCode))
-                query = (IIncludableQueryable<Driver, ICollection<Car>>)query.Where(p => p.NationCode.Contains(filter.NationalCode));
+                query = query.Where(p => p.NationCode.Contains(filter.NationalCode));
 
             if (!string.IsNullOrEmpty(filter.Mobile))
-                query = (IIncludableQueryable<Driver, ICollection<Car>>)query.Where(p => p.UserNavigation.Mobile.Contains(filter.Mobile));
+                query = query.Where(p => p.UserNavigation.Mobile.Contains(filter.Mobile));
 
             var result = await query.ToListAsync();
 

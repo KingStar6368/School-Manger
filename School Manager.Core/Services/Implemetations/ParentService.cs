@@ -133,7 +133,7 @@ namespace School_Manager.Core.Services.Implemetations
 
         public async Task<List<ParentDto>> SearchParents(SearchDto filter)
         {
-            var query = _unitOfWork.GetRepository<Parent>().FindAll(); // IQueryable<Parent>
+            IQueryable<Parent> query = _unitOfWork.GetRepository<Parent>().FindAll().Include(x=>x.Children); // IQueryable<Parent>
 
             if (!string.IsNullOrEmpty(filter.FirstName))
                 query = query.Where(p => p.FirstName.Contains(filter.FirstName));
