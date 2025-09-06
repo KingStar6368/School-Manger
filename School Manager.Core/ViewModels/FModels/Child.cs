@@ -87,6 +87,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// کلاس تحصیلی
         /// </summary>
         public int Class { get; set; }
+        public string Description { get; set; }
         //public List<LocationPairCreateDto> LocationPairs { get; set; }
     }
     public class ChildCreateDto : IChildDto
@@ -119,6 +120,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// کلاس تحصیلی
         /// </summary>
         public int Class { get; set; }
+        public string Description { get; set; }
         public List<LocationPairCreateDto> LocationPairs { get; set; } = new();
     }
     public class ChildUpdateDto : IChildDto
@@ -152,6 +154,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// کلاس تحصیلی
         /// </summary>
         public int Class { get; set; }
+        public string Description { get; set; }
         public List<LocationPairUpdateDto> LocationPairs { get; set; } = new();
     }
 }

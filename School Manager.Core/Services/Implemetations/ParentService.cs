@@ -166,5 +166,11 @@ namespace School_Manager.Core.Services.Implemetations
 
             return _mapper.Map<List<ParentDto>>(ds);
         }
+
+        public ParentDto GetParentWithChild(long ChildId)
+        {
+            var ds = _unitOfWork.GetRepository<Parent>().Query(x => x.Children.Any(y => y.Id == ChildId)).FirstOrDefault();
+            return _mapper.Map<ParentDto>(ds);
+        }
     }
 }

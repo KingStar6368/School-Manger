@@ -31,6 +31,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public string NationalCode { get; set; }
         /// <summary>
+        /// توضیحات
+        /// </summary>
+        public string Description { get; set; }
+        /// <summary>
         /// تاریخ تولد
         /// </summary>
         public DateTime BirthDate { get; set; }

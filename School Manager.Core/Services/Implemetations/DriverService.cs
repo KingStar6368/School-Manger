@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Base;
@@ -19,6 +20,7 @@ namespace School_Manager.Core.Services.Implemetations
         private readonly IMapper _mapper;
         private readonly IValidator<DriverCreateDto> _createValidator;
         private readonly IValidator<DriverUpdateDto> _UpdateValidator;
+
         public DriverService(IUnitOfWork unitOfWork,IMapper mapper, IValidator<DriverCreateDto> createValidator, IValidator<DriverUpdateDto> updateValidator)
         {
             _mapper = mapper;
@@ -160,19 +162,21 @@ namespace School_Manager.Core.Services.Implemetations
 
         public async Task<List<DriverDto>> SearchDriver(SearchDto filter)
         {
-            var query = _unitOfWork.GetRepository<Driver>().FindAll(); 
+            var query = _unitOfWork.GetRepository<Driver>()
+                            .FindAll()
+                            .Include(x => x.Cars);
 
             if (!string.IsNullOrEmpty(filter.FirstName))
-                query = query.Where(p => p.Name.Contains(filter.FirstName));
+                query = (IIncludableQueryable<Driver, ICollection<Car>>)query.Where(p => p.Name.Contains(filter.FirstName));
 
             if (!string.IsNullOrEmpty(filter.LastName))
-                query = query.Where(p => p.LastName.Contains(filter.LastName));
+                query = (IIncludableQueryable<Driver, ICollection<Car>>)query.Where(p => p.LastName.Contains(filter.LastName));
 
             if (!string.IsNullOrEmpty(filter.NationalCode))
-                query = query.Where(p => p.NationCode.Contains(filter.NationalCode));
+                query = (IIncludableQueryable<Driver, ICollection<Car>>)query.Where(p => p.NationCode.Contains(filter.NationalCode));
 
             if (!string.IsNullOrEmpty(filter.Mobile))
-                query = query.Where(p => p.UserNavigation.Mobile.Contains(filter.Mobile));
+                query = (IIncludableQueryable<Driver, ICollection<Car>>)query.Where(p => p.UserNavigation.Mobile.Contains(filter.Mobile));
 
             var result = await query.ToListAsync();
 
