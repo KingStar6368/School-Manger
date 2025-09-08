@@ -33,9 +33,10 @@ namespace School_Manger.Controllers.Admin
         private readonly ISMSService _smsService;
         private readonly ITempLink _tempLink;
         private readonly IWebHostEnvironment _env;
-        public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, IBillService billService,
-            ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService, ITariffService tariffService, IWebHostEnvironment env,
-            ITempLink appConfigService, ISMSService smsService, IAppConfigService appconfigService)
+        public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, 
+            IBillService billService,ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService,
+            ITariffService tariffService,IWebHostEnvironment env,ITempLink appConfigService, ISMSService smsService,
+            IAppConfigService appconfigService,IUserService userService)
         {
             _parentService = parentService;
             _childService = childService;
@@ -49,6 +50,7 @@ namespace School_Manger.Controllers.Admin
             _env = env;
             _smsService = smsService;
             _appConfigService = appconfigService;
+            _userService = userService;
         }
         public async Task<IActionResult> Index()
         {
