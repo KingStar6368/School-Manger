@@ -1,0 +1,139 @@
+﻿@using School_Manager.Core.Services.Interfaces
+@using School_Manger.Models.PageView
+@using School_Manger.Extension
+@using School_Manager.Core.Classes
+@inject ISettingService setting
+@{
+    ViewData["Title"] = "مدیریت صورتحساب‌ها";
+    Layout = "_Layout";
+}
+
+@model BillDashbord
+
+<div class="container-fluid bg-dark text-white min-vh-100" dir="rtl">
+    <!-- Bills Table -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-secondary text-white shadow-lg rounded-4 border-primary">
+                <div class="card-header bg-primary text-center rounded-top-4">
+                    <h4 class="mb-0">💰 لیست صورتحساب‌ها</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover rounded-3 overflow-hidden">
+                            <thead class="table-primary text-dark">
+                                <tr>
+                                    <th>ردیف</th>
+                                    <th>📎 شناسه قرارداد</th>
+                                    <th>📝 نام قبض</th>
+                                    <th>💵 مبلغ کل</th>
+                                    <th>💳 مبلغ پرداختی</th>
+                                    <th>📌 وضعیت</th>
+                                    <th>🕒 زمان پرداخت</th>
+                                    <th>⚙️ عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.bills.Count; i++)
+                                {
+                                    var bill = Model.bills[i];
+                                    <tr>
+                                        <td>@(i + 1)</td>
+                                        <td>@bill.ContractId</td>
+                                        <td>@bill.Name</td>
+                                        <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.TotalPrice) ریال</td>
+                                        <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.PaidPrice) ریال</td>
+                                        <td>
+                                            @if (bill.HasPaid)
+                                            {
+                                                <span class="badge bg-success">✅ پرداخت شده</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">❌ @bill.Status</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @(bill.HasPaid
+                                                ? DateConverter.ToPersianString((DateTime)bill.PaidTime)
+                                                : DateConverter.ToPersianString(bill.BillExpiredTime))
+                                        </td>
+                                        <td>
+                                            @if (!bill.HasPaid)
+                                            {
+                                                <form action="PayBill" method="post">
+                                                    <input hidden value="@bill.Id" name="BillId"/>
+                                                    <button type="submit">💳 پرداخت</button>
+                                                </form>
+                                             @*    <a href="@setting.Get("PayUrl")" class="btn btn-sm btn-outline-success w-100 my-1">
+                                                    💳 پرداخت
+                                                </a>
+                                                <label>درهنگام پرداخت مبلغ را به درستی وارد کرد و سپس از پرداختی عکس گرفته و تحویل شرکت دهید</label> *@
+                                             @*    <button class="btn btn-sm btn-outline-success w-100 my-1" onclick="payBill('@bill.Id')">
+                                                    💳 پرداخت
+                                                </button> *@
+                                            }
+                                            else
+                                            {
+                                                <form asp-action="ShowBillPDF">
+                                                    <button class="btn btn-sm btn-outline-info w-100 my-1">
+                                                        🧾 مشاهده
+                                                    </button>
+                                                    <input style="display:none" name="BillId" value="@Model.bills[i].Id" />
+                                                </form>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function payBill(billId) {
+            alert("💸 پرداخت صورتحساب با شناسه: " + billId);
+            // TODO: Redirect or open modal
+        }
+    </script>
+}
+
+<style>
+    .table th, .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.4em 0.7em;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.25);
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #2d2d2d;
+    }
+
+    .btn-outline-success:hover,
+    .btn-outline-info:hover {
+        color: #fff !important;
+    }
+
+    @@media (max-width: 768px) {
+        .table-responsive
+
+    {
+        overflow-x: auto;
+    }
+
+    }
+</style>

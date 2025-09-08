@@ -9,6 +9,7 @@ using School_Manager.Domain.Entities.Catalog.Operation;
 using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models.PageView;
+using SMS.Base;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -27,9 +28,11 @@ namespace School_Manger.Controllers.Admin
         private readonly IDriverService _driverService;
         private readonly IPayBillService _payBillService;
         private readonly ITariffService _tariffService;
+        private readonly IAppConfigService _appConfigService;
         private readonly IWebHostEnvironment _env;
         public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, IBillService billService,
-            ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService, ITariffService tariffService, IWebHostEnvironment env)
+            ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService, ITariffService tariffService, IWebHostEnvironment env,
+            IAppConfigService appConfigService)
         {
             _parentService = parentService;
             _childService = childService;
@@ -39,6 +42,7 @@ namespace School_Manger.Controllers.Admin
             _driverService = driverService;
             _payBillService = payBillService;
             _tariffService = tariffService;
+            _appConfigService = appConfigService;
             _env = env;
         }
         public async Task<IActionResult> Index()
@@ -397,6 +401,46 @@ namespace School_Manger.Controllers.Admin
             var tariff = tariffs.FirstOrDefault(t => kmDecimal >= t.FromKilometer && kmDecimal <= t.ToKilometer);
             int price = tariff != null ? tariff.Price : 0;
             return Json(new { price });
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetKm(float fromLat, float fromLon, float toLat, float toLon)
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    // Build the API URL with the provided coordinates
+                    string apiUrl = _appConfigService.ApiUrl()+$"/Route?fromLat={fromLat}&fromLon={fromLon}&toLat={toLat}&toLon={toLon}";
+
+                    // Make the GET request to the external API
+                    HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
+
+                    // Ensure the request was successful
+                    response.EnsureSuccessStatusCode();
+
+                    // Read the response content as string
+                    string responseContent = await response.Content.ReadAsStringAsync();
+
+                    // Return the JSON response from the external API
+                    return new JsonResult(responseContent);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Handle HTTP request errors
+                return new JsonResult(new { error = $"API request failed: {ex.Message}" })
+                {
+                    StatusCode = 500
+                };
+            }
+            catch (Exception ex)
+            {
+                // Handle other errors
+                return new JsonResult(new { error = $"An error occurred: {ex.Message}" })
+                {
+                    StatusCode = 500
+                };
+            }
         }
     }
 }

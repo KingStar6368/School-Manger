@@ -5,6 +5,7 @@ using School_Manager.IOC;
 using School_Manger.Class;
 using School_Manger.PaymentService;
 using SMS.Base;
+using SMS.TempLinkService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddAuthentication("CookieAuth")
     });
 builder.Services.AddSession();
 builder.Services.AddSingleton<IAppConfigService>(new AppConfigService(builder.Configuration));
+builder.Services.AddSingleton<ITempLink>(provider=> new TempLinkService(provider.GetRequiredService<IAppConfigService>()));
 builder.Services.AddSingleton<ISMSService>(provider =>
 {
     string apiKey = builder.Configuration["Sms:ApiKey"];

@@ -178,14 +178,23 @@ alert(totalkm);
             Lng: parseFloat(document.getElementById('Lng2').value)
         };
 
-        let url = `@ConfigService.ApiUrl()/Route?fromLat=${from.Lat}&fromLon=${from.Lng}&toLat=${to.Lat}&toLon=${to.Lng}`;
+        let url = `/Admin/Parents/GetKm?fromLat=${from.Lat}&fromLon=${from.Lng}&toLat=${to.Lat}&toLon=${to.Lng}`;
         L.marker({lat:from.Lat,lng:from.Lng}).addTo(map).bindPopup('<div class="bg-success">موقعیت خانه</div>').openPopup();
         L.marker({lat:to.Lat,lng:to.Lng}).addTo(map).bindPopup('<div class="bg-danger">موقعیت مدرسه</div>').openPopup();
         try {
             const res = await fetch(url);
             if (!res.ok) throw new Error(`API error: ${res.status}`);
 
-            const data = await res.json();
+            let data = await res.json();
+
+            // If backend sent a JSON string, parse it again
+            if (typeof data === "string") {
+                try {
+                    data = JSON.parse(data);
+                } catch (e) {
+                    console.error("Invalid JSON string from server:", data);
+                }
+            }
 
             // Draw polyline
             const latlngs = data.route.map(coord => [coord[0], coord[1]]);
@@ -201,14 +210,23 @@ alert(totalkm);
             document.getElementById('info').textContent = 'خطا در دریافت مسیر: ' + err.message;
         }
         // مسیر برگشت
-        url = `http://localhost:5000/Route?fromLat=${to.Lat}&fromLon=${to.Lng}&toLat=${from.Lat}&toLon=${from.Lng}`;
+        url = `/Admin/Parents/GetKm?fromLat=${to.Lat}&fromLon=${to.Lng}&toLat=${from.Lat}&toLon=${from.Lng}`;
         L.marker({lat:from.Lat,lng:from.Lng}).addTo(map).bindPopup('<div class="bg-success">موقعیت خانه</div>').openPopup();
         L.marker({lat:to.Lat,lng:to.Lng}).addTo(map).bindPopup('<div class="bg-danger">موقعیت مدرسه</div>').openPopup();
         try {
             const res = await fetch(url);
             if (!res.ok) throw new Error(`API error: ${res.status}`);
 
-            const data = await res.json();
+            let data = await res.json();
+
+            // If backend sent a JSON string, parse it again
+            if (typeof data === "string") {
+                try {
+                    data = JSON.parse(data);
+                } catch (e) {
+                    console.error("Invalid JSON string from server:", data);
+                }
+            }
 
             // Draw polyline
             const latlngs = data.route.map(coord => [coord[0], coord[1]]);
