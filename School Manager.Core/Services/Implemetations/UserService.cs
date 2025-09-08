@@ -218,5 +218,17 @@ namespace School_Manager.Core.Services.Implemetations
             var d = _unitOfWork.GetRepository<Driver>().Query(x => x.UserRef == id).Select(x=>x.Id).FirstOrDefault();
             return d;
         }
+
+        public UserDTO GetUserByParent(long id)
+        {
+            var ds = _unitOfWork.GetRepository<User>().Query(x=>x.Parents.Any(y=>y.Id == id)).FirstOrDefault();
+            return _mapper.Map<UserDTO>(ds);
+        }
+
+        public UserDTO GetUserByDriver(long id)
+        {
+            var ds = _unitOfWork.GetRepository<User>().Query(x => x.Drivers.Any(y => y.Id == id)).FirstOrDefault();
+            return _mapper.Map<UserDTO>(ds);
+        }
     }
 }
