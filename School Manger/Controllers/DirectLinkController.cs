@@ -51,8 +51,8 @@ namespace School_Manger.Controllers
                 long ChildId = long.Parse(Datas[1]);
                 DateTime LinkDate = DateTime.Parse(Datas[2]);
                 //Autorize Link
-                if (LinkDate.AddDays(2) < DateTime.Now)
-                    return View("RequstTimeOut", (LinkDate.ToPersianString(),LinkDate.AddDays(2).ToPersianString()));
+                if (LinkDate.AddDays(5) < DateTime.Now)
+                    return View("RequstTimeOut", (LinkDate.ToPersianString(),LinkDate.AddDays(5).ToPersianString()));
 
                 ParentDto parent = _PService.GetParent(ParentId);
                 ChildInfo child = _CService.GetChild(ChildId);

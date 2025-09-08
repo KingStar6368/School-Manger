@@ -10,6 +10,7 @@ using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models.PageView;
 using SMS.Base;
+using SMS.TempLinkService;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -29,10 +30,12 @@ namespace School_Manger.Controllers.Admin
         private readonly IPayBillService _payBillService;
         private readonly ITariffService _tariffService;
         private readonly IAppConfigService _appConfigService;
+        private readonly ISMSService _smsService;
+        private readonly ITempLink _tempLink;
         private readonly IWebHostEnvironment _env;
         public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, IBillService billService,
             ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService, ITariffService tariffService, IWebHostEnvironment env,
-            IAppConfigService appConfigService)
+            ITempLink appConfigService, ISMSService smsService, IAppConfigService appconfigService)
         {
             _parentService = parentService;
             _childService = childService;
@@ -42,8 +45,10 @@ namespace School_Manger.Controllers.Admin
             _driverService = driverService;
             _payBillService = payBillService;
             _tariffService = tariffService;
-            _appConfigService = appConfigService;
+            _tempLink = appConfigService;
             _env = env;
+            _smsService = smsService;
+            _appConfigService = appconfigService;
         }
         public async Task<IActionResult> Index()
         {
@@ -162,7 +167,10 @@ namespace School_Manger.Controllers.Admin
             if (_billService.Create(createDtos))
             {
                 ControllerExtensions.ShowSuccess(this, "موفق", "قبض ها صادر شد");
-                //todo Generate One use link with auto login to parent page and send it to parent
+                //Generate One use link with auto login to parent page and send it to parent
+                long ParentId = ControllerExtensions.GetKey<long>(this,"ParentId");
+                long ChildId = ControllerExtensions.GetKey<long>(this,"ChildId");
+                 _smsService.Send(_userService.GetUserByParent(ParentId).Mobile, _tempLink.GenerateBillTempLink(ParentId, ChildId));
             }
             else
                 ControllerExtensions.ShowSuccess(this, "خطا", "مشکلی در صادر قبض ها پیش آمده");
