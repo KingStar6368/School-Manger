@@ -335,7 +335,7 @@ namespace School_Manger.Controllers.Admin
                 SchoolRef = child.SchoolId,
                 FirstName = child.FirstName,
                 LastName = child.LastName,
-                NationalCode = child.NationalCode,
+                NationalCode = child.NationalCode.ConvertPersianToEnglish(),
                 BirthDate = child.BirthDate,
                 Class = int.TryParse(child.Class, out var c) ? c : 0,
                 LocationPairs = new List<LocationPairUpdateDto>()
@@ -382,6 +382,7 @@ namespace School_Manger.Controllers.Admin
             {
                 model.LocationPairs[0].Locations[0].IsActive = true;
                 model.LocationPairs[0].Locations[1].IsActive = true;
+                model.NationalCode = model.NationalCode.ConvertPersianToEnglish();
                 model.BirthDate = BirthDate.ConvertEnglishToPersian().ToMiladi();
                 var result = _childService.UpdateChild(model);
                 if (result)

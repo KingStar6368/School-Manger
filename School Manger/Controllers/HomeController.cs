@@ -151,6 +151,8 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult CompleteProfile(string nationalCode, string firstName, string lastName, string password)
         {
+            nationalCode = nationalCode.ConvertPersianToEnglish();
+            password = password.ConvertPersianToEnglish();
             long UseRref = _UserService.CreateUser(new UserCreateDTO()
             {
                 FirstName = firstName,
@@ -209,7 +211,7 @@ namespace School_Manger.Controllers
                 {
                     FirstName = model.SelectedChild.FirstName,
                     LastName = model.SelectedChild.LastName,
-                    NationalCode = model.SelectedChild.NationalCode,
+                    NationalCode = model.SelectedChild.NationalCode.ConvertPersianToEnglish(),
                     ParentRef = ControllerExtensions.GetKey<long>(this,"Pref"),
                     BirthDate = model.SelectedChild.BirthDate,
                     Class = int.Parse(model.SelectedChild.Class),//todo it must cast to int
