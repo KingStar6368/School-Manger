@@ -14,7 +14,7 @@
             </form>
         </div>
         <div class="card-body">
-            <form asp-action="EditParent" method="post">
+            <form asp-action="EditParent" method="post" onsubmit="FillHidden()">
                 <input type="hidden" asp-for="@Model.ParentUpdateDto.Id" value="@Model.ParentUpdateDto.Id" />
                 <input type="hidden" asp-for="@Model.UserUpdateDto.Id" value="@Model.UserUpdateDto.Id" />
                 <input type="hidden" asp-for="@Model.ParentUpdateDto.UserRef" value="@Model.UserUpdateDto.Id" />
