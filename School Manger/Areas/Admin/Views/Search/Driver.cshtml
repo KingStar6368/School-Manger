@@ -81,7 +81,7 @@
                 </div>
             </form>
         </div>
-        <select id="PDropBox" onchange="">
+        <select id="PDropBox">
             <option value="Child">دانش آموزان</option>
             <option value="Parent">خانواده</option>
             <option value="Driver" selected>راننده</option>
@@ -98,6 +98,7 @@
                         <th>پلاک ماشین</th>
                         <th>صندلی خالی</th>
                         <th>اخطار ها</th>
+                        <th>نمایش</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -114,6 +115,12 @@
                                 <td>@Html.Partial("_CarPlate", SelectedModel.Car.PlateNumber)</td>
                                 <td><i class="badge bg-warning">@SelectedModel.AvailableSeats</i></td>
                                 <td>@SelectedModel.Warnning</td>
+                                <td>
+                                    <a asp-action="Details" asp-controller="Driver" asp-area="Admin" asp-route-id="@Model[i].Id"
+                                       class="btn btn-sm btn-outline-light rounded-pill shadow-sm" title="مشاهده جزئیات">
+                                        <i class="bi bi-eye"></i> 👁️‍🗨️ جزئیات
+                                    </a>
+                                </td>
                             </tr>
                         }
                         catch
