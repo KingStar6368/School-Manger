@@ -32,11 +32,12 @@ namespace School_Manger.Controllers.Admin
         private readonly IAppConfigService _appConfigService;
         private readonly ISMSService _smsService;
         private readonly ITempLink _tempLink;
+        private readonly ISettingService _settingService;
         private readonly IWebHostEnvironment _env;
         public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, 
             IBillService billService,ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService,
             ITariffService tariffService,IWebHostEnvironment env,ITempLink appConfigService, ISMSService smsService,
-            IAppConfigService appconfigService,IUserService userService)
+            IAppConfigService appconfigService,IUserService userService,ISettingService settingService)
         {
             _parentService = parentService;
             _childService = childService;
@@ -51,6 +52,7 @@ namespace School_Manger.Controllers.Admin
             _smsService = smsService;
             _appConfigService = appconfigService;
             _userService = userService;
+            _settingService = settingService;
         }
         public async Task<IActionResult> Index()
         {
@@ -231,6 +233,45 @@ namespace School_Manger.Controllers.Admin
             }
 
             return File(pdfBytes, "application/pdf", "Contract.pdf");
+        }
+        [HttpPost]
+        public async Task<IActionResult> ShowContract2PDF()
+        {
+            var ChildId = ControllerExtensions.GetKey<long>(this, "ChildId");
+
+            var Parent = _parentService.GetParentWithChild(ChildId);
+            var Child = _childService.GetChild(ChildId);
+            var User = _userService.GetUserByParent(Parent.Id);
+            // مسیر فایل RDLC
+            string rdlcPath = Path.Combine(_env.WebRootPath, "reports", "ContractDlc2.rdlc");
+
+            // پارامترهای گزارش
+            var parameters = new List<ReportParameter>
+            {
+                new ReportParameter("OwnerName", _settingService.Get("CompanyOwner")),
+                new ReportParameter("OwnerNationCode", _settingService.Get("CompanyOwnerNationCode")),
+                new ReportParameter("CompanyName", _settingService.Get("CompanyName")),
+                new ReportParameter("StudentName", Child.FirstName),
+                new ReportParameter("StudentClass", Child.Class),
+                new ReportParameter("ParentName", Parent.ParentFirstName),
+                new ReportParameter("ParentNationcode", Parent.ParentNationalCode),
+                new ReportParameter("PhoneNumber", User.Mobile),
+                new ReportParameter("StudentDate", DateTime.Now.ToPersain().Year.ToString() + "-" + DateTime.Now.AddYears(1).ToPersain().Year.ToString()),
+            };
+            byte[] pdfBytes;
+            using (var report = new LocalReport())
+            {
+                using var fs = new FileStream(rdlcPath, FileMode.Open, FileAccess.Read);
+                report.LoadReportDefinition(fs);
+
+                // تنظیم پارامترها
+                report.SetParameters(parameters);
+
+                // خروجی PDF
+                pdfBytes = report.Render("PDF");
+            }
+
+            return File(pdfBytes, "application/pdf", "Contract2.pdf");
         }
 
         [HttpPost]

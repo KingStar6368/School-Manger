@@ -77,6 +77,9 @@
                     <input name="Stringdata" hidden value="@Model.Installment.EnCript()"/>
                     <button type="submit" >ساخت تعهدات خانواده</button>
                 </form>
+                <form method="post" action="ShowContract2PDF">
+                    <button type="submit" >ساخت قرارداد خانواده</button>
+                </form>
             </div>
             <div class="card-body">
                 <form method="post" asp-action="BillCal">
