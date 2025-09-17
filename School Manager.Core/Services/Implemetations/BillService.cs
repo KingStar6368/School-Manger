@@ -245,7 +245,9 @@ namespace School_Manager.Core.Services.Implemetations
                 billInstallmentDto.StartDate,
                 billInstallmentDto.EndDate,
                 billInstallmentDto.DeadLine,
-                billInstallmentDto.ServiceContractRef
+                billInstallmentDto.ServiceContractRef,
+                billInstallmentDto.AddRoundedToFirst,
+                billInstallmentDto.RoundePerInstallment
             );
 
             return _mapper.Map<List<BillDto>>(bills);

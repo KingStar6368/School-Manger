@@ -79,6 +79,14 @@ namespace School_Manager.Core.ViewModels.FModels
         /// تعداد روزها برای مهلت پرداخت
         /// </summary>
         public int DeadLine { get; set; } = 5;
+        /// <summary>
+        /// آیا مبلغ رند شده به قبض اول اضافه شود
+        /// </summary>
+        public bool AddRoundedToFirst {  get; set; } = false;
+        /// <summary>
+        /// از هر قبض چه مبلغی رند شود
+        /// </summary>
+        public long RoundePerInstallment { get; set; } = 1000000;
     }
     public interface IBillDto
     {
