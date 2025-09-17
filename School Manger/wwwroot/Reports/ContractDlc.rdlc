@@ -1,12 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
   <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="RDLC">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>74e2d2c7-24fd-446e-aa43-e1ae3565763e</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
   <DataSets>
     <DataSet Name="Month">
       <Query>
-        <DataSourceName />
-        <CommandText />
+        <DataSourceName>RDLC</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
       </Query>
+      <Fields>
+        <Field Name="Amount">
+          <DataField>Amount</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="BillName">
+          <DataField>BillName</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="CurrentYear">
+          <DataField>CurrentYear</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Index">
+          <DataField>Index</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+      </Fields>
+      <rd:DataSetInfo>
+        <rd:DataSetName>RDLC</rd:DataSetName>
+        <rd:TableName>ContractDlcTableData</rd:TableName>
+        <rd:ObjectDataSourceType>RDLC.ContractDlcTableData, RDLC, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</rd:ObjectDataSourceType>
+      </rd:DataSetInfo>
     </DataSet>
   </DataSets>
   <ReportSections>
@@ -79,7 +111,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>:تومان می باشد که نحوی پرداخت آن بشرح ذیل می باشد</Value>
+                    <Value>:ریال می باشد که نحوی پرداخت آن بشرح ذیل می باشد</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -169,7 +201,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>تومان که بعنوان پیش پرداخت و علی الحساب جهت ارائه خدمات حمل و نقل </Value>
+                    <Value>ریال که بعنوان پیش پرداخت و علی الحساب جهت ارائه خدمات حمل و نقل </Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -267,7 +299,7 @@
                     <Value>درصورت عدم پرداخت هزینه سرویس در موعد مقرر,هرگونه تصمیم گیری کار گروه آموزشگاه را می پذیرم</Value>
                     <Style>
                       <FontFamily>B Nazanin</FontFamily>
-                      <FontSize>12pt</FontSize>
+                      <FontSize>11pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -275,7 +307,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox31</rd:DefaultName>
-            <Top>4.9675in</Top>
+            <Top>3.7175in</Top>
             <Left>1.08594in</Left>
             <Height>0.25in</Height>
             <Width>5.41406in</Width>
@@ -308,7 +340,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox31</rd:DefaultName>
-            <Top>5.34573in</Top>
+            <Top>4.09573in</Top>
             <Left>0.13021in</Left>
             <Height>0.25in</Height>
             <Width>6.38715in</Width>
@@ -333,7 +365,6 @@
                     <Value>پرداخت نمایم</Value>
                     <Style>
                       <FontFamily>B Nazanin</FontFamily>
-                      <FontSize>12pt</FontSize>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -341,7 +372,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox39</rd:DefaultName>
-            <Top>5.66517in</Top>
+            <Top>4.41517in</Top>
             <Left>5.7175in</Left>
             <Height>0.25in</Height>
             <Width>0.79985in</Width>
@@ -375,7 +406,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox40</rd:DefaultName>
-            <Top>5.97073in</Top>
+            <Top>4.72073in</Top>
             <Left>3.5191in</Left>
             <Height>0.25in</Height>
             <Width>2.98437in</Width>
@@ -405,7 +436,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>CheackSerial</rd:DefaultName>
-            <Top>5.98462in</Top>
+            <Top>4.73462in</Top>
             <Left>1.98313in</Left>
             <Height>0.25in</Height>
             <Width>1.4075in</Width>
@@ -435,7 +466,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox42</rd:DefaultName>
-            <Top>5.98462in</Top>
+            <Top>4.73462in</Top>
             <Left>1.57688in</Left>
             <Height>0.25in</Height>
             <Width>0.23438in</Width>
@@ -465,7 +496,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>CheackOwner</rd:DefaultName>
-            <Top>5.98462in</Top>
+            <Top>4.73462in</Top>
             <Left>0.13021in</Left>
             <Height>0.25in</Height>
             <Width>1.37722in</Width>
@@ -495,7 +526,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox44</rd:DefaultName>
-            <Top>6.35292in</Top>
+            <Top>5.10292in</Top>
             <Left>6.16021in</Left>
             <Height>0.25in</Height>
             <Width>0.33979in</Width>
@@ -525,7 +556,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>BankName</rd:DefaultName>
-            <Top>6.35292in</Top>
+            <Top>5.10292in</Top>
             <Left>5.10465in</Left>
             <Height>0.25in</Height>
             <Width>1in</Width>
@@ -555,7 +586,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox46</rd:DefaultName>
-            <Top>6.35292in</Top>
+            <Top>5.10292in</Top>
             <Left>4.24653in</Left>
             <Height>0.25in</Height>
             <Width>0.41493in</Width>
@@ -585,7 +616,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>CheackPrice</rd:DefaultName>
-            <Top>6.35292in</Top>
+            <Top>5.10292in</Top>
             <Left>2.68104in</Left>
             <Height>0.25in</Height>
             <Width>1.44271in</Width>
@@ -615,7 +646,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox46</rd:DefaultName>
-            <Top>6.35292in</Top>
+            <Top>5.10292in</Top>
             <Left>1.92955in</Left>
             <Height>0.25in</Height>
             <Width>0.68205in</Width>
@@ -645,7 +676,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>CheackDate</rd:DefaultName>
-            <Top>6.35292in</Top>
+            <Top>5.10292in</Top>
             <Left>0.70708in</Left>
             <Height>0.25in</Height>
             <Width>1.10417in</Width>
@@ -675,7 +706,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox50</rd:DefaultName>
-            <Top>6.67236in</Top>
+            <Top>5.42236in</Top>
             <Left>0.13021in</Left>
             <Height>0.25in</Height>
             <Width>6.36979in</Width>
@@ -817,7 +848,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>تومان که معادل یک ماه بهای ارائه </Value>
+                    <Value>ریال که معادل یک ماه بهای ارائه </Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -915,7 +946,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox46</rd:DefaultName>
-            <Top>4.9675in</Top>
+            <Top>3.7175in</Top>
             <Left>6.54167in</Left>
             <Height>0.25in</Height>
             <Width>0.21701in</Width>
@@ -945,7 +976,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox46</rd:DefaultName>
-            <Top>5.34573in</Top>
+            <Top>4.09573in</Top>
             <Left>6.55556in</Left>
             <Height>0.25in</Height>
             <Width>0.21701in</Width>
@@ -975,7 +1006,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox46</rd:DefaultName>
-            <Top>5.98462in</Top>
+            <Top>4.73462in</Top>
             <Left>6.54167in</Left>
             <Height>0.25in</Height>
             <Width>0.21701in</Width>
@@ -992,25 +1023,11 @@
           </Textbox>
           <Rectangle Name="Rectangle2">
             <KeepTogether>true</KeepTogether>
-            <Top>7.05604in</Top>
+            <Top>5.80604in</Top>
             <Left>3.7309in</Left>
             <Height>1.375in</Height>
             <Width>2.78646in</Width>
             <ZIndex>32</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <BackgroundColor>WhiteSmoke</BackgroundColor>
-            </Style>
-          </Rectangle>
-          <Rectangle Name="Rectangle1">
-            <KeepTogether>true</KeepTogether>
-            <Top>2.24528in</Top>
-            <Left>0.05083in</Left>
-            <Height>2.62128in</Height>
-            <Width>6.75in</Width>
-            <ZIndex>33</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1036,11 +1053,11 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox31</rd:DefaultName>
-            <Top>4.56448in</Top>
+            <Top>3.31448in</Top>
             <Left>1.08594in</Left>
             <Height>0.25in</Height>
             <Width>5.41406in</Width>
-            <ZIndex>34</ZIndex>
+            <ZIndex>33</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1055,10 +1072,13 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>2.20949in</Width>
+                  <Width>1.68104in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>3.93518in</Width>
+                  <Width>1in</Width>
+                </TablixColumn>
+                <TablixColumn>
+                  <Width>3.4914in</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>0.4838in</Width>
@@ -1104,6 +1124,44 @@
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox45</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>Blue</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Textbox1">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>سال</Value>
+                                  <Style>
+                                    <FontFamily>B Nazanin</FontFamily>
+                                    <FontSize>14pt</FontSize>
+                                    <Color>White</Color>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Textbox1</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -1210,30 +1268,34 @@
                   </TablixCells>
                 </TablixRow>
                 <TablixRow>
-                  <Height>1.85938in</Height>
+                  <Height>0.5573in</Height>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox57">
+                        <Textbox Name="Amount">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value />
+                                  <Value>=Fields!Amount.Value</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox57</rd:DefaultName>
+                          <rd:DefaultName>Amount</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>WhiteSmoke</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1244,26 +1306,30 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox59">
+                        <Textbox Name="CurrentYear1">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value />
+                                  <Value>=Fields!CurrentYear.Value</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox59</rd:DefaultName>
+                          <rd:DefaultName>CurrentYear1</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>WhiteSmoke</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1274,26 +1340,64 @@
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox62">
+                        <Textbox Name="CurrentYear">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value />
+                                  <Value>=Fields!BillName.Value</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox62</rd:DefaultName>
+                          <rd:DefaultName>CurrentYear</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
                               <Style>Solid</Style>
                             </Border>
+                            <BackgroundColor>WhiteSmoke</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
+                            <PaddingLeft>2pt</PaddingLeft>
+                            <PaddingRight>2pt</PaddingRight>
+                            <PaddingTop>2pt</PaddingTop>
+                            <PaddingBottom>2pt</PaddingBottom>
+                          </Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="Index">
+                          <CanGrow>true</CanGrow>
+                          <KeepTogether>true</KeepTogether>
+                          <Paragraphs>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value>=Fields!Index.Value</Value>
+                                  <Style />
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Right</TextAlign>
+                              </Style>
+                            </Paragraph>
+                          </Paragraphs>
+                          <rd:DefaultName>Index</rd:DefaultName>
+                          <Style>
+                            <Border>
+                              <Color>LightGrey</Color>
+                              <Style>Solid</Style>
+                            </Border>
+                            <BackgroundColor>WhiteSmoke</BackgroundColor>
+                            <VerticalAlign>Middle</VerticalAlign>
                             <PaddingLeft>2pt</PaddingLeft>
                             <PaddingRight>2pt</PaddingRight>
                             <PaddingTop>2pt</PaddingTop>
@@ -1308,6 +1412,7 @@
             </TablixBody>
             <TablixColumnHierarchy>
               <TablixMembers>
+                <TablixMember />
                 <TablixMember />
                 <TablixMember />
                 <TablixMember />
@@ -1326,9 +1431,9 @@
             <DataSetName>Month</DataSetName>
             <Top>2.31819in</Top>
             <Left>0.13021in</Left>
-            <Height>2.1875in</Height>
-            <Width>6.62847in</Width>
-            <ZIndex>35</ZIndex>
+            <Height>0.88542in</Height>
+            <Width>6.65624in</Width>
+            <ZIndex>34</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1350,11 +1455,11 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox51</rd:DefaultName>
-            <Top>7.05604in</Top>
+            <Top>5.80604in</Top>
             <Left>5.51736in</Left>
             <Height>0.25in</Height>
             <Width>1in</Width>
-            <ZIndex>36</ZIndex>
+            <ZIndex>35</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1367,11 +1472,11 @@
           </Textbox>
           <Rectangle Name="Rectangle3">
             <KeepTogether>true</KeepTogether>
-            <Top>7.05604in</Top>
+            <Top>5.80604in</Top>
             <Left>0.13021in</Left>
             <Height>1.375in</Height>
             <Width>3.04167in</Width>
-            <ZIndex>37</ZIndex>
+            <ZIndex>36</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1394,11 +1499,11 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox51</rd:DefaultName>
-            <Top>7.05604in</Top>
+            <Top>5.80604in</Top>
             <Left>1.98313in</Left>
             <Height>0.25in</Height>
             <Width>1.18875in</Width>
-            <ZIndex>38</ZIndex>
+            <ZIndex>37</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1410,10 +1515,10 @@
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>8.59052in</Height>
+        <Height>7.28844in</Height>
         <Style />
       </Body>
-      <Width>6.88417in</Width>
+      <Width>6.84201in</Width>
       <Page>
         <PageHeader>
           <Height>1.01389in</Height>
@@ -1462,10 +1567,10 @@
             </Border>
           </Style>
         </PageHeader>
+        <PageHeight>18in</PageHeight>
+        <PageWidth>11in</PageWidth>
         <LeftMargin>1in</LeftMargin>
         <RightMargin>1in</RightMargin>
-        <TopMargin>1in</TopMargin>
-        <BottomMargin>1in</BottomMargin>
         <Style />
       </Page>
     </ReportSection>

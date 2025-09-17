@@ -193,22 +193,24 @@ namespace School_Manger.Controllers.Admin
                 return BadRequest("No bill data.");
 
             // مسیر فایل RDLC
-            string rdlcPath = Path.Combine(_env.WebRootPath, "reports", "Bill.rdlc");
+            string rdlcPath = Path.Combine(_env.WebRootPath, "reports", "ContractDlc.rdlc");
 
             // پارامترهای گزارش
             var parameters = new List<ReportParameter>
             {
-                new ReportParameter("TotalPrice", bills.Sum(x => x.TotalPrice).ToString()),
-                new ReportParameter("PaidPrice", (await _billService.GetChildBills(ChildId)).Sum(x => x.TotalPrice).ToString()),
-                new ReportParameter("MonthPrice", data.Price.ToString()),
+                new ReportParameter("TotalPrice", bills.Sum(x => x.TotalPrice).ToString().ToMoney()),
+                new ReportParameter("MonthPrice", data.Price.ToString().ToMoney()),
+                new ReportParameter("PrePrice", bills.FirstOrDefault(x=>x.TypeOfBill == "پیش پرداخت").TotalPrice.ToString().ToMoney()),
             };
-            List<Contract1TableData> TableData = new List<Contract1TableData>();
+            List<ContractDlcTableData> TableData = new List<ContractDlcTableData>();
+            int i = 1;
             foreach(var bill in bills)
             {
-                TableData.Add(new Contract1TableData()
+                TableData.Add(new ContractDlcTableData()
                 {
-                    Amount = bill.TotalPrice.ToString(),
-                    BillName = bill.Name,
+                    Index = i++,
+                    Amount = bill.TotalPrice.ToString().ToMoney() + " ریال",
+                    BillName = bill.Name + " " + data.StartDate.ToPersain().Year.ToString(),
                     CurrentYear = data.StartDate.ToPersain().Year.ToString()
                 });
             }
@@ -219,7 +221,7 @@ namespace School_Manger.Controllers.Admin
                 report.LoadReportDefinition(fs);
 
                 // ⚡ این قسمت مهم است → اضافه کردن لیست قبوض به دیتا سورس
-                report.DataSources.Add(new ReportDataSource("BillDataSet", TableData));
+                report.DataSources.Add(new ReportDataSource("Month", TableData));
 
                 // تنظیم پارامترها
                 report.SetParameters(parameters);
@@ -228,7 +230,7 @@ namespace School_Manger.Controllers.Admin
                 pdfBytes = report.Render("PDF");
             }
 
-            return File(pdfBytes, "application/pdf", "Bill.pdf");
+            return File(pdfBytes, "application/pdf", "Contract.pdf");
         }
 
         [HttpPost]

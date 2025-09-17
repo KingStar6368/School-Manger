@@ -36,6 +36,29 @@ namespace School_Manger.Extension
             }
             return input;
         }
+        public static string ToMoney(this string input, bool includeDecimals = false)
+        {
+            // Remove any existing commas and whitespace
+            string cleanInput = input.Replace(",", "").Trim();
+
+            // Try to parse as decimal number
+            if (decimal.TryParse(cleanInput, out decimal number))
+            {
+                if (includeDecimals)
+                {
+                    // Format with comma separators and 2 decimal places
+                    return number.ToString("N2");
+                }
+                else
+                {
+                    // Format with comma separators and no decimal places
+                    return number.ToString("N0");
+                }
+            }
+
+            // Return original input if parsing fails
+            return input;
+        }
     }
     public static class DateConverter
     {

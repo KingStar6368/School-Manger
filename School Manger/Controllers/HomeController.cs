@@ -281,13 +281,13 @@ namespace School_Manger.Controllers
 
             // Prepare report parameters
             var parameters = new List<ReportParameter>
-    {
-        new ReportParameter("Title", bill.Name),
-        new ReportParameter("TotalPrice", bill.TotalPrice.ToString()),
-        new ReportParameter("PaidPrice", bill.PaidPrice.ToString()),
-        new ReportParameter("Estimatetime", bill.BillExpiredTime.ToPersianString()),
-        new ReportParameter("Status", bill.HasPaid ? "پرداخت شده" : "پرداخت نشده")
-    };
+            {
+                new ReportParameter("Title", bill.Name),
+                new ReportParameter("TotalPrice", bill.TotalPrice.ToString().ToMoney() + " ریال"),
+                new ReportParameter("PaidPrice", bill.PaidPrice.ToString().ToMoney() + " ریال"),
+                new ReportParameter("Estimatetime", bill.BillExpiredTime.ToPersianString()),
+                new ReportParameter("Status", bill.HasPaid ? "پرداخت شده" : "پرداخت نشده")
+            };
 
             // Load and render report
             byte[] pdfBytes;
