@@ -81,7 +81,7 @@
                 </div>
             </form>
         </div>
-        <select id="PDropBox" onchange="">
+        <select id="PDropBox">
             <option value="Child">دانش آموزان</option>
             <option value="Parent" selected>خانواده</option>
             <option value="Driver">راننده</option>
@@ -108,7 +108,12 @@
                             <td>@SelectedModel.ParentLastName</td>
                             <td>@SelectedModel.ParentNationalCode</td>
                             <td><i class="badge bg-primary">@SelectedModel.Children.Count</i></td>
-                            <td></td>
+                            <td>
+                                <a asp-action="Details" asp-controller="Parents" asp-route-id="@SelectedModel.Id"
+                                   class="btn btn-sm btn-outline-light rounded-pill shadow-sm">
+                                    👁️‍🗨️ مشاهده
+                                </a>
+                            </td>
                         </tr>
                     }
                 </tbody>

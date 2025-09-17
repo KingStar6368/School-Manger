@@ -269,8 +269,8 @@
                     lng:parseFloat(document.getElementById('location1Lng').value),address:''};
                 prelocation2 = {lat:parseFloat(document.getElementById('location2Lat').value),
                     lng:parseFloat(document.getElementById('location2Lng').value),address:''};
-                preAdd1 = document.getElementById('Add1').value;
-                preAdd2 = document.getElementById('Add2').value;
+                preAdd1 = document.getElementById('location1Address').value;
+                preAdd2 = document.getElementById('location2Address').value;
 
             var modal = document.getElementById('locationModal');
             modal.addEventListener('shown.bs.modal', function () {
@@ -322,8 +322,8 @@
                     document.getElementById('location2Lat').value = prelocation2.lat;
                     document.getElementById('location1lng').value = prelocation1.lng;
                     document.getElementById('location2lng').value = prelocation2.lng;
-                    document.getElementById('Add1').value = preAdd1;
-                    document.getElementById('Add2').value = preAdd2;
+                    document.getElementById('location1Address').value = preAdd1;
+                    document.getElementById('location2Address').value = preAdd2;
             });
             document.getElementById('searchButton').addEventListener('click', function() {
                 const query = document.getElementById('locationSearch').value;

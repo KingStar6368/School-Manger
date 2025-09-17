@@ -62,7 +62,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// <summary>
         /// مبلغ ماهیانه
         /// </summary>
-        public int Price { get; set; } = 1500000;
+        public int Price { get; set; } = 15000000;
         /// <summary>
         /// آی دی قرارداد
         /// </summary>

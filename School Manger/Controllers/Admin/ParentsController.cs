@@ -1,14 +1,23 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Reporting.NETCore;
+using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Entities.Catalog.Enums;
+using School_Manager.Domain.Entities.Catalog.Operation;
+using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models.PageView;
+using SMS.Base;
+using SMS.TempLinkService;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace School_Manger.Controllers.Admin
 {
-    [Area("Admin")][Authorize(Roles = "Admin")]
+    [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class ParentsController : Controller
     {
         private readonly IUserService _userService;
@@ -20,8 +29,15 @@ namespace School_Manger.Controllers.Admin
         private readonly IDriverService _driverService;
         private readonly IPayBillService _payBillService;
         private readonly ITariffService _tariffService;
-        public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, IBillService billService,
-            ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService, ITariffService tariffService)
+        private readonly IAppConfigService _appConfigService;
+        private readonly ISMSService _smsService;
+        private readonly ITempLink _tempLink;
+        private readonly ISettingService _settingService;
+        private readonly IWebHostEnvironment _env;
+        public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, 
+            IBillService billService,ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService,
+            ITariffService tariffService,IWebHostEnvironment env,ITempLink appConfigService, ISMSService smsService,
+            IAppConfigService appconfigService,IUserService userService,ISettingService settingService)
         {
             _parentService = parentService;
             _childService = childService;
@@ -31,6 +47,12 @@ namespace School_Manger.Controllers.Admin
             _driverService = driverService;
             _payBillService = payBillService;
             _tariffService = tariffService;
+            _tempLink = appConfigService;
+            _env = env;
+            _smsService = smsService;
+            _appConfigService = appconfigService;
+            _userService = userService;
+            _settingService = settingService;
         }
         public async Task<IActionResult> Index()
         {
@@ -106,8 +128,10 @@ namespace School_Manger.Controllers.Admin
         {
             var contractId = _contractService.GetContractWithChild(Id).Id;
             var child = _childService.GetChild(Id);
+            var parent = _parentService.GetParentWithChild(Id);
             ControllerExtensions.AddObject(this, "Path", child.Path);
-            ControllerExtensions.AddKey(this, "ChildId",Id);
+            ControllerExtensions.AddKey(this, "ChildId", Id);
+            ControllerExtensions.AddKey(this, "ParentId", Id);
             return View(
             new BillCalViewModel()
             {
@@ -120,7 +144,7 @@ namespace School_Manger.Controllers.Admin
             });
         }
         [HttpPost]
-        public IActionResult BillCalPerView(BillCalViewModel data,string PreStartDate,string PreEndDate)
+        public IActionResult BillCalPerView(BillCalViewModel data, string PreStartDate, string PreEndDate)
         {
             data.Installment.StartDate = PreStartDate.ToMiladi();
             data.Installment.EndDate = PreEndDate.ToMiladi();
@@ -145,12 +169,111 @@ namespace School_Manger.Controllers.Admin
                 });
             }
             if (_billService.Create(createDtos))
+            {
                 ControllerExtensions.ShowSuccess(this, "موفق", "قبض ها صادر شد");
+                //Generate One use link with auto login to parent page and send it to parent
+                long ParentId = ControllerExtensions.GetKey<long>(this,"ParentId");
+                long ChildId = ControllerExtensions.GetKey<long>(this,"ChildId");
+                 _smsService.Send(_userService.GetUserByParent(ParentId).Mobile, _tempLink.GenerateBillTempLink(ParentId, ChildId));
+            }
             else
                 ControllerExtensions.ShowSuccess(this, "خطا", "مشکلی در صادر قبض ها پیش آمده");
             long id = ControllerExtensions.GetKey<long>(this, "ChildId");
             return CreateBill(id);
         }
+        [HttpPost]
+        public async Task<IActionResult> ShowContractPDF(BillInstallmentDto data)
+        {
+            var ChildId = ControllerExtensions.GetKey<long>(this, "ChildId");
+            var ParentId = ControllerExtensions.GetKey<long>(this, "ParentId");
+
+            // دریافت لیست قبوض
+            var bills = _billService.Create(data);
+            bills.AddRange(await _billService.GetChildBills(ChildId));
+
+            if (bills == null || bills.Count == 0)
+                return BadRequest("No bill data.");
+
+            // مسیر فایل RDLC
+            string rdlcPath = Path.Combine(_env.WebRootPath, "reports", "ContractDlc.rdlc");
+
+            // پارامترهای گزارش
+            var parameters = new List<ReportParameter>
+            {
+                new ReportParameter("TotalPrice", bills.Sum(x => x.TotalPrice).ToString().ToMoney()),
+                new ReportParameter("MonthPrice", data.Price.ToString().ToMoney()),
+                new ReportParameter("PrePrice", bills.FirstOrDefault(x=>x.TypeOfBill == "پیش پرداخت").TotalPrice.ToString().ToMoney()),
+            };
+            List<ContractDlcTableData> TableData = new List<ContractDlcTableData>();
+            int i = 1;
+            foreach(var bill in bills)
+            {
+                TableData.Add(new ContractDlcTableData()
+                {
+                    Index = i++,
+                    Amount = bill.TotalPrice.ToString().ToMoney() + " ریال",
+                    BillName = bill.Name + " " + data.StartDate.ToPersain().Year.ToString(),
+                    CurrentYear = data.StartDate.ToPersain().Year.ToString()
+                });
+            }
+            byte[] pdfBytes;
+            using (var report = new LocalReport())
+            {
+                using var fs = new FileStream(rdlcPath, FileMode.Open, FileAccess.Read);
+                report.LoadReportDefinition(fs);
+
+                // ⚡ این قسمت مهم است → اضافه کردن لیست قبوض به دیتا سورس
+                report.DataSources.Add(new ReportDataSource("Month", TableData));
+
+                // تنظیم پارامترها
+                report.SetParameters(parameters);
+
+                // خروجی PDF
+                pdfBytes = report.Render("PDF");
+            }
+
+            return File(pdfBytes, "application/pdf", "Contract.pdf");
+        }
+        [HttpPost]
+        public async Task<IActionResult> ShowContract2PDF()
+        {
+            var ChildId = ControllerExtensions.GetKey<long>(this, "ChildId");
+
+            var Parent = _parentService.GetParentWithChild(ChildId);
+            var Child = _childService.GetChild(ChildId);
+            var User = _userService.GetUserByParent(Parent.Id);
+            // مسیر فایل RDLC
+            string rdlcPath = Path.Combine(_env.WebRootPath, "reports", "ContractDlc2.rdlc");
+
+            // پارامترهای گزارش
+            var parameters = new List<ReportParameter>
+            {
+                new ReportParameter("OwnerName", _settingService.Get("CompanyOwner")),
+                new ReportParameter("OwnerNationCode", _settingService.Get("CompanyOwnerNationCode")),
+                new ReportParameter("CompanyName", _settingService.Get("CompanyName")),
+                new ReportParameter("StudentName", Child.FirstName),
+                new ReportParameter("StudentClass", Child.Class),
+                new ReportParameter("ParentName", Parent.ParentFirstName),
+                new ReportParameter("ParentNationcode", Parent.ParentNationalCode),
+                new ReportParameter("PhoneNumber", User.Mobile),
+                new ReportParameter("StudentDate", DateTime.Now.ToPersain().Year.ToString() + "-" + DateTime.Now.AddYears(1).ToPersain().Year.ToString()),
+            };
+            byte[] pdfBytes;
+            using (var report = new LocalReport())
+            {
+                using var fs = new FileStream(rdlcPath, FileMode.Open, FileAccess.Read);
+                report.LoadReportDefinition(fs);
+
+                // تنظیم پارامترها
+                report.SetParameters(parameters);
+
+                // خروجی PDF
+                pdfBytes = report.Render("PDF");
+            }
+
+            return File(pdfBytes, "application/pdf", "Contract2.pdf");
+        }
+
         [HttpPost]
         public IActionResult PayBill(long ChildId, long BillId, string TrackCode, string PaymentType, long PaidPrice, string PiadTime)
         {
@@ -255,7 +378,7 @@ namespace School_Manger.Controllers.Admin
                 SchoolRef = child.SchoolId,
                 FirstName = child.FirstName,
                 LastName = child.LastName,
-                NationalCode = child.NationalCode,
+                NationalCode = child.NationalCode.ConvertPersianToEnglish(),
                 BirthDate = child.BirthDate,
                 Class = int.TryParse(child.Class, out var c) ? c : 0,
                 LocationPairs = new List<LocationPairUpdateDto>()
@@ -302,6 +425,7 @@ namespace School_Manger.Controllers.Admin
             {
                 model.LocationPairs[0].Locations[0].IsActive = true;
                 model.LocationPairs[0].Locations[1].IsActive = true;
+                model.NationalCode = model.NationalCode.ConvertPersianToEnglish();
                 model.BirthDate = BirthDate.ConvertEnglishToPersian().ToMiladi();
                 var result = _childService.UpdateChild(model);
                 if (result)
@@ -322,7 +446,7 @@ namespace School_Manger.Controllers.Admin
             return View("EditChild", model);
         }
         [HttpPost]
-        public JsonResult GetPriceByKm([FromBody]float km)
+        public JsonResult GetPriceByKm([FromBody] float km)
         {
             var tariffsTask = _tariffService.GetActiveTariff();
             tariffsTask.Wait();
@@ -331,6 +455,46 @@ namespace School_Manger.Controllers.Admin
             var tariff = tariffs.FirstOrDefault(t => kmDecimal >= t.FromKilometer && kmDecimal <= t.ToKilometer);
             int price = tariff != null ? tariff.Price : 0;
             return Json(new { price });
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetKm(float fromLat, float fromLon, float toLat, float toLon)
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    // Build the API URL with the provided coordinates
+                    string apiUrl = _appConfigService.ApiUrl()+$"/Route?fromLat={fromLat}&fromLon={fromLon}&toLat={toLat}&toLon={toLon}";
+
+                    // Make the GET request to the external API
+                    HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
+
+                    // Ensure the request was successful
+                    response.EnsureSuccessStatusCode();
+
+                    // Read the response content as string
+                    string responseContent = await response.Content.ReadAsStringAsync();
+
+                    // Return the JSON response from the external API
+                    return new JsonResult(responseContent);
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Handle HTTP request errors
+                return new JsonResult(new { error = $"API request failed: {ex.Message}" })
+                {
+                    StatusCode = 500
+                };
+            }
+            catch (Exception ex)
+            {
+                // Handle other errors
+                return new JsonResult(new { error = $"An error occurred: {ex.Message}" })
+                {
+                    StatusCode = 500
+                };
+            }
         }
     }
 }

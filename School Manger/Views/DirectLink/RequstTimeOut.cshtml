@@ -1,0 +1,23 @@
+﻿@model (string,string)
+@{
+    ViewData["Title"] = "لینک منقضی شده";
+}
+<div class="container p-4">
+    <div class="card">
+        <div class="card-header bg-warning">
+            <h3>والد گرامی لینک منقضی شده </h3>
+        </div>
+    </div>
+    <div class="card-body">
+        @if(!string.IsNullOrEmpty(Model.Item1) && !string.IsNullOrEmpty(Model.Item2))
+        {
+            <div class="container text-white">
+                <div class="row">
+                    <h3 class="col">لینک شما از تاریخ @Model.Item1</h3>
+                    <h3 class="col">لینک شما تا تاریخ @Model.Item2</h3>
+                    <h3 class="col">اعتبار داشته است</h3>
+                </div>
+            </div>
+        }
+    </div>
+</div>

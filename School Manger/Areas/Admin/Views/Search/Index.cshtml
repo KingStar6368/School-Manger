@@ -79,7 +79,7 @@
                 </div>
             </form>
         </div>
-        <select id="PDropBox" onchange="">
+        <select id="PDropBox">
             <option value="Child" selected>دانش آموزان</option>
             <option value="Parent">خانواده</option>
             <option value="Driver">راننده</option>
@@ -107,7 +107,7 @@
 @section Scripts {
     <script>
 
-                    const ParentPnl = document.getElementById('ParentPnl');
+        const ParentPnl = document.getElementById('ParentPnl');
         const ChildPnl = document.getElementById('ChildPnl');
         const DriverPnl = document.getElementById('DriverPnl');
         document.getElementById('PDropBox').addEventListener('change', function()

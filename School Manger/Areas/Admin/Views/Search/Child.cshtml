@@ -83,7 +83,7 @@
                 </div>
             </form>
         </div>
-        <select id="PDropBox" onchange="">
+        <select id="PDropBox">
             <option value="Child" selected>دانش آموزان</option>
             <option value="Parent">خانواده</option>
             <option value="Driver">راننده</option>
@@ -121,7 +121,14 @@
                                 }
                             </td>
                             <td>@(SelectedModel.SchoolId.HasValue?SchoolService.GetSchool((long)SelectedModel.SchoolId).Name:"ندارد")</td>
-                            <td></td>
+                            <td>
+                                <form asp-controller="Parents" asp-action="CreateBill" method="post" class="d-inline">
+                                    <input name="ChildId" type="hidden" value="@SelectedModel.Id" />
+                                    <button class="btn btn-sm btn-outline-warning" type="submit">
+                                        <i class="bi bi-file-earmark-text"></i> صدور
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                     }
                 </tbody>

@@ -7,6 +7,7 @@ namespace SMS.Base
         string ConnectionString();
         string SMSKey();
         long SMSLine();
+        string WebAddress();
         string ApiUrl();
     }
 
@@ -39,5 +40,9 @@ namespace SMS.Base
             return _configuration["WebSetting:ApiUrl"];
         }
 
+        public string WebAddress()
+        {
+            return _configuration["WebSetting:WebAddress"];
+        }
     }
 }

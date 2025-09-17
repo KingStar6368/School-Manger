@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
+using School_Manger.Extension;
 
 namespace School_Manger.Controllers
 {
@@ -62,7 +63,7 @@ namespace School_Manger.Controllers
                 IsActive = true,
                 Mobile = User.Mobile,
                 UserName = User.UserName,
-                PasswordHash = confirmPasswordHelp
+                PasswordHash = confirmPasswordHelp.ConvertPersianToEnglish()
             }))
             {
                 ControllerExtensions.ShowSuccess(this, "موفق", "رمز عبور با موفقیت تغییر کرد.");

@@ -35,5 +35,17 @@ namespace School_Manager.Core.Services.Interfaces
         /// <param name="id"> کد یوزر</param>
         /// <returns>کد راننده</returns>
         long GetDriverId(long id);
+        /// <summary>
+        /// گرفتن یوزر با کد والد
+        /// </summary>
+        /// <param name="id">کد والد</param>
+        /// <returns>یوزر</returns>
+        UserDTO GetUserByParent(long id);
+        /// <summary>
+        /// گرفتن یوزر با کد راننده
+        /// </summary>
+        /// <param name="id">کد راننده</param>
+        /// <returns>یوزر</returns>
+        UserDTO GetUserByDriver(long id);
 	}
 }
