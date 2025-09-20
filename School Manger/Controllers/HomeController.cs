@@ -39,10 +39,11 @@ namespace School_Manger.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly ISettingService settingService;
         private readonly IPayment PaymentService;
+        private readonly IAppConfigService AppConfigService;
         public HomeController(IParentService PService,IChildService CService,
             IUserService UService,IBillService billService,
             ISchoolService schoolService,ISMSService sMSService, IWebHostEnvironment env,ISettingService _settingservice,
-            IPayment _payment/*,IDriverService driverService,IContractService contractService*/)
+            IPayment _payment,IAppConfigService appConfigService/*,IDriverService driverService,IContractService contractService*/)
         {
             //_DriverService = driverService;
             _PService = PService;
@@ -54,6 +55,7 @@ namespace School_Manger.Controllers
             _env = env;
             settingService = _settingservice;
             PaymentService = _payment;
+            AppConfigService = appConfigService;
             //_ContractService = contractService;
         }
 
@@ -75,6 +77,8 @@ namespace School_Manger.Controllers
             //send code
             int RandomCode = new Random().Next(111111, 999999);
             ControllerExtensions.AddKey(this, "Code", RandomCode);
+            if (AppConfigService.SMSOtp())
+                return View("OTPConfirmation");
             if (!SMSService.Send(PhoneNumber, $"والد گرامی کد تایدد شما \n" + RandomCode))
             {
                 ControllerExtensions.ShowError(this, "خطا", "کد تاییدی به شماره ارسال نشد");
@@ -86,6 +90,8 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult VerifyOtp(int otpCode)
         {
+            if (AppConfigService.SMSOtp())
+                return View("UserInfo");
             otpCode = int.Parse(new string(otpCode.ToString().Reverse().ToArray()));
             int Code = ControllerExtensions.GetKey<int>(this, "Code");
             if(Code == otpCode)
