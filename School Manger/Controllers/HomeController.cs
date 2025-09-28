@@ -77,8 +77,8 @@ namespace School_Manger.Controllers
             //send code
             int RandomCode = new Random().Next(111111, 999999);
             ControllerExtensions.AddKey(this, "Code", RandomCode);
-            if (AppConfigService.SMSOtp())
-                return View("OTPConfirmation");
+            if (!AppConfigService.SMSOtp())
+                return View("UserInfo");
             if (!SMSService.Send(PhoneNumber, $"والد گرامی کد تایدد شما \n" + RandomCode))
             {
                 ControllerExtensions.ShowError(this, "خطا", "کد تاییدی به شماره ارسال نشد");
@@ -90,8 +90,6 @@ namespace School_Manger.Controllers
         [HttpPost]
         public IActionResult VerifyOtp(int otpCode)
         {
-            if (AppConfigService.SMSOtp())
-                return View("UserInfo");
             otpCode = int.Parse(new string(otpCode.ToString().Reverse().ToArray()));
             int Code = ControllerExtensions.GetKey<int>(this, "Code");
             if(Code == otpCode)
