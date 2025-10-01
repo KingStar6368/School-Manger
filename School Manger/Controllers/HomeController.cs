@@ -1,7 +1,6 @@
 ﻿using DNTPersianUtils.Core;
 using iText.Layout.Element;
 using iText.Layout.Properties;
-using King;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -40,10 +39,11 @@ namespace School_Manger.Controllers
         private readonly ISettingService settingService;
         private readonly IPayment PaymentService;
         private readonly IAppConfigService AppConfigService;
+        private readonly IZarinPalService zarinPalService;
         public HomeController(IParentService PService,IChildService CService,
             IUserService UService,IBillService billService,
             ISchoolService schoolService,ISMSService sMSService, IWebHostEnvironment env,ISettingService _settingservice,
-            IPayment _payment,IAppConfigService appConfigService/*,IDriverService driverService,IContractService contractService*/)
+            IPayment _payment,IZarinPalService _zarinPalService,IAppConfigService appConfigService/*,IDriverService driverService,IContractService contractService*/)
         {
             //_DriverService = driverService;
             _PService = PService;
@@ -56,6 +56,7 @@ namespace School_Manger.Controllers
             settingService = _settingservice;
             PaymentService = _payment;
             AppConfigService = appConfigService;
+            zarinPalService = _zarinPalService;
             //_ContractService = contractService;
         }
 
@@ -311,7 +312,7 @@ namespace School_Manger.Controllers
             return File(pdfBytes, "application/pdf", "Bill.pdf");
         }
         [HttpPost]  
-        public IActionResult PayBill(long BillId)
+        public async Task<IActionResult> PayBill(long BillId)
         {
             BillDto bill = _BillService.GetBill(BillId);
             if (bill == null || bill.HasPaid)
@@ -319,19 +320,19 @@ namespace School_Manger.Controllers
                 ControllerExtensions.ShowError(this, "خطا", "قبض پیدا نشد");
                 return ParentMenu();
             }
-            var payment = new Payment((int)(bill.TotalPrice - bill.PaidPrice));
-            var respance = payment.PaymentRequest("پرداخت قبض " + bill.Name, settingService.Get("PayUrl"));
-            if(respance.Result.code == 100)
+            int Amount = (int)(bill.TotalPrice - bill.PaidPrice)/10; //Remove Last 0 Must be toman
+            var respance = await zarinPalService.RequestPaymentAsync(Amount, "پرداخت قبض " + bill.Name, settingService.Get("PayUrl"),settingService.Get("PayEmail"),settingService.Get("PayMobile"));
+            if(!string.IsNullOrEmpty(respance))
             {
                 PaymentService.Add(new PayData()
                 {
-                    Autratory = respance.Result.authority,
+                    Autratory = respance,
                     BillIds = new List<long>()
                     {
                         bill.Id
                     }
                 });
-                return Redirect("https://sandbox.zarinpal.com/pg/StartPay/"+respance.Result.authority);
+                return Redirect(respance);
             }
             ControllerExtensions.ShowError(this, "خطا", "مشکلی در انتفال به درگاه شده لطفا بعدا امتحان کنید");
             return ParentMenu();
