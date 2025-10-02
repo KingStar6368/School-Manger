@@ -27,6 +27,11 @@ namespace School_Manager.Core.Services.Interfaces
         /// <returns></returns>
         BillDto GetBill(long id);
         /// <summary>
+        /// برگرداندن والدین بدهکار
+        /// </summary>
+        /// <returns></returns>
+        Task<List<DebtorDto>> GetNonPaidBill();
+        /// <summary>
         /// گرقتن قرار داد قبض
         /// </summary>
         /// <param name="id">کد قبض</param>

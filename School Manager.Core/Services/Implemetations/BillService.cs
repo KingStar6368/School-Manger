@@ -41,25 +41,14 @@ namespace School_Manager.Core.Services.Implemetations
             var result = new BillDto();
             var ds = _unitOfWork.GetRepository<Bill>().Query(c=>c.Id == id).Include(c=>c.ServiceContractNavigation)
                 .Include(c=>c.PayBills).ThenInclude(c=>c.PayNavigation).FirstOrDefault();
-                //predicate: p => p.Id == id,
-                //orderBy: null,
-                //includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
-                //{
-                //    c=>c.ServiceContractNavigation,
-                //    c=>c.PayBills
-                //},
-                //new List<Func<IQueryable<Bill>, IQueryable<Bill>>>
-                //{
-                //    q => q.Include(r=>r.PayBills)
-                //        .ThenInclude(d=>d.PayNavigation)
-                //}
-                //).FirstOrDefault();
+                
             if (ds != null)
             {
                result = _mapper.Map<BillDto>(ds);
             }
             return result;
         }
+
 
         public async Task<List<BillDto>> GetBills()
         {
@@ -264,30 +253,68 @@ namespace School_Manager.Core.Services.Implemetations
             _unitOfWork.GetRepository<Bill>().RemoveRange(ds);
             return _unitOfWork.SaveChanges() > 0;
         }
+        public async Task<List<DebtorDto>> GetNonPaidBill()
+        {
+            try
+            {
+                var raw = await _unitOfWork.GetRepository<Parent>()
+                    .Query(parent =>
+                        parent.Children.Any(children =>
+                            children.ServiceContracts.Any(serviceContract =>
+                                serviceContract.Bills.Any(bill =>
+                                    bill.EstimateTime < DateTime.Now &&
+                                    bill.Price > bill.PayBills.Sum(pb => (long?)pb.PayNavigation.Price ?? 0)))))
+                    .Select(x => new
+                    {
+                        Parent = x,
+                        ParentId = x.Id,
+                        ChildCount = x.Children.Count,
+                        ParentFamily = x.LastName,
+                        ParentName = x.FirstName,
 
-        //    public bool Create(BillInstallmentDto billInstallmentDto)
-        //    {
-        //        var service = _unitOfWork.GetRepository<ServiceContract>()
-        //                      .Query(x => x.Id == billInstallmentDto.ServiceContractRef)
-        //                      .Include(x=>x.Bills)
-        //                      .Include(x=>x.ChildNavigation)
-        //                      .FirstOrDefault();
-        //        if (service == null) return false;
-        //        var MonthCount = 8;
-        //        if (service.ChildNavigation.Class == ClassNumber.Twelfth)
-        //        {
-        //            MonthCount = 7;
-        //        }
-        //        var totalPrice = (billInstallmentDto.Price * MonthCount) - service.Bills.Select(x=>x.Price).DefaultIfEmpty(0).Sum();
-        //        var perInstallment = totalPrice / billInstallmentDto.InstallmentCount;
-        //        var remainInstallment = totalPrice % billInstallmentDto.InstallmentCount;
-        //        var startYear = billInstallmentDto.StartDate.GetPersianYear();
-        //        var startMonth = billInstallmentDto.StartDate.GetPersianMonth();
-        //        var endYear = billInstallmentDto.EndDate.GetPersianYear();
-        //        var endMonth = billInstallmentDto.EndDate.GetPersianMonth();
-        //        var totalMonth = (endMonth - startMonth) + ((endYear - startYear) * 12);
-        //        ?
-        //        return true;
-        //    }
+                        Bills = x.Children
+                            .SelectMany(c => c.ServiceContracts)
+                            .SelectMany(sc => sc.Bills)
+                            .Where(b => b.EstimateTime < DateTime.Now)
+                            .Select(b => new
+                            {
+                                b.Price,
+                                Payments = b.PayBills.Sum(pb => (long?)pb.PayNavigation.Price ?? 0)
+                            })
+                    })
+                    .ToListAsync(); // همه چیز تا اینجا توی دیتابیس اجرا میشه
+
+                // اینجا روی حافظه DebtorDto می‌سازیم
+                var result = raw.Select(x => new DebtorDto
+                {
+                    ParentId = x.ParentId,
+                    ChildCount = x.ChildCount,
+                    ParentFamily = x.ParentFamily,
+                    ParentName = x.ParentName,
+
+                    LastSentSMS = x.Parent.UserNavigation?.SMSLogs?
+                        .Where(y => y.type == SMSType.Warnning)
+                        .OrderByDescending(y => y.SMSTime)
+                        .Select(y => y.SMSTime)
+                        .FirstOrDefault(),
+
+                    SmsCount = x.Parent.UserNavigation?.SMSLogs?
+                        .Count(y => y.type == SMSType.Warnning) ?? 0,
+
+                    Price = x.Bills
+                        .Select(b => b.Price - b.Payments)
+                        .Where(remain => remain > 0)
+                        .Sum()
+                })
+                .ToList();
+
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
     }
 }
