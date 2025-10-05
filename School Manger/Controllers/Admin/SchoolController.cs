@@ -60,7 +60,7 @@ namespace School_Manger.Controllers.Admin
                 Drivers = Drivers,
                 Students = Childern
             };
-            return View(dashbord);
+            return View("Details", dashbord);
         }
         public async Task<IActionResult> DeleteSchool(long id)
         {

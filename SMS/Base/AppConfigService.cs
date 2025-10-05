@@ -9,6 +9,7 @@ namespace SMS.Base
         long SMSLine();
         string WebAddress();
         string ApiUrl();
+        bool SMSOtp();
     }
 
     public class AppConfigService : IAppConfigService
@@ -43,6 +44,10 @@ namespace SMS.Base
         public string WebAddress()
         {
             return _configuration["WebSetting:WebAddress"];
+        }
+        public bool SMSOtp()
+        {
+            return _configuration["WebSetting:SMSOTP"].ToLower() == "true"?true:false;
         }
     }
 }

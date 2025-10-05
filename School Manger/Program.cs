@@ -31,6 +31,7 @@ builder.Services.AddSingleton<ISMSService>(provider =>
 });
 
 builder.Services.AddSingleton<IPayment>(new PaymentService());
+builder.Services.AddSingleton<IZarinPalService>(new ZarinPalService(builder.Configuration["ZarinPal:Token"]));
 //Container.Register(builder.Services);
 var app = builder.Build();
 app.UseSession();
