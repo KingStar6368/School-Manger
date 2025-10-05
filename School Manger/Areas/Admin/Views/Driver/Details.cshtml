@@ -81,10 +81,18 @@
                             <td>@passanger.Path?.Location1?.Address</td>
                             <td>@passanger.Path?.Location2?.Address</td>
                             <td>
-                                @* <a asp-action="DeletePassanger" asp-route-id="@passanger.Id"
-                                   class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm title="حذف">
-                                    <i class="bi bi-trash"></i> 🗑️ حذف از لیست
-                                </a> *@
+                                <form asp-controller="School" asp-action="Details">
+                                    <input type="hidden" name="id" value="@passanger.SchoolId" />
+                                    <button class="btn btn-sm btn-outline-info" type="submit">
+                                        <i class="bi bi-file-earmark-text"></i> نمایش مدرسه
+                                    </button>
+                                </form>
+                                <form asp-controller="Parents" asp-action="CreateBill" method="post" class="d-inline">
+                                    <input name="ChildId" type="hidden" value="@passanger.Id" />
+                                    <button class="btn btn-sm btn-outline-warning" type="submit">
+                                        <i class="bi bi-file-earmark-text"></i> صدور قبض
+                                    </button>
+                                </form>
                                 <form asp-action="DeletePassanger"
                                    class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm title="حذف">
                                     <input hidden name="ChildId" value="@passanger.Id"/>

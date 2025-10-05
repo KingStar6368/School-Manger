@@ -102,7 +102,7 @@
                         <th>تعداد قبض</th>
                         <th>راننده</th>
                         <th>مدرسه</th>
-                        <th>نمایش</th>
+                        <th>عملیات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -141,9 +141,9 @@
                                 @if (SelectedModel.DriverId > 0)
                                 {
                                     <form asp-controller="Driver" asp-action="Details">
-                                        <input type="hidden" name="id" value="@SelectedModel.SchoolId" />
+                                        <input type="hidden" name="id" value="@SelectedModel.DriverId" />
                                         <button class="btn btn-sm btn-outline-info" type="submit">
-                                            <i class="bi bi-file-earmark-text"></i> نمایش مدرسه
+                                            <i class="bi bi-file-earmark-text"></i> نمایش راننده
                                         </button>
                                     </form>
                                 }
