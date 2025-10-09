@@ -115,7 +115,7 @@
                             <td>@SelectedModel.LastName</td>
                             <td>@SelectedModel.NationalCode</td>
                             <td>
-                                @if(SelectedModel.HasPaid)
+                                @if(!BillService.GetChildBills(SelectedModel.Id).Result.Any(x=>!x.HasPaid))
                                 {
                                     <i class="badge bg-success">پرداخت شده</i>
                                 }
