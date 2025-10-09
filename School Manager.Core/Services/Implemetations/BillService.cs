@@ -176,6 +176,7 @@ namespace School_Manager.Core.Services.Implemetations
             var bill = _unitOfWork.GetRepository<Bill>()
                         .Query(x => x.Id == billId)
                         .Include(x => x.PayBills)
+                        .Include(x=>x.ServiceContractNavigation)
                         .FirstOrDefault();
 
             if (bill == null) return false;
@@ -184,6 +185,10 @@ namespace School_Manager.Core.Services.Implemetations
             if ((bill.PayBills?.Any() ?? false))
             {
                 throw new InvalidOperationException("این قبض دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
+            }
+            if(bill.Type == BillType.Pre)
+            {
+                _unitOfWork.GetRepository<ServiceContract>().Remove(bill.ServiceContractNavigation);
             }
             _unitOfWork.GetRepository<Bill>().Remove(bill);
             return _unitOfWork.SaveChanges() > 0;
