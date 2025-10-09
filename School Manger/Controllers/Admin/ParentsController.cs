@@ -144,10 +144,12 @@ namespace School_Manger.Controllers.Admin
             });
         }
         [HttpPost]
-        public IActionResult BillCalPerView(BillCalViewModel data, string PreStartDate, string PreEndDate)
+        public IActionResult BillCalPerView(BillCalViewModel data, string PreStartDate, string PreEndDate,string Round,string RoundFirst)
         {
             data.Installment.StartDate = PreStartDate.ToMiladi();
             data.Installment.EndDate = PreEndDate.ToMiladi();
+            data.Installment.RoundePerInstallment = Round == "on" ? 1000000 : 10;
+            data.Installment.AddRoundedToFirst = RoundFirst == "on";
             data.Location = ControllerExtensions.GetKey<LocationPairModel>(this, "Path");
             data.Bills = _billService.Create(data.Installment);
             return View("BillCal", data);

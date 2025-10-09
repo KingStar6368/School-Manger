@@ -60,6 +60,14 @@
                         <input name="PreEndDate" type="text" class="form-control persian-date bg-secondary text-white" placeholder="انتخاب تاریخ" required />
                         <input type="hidden" class="gregorian-date" />
                     </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">رند مبالغ</label>
+                        <input type="checkbox" checked="@(Model.Installment.RoundePerInstallment != 10 ? "on" : "off")" name="Round" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">ریز مبلغ ها در قبض اول</label>
+                        <input type="checkbox" checked="@(Model.Installment.AddRoundedToFirst==true?"on":"off")" name="RoundFirst" />
+                    </div>
                 </div>
                 <div class="mt-4">
                     <button type="submit" class="btn btn-warning fw-bold">پیش نمایش قبض ها</button>

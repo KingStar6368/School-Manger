@@ -332,7 +332,7 @@ namespace School_Manger.Controllers
                         bill.Id
                     }
                 });
-                return Redirect(respance);
+                return Redirect($"https://zarinpal.com/pg/StartPay/{respance}");
             }
             ControllerExtensions.ShowError(this, "خطا", "مشکلی در انتفال به درگاه شده لطفا بعدا امتحان کنید");
             return ParentMenu();

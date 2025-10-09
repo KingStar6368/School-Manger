@@ -11,6 +11,7 @@ namespace School_Manger.PaymentService
     public interface IZarinPalService
     {
         Task<string> RequestPaymentAsync(int amount, string description,string CallbackUrl, string PayEmail, string mobile = null);
+        Task<int> VerfiyPaymentAsync(int amount, string Authority);
     }
 
     public class ZarinPalService : IZarinPalService
@@ -23,24 +24,43 @@ namespace School_Manger.PaymentService
         public ZarinPalService(string merchantId)
         {
             _merchantId = merchantId;
-        }
-
-        public async Task<string> RequestPaymentAsync(int amount, string description,string CallbackUrl,string PayEmail, string mobile = null)
-        {
             var expose = new Expose();
             _payment = expose.CreatePayment();
             _authority = expose.CreateAuthority();
             _transactions = expose.CreateTransactions();
+        }
+
+        public async Task<string> RequestPaymentAsync(int amount, string description,string CallbackUrl,string PayEmail, string mobile = null)
+        {
             var result = await _payment.Request(new DtoRequest()
             {
                 Mobile = string.IsNullOrEmpty(mobile.Trim())?null:mobile,
                 CallbackUrl = CallbackUrl,
                 Description = description,
                 Email = PayEmail,
-                Amount = amount,
+                Amount = ((amount) + ((amount *5)/1000)), //Amount is Toman  Amount + 0.5% for Fee
                 MerchantId = _merchantId,
             }, ZarinPal.Class.Payment.Mode.zarinpal);
-            return $"https://zarinpal.com/pg/StartPay/{result.Authority}";
+            return $"{result.Authority}";
+        }
+        public async Task<int> VerfiyPaymentAsync(int amount,string Authority)
+        {
+            int StatusCode = 0;
+            try
+            {
+                var Result = await _payment.Verification(new DtoVerification()
+                {
+                    MerchantId = _merchantId,
+                    Amount = (amount) + ((amount * 5) / 1000), //Amount Is Rial Amount + 0.5% for Fee It Rial
+                    Authority = Authority
+                }, ZarinPal.Class.Payment.Mode.zarinpal);
+                StatusCode = Result.Status;
+            }
+            catch
+            {
+
+            }
+            return StatusCode;
         }
     }
 
