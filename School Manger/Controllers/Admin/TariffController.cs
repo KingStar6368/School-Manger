@@ -81,7 +81,7 @@ namespace School_Manger.Controllers.Admin
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
-            // No delete in ITariffService, so just redirect for now
+            _tariffService.DeleteTariff(id);
             return RedirectToAction("Index");
         }
     }

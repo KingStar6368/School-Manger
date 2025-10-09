@@ -12,6 +12,6 @@ namespace School_Manager.Core.Services.Interfaces
         public Task<List<TariffDto>> GetActiveTariff();
         public int CreateTariff(TariffDto tariffDto);
         public bool UpdateTariff(TariffDto tariffDto);
-
+        public bool DeleteTariff(int Id);
     }
 }

@@ -138,6 +138,25 @@
             <label class="form-label fw-bold text-white">مبلغ محاسبه شده</label>
             <input class="form-control price-separator" type="number" id="PriceLbl" placeholder="مبلغ محاسبه شده" />
         </div>
+        <div class="col-md-4">
+            <label class="form-label fw-bold text-white">مبلغ محاسبه شده با درصد</label>
+            <input class="form-control price-separator" type="number" id="PriceWithPercentLbl" placeholder="مبلغ محاسبه شده" />
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-bold text-white">درصد ترافیک</label>
+            <input class="form-control price-separator" type="number" value="0" id="Trafic" min="0" max="10"/>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-bold text-white">20% موارد خاص</label>
+            <input type="checkbox" id="Special"/>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label fw-bold text-white">نوع ماشین</label>
+            <select id="CarType" name="CarType">
+                <option value="Car" selected>سواری</option>
+                <option value="Van">ون</option>
+            </select>
+        </div>
         <button class="form-control bg-info col-md-4" onclick="Calculator()">محاسبه</button>
         <label id="info" class="text-white"></label>
         <label id="info2" class="text-white"></label>
@@ -150,10 +169,9 @@
     function Calculator(){
         var Km1 = parseFloat(document.getElementById('Km1').value);
         var Km2 = parseFloat(document.getElementById('Km2').value);
-        var totalkm = ((Km1 + Km2)/2)+1;
+        var totalkm = ((Km1 + Km2)/2);
         document.getElementById('Km').value = totalkm;
         // Call backend to get price by km
-alert(totalkm);
         fetch('/Admin/Parents/GetPriceByKm', {
             method: 'POST',
             headers: {
@@ -165,6 +183,13 @@ alert(totalkm);
         .then(response => response.json())
         .then(data => {
             document.getElementById('PriceLbl').value = data.price;
+            var TarficPercent = parseFloat(document.getElementById('Trafic').value) || 0;
+            var SpecialPercent = document.getElementById('Special').checked ? 20 : 0;
+            var CarType = document.getElementById('CarType').value;
+            var CarPercent = CarType === 'Van' ? -10 : 0;
+            var TotalPercent = TarficPercent + SpecialPercent + CarPercent;
+            var PriceWithPercent = parseFloat(data.price) + ((parseFloat(data.price) * TotalPercent) / 100);
+            document.getElementById('PriceWithPercentLbl').value = PriceWithPercent.toFixed(0);
         })
         .catch(err => {
             document.getElementById('PriceLbl').value = '';

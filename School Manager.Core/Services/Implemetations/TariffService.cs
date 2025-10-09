@@ -42,6 +42,11 @@ namespace School_Manager.Core.Services.Implemetations
             return 0;
         }
 
+        public bool DeleteTariff(int Id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<TariffDto>> GetActiveTariff()
         {
             var ds = await _cachService.GetOrSetAsync
