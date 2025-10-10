@@ -84,6 +84,7 @@ namespace School_Manger.Controllers.Admin
         public IActionResult CreateBill(long ChildId)
         {
             var Child = _childService.GetChild(ChildId);
+            Child.Bills = _billService.GetChildBills(ChildId).Result;
             return View("CreateBill", Child);
         }
         [HttpPost]
