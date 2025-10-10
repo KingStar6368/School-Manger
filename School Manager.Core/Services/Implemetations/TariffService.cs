@@ -49,7 +49,16 @@ namespace School_Manager.Core.Services.Implemetations
             if (ds != null)
             {
                 _unitOfWork.GetRepository<Tariff>().Remove(ds);
-                return _unitOfWork.SaveChanges() > 0;
+                int result = _unitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    _mediator.Publish(new TariffChangeEvent());
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             return false;
         }
