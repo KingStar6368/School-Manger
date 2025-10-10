@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -44,7 +45,13 @@ namespace School_Manager.Core.Services.Implemetations
 
         public bool DeleteTariff(int Id)
         {
-            throw new NotImplementedException();
+            var ds = _unitOfWork.GetRepository<Tariff>().Query(x => x.Id == Id).FirstOrDefault();
+            if (ds != null)
+            {
+                _unitOfWork.GetRepository<Tariff>().Remove(ds);
+                return _unitOfWork.SaveChanges() > 0;
+            }
+            return false;
         }
 
         public async Task<List<TariffDto>> GetActiveTariff()
