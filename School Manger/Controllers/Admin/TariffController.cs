@@ -35,7 +35,11 @@ namespace School_Manger.Controllers.Admin
             {
                 model.FromDate = StartDate.ToMiladi();
                 model.ToDate = EndDate.ToMiladi();
-                _tariffService.CreateTariff(model);
+                int Result = _tariffService.CreateTariff(model);
+                if (Result != null&&Result != 0)
+                    ControllerExtensions.ShowSuccess(this, "موفق", "تعرفه ساخته شد");
+                else
+                    ControllerExtensions.ShowError(this, "ناموفق", "مشکلی در ساخت تعرفه پیش آمده");
                 return RedirectToAction("Index");
             }
             catch
@@ -60,7 +64,11 @@ namespace School_Manger.Controllers.Admin
             {
                 model.FromDate = StartDate.ToMiladi();
                 model.ToDate = EndDate.ToMiladi();
-                _tariffService.UpdateTariff(model);
+                bool Result = _tariffService.UpdateTariff(model);
+                if (Result)
+                    ControllerExtensions.ShowSuccess(this, "موفق", "تعرفه تغییرات اعمال شد");
+                else
+                    ControllerExtensions.ShowError(this, "ناموفق", "مشکلی در تغییر تعرفه پیش آمده");
                 return RedirectToAction("Index");
             }
             catch
@@ -81,7 +89,11 @@ namespace School_Manger.Controllers.Admin
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
-            _tariffService.DeleteTariff(id);
+            bool Reuslt = _tariffService.DeleteTariff(id);
+            if(Reuslt)
+                ControllerExtensions.ShowSuccess(this, "موفق", "تعرفه حذف شد");
+            else
+                ControllerExtensions.ShowError(this, "ناموفق", "مشکلی در حذف پیش آمده");
             return RedirectToAction("Index");
         }
     }
