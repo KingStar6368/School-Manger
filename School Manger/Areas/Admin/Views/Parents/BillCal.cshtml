@@ -44,7 +44,7 @@
                     <div class="col-md-4">
                         <label class="form-label fw-bold">مبلغ ماهیانه (ریال)</label>
                         <input type="text" asp-for="@Model.Installment.Price" class="form-control price-separator" />
-                    </div> 
+                    </div>
                     <div class="col-md-4">
                         <label class="form-label fw-bold">مهلت پرداخت (روز)</label>
                         <input asp-for="@Model.Installment.DeadLine" class="form-control" />
@@ -66,7 +66,7 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label fw-bold">ریز مبلغ ها در قبض اول</label>
-                        <input type="checkbox" checked="@(Model.Installment.AddRoundedToFirst==true?"on":"off")" name="RoundFirst" />
+                        <input type="checkbox" checked="@(Model.Installment.AddRoundedToFirst == true ? "on" : "off")" name="RoundFirst" />
                     </div>
                 </div>
                 <div class="mt-4">
@@ -82,11 +82,11 @@
             <div class="card-header bg-success bg-gradient text-white fw-bold">
                 پیش نمایش قبض های صادر شده
                 <form method="post" action="ShowContractPDF">
-                    <input name="Stringdata" hidden value="@Model.Installment.EnCript()"/>
-                    <button type="submit" >ساخت تعهدات خانواده</button>
+                    <input name="Stringdata" hidden value="@Model.Installment.EnCript()" />
+                    <button type="submit">ساخت تعهدات خانواده</button>
                 </form>
                 <form method="post" action="ShowContract2PDF">
-                    <button type="submit" >ساخت قرارداد خانواده</button>
+                    <button type="submit">ساخت قرارداد خانواده</button>
                 </form>
             </div>
             <div class="card-body">
@@ -106,14 +106,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @foreach (var bill in Model.Bills)
-                        {
-                            <tr>
-                                <td>@bill.Name</td>
-                                <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.TotalPrice)</td>
-                                <td>@bill.BillExpiredTimePer</td>
-                            </tr>
-                        }
+                            @foreach (var bill in Model.Bills)
+                            {
+                                <tr>
+                                    <td>@bill.Name</td>
+                                    <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.TotalPrice)</td>
+                                    <td>@bill.BillExpiredTimePer</td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                     <button type="submit" class="btn btn-success fw-bold">صدور نهایی قبض ها</button>
@@ -130,9 +130,9 @@
     <div class="card-body bg-dark row g-3">
         <div class="col-md-4">
             <label class="form-label fw-bold text-white">کیلومتر</label>
-            <input class="form-control" type="number" id="Km" placeholder="کیلومتر"/>
-            <input hidden class="form-control" type="number" id="Km1" placeholder="کیلومتر"/>
-            <input hidden class="form-control" type="number" id="Km2" placeholder="کیلومتر"/>
+            <input class="form-control" type="number" id="Km" placeholder="کیلومتر" />
+            <input hidden class="form-control" type="number" id="Km1" placeholder="کیلومتر" />
+            <input hidden class="form-control" type="number" id="Km2" placeholder="کیلومتر" />
         </div>
         <div class="col-md-4">
             <label class="form-label fw-bold text-white">مبلغ محاسبه شده</label>
@@ -144,11 +144,11 @@
         </div>
         <div class="col-md-4">
             <label class="form-label fw-bold text-white">درصد ترافیک</label>
-            <input class="form-control price-separator" type="number" value="0" id="Trafic" min="0" max="10"/>
+            <input class="form-control price-separator" type="number" value="0" id="Trafic" min="0" max="10" />
         </div>
         <div class="col-md-4">
             <label class="form-label fw-bold text-white">20% موارد خاص</label>
-            <input type="checkbox" id="Special"/>
+            <input type="checkbox" id="Special" />
         </div>
         <div class="col-md-4">
             <label class="form-label fw-bold text-white">نوع ماشین</label>
@@ -182,14 +182,27 @@
         })
         .then(response => response.json())
         .then(data => {
-            document.getElementById('PriceLbl').value = data.price;
+            // document.getElementById('PriceLbl').value = data.price;
             var TarficPercent = parseFloat(document.getElementById('Trafic').value) || 0;
             var SpecialPercent = document.getElementById('Special').checked ? 20 : 0;
             var CarType = document.getElementById('CarType').value;
             var CarPercent = CarType === 'Van' ? -10 : 0;
             var TotalPercent = TarficPercent + SpecialPercent + CarPercent;
             var PriceWithPercent = parseFloat(data.price) + ((parseFloat(data.price) * TotalPercent) / 100);
-            document.getElementById('PriceWithPercentLbl').value = PriceWithPercent.toFixed(0);
+            // Call backend to get price by km
+            fetch('/Admin/Parents/GetPriceByKm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name=__RequestVerificationToken]')?.value || ''
+                },
+                body: JSON.stringify(totalkm+1)
+            }).then(response=>response.json())
+            .then(data2 => {
+                var KmPrice = (data2.price-data.price)/4;
+                document.getElementById('PriceWithPercentLbl').value = (PriceWithPercent + KmPrice).toFixed(0);
+                document.getElementById('PriceLbl').value = data.price + KmPrice;
+            });
         })
         .catch(err => {
             document.getElementById('PriceLbl').value = '';
