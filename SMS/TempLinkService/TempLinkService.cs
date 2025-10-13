@@ -21,7 +21,8 @@ namespace SMS.TempLinkService
             foreach (byte b in Bytedata)
                 Data += $"{b},";
             Data = Data.Substring(0, Data.Length - 1);
-            string Link = $"{appConfigService.WebAddress()}/DirectLink/DirectBill?CodeData={Data}";
+            string Link = " خانواده عزیز قبض سرویس شما صادر شده برای مشاهد به پنل خود وارد بشوید ویا از طریق لینک زیر وارد شوید "+
+                $"{appConfigService.WebAddress()}/DirectLink/DirectBill?CodeData={Data}";
             return Link;
 
         }

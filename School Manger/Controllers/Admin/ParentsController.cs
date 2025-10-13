@@ -88,6 +88,13 @@ namespace School_Manger.Controllers.Admin
             return View("CreateBill", Child);
         }
         [HttpPost]
+        public IActionResult SendBillMessage(long ChildId)
+        {
+            long ParentId = _parentService.GetParentWithChild(ChildId).Id;
+            _smsService.Send(_userService.GetUserByParent(ParentId).Mobile, _tempLink.GenerateBillTempLink(ParentId, ChildId));
+            return CreateBill(ChildId);
+        }
+        [HttpPost]
         public IActionResult MakeBill(long ChildId, string Name, long TotalPrice, string StartTime, string EndTime, string Estimate, string IsPerBill)
         {
             if (IsPerBill == "on")
@@ -180,7 +187,7 @@ namespace School_Manger.Controllers.Admin
                  _smsService.Send(_userService.GetUserByParent(ParentId).Mobile, _tempLink.GenerateBillTempLink(ParentId, ChildId));
             }
             else
-                ControllerExtensions.ShowSuccess(this, "خطا", "مشکلی در صادر قبض ها پیش آمده");
+                ControllerExtensions.ShowError(this, "خطا", "مشکلی در صادر قبض ها پیش آمده");
             long id = ControllerExtensions.GetKey<long>(this, "ChildId");
             return CreateBill(id);
         }
