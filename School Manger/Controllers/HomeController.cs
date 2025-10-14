@@ -22,6 +22,7 @@ using System.IO;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
+
 namespace School_Manger.Controllers
 {
     public class HomeController : Controller
@@ -332,7 +333,7 @@ namespace School_Manger.Controllers
                         bill.Id
                     }
                 });
-                return Redirect($"https://zarinpal.com/pg/StartPay/{respance}");
+                return Redirect($"https://www.zarinpal.com/pg/StartPay/{respance}");
             }
             ControllerExtensions.ShowError(this, "خطا", "مشکلی در انتفال به درگاه شده لطفا بعدا امتحان کنید");
             return ParentMenu();

@@ -91,8 +91,9 @@
             </div>
             <div class="card-body">
                 <form method="post" asp-action="BillCal">
-                    <input type="hidden" name="ServiceContractRef" value="@Model.Installment.RoundePerInstallment" />
-                    <input type="hidden" name="ServiceContractRef" value="@Model.Installment.AddRoundedToFirst" />
+                    <input type="hidden" name="ServiceContractRef" value="@Model.Installment.ServiceContractRef" />
+                    <input type="hidden" name="RoundePerInstallment" value="@Model.Installment.RoundePerInstallment" />
+                    <input type="hidden" name="AddRoundedToFirst" value="@Model.Installment.AddRoundedToFirst" />
                     <input type="hidden" name="InstallmentCount" value="@Model.Installment.InstallmentCount" />
                     <input type="hidden" name="Price" value="@Model.Installment.Price" />
                     <input type="hidden" name="DeadLine" value="@Model.Installment.DeadLine" />
