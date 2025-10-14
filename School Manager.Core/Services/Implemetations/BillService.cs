@@ -173,26 +173,54 @@ namespace School_Manager.Core.Services.Implemetations
 
         public bool Delete(long billId)
         {
-            var bill = _unitOfWork.GetRepository<Bill>()
-                        .Query(x => x.Id == billId)
-                        .Include(x => x.PayBills)
-                        .Include(x=>x.ServiceContractNavigation)
-                        .FirstOrDefault();
-
-            if (bill == null) return false;
-
-            // بررسی وجود اطلاعات وابسته
-            if ((bill.PayBills?.Any() ?? false))
+            _unitOfWork.BeginTransaction();
+            try
             {
-                throw new InvalidOperationException("این قبض دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
+                var billRepo = _unitOfWork.GetRepository<Bill>();
+                var serviceContractRepo = _unitOfWork.GetRepository<ServiceContract>();
+
+                var bill = billRepo.Query(x => x.Id == billId)
+                    .Include(x => x.PayBills)
+                    .Include(x => x.ServiceContractNavigation)
+                    .FirstOrDefault();
+
+                if (bill == null)
+                    throw new InvalidOperationException("قبض یافت نشد.");
+
+                if (bill.PayBills?.Any() ?? false)
+                    throw new InvalidOperationException("این قبض دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
+
+                var serviceContract = bill.ServiceContractNavigation;
+
+                // جدا کردن navigation قبل از حذف (برای جلوگیری از ارور EF)
+                bill.ServiceContractNavigation = null;
+
+                // حذف قبض
+                billRepo.Remove(bill);
+                _unitOfWork.SaveChanges();
+
+                // اگر قبض از نوع پیش‌پرداخت بود و قرارداد مرتبط قبض دیگری ندارد، قرارداد را هم حذف کن
+                if (bill.Type == BillType.Pre && serviceContract != null)
+                {
+                    bool hasOtherBills = billRepo.Query(x => x.ServiceContractRef == serviceContract.Id).Any();
+                    if (!hasOtherBills)
+                    {
+                        serviceContractRepo.Remove(serviceContract);
+                        _unitOfWork.SaveChanges();
+                    }
+                }
+
+                _unitOfWork.Commit();
+                return true;
             }
-            if(bill.Type == BillType.Pre)
+            catch (Exception ex)
             {
-                _unitOfWork.GetRepository<ServiceContract>().Remove(bill.ServiceContractNavigation);
+                _unitOfWork.Rollback();
+                throw new InvalidOperationException($"خطا در اجرای عملیات: {ex.Message}");
             }
-            _unitOfWork.GetRepository<Bill>().Remove(bill);
-            return _unitOfWork.SaveChanges() > 0;
         }
+
+
 
         public async Task<SavePreBillResult> CreatePreBillAsync(CreatePreBillDto bill)
         {
