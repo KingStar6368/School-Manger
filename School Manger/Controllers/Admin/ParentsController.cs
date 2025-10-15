@@ -360,19 +360,31 @@ namespace School_Manger.Controllers.Admin
         }
 
         [HttpPost]
-        public IActionResult EditBill(long billId, long childId, BillUpdateDto model, string EstimateTime)
+        public IActionResult EditBill(long billId, long childId, BillUpdateDto model, string EstimateTime,string type)
         {
             try
             {
+                BillType billType = BillType.None;
+                switch (type)
+                {
+                    case "پیش پرداخت":
+                        billType = BillType.Pre;
+                        break;
+                    case "عادی":
+                        billType = BillType.Normal;
+                        break;
+                }
                 model.EstimateTime = EstimateTime.ConvertPersianToEnglish().ToMiladi();
                 _billService.Update(model);
                 ControllerExtensions.ShowSuccess(this, "موفق", "تغییرات اعمال شد");
                 return CreateBill(childId);
             }
-            catch
+            catch(Exception ex)
             {
+                ControllerExtensions.ShowError(this,"خطا",ex.Message);
                 ViewBag.ChildId = childId;
-                return View("EditBill", model);
+                var bill = _billService.GetBill(billId);
+                return View("EditBill", bill);
             }
         }
         [HttpGet]

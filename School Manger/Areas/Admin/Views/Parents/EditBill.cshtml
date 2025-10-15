@@ -1,4 +1,5 @@
 ﻿@model School_Manager.Core.ViewModels.FModels.BillDto
+@using School_Manager.Domain.Entities.Catalog.Enums
 @using School_Manger.Extension;
 @{
     ViewData["Title"] = "ویرایش قبض";
@@ -40,7 +41,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold">نوع قبض</label>
-                        <input type="number" name="Type" class="form-control bg-dark text-white shadow-sm" value="0" required />
+                        <input type="text" name="type" class="form-control bg-dark text-white shadow-sm" value="@(Model.TypeOfBill == "نا مشخص"?"عادی":(Model.TypeOfBill == "عادی"?"عادی": "پیش پرداخت"))" required />
                     </div>
                     <div class="mt-4">
                         <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm">
