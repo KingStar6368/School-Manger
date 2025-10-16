@@ -19,6 +19,10 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public long? SchoolRef { get; set; }
         /// <summary>
+        /// شیفت مدرسه
+        /// </summary>
+        public long? ShiftId {  get; set; }
+        /// <summary>
         /// نام
         /// </summary>
         public string FirstName { get; set; }
@@ -59,5 +63,6 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public virtual ICollection<ServiceContract> ServiceContracts { get; set; }
         public virtual School SchoolNavigation { get; set; }
+        public virtual Shift ShiftNavigation { get; set; }
     }
 }

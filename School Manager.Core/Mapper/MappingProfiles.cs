@@ -100,6 +100,11 @@ namespace School_Manager.Core.Mapper
             CreateMap<DriverContractUpdateDto, DriverContract>();
             CreateMap<DriverContractChequeUpdateDto, DriverContractCheque>();
             #endregion
+            #region DriverShift
+            CreateMap<DriverShift, DriverShiftDto>();
+            CreateMap<CreateDriverShiftDto, DriverShift>();
+            CreateMap<UpdateDriverShiftDto, DriverShift>();
+            #endregion
             #region Location Data
             CreateMap<LocationData, LocationDataDto>();
             CreateMap<LocationDataCreateDto, LocationData>();
@@ -190,6 +195,11 @@ namespace School_Manager.Core.Mapper
                     .Select(dc => dc.DriverShiftNavigation.DriverRef).Distinct()));
             CreateMap<SchoolCreateDto, School>();
             CreateMap<SchoolUpdateDto, School>();
+            #endregion
+            #region Shift
+            CreateMap<Shift,ShiftDto>();
+            CreateMap<CreateShiftDto, Shift>();
+            CreateMap<UpdateShiftDto, Shift>();
             #endregion
             #region Service
             CreateMap<ServiceContract, ServiceContractDto>();

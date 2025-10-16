@@ -129,18 +129,6 @@ namespace School_Manager.Core.Services.Implemetations
                                                     )
                                             )
                                         ).ToList();
-            //IQueryable<Child> query = _unitOfWork.GetRepository<Child>().Query()
-            //                            .Where(x =>
-            //                                !x.DriverChilds.Any(y => y.IsEnabled && y.EndDate > DateTime.Now) &&
-            //                                x.ServiceContracts.Any(sc =>
-            //                                    sc.IsActive &&
-            //                                    sc.Bills.Any(b =>
-            //                                        b.Type == BillType.Pre &&
-            //                                        b.Price <= (b.PayBills.Select(pb => pb.PayNavigation.Price).DefaultIfEmpty(0).Sum())
-            //                                    )
-            //                                )
-            //                            )
-            //                            .Include(x => x.LocationPairs).ThenInclude(lp => lp.Locations);
 
             if (SchoolId != 0)
             {

@@ -9,7 +9,7 @@ namespace School_Manager.Core.ViewModels.FModels
 {
     public class ShiftDto
     {
-
+        public string Name { get; set; }
         //مدرسه
         public long SchoolRef { get; set; }
         // نوع شیفت (صبح ) و غیره
@@ -23,7 +23,7 @@ namespace School_Manager.Core.ViewModels.FModels
     }
     public class CreateShiftDto
     {
-
+        public string Name { get; set; }
         //مدرسه
         public long SchoolRef { get; set; }
         // نوع شیفت (صبح ) و غیره
@@ -38,6 +38,7 @@ namespace School_Manager.Core.ViewModels.FModels
     public class UpdateShiftDto
     {
         public long Id {  get; set; }
+        public string Name { get; set; }
         //مدرسه
         public long SchoolRef { get; set; }
         // نوع شیفت (صبح ) و غیره

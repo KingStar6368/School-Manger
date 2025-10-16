@@ -5,6 +5,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
 {
     public class Shift : AuditableEntity<long>
     {
+        public string Name { get; set; }
         //مدرسه
         public long SchoolRef { get; set; }
         // نوع شیفت (صبح ) و غیره

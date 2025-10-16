@@ -50,5 +50,11 @@ namespace School_Manager.Core.Services.Interfaces
         /// <param name="school">مدرسه</param>
         /// <returns>آیا موفقیت آمیز بود؟</returns>
         bool UpdateSchool(SchoolUpdateDto school);
+        /// <summary>
+        /// برگشت شیفت های مدارس
+        /// </summary>
+        /// <param name="id">شناسه مدرسه</param>
+        /// <returns></returns>
+        Task<List<ShiftDto>> GetSchoolShifts(long id);
     }
 }

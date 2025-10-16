@@ -167,6 +167,11 @@ namespace School_Manager.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Shift> builder)
         {
+            builder.Property(p => p.Name)
+            .HasColumnType("nvarchar(50)")
+            .IsRequired(false)
+            .HasComment("نام شیفت");
+
             builder.HasOne(d=>d.SchoolNavigation).WithMany(d=>d.Shifts)
                 .HasForeignKey(fk=>fk.SchoolRef)
                 .OnDelete(DeleteBehavior.Restrict);

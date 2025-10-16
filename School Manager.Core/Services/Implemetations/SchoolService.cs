@@ -114,5 +114,11 @@ namespace School_Manager.Core.Services.Implemetations
             _unitOfWork.GetRepository<School>().Remove(School);
             return _unitOfWork.SaveChanges() > 0;
         }
+
+        public async Task<List<ShiftDto>> GetSchoolShifts(long id)
+        {
+            var ds = await _unitOfWork.GetRepository<Shift>().Query(x=>x.SchoolRef == id).ToListAsync();
+            return _mapper.Map<List<ShiftDto>>(ds);
+        }
     }
 }
