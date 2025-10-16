@@ -49,22 +49,30 @@ namespace School_Manager.Core.Services.Implemetations
             return _mapper.Map<DriverDto>(ds);
         }
 
-        public async Task<List<DriverDto>> GetDrivers(long SchoolId)
+        public async Task<List<DriverDto>> GetDrivers(long schoolId)
         {
-            var ds = await _unitOfWork.GetRepository<School>()
+            var school = await _unitOfWork.GetRepository<School>()
                 .Query()
-                .Include(x => x.Childs).ThenInclude(x => x.DriverChilds).ThenInclude(x => x.DriverShiftNavigation).ThenInclude(x => x.DriverNavigation).ThenInclude(x=>x.Cars)
-                .Where(x => x.Id == SchoolId).FirstOrDefaultAsync();
-            if (ds == null)
+                .Include(x => x.Childs)
+                    .ThenInclude(x => x.DriverChilds)
+                        .ThenInclude(x => x.DriverShiftNavigation)
+                            .ThenInclude(x => x.DriverNavigation)
+                                .ThenInclude(x => x.Cars)
+                .FirstOrDefaultAsync(x => x.Id == schoolId);
+
+            if (school == null)
                 return new List<DriverDto>();
-            var drivers = ds.Childs
-                        .SelectMany(c => c.DriverChilds)
-                        .Where(dc => dc.DriverShiftNavigation.DriverNavigation != null)
-                        .Select(dc => dc.DriverShiftNavigation.DriverNavigation)
-                        .Distinct()
-                        .ToList();
+
+            var drivers = school.Childs
+                .SelectMany(c => c.DriverChilds)
+                .Where(dc => dc.DriverShiftNavigation != null && dc.DriverShiftNavigation.DriverNavigation != null)
+                .Select(dc => dc.DriverShiftNavigation.DriverNavigation)
+                .Distinct()
+                .ToList();
+
             return _mapper.Map<List<DriverDto>>(drivers);
         }
+
 
         public async Task<List<DriverDto>> GetDrivers()
         {
