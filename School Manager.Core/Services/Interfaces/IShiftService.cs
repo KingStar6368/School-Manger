@@ -13,5 +13,6 @@ namespace School_Manager.Core.Services.Interfaces
         public bool UpdateShift(UpdateShiftDto ShiftDto);
         public bool DeleteShift(int Id);
         ShiftDto GetShiftById(long id);
+        List<ShiftDto> GetAllShifts();
     }
 }

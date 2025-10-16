@@ -17,11 +17,16 @@ namespace School_Manger.Controllers.Admin
         private readonly IUserService _userService;
         private readonly IParentService _parentService;
         private readonly IDriverService _driverService;
-        public UserManagementController(IUserService userService, IParentService parentService, IDriverService driverService)
+        private readonly IDriverShiftService _driverShiftService;
+        private readonly IShiftService _shiftService;
+
+        public UserManagementController(IUserService userService, IParentService parentService, IDriverService driverService, IDriverShiftService driverShiftService, IShiftService shiftService)
         {
             _userService = userService;
             _parentService = parentService;
             _driverService = driverService;
+            _driverShiftService = driverShiftService;
+            _shiftService = shiftService;
         }
 
         public async Task<IActionResult> Parents()
@@ -39,12 +44,12 @@ namespace School_Manger.Controllers.Admin
         public IActionResult Create(UserType type)
         {
             ViewBag.UserType = type;
+            ViewBag.AllShifts = _shiftService.GetAllShifts();
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(AdminUser Data,string BirthDate,
-            string Last_Digits,string Third,string PChar,string First)
+        public IActionResult Create(AdminUser Data, string BirthDate, string Last_Digits, string Third, string PChar, string First, long[] SelectedShiftIds)
         {
             try
             {
@@ -57,6 +62,7 @@ namespace School_Manger.Controllers.Admin
                     IsActive = true,
                     Mobile = Data.User.Mobile
                 });
+                long driverId = 0;
                 switch (Data.Type)
                 {
                     case UserType.Parent:
@@ -71,13 +77,13 @@ namespace School_Manger.Controllers.Admin
                         });
                         break;
                     case UserType.Driver:
-                        _driverService.CreateDriver(new DriverCreateDto()
+                        driverId = _driverService.CreateDriver(new DriverCreateDto()
                         {
                             Name = Data.User.FirstName,
                             LastName = Data.User.LastName,
                             NationCode = Data.User.UserName,
                             UserRef = UserRef,
-                            Address = string.IsNullOrEmpty(Data.Driver.Address)?"خالی":Data.Driver.Address,
+                            Address = string.IsNullOrEmpty(Data.Driver.Address) ? "خالی" : Data.Driver.Address,
                             AvailableSeats = Data.Driver.Car.SeatNumber,
                             BankRef = 0,
                             BankAccountNumber = Data.Driver.BankAccountNumber,
@@ -104,17 +110,31 @@ namespace School_Manger.Controllers.Admin
                             Latitude = 0,
                             Longitude = 0
                         });
+                        // Assign selected shifts to driver
+                        if (SelectedShiftIds != null && SelectedShiftIds.Length > 0)
+                        {
+                            foreach (var shiftId in SelectedShiftIds)
+                            {
+                                _driverShiftService.CreateDriverShift(new CreateDriverShiftDto
+                                {
+                                    DriverRef = driverId,
+                                    ShiftRef = shiftId,
+                                    Seats = Data.Driver.Car.SeatNumber
+                                });
+                            }
+                        }
                         break;
-
                 }
                 ControllerExtensions.ShowSuccess(this, "موفق", "کاربر ساخته شد");
                 ViewBag.UserType = Data.Type;
+                ViewBag.AllShifts = _shiftService.GetAllShifts();
                 return View();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ControllerExtensions.ShowError(this, "خطا", ex.Message);
                 ViewBag.UserType = Data.Type;
+                ViewBag.AllShifts = _shiftService.GetAllShifts();
                 return View();
             }
         }
@@ -150,11 +170,11 @@ namespace School_Manger.Controllers.Admin
             return await Parents();
         }
         [HttpGet]
-        public IActionResult EditDriver(long UserId,string NationCode)
+        public IActionResult EditDriver(long UserId, string NationCode)
         {
             var user = _userService.GetUserById(UserId);
             var driver = _driverService.GetDriverNationCode(NationCode);
-            return View("EditDriverUser",new UserEditDriver()
+            return View("EditDriverUser", new UserEditDriver()
             {
                 DriverUpdateDto = new DriverUpdateDto
                 {
@@ -191,7 +211,7 @@ namespace School_Manger.Controllers.Admin
             });
         }
         [HttpPost]
-        public async Task<IActionResult> EditDriver(UserEditDriver Data,string BirthDate)
+        public async Task<IActionResult> EditDriver(UserEditDriver Data, string BirthDate)
         {
             Data.DriverUpdateDto.BirthDate = BirthDate.ConvertPersianToEnglish().ToMiladi();
             if (_userService.UpdateUser(Data.UserUpdateDto))
@@ -202,14 +222,41 @@ namespace School_Manger.Controllers.Admin
                 ControllerExtensions.ShowSuccess(this, "موفق", "تغییرات راننده اعمال شد");
             else
                 ControllerExtensions.ShowError(this, "خطا", "مشکلی در راننده پیش آمده");
+
+            // --- Driver Shift Update ---
+            // Remove all existing shifts for this driver
+            _driverShiftService.RemoveAllShiftsForDriver(Data.DriverUpdateDto.Id);
+            // Get selected shift ids from form
+            var selectedShiftIds = Request.Form["SelectedShiftIds"];
+            if (selectedShiftIds.Count > 0)
+            {
+                foreach (var shiftIdStr in selectedShiftIds)
+                {
+                    if (long.TryParse(shiftIdStr, out long shiftId))
+                    {
+                        // Get seat count for this shift
+                        var seatKey = $"ShiftSeats_{shiftId}";
+                        var seatValue = Request.Form[seatKey];
+                        int seats = 1;
+                        int.TryParse(seatValue, out seats);
+                        _driverShiftService.CreateDriverShift(new CreateDriverShiftDto
+                        {
+                            DriverRef = Data.DriverUpdateDto.Id,
+                            ShiftRef = shiftId,
+                            Seats = seats
+                        });
+                    }
+                }
+            }
+            // --- End Driver Shift Update ---
             return await Drivers();
         }
         [HttpGet]
-        public IActionResult EditParent(long UserId,string NationCode)
+        public IActionResult EditParent(long UserId, string NationCode)
         {
             var user = _userService.GetUserById(UserId);
             var parent = _parentService.GetParentByNationCode(NationCode);
-            return View("EditParentUser",new UserEditParent()
+            return View("EditParentUser", new UserEditParent()
             {
                 ParentUpdateDto = new ParentUpdateDto()
                 {
@@ -224,7 +271,7 @@ namespace School_Manger.Controllers.Admin
                 },
                 UserUpdateDto = new UserUpdateDTO()
                 {
-                    Id =user.Id,
+                    Id = user.Id,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     IsActive = user.IsActive,

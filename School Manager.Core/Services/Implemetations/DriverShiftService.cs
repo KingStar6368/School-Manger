@@ -63,5 +63,16 @@ namespace School_Manager.Core.Services.Implemetations
             }
             return false;
         }
+
+        // Remove all shifts for a driver
+        public void RemoveAllShiftsForDriver(long driverId)
+        {
+            var shifts = _unitOfWork.GetRepository<DriverShift>().Query(x => x.DriverRef == driverId).ToList();
+            foreach (var shift in shifts)
+            {
+                _unitOfWork.GetRepository<DriverShift>().Remove(shift);
+            }
+            _unitOfWork.SaveChanges();
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace School_Manager.Core.Services.Interfaces
         public long CreateDriverShift(CreateDriverShiftDto driverShiftDto);
         public bool UpdateDriverShift(UpdateDriverShiftDto driverShiftDto);
         public bool DeleteDriverShift(int Id);
+        void RemoveAllShiftsForDriver(long driverId);
     }
 }

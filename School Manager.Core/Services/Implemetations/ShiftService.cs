@@ -69,5 +69,11 @@ namespace School_Manager.Core.Services.Implemetations
             var shift = _unitOfWork.GetRepository<Shift>().GetById(id);
             return _mapper.Map<ShiftDto>(shift);
         }
+
+        public List<ShiftDto> GetAllShifts()
+        {
+            var shifts = _unitOfWork.GetRepository<Shift>().GetAll();
+            return _mapper.Map<List<ShiftDto>>(shifts);
+        }
     }
 }

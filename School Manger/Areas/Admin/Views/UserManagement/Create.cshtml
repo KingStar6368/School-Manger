@@ -1,7 +1,10 @@
 ﻿@using School_Manger.Models.PageView
 @model AdminUser
+@using School_Manager.Core.Services.Interfaces
+@inject IShiftService ShiftService
 @{
     var userType = ViewBag.UserType?.ToString() ?? "Parent";
+    var allShifts = ShiftService.GetAllShifts();
     ViewData["Title"] = "ایجاد کاربر " + (userType == "Parent" ? "👨‍👩‍👧 والد" : "🚗 راننده");
     Layout = "_AdminLayout";
 }
@@ -12,7 +15,6 @@
     <div class="card-body">
         <form action="Create" method="post">
             <input type="hidden" asp-for="Type" value="@userType" />
-
             <div class="row g-4">
                 <div class="col-md-6">
                     @if (userType == "Parent")
@@ -33,7 +35,6 @@
                             <label class="form-label">🏠 آدرس</label>
                             <textarea asp-for="Parent.Address" class="form-control" rows="2"></textarea>
                         </div>
-                        <input value="@userType"  hidden />
                     }
                     else
                     {
@@ -51,7 +52,6 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🎂 تاریخ تولد</label><label style="color:red;font-size:20px">*</label>
-                            @* <input asp-for="Driver.BirthDate" type="date" class="form-control form-control-lg" required /> *@
                             <input name="BirthDate" class="persian-date form-control bg-secondary text-white" required />
                             <input type="hidden" class="gregorian-date" />
                         </div>
@@ -79,10 +79,69 @@
                             <label class="form-label">🆔 شماره پرونده</label><label style="color:red;font-size:20px">*</label>
                             <textarea asp-for="Driver.Code" data-val="false" class="form-control" rows="2"></textarea>
                         </div>
-                        <input value="@userType"  hidden />
+                        <hr />
+                        <h5 class="text-info"><i class="bi bi-clock"></i> انتخاب شیفت‌ها</h5>
+                        <div class="mb-3">
+                            <label class="form-label">شیفت‌های قابل انتخاب و تعداد صندلی:</label>
+                            <input type="text" id="shiftFilter" class="form-control mb-2" placeholder="جستجو شیفت..." onkeyup="filterShifts()" />
+                            <table class="table table-bordered table-dark table-striped" id="shiftTable">
+                                <thead>
+                                    <tr>
+                                        <th>انتخاب</th>
+                                        <th>نام شیفت</th>
+                                        <th>زمان شروع</th>
+                                        <th>زمان پایان</th>
+                                        <th>تعداد صندلی</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var shift in allShifts)
+                                    {
+                                        <tr class="shift-row">
+                                            <td>
+                                                <input class="form-check-input shift-checkbox" type="checkbox" name="SelectedShiftIds" value="@shift.Id" id="shift_@shift.Id"
+                                                       onchange="toggleSeatInput(@shift.Id)" />
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label" for="shift_@shift.Id">
+                                                    @shift.Name
+                                                </label>
+                                            </td>
+                                            <td>@shift.Start</td>
+                                            <td>@shift.End</td>
+                                            <td>
+                                                <input type="number" name="ShiftSeats_@shift.Id" id="seat_@shift.Id" class="form-control"
+                                                       style="width:90px;display:inline-block;" min="1" max="99" placeholder="صندلی"
+                                                       disabled required />
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <script>
+                            function toggleSeatInput(shiftId) {
+                                var checkbox = document.getElementById('shift_' + shiftId);
+                                var seatInput = document.getElementById('seat_' + shiftId);
+                                seatInput.disabled = !checkbox.checked;
+                                if (!checkbox.checked) seatInput.value = '';
+                            }
+                            function filterShifts() {
+                                var input = document.getElementById('shiftFilter');
+                                var filter = input.value.toLowerCase();
+                                var rows = document.querySelectorAll('#shiftTable .shift-row');
+                                rows.forEach(function(row) {
+                                    var label = row.querySelector('.form-check-label').textContent.toLowerCase();
+                                    if (label.indexOf(filter) > -1) {
+                                        row.style.display = '';
+                                    } else {
+                                        row.style.display = 'none';
+                                    }
+                                });
+                            }
+                        </script>
                     }
                 </div>
-
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label class="form-label">🔒 رمز عبور</label><label style="color:red;font-size:20px">*</label>
@@ -92,7 +151,6 @@
                         <label class="form-label">📞 شماره تماس</label><label style="color:red;font-size:20px">*</label>
                         <input asp-for="User.Mobile" class="form-control form-control-lg" required />
                     </div>
-
                     @if (userType != "Parent")
                     {
                         <hr />
@@ -104,7 +162,6 @@
                         <div class="mb-3">
                             <label class="form-label">🔢 شماره پلاک</label><label style="color:red;font-size:20px">*</label>
                             @await Html.PartialAsync("_CarPlateBox")
-                            @* <input asp-for="Driver.Car.PlateNumber" class="form-control form-control-lg" /> *@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🎨 رنگ ماشین</label>
@@ -112,9 +169,8 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">💺 تعداد صندلی</label><label style="color:red;font-size:20px">*</label>
-                            <input asp-for="Driver.Car.SeatNumber" type="number" class="form-control form-control-lg" required/>
+                            <input asp-for="Driver.Car.SeatNumber" type="number" class="form-control form-control-lg" required />
                         </div>
-
                         <hr />
                         <h5 class="text-info"><i class="bi bi-bank2"></i> مشخصات حساب بانکی</h5>
                         <div class="mb-3">
@@ -128,7 +184,6 @@
                     }
                 </div>
             </div>
-
             <div class="form-group text-center mt-4 d-flex justify-content-center gap-3">
                 <button type="submit" class="btn btn-success col-md-2">
                     <i class="bi bi-save2 me-1"></i> ذخیره
@@ -138,15 +193,14 @@
                     <i class="bi bi-x-circle me-1"></i> انصراف
                 </a>
             </div>
-        </form> 
+        </form>
     </div>
 </div>
 @section Scripts {
     <script>
-                 // Password validation
+        // Password validation
         document.getElementById('password').addEventListener('input', function(e) {
             const passwordHelp = document.getElementById('passwordHelp');
-
             if (this.value.length < 8) {
                 this.classList.remove('border-success', 'is-valid');
                 this.classList.add('border-danger', 'is-invalid');

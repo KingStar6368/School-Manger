@@ -1,9 +1,16 @@
-﻿@using School_Manger.Models.PageView
-@using School_Manger.Extension;
+﻿@using School_Manger.Extension;
+@using School_Manger.Models.PageView
+@using School_Manager.Core.Services.Interfaces
+@using School_Manager.Core.ViewModels.FModels
+@inject IShiftService ShiftService
 @model UserEditDriver
 @{
     ViewData["Title"] = "ویرایش راننده";
     Layout = "_AdminLayout";
+    var allShifts = ShiftService.GetAllShifts();
+    var driverShifts = (Model.GetType().GetProperty("DriverShifts") != null)
+        ? ((IEnumerable<DriverShiftDto>)Model.GetType().GetProperty("DriverShifts").GetValue(Model)) ?? new List<DriverShiftDto>()
+        : new List<DriverShiftDto>();
 }
 <div class="container mt-4 text-white">
     <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
@@ -11,7 +18,7 @@
             <h4 class="mb-0 fw-bold">
                 ✏️ ویرایش کاربر راننده: <span class="text-warning">@Model.DriverUpdateDto.Name</span>
             </h4>
-            <form asp-action="Drivers" method="post">
+            <form action="@Url.Action("Drivers")" method="post">
                 <input type="submit" class="btn btn-secondary fw-bold shadow-sm" value="🔙 بازگشت" />
             </form>
         </div>
@@ -19,23 +26,23 @@
             <form asp-action="EditDriver" onsubmit="FillHidden()" method="post">
                 <div class="row g-4">
                     <div class="col-md-6">
-                        <input type="hidden" asp-for="@Model.DriverUpdateDto.Id" value="@Model.DriverUpdateDto.Id" />
-                        <input type="hidden" asp-for="@Model.UserUpdateDto.Id" value="@Model.UserUpdateDto.Id" />
-                        <input type="hidden" asp-for="@Model.DriverUpdateDto.UserRef" value="@Model.UserUpdateDto.Id" />
-                        <input type="hidden" asp-for="@Model.UserUpdateDto.IsActive" value="@Model.UserUpdateDto.IsActive" />
+                        <input type="hidden" asp-for="DriverUpdateDto.Id" />
+                        <input type="hidden" asp-for="UserUpdateDto.Id" />
+                        <input type="hidden" asp-for="DriverUpdateDto.UserRef" value="@Model.UserUpdateDto.Id" />
+                        <input type="hidden" asp-for="UserUpdateDto.IsActive" />
                         <div class="mb-3">
                             <label class="form-label">👤 نام</label><label style="color:red;font-size:20px">*</label>
-                            <input asp-for="@Model.DriverUpdateDto.Name" asp-for="@Model.UserUpdateDto.FirstName" id="DName" value="@Model.DriverUpdateDto.Name" class="form-control form-control-lg" required />
-                            <input asp-for="@Model.UserUpdateDto.FirstName" value="@Model.DriverUpdateDto.Name" id="UName" hidden required />
+                            <input asp-for="DriverUpdateDto.Name" id="DName" class="form-control form-control-lg" required />
+                            <input asp-for="UserUpdateDto.FirstName" value="@Model.DriverUpdateDto.Name" id="UName" hidden required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">👥 نام خانوادگی</label><label style="color:red;font-size:20px">*</label>
-                            <input asp-for="@Model.DriverUpdateDto.LastName" value="@Model.DriverUpdateDto.LastName" id="DLastName" class="form-control form-control-lg" required />
-                            <input asp-for="@Model.UserUpdateDto.LastName" value="@Model.DriverUpdateDto.LastName" id="ULastName" hidden required />
+                            <input asp-for="DriverUpdateDto.LastName" id="DLastName" class="form-control form-control-lg" required />
+                            <input asp-for="UserUpdateDto.LastName" value="@Model.DriverUpdateDto.LastName" id="ULastName" hidden required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">👨‍👦 نام پدر</label><label style="color:red;font-size:20px">*</label>
-                            <input asp-for="@Model.DriverUpdateDto.FatherName" value="@Model.DriverUpdateDto.FatherName" class="form-control form-control-lg" required />
+                            <input asp-for="DriverUpdateDto.FatherName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🎂 تاریخ تولد</label><label style="color:red;font-size:20px">*</label>
@@ -45,47 +52,110 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🆔 کد ملی</label><label style="color:red;font-size:20px">*</label>
-                            <input asp-for="@Model.DriverUpdateDto.NationCode" asp-for="@Model.UserUpdateDto.UserName" id="DserName" value="@Model.DriverUpdateDto.NationCode" class="form-control form-control-lg" required />
-                            <input asp-for="@Model.UserUpdateDto.UserName" value="@Model.DriverUpdateDto.NationCode" id="UserName" hidden required />
+                            <input asp-for="DriverUpdateDto.NationCode" id="DserName" class="form-control form-control-lg" required />
+                            <input asp-for="UserUpdateDto.UserName" value="@Model.DriverUpdateDto.NationCode" id="UserName" hidden required />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🎓 مدرک تحصیلی</label>
-                            <input asp-for="@Model.DriverUpdateDto.Education" value="@Model.DriverUpdateDto.Education" class="form-control form-control-lg" data-val="false" />
+                            <input asp-for="DriverUpdateDto.Education" class="form-control form-control-lg" data-val="false" />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🎓 شماره گواهینامه</label>
-                            <input asp-for="@Model.DriverUpdateDto.CertificateId" value="@Model.DriverUpdateDto.CertificateId" class="form-control form-control-lg" data-val="false" />
+                            <input asp-for="DriverUpdateDto.CertificateId" class="form-control form-control-lg" data-val="false" />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">📝 توضیحات</label>
-                            <textarea asp-for="@Model.DriverUpdateDto.Descriptions" value="@Model.DriverUpdateDto.Descriptions" data-val="false" class="form-control" rows="2"></textarea>
+                            <textarea asp-for="DriverUpdateDto.Descriptions" class="form-control" rows="2"></textarea>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🏠 آدرس</label><label style="color:red;font-size:20px">*</label>
-                            <textarea asp-for="@Model.DriverUpdateDto.Address" value="@Model.DriverUpdateDto.Address" data-val="false" class="form-control" rows="2" required></textarea>
+                            <textarea asp-for="DriverUpdateDto.Address" class="form-control" rows="2" required></textarea>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🆔 شماره پرونده</label>
-                            <textarea asp-for="@Model.DriverUpdateDto.Code" value="@Model.DriverUpdateDto.Code" data-val="false" class="form-control" rows="2"></textarea>
+                            <textarea asp-for="DriverUpdateDto.Code" class="form-control" rows="2"></textarea>
                         </div>
+                        <hr />
+                        <h5 class="text-info"><i class="bi bi-clock"></i> ویرایش شیفت‌ها</h5>
+                        <div class="mb-6">
+                            <label class="form-label">شیفت‌های قابل انتخاب و تعداد صندلی:</label>
+                            <input type="text" id="shiftFilter" class="form-control mb-2" placeholder="جستجو شیفت..." onkeyup="filterShifts()" />
+                            <table class="table table-bordered table-dark table-striped" id="shiftTable">
+                                <thead>
+                                    <tr>
+                                        <th>انتخاب</th>
+                                        <th>نام شیفت</th>
+                                        <th>زمان شروع</th>
+                                        <th>زمان پایان</th>
+                                        <th>تعداد صندلی</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var shift in allShifts.OrderByDescending(s => driverShifts.Any(ds => ds.ShiftRef == s.Id)))
+                                    {
+                                        var assigned = driverShifts.FirstOrDefault(ds => ds.ShiftRef == shift.Id);
+                                        <tr class="shift-row @(assigned != null ? "table-success" : "")">
+                                            <td>
+                                                <input class="form-check-input shift-checkbox" type="checkbox" name="SelectedShiftIds" value="@shift.Id" id="shift_@shift.Id"
+                                                       @(assigned != null ? "checked" : "") onchange="toggleSeatInput(@shift.Id)" />
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label" for="shift_@shift.Id">
+                                                    @shift.Name
+                                                </label>
+                                            </td>
+                                            <td>@shift.Start</td>
+                                            <td>@shift.End</td>
+                                            <td>
+                                                <input type="number" name="ShiftSeats_@shift.Id" id="seat_@shift.Id" class="form-control"
+                                                       style="width:90px;display:inline-block;" min="1" max="99" placeholder="صندلی"
+                                                       value="@(assigned?.Seats ?? 1)" @(assigned == null ? "disabled" : "") required />
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <script>
+                            function toggleSeatInput(shiftId) {
+                                var checkbox = document.getElementById('shift_' + shiftId);
+                                var seatInput = document.getElementById('seat_' + shiftId);
+                                seatInput.disabled = !checkbox.checked;
+                                if (!checkbox.checked) seatInput.value = '';
+                            }
+                            function filterShifts() {
+                                var input = document.getElementById('shiftFilter');
+                                var filter = input.value.toLowerCase();
+                                var rows = document.querySelectorAll('#shiftTable .shift-row');
+                                rows.forEach(function(row) {
+                                    var label = row.querySelector('.form-check-label').textContent.toLowerCase();
+                                    if (label.indexOf(filter) > -1) {
+                                        row.style.display = '';
+                                    } else {
+                                        row.style.display = 'none';
+                                    }
+                                });
+                            }
+                        </script>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label class="form-label">🔒 رمز عبور</label><label style="color:red;font-size:20px">*</label>
-                            <input asp-for="@Model.UserUpdateDto.PasswordHash" value="@Model.UserUpdateDto.PasswordHash" type="password" id="password" class="form-control form-control-lg" minlength="8" required />
+                            <input asp-for="UserUpdateDto.PasswordHash" type="password" id="password" class="form-control form-control-lg" minlength="8" required />
+                            <span id="passwordHelp"></span>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">📞 شماره تماس</label><label style="color:red;font-size:20px">*</label>
-                            <input asp-for="@Model.UserUpdateDto.Mobile" value="@Model.UserUpdateDto.Mobile" class="form-control form-control-lg" required />
+                            <input asp-for="UserUpdateDto.Mobile" class="form-control form-control-lg" required />
                         </div>
                         <h5 class="text-info"><i class="bi bi-bank2"></i> مشخصات حساب بانکی</h5>
                         <div class="mb-3">
                             <label class="form-label">🏦 شماره حساب</label>
-                            <input asp-for="@Model.DriverUpdateDto.BankRef" data-val="false" class="form-control form-control-lg" />
+                            <input asp-for="DriverUpdateDto.BankRef" class="form-control form-control-lg" />
                         </div>
                         <div class="mb-3">
                             <label class="form-label">🔢 شماره شبا/کارت</label><label style="color:red;font-size:20px">*</label>
-                            <input asp-for="@Model.DriverUpdateDto.BankAccountNumber" class="form-control form-control-lg" />
+                            <input asp-for="DriverUpdateDto.BankAccountNumber" class="form-control form-control-lg" />
                         </div>
                     </div>
                 </div>
@@ -103,12 +173,11 @@
         function FillHidden(){
             document.getElementById('UName').value = document.getElementById('DName').value;
             document.getElementById('ULastName').value = document.getElementById('DLastName').value;
-            document.getElementById('UserName').value = document.getElementById('DerName').value;
+        document.getElementById('UserName').value = document.getElementById('DserName').value;
         }
-                 // Password validation
+        // Password validation
         document.getElementById('password').addEventListener('input', function(e) {
             const passwordHelp = document.getElementById('passwordHelp');
-
             if (this.value.length < 8) {
                 this.classList.remove('border-success', 'is-valid');
                 this.classList.add('border-danger', 'is-invalid');
