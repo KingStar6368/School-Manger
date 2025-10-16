@@ -33,6 +33,7 @@ namespace School_Manger.Controllers
         private readonly IUserService _UserService;
         private readonly IBillService _BillService;
         private readonly ISchoolService _Sservice;
+        private readonly IShiftService _ShiftService;
         //private readonly IDriverService _DriverService;
         //private readonly IContractService _ContractService;
         private readonly ISMSService SMSService;
@@ -44,7 +45,8 @@ namespace School_Manger.Controllers
         public HomeController(IParentService PService,IChildService CService,
             IUserService UService,IBillService billService,
             ISchoolService schoolService,ISMSService sMSService, IWebHostEnvironment env,ISettingService _settingservice,
-            IPayment _payment,IZarinPalService _zarinPalService,IAppConfigService appConfigService/*,IDriverService driverService,IContractService contractService*/)
+            IPayment _payment,IZarinPalService _zarinPalService,IAppConfigService appConfigService
+            ,IShiftService shiftService/*,IDriverService driverService,IContractService contractService*/)
         {
             //_DriverService = driverService;
             _PService = PService;
@@ -58,6 +60,7 @@ namespace School_Manger.Controllers
             PaymentService = _payment;
             AppConfigService = appConfigService;
             zarinPalService = _zarinPalService;
+            _ShiftService = shiftService;
             //_ContractService = contractService;
         }
 
@@ -201,6 +204,7 @@ namespace School_Manger.Controllers
         {
             view.SelectedChild.BirthDate = Date.ConvertPersianToEnglish().ToMiladi();
             view.Schools = await _Sservice.GetSchools();
+            view.Shifts = _ShiftService.GetAllShifts();
             return View(view);
         }
         [HttpPost]
