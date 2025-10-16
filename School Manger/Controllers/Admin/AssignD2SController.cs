@@ -22,7 +22,8 @@ namespace School_Manger.Controllers.Admin
         public async Task<IActionResult> Index()
         {
             var Childern = await _childService.GetChildWithoutDriver();
-            var Drivers = await _childService.GetDriverFree();
+            //todo: set shift id 
+            var Drivers = await _childService.GetDriverFree(1);
             var Dashbord = new AdminNONChildDriver()
             {
                 AvailableDrivers = Drivers,
@@ -32,6 +33,7 @@ namespace School_Manger.Controllers.Admin
         }
         public async Task<IActionResult> AssignDriver(long DriverId, long StudentId)
         {
+            //todo: change driverId to DriverShiftId
             bool result = _childService.SetDriver(StudentId, DriverId);
             if (result)
                 ControllerExtensions.ShowSuccess(this, "موفق", "راننده اختصاص داده شد");

@@ -39,7 +39,7 @@ namespace School_Manager.Core.Services.Implemetations
             var ds = _unitOfWork.GetRepository<Child>()
                                 .Query(p => p.Id == id)
                                 .Include(x=>x.LocationPairs).ThenInclude(x=>x.Locations)
-                                .Include(x=>x.DriverChilds).ThenInclude(x=>x.DriverNavigation)
+                                .Include(x=>x.DriverChilds).ThenInclude(x=>x.DriverShiftNavigation).ThenInclude(x=>x.DriverNavigation)
                                 .Include(x=>x.ServiceContracts).ThenInclude(x=>x.Bills).ThenInclude(x=>x.PayBills).ThenInclude(x=> x.PayNavigation)
                                 .FirstOrDefault();
             if (ds != null) 
@@ -54,7 +54,7 @@ namespace School_Manager.Core.Services.Implemetations
             var result = new ChildInfo();
             var ds = _unitOfWork.GetRepository<Child>().Query(p=>p.NationalCode == nationCode.Trim())
                                 .Include(x=>x.LocationPairs)
-                                .Include(x => x.DriverChilds).ThenInclude(x => x.DriverNavigation)
+                                .Include(x => x.DriverChilds).ThenInclude(x => x.DriverShiftNavigation).ThenInclude(x => x.DriverNavigation)
                                 .Include(x => x.ServiceContracts).ThenInclude(x => x.Bills).ThenInclude(x => x.PayBills).ThenInclude(x => x.PayNavigation)
                                 .FirstOrDefault();
             if (ds != null)
@@ -72,22 +72,22 @@ namespace School_Manager.Core.Services.Implemetations
         public DriverDto GetChildDriver(long ChildId)
         {
             var ds = _unitOfWork.GetRepository<Child>().Query()
-                    .Include(c => c.DriverChilds)
+                    .Include(c => c.DriverChilds).ThenInclude(x => x.DriverShiftNavigation)
                         .ThenInclude(d => d.DriverNavigation)
                             .ThenInclude(d => d.Passanger)
                                 .ThenInclude(p => p.ChildNavigation)
-                    .Include(c => c.DriverChilds)
+                    .Include(c => c.DriverChilds).ThenInclude(x => x.DriverShiftNavigation)
                         .ThenInclude(d => d.DriverNavigation)
                             .ThenInclude(d => d.Cars)
                     .FirstOrDefault(c => c.Id == ChildId);
-            var driverResult = (ds?.DriverChilds?.FirstOrDefault(x => x.IsEnabled && x.EndDate > DateTime.Now)?.DriverNavigation)?? new Driver();
+            var driverResult = (ds?.DriverChilds?.FirstOrDefault(x => x.IsEnabled && x.EndDate > DateTime.Now)?.DriverShiftNavigation.DriverNavigation)?? new Driver();
             return _mapper.Map<DriverDto>(driverResult);
         }
 
         public async Task<List<ChildInfo>> GetChildren()
         {
             var ds = await _unitOfWork.GetRepository<Child>().Query().Include(x=>x.LocationPairs)
-                                .Include(x => x.DriverChilds).ThenInclude(x => x.DriverNavigation).ToListAsync();
+                                .Include(x => x.DriverChilds).ThenInclude(x => x.DriverShiftNavigation).ThenInclude(x => x.DriverNavigation).ToListAsync();
             return _mapper.Map<List<ChildInfo>>(ds);
         }
 
@@ -96,7 +96,7 @@ namespace School_Manager.Core.Services.Implemetations
             var ds = _unitOfWork.GetRepository<Child>()
                 .Query()
                 .Include(x=>x.SchoolNavigation)
-                .Include(x => x.DriverChilds).ThenInclude(x => x.DriverNavigation)
+                .Include(x => x.DriverChilds).ThenInclude(x => x.DriverShiftNavigation).ThenInclude(x => x.DriverNavigation)
                 .FirstOrDefault(x=>x.Id == ChildId);
             return _mapper.Map<SchoolDto>(ds.SchoolNavigation);
         }
@@ -168,17 +168,29 @@ namespace School_Manager.Core.Services.Implemetations
             //var ds = await query.ToListAsync();
             return _mapper.Map<List<ChildInfo>>(children);
         }
-        public async Task<List<DriverDto>> GetDriverFree()
+        public async Task<List<DriverDto>> GetDriverFree(long shiftId)
         {
             IQueryable<Driver> query = _unitOfWork.GetRepository<Driver>().Query()
-                .Include(x=>x.Cars)
-                .Include(x=>x.Passanger)
-                .Where(x => x.Cars.Any(y => y.IsActive))
-                .Where(x => (x.Cars.Where(y => y.IsActive).Select(y => (int?)y.SeatNumber).FirstOrDefault() ?? x.AvailableSeats) > x.Passanger.Where(y=>y.IsEnabled && y.EndDate > DateTime.Now).Count());
+                .Include(d => d.Cars)
+                .Include(d => d.DriverShifts)
+                    .ThenInclude(ds => ds.Passenger)
+                .Where(d => d.Cars.Any(c => c.IsActive))
+                .Where(d =>
+                    d.DriverShifts.Any(ds =>
+                        ds.ShiftRef == shiftId &&
+                        (
+                            // تعداد صندلی‌های آن شیفت
+                            ds.Seats >
+                            // تعداد مسافران فعال در همان شیفت
+                            ds.Passenger.Count(p => p.IsEnabled && p.EndDate > DateTime.Now)
+                        )
+                    )
+                );
 
-            var ds = await query.ToListAsync();
-            return _mapper.Map<List<DriverDto>>(ds);
+            var drivers = await query.ToListAsync();
+            return _mapper.Map<List<DriverDto>>(drivers);
         }
+
         public long CreateChild(ChildCreateDto child)
         {
             long result = 0;
@@ -260,7 +272,7 @@ namespace School_Manager.Core.Services.Implemetations
             }
             var _new = new DriverChild
             {
-                DriverRef = DriverId,
+                DriverShiftRef = DriverId,
                 EndDate = DateTime.Now.AddYears(1),
                 IsDeleted = false,
                 ChildRef = ChildId,
@@ -301,7 +313,7 @@ namespace School_Manager.Core.Services.Implemetations
             var ds = _unitOfWork.GetRepository<Child>()
                                 .Query(p => p.ParentRef == ParentId)
                                 .Include(x => x.LocationPairs)
-                                .Include(x => x.DriverChilds).ThenInclude(x => x.DriverNavigation)
+                                .Include(x => x.DriverChilds).ThenInclude(x => x.DriverShiftNavigation).ThenInclude(x => x.DriverNavigation)
                                 .Include(x => x.ServiceContracts).ThenInclude(x => x.Bills).ThenInclude(x => x.PayBills).ThenInclude(x => x.PayNavigation)
                                 .ToList();
             if (ds != null)

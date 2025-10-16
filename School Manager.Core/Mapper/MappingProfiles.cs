@@ -186,8 +186,8 @@ namespace School_Manager.Core.Mapper
                 .ForMember(dest => dest.StudentIds,
                     opt => opt.MapFrom(src => src.Childs.Select(x=>x.Id).ToList()))
                 .ForMember(dest => dest.DriverIds,
-                    opt => opt.MapFrom(src =>src.Childs.SelectMany(c => c.DriverChilds).Where(dc => dc.DriverNavigation != null)
-                    .Select(dc => dc.DriverRef).Distinct()));
+                    opt => opt.MapFrom(src =>src.Childs.SelectMany(c => c.DriverChilds).Where(dc => dc.DriverShiftNavigation.DriverNavigation != null)
+                    .Select(dc => dc.DriverShiftNavigation.DriverRef).Distinct()));
             CreateMap<SchoolCreateDto, School>();
             CreateMap<SchoolUpdateDto, School>();
             #endregion

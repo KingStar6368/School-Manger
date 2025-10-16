@@ -52,6 +52,8 @@ namespace School_Manager.IOC
             services.AddScoped<ITariffService,TariffService>();
             services.AddScoped<ISettingService,DynamicSettingService>();
             services.AddScoped<ISMSLogService,SMSLogService>();
+            services.AddScoped<IShiftService,ShiftService>();
+            services.AddScoped<IDriverShiftService,DriverShiftService>();
 
             // Validators
             services.AddScoped<IValidator<RawMaterialDTO>, RawMaterialDTOValidator>();

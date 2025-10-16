@@ -53,14 +53,14 @@ namespace School_Manager.Core.Services.Implemetations
         {
             var ds = await _unitOfWork.GetRepository<School>()
                 .Query()
-                .Include(x => x.Childs).ThenInclude(x => x.DriverChilds).ThenInclude(x => x.DriverNavigation).ThenInclude(x=>x.Cars)
+                .Include(x => x.Childs).ThenInclude(x => x.DriverChilds).ThenInclude(x => x.DriverShiftNavigation).ThenInclude(x => x.DriverNavigation).ThenInclude(x=>x.Cars)
                 .Where(x => x.Id == SchoolId).FirstOrDefaultAsync();
             if (ds == null)
                 return new List<DriverDto>();
             var drivers = ds.Childs
                         .SelectMany(c => c.DriverChilds)
-                        .Where(dc => dc.DriverNavigation != null)
-                        .Select(dc => dc.DriverNavigation)
+                        .Where(dc => dc.DriverShiftNavigation.DriverNavigation != null)
+                        .Select(dc => dc.DriverShiftNavigation.DriverNavigation)
                         .Distinct()
                         .ToList();
             return _mapper.Map<List<DriverDto>>(drivers);

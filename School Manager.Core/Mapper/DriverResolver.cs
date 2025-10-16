@@ -13,9 +13,14 @@ namespace School_Manager.Core.Mapper
     {
         public int Resolve(Driver source, DriverDto destination, int destMember, ResolutionContext context)
         {
-            var car = source.Cars?.FirstOrDefault(x => x.IsActive);
-            int seatNumber = car?.SeatNumber ?? source.AvailableSeats;
-            int passangerCount = source.Passanger?.Where(x=>x.IsEnabled && x.EndDate > DateTime.Now).ToList().Count ?? 0;
+            var activeShift = source.DriverShifts
+            ?.OrderByDescending(s => s.CreatedOn) 
+            .FirstOrDefault();
+            int seatNumber = activeShift?.Seats ?? source.AvailableSeats;
+            int passangerCount =  source.DriverShifts?
+            .SelectMany(ds => ds.Passenger)
+            .Count(p => p.IsEnabled && p.EndDate > DateTime.Now)
+            ?? 0;
 
             return seatNumber - passangerCount;
         }

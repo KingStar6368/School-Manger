@@ -107,6 +107,6 @@ namespace School_Manager.Core.Services.Interfaces
         /// لیست رانندگان بدون دانش آموز
         /// </summary>
         /// <returns>لست رانندگان</returns>
-        Task<List<DriverDto>> GetDriverFree();
+        Task<List<DriverDto>> GetDriverFree(long shiftId);
     }
 }

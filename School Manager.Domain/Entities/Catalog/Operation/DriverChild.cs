@@ -10,9 +10,11 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
     public class DriverChild : AuditableEntity<long>
     {
         public long ChildRef { get; set; }
-        public long DriverRef { get; set; }
+        public long? DriverShiftRef { get; set; }
+        //public long DriverRef { get; set; }
         public virtual Child ChildNavigation { get; set; }
-        public virtual Driver DriverNavigation { get; set; }
+        public virtual DriverShift DriverShiftNavigation { get; set; }
+        //public virtual Driver DriverNavigation { get; set; }
         public int Year { get; set; }
         public DateTime EndDate { get; set; }
         public bool IsEnabled { get; set; }

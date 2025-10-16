@@ -56,7 +56,7 @@ namespace School_Manager.Core.Services.Implemetations
         public SchoolDto GetSchool(long id)
         {
             var ds = _unitOfWork.GetRepository<School>().Query()
-                .Include(x => x.Childs).ThenInclude(x => x.DriverChilds).ThenInclude(x => x.DriverNavigation)
+                .Include(x => x.Childs).ThenInclude(x => x.DriverChilds).ThenInclude(x => x.DriverShiftNavigation.DriverNavigation)
                 .Where(x => x.Id == id).FirstOrDefault();
             return _mapper.Map<SchoolDto>(ds);
         }
@@ -64,7 +64,7 @@ namespace School_Manager.Core.Services.Implemetations
         public async Task<List<SchoolDto>> GetSchools()
         {
             var ds = await _unitOfWork.GetRepository<School>().Query()
-                .Include(x => x.Childs).ThenInclude(x => x.DriverChilds).ThenInclude(x => x.DriverNavigation)
+                .Include(x => x.Childs).ThenInclude(x => x.DriverChilds).ThenInclude(x => x.DriverShiftNavigation.DriverNavigation)
                 .ToListAsync();
             return _mapper.Map<List<SchoolDto>>(ds);
         }

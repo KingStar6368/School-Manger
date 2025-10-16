@@ -11,7 +11,7 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
     public class School : AuditableEntity<long>
     {
         /// <summary>
-        /// نام مدسه
+        /// نام مدرسه
         /// </summary>
         public string Name { get; set; }
         /// <summary>
@@ -36,5 +36,6 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// </summary>
         public double Longitude { get; set; }
         public virtual ICollection<Child> Childs { get; set; }
+        public virtual ICollection<Shift> Shifts { get; set; }
     }
 }

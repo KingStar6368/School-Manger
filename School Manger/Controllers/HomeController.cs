@@ -220,7 +220,7 @@ namespace School_Manger.Controllers
                     NationalCode = model.SelectedChild.NationalCode.ConvertPersianToEnglish(),
                     ParentRef = ControllerExtensions.GetKey<long>(this,"Pref"),
                     BirthDate = model.SelectedChild.BirthDate,
-                    Class = int.Parse(model.SelectedChild.Class),//todo it must cast to int
+                    Class = int.Parse(model.SelectedChild.Class),
                     SchoolRef = model.SelectedChild.SchoolId,
                     LocationPairs = new List<LocationPairCreateDto>()
                     {

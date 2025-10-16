@@ -31,6 +31,7 @@ namespace School_Manager.Data.Context
         public DbSet<Child> Children { get; set; }
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<DriverChild> DriverChildren { get; set; }
+        public DbSet<DriverShift> DriverShifts { get; set; }
         public DbSet<DriverContract> DriverContracts { get; set; }
         public DbSet<LocationData> LocationData { get; set; }
         public DbSet<LocationPair> LocationPair { get; set; }
@@ -41,6 +42,7 @@ namespace School_Manager.Data.Context
         public DbSet<School> Schools { get; set; }
         public DbSet<ServiceContract> ServiceContracts { get; set; }
         public DbSet<Setting> Settings { get; set; }
+        public DbSet<Shift> shifts { get; set; }
         public DbSet<SMSTemple> SMSTemples { get; set; }
         public DbSet<Tariff> Tariffs { get; set; }
         public DbSet<SMSLog> SMSLogs { get; set; }

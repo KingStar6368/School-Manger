@@ -156,11 +156,38 @@ namespace School_Manager.Data.Configuration
             .IsRequired(false)
             .HasComment("کد پرونده");
 
-            builder.HasMany(d => d.Passanger).WithOne(p => p.DriverNavigation)
-                .HasForeignKey(f => f.DriverRef)
-                .OnDelete(DeleteBehavior.Restrict);
+            //builder.HasMany(d => d.Passanger).WithOne(p => p.DriverNavigation)
+            //    .HasForeignKey(f => f.DriverRef)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasQueryFilter(x => !x.IsDeleted);
+        }
+    }
+    public class ShiftConfig : IEntityTypeConfiguration<Shift>
+    {
+        public void Configure(EntityTypeBuilder<Shift> builder)
+        {
+            builder.HasOne(d=>d.SchoolNavigation).WithMany(d=>d.Shifts)
+                .HasForeignKey(fk=>fk.SchoolRef)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
+    public class DriverShiftConfig : IEntityTypeConfiguration<DriverShift>
+    {
+        public void Configure(EntityTypeBuilder<DriverShift> builder)
+        {
+            builder.HasOne(d => d.DriverNavigation).WithMany(d => d.DriverShifts)
+                .HasForeignKey(fk => fk.DriverRef)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(d => d.ShiftNavigation).WithMany(d => d.DriverShifts)
+                .HasForeignKey(fk => fk.ShiftRef)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            builder.HasMany(d => d.Passenger).WithOne(p => p.DriverShiftNavigation)
+                .HasForeignKey(f => f.DriverShiftRef)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
     public class DriverContractConfig : IEntityTypeConfiguration<DriverContract>

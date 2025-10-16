@@ -13,7 +13,7 @@ namespace School_Manager.Core.Mapper
     {
         public long? Resolve(Child source, ChildInfo destination, long? destMember, ResolutionContext context)
         {
-            return source.DriverChilds?.FirstOrDefault(x => x.IsEnabled && x.EndDate > DateTime.Now)?.DriverRef;
+            return source.DriverChilds?.FirstOrDefault(x => x.IsEnabled && x.EndDate > DateTime.Now)?.DriverShiftNavigation.DriverRef;
         }
     }
 }

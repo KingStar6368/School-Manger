@@ -99,5 +99,6 @@ namespace School_Manager.Domain.Entities.Catalog.Operation
         /// کاربر
         /// </summary>
         public virtual User UserNavigation { get; set; }
+        public virtual ICollection<DriverShift> DriverShifts { get; set; }
     }
 }
