@@ -1,4 +1,6 @@
-﻿@using School_Manager.Core.ViewModels.FModels
+﻿@using School_Manager.Core.Services.Interfaces
+@using School_Manager.Core.ViewModels.FModels
+@inject ISchoolService SchoolService;
 @model SchoolUpdateDto
 @{
     ViewData["Title"] = "ویرایش مدرسه";
@@ -69,6 +71,32 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>شیفت های مدرسه :</strong>
+                        <a class="form-control bg-warning" asp-action="Shift" asp-route-id="@Model.Id">اضافه/تغییر/حدف شیفت</a>
+                        <select class="form-control">
+                            @{
+                                var Shifts = await SchoolService.GetSchoolShifts(Model.Id);
+                            }
+                            @if (Shifts.Count > 0)
+                            {
+                                @foreach (var school in Shifts)
+                                {
+                                    <option>
+                                        @school.Name : نام شیفت
+                                        @school.Start : زمان شروع
+                                        @school.End : زمان پایان
+                                    </option>
+                                }
+                            }
+                            else
+                            {
+                                <option>
+                                    این مدرسه شیفت ندارد
+                                </option>
+                            }
+                        </select>
                     </div>
                     <div class="mt-4">
                         <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm">

@@ -1,0 +1,147 @@
+﻿@using School_Manager.Core.Services.Interfaces
+@using School_Manager.Core.ViewModels.FModels
+@using School_Manger.Models.PageView
+@model AdminSchool
+@inject ISchoolService SchoolService;
+@{
+    ViewData["Title"] = "📚 اطلاعات مدرسه";
+    Layout = "_AdminLayout";
+    var Shifts = (await SchoolService.GetSchoolShifts(Model.School.Id)).Cast<dynamic>().ToList();
+    dynamic editingShift = null;
+    if (ViewBag.EditingShift != null)
+    {
+        editingShift = ViewBag.EditingShift;
+    }
+}
+
+<!-- School Info -->
+<div class="card bg-dark text-white shadow-lg rounded-4 mb-4 border-primary border-2">
+    <div class="card-header bg-primary bg-gradient rounded-top">
+        <h4 class="mb-0 fw-bold">🏫 @Model.School.Name</h4>
+    </div>
+    <div class="card-body">
+        <div class="mb-3">
+            <strong>🏷️ نام مدرسه:</strong> @Model.School.Name
+        </div>
+        <div class="mb-3">
+            <strong>شیفت های مدرسه :</strong>
+            <table class="table table-bordered table-striped table-dark">
+                <thead>
+                    <tr>
+                        <th>نام شیفت</th>
+                        <th>نوع</th>
+                        <th>زمان شروع</th>
+                        <th>زمان پایان</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Shifts.Count > 0)
+                    {
+                        foreach (var shift in Shifts)
+                        {
+                            <tr>
+                                <td>@shift.Name</td>
+                                <td>@shift.ShiftType</td>
+                                <td>@shift.Start</td>
+                                <td>@shift.End</td>
+                                <td>
+                                    <form asp-action="EditShift" asp-controller="School" asp-area="Admin" method="get" style="display:inline">
+                                        <input type="hidden" name="id" value="@shift.Id" />
+                                        <button type="submit" class="btn btn-warning btn-sm">ویرایش</button>
+                                    </form>
+                                    <form asp-action="DeleteShift" asp-controller="School" asp-area="Admin" method="post" style="display:inline" onsubmit="return confirm('آیا مطمئن هستید؟');">
+                                        <input type="hidden" name="id" value="@shift.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="5">این مدرسه شیفت ندارد</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="mb-3">
+            <h5>افزودن شیفت جدید</h5>
+            <form asp-action="CreateShift" asp-controller="School" asp-area="Admin" method="post" class="row g-2">
+                <input type="hidden" name="SchoolRef" value="@Model.School.Id" />
+                <div class="col-md-3">
+                    <input type="text" name="Name" class="form-control" placeholder="نام شیفت" required />
+                </div>
+                <div class="col-md-2">
+                    <select name="ShiftType" class="form-control" required>
+                        <option value="0">صبح</option>
+                        <option value="1">عصر</option>
+                        <option value="2">شب</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="time" name="Start" class="form-control" required />
+                </div>
+                <div class="col-md-2">
+                    <input type="time" name="End" class="form-control" required />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success">افزودن</button>
+                </div>
+            </form>
+        </div>
+        @if (editingShift != null)
+        {
+            <div class="mb-3">
+                <h5>ویرایش شیفت</h5>
+                <form asp-action="UpdateShift" asp-controller="School" asp-area="Admin" method="post" class="row g-2">
+                    <input type="hidden" name="Id" value="@editingShift.Id" />
+                    <input type="hidden" name="SchoolRef" value="@Model.School.Id" />
+                    <div class="col-md-3">
+                        <input type="text" name="Name" class="form-control" value="@editingShift.Name" required />
+                    </div>
+                    <div class="col-md-2">
+                        <select name="ShiftType" class="form-control" required>
+                            <option value="0" selected="@(Convert.ToInt32(editingShift.ShiftType) == 0)">صبح</option>
+                            <option value="1" selected="@(Convert.ToInt32(editingShift.ShiftType) == 1)">عصر</option>
+                            <option value="2" selected="@(Convert.ToInt32(editingShift.ShiftType) == 2)">شب</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="time" name="Start" class="form-control" value="@editingShift.Start" required />
+                    </div>
+                    <div class="col-md-2">
+                        <input type="time" name="End" class="form-control" value="@editingShift.End" required />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+                    </div>
+                </form>
+            </div>
+        }
+    </div>
+</div>
+@section Scripts {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // Get the coordinates from the Razor model
+        var lat = @Model.School.Address.Latitude;
+        var lng = @Model.School.Address.Longitude;
+
+        // Initialize the map
+        var map = L.map('schoolMap').setView([lat, lng], 15);
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Add a marker at the school location with a popup
+        L.marker([lat, lng]).addTo(map)
+            .bindPopup('📍 موقعیت مدرسه')
+            .openPopup();
+    </script>
+}
+

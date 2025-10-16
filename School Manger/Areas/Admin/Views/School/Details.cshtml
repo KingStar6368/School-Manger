@@ -1,6 +1,7 @@
-﻿@using School_Manger.Models.PageView
+﻿@using School_Manager.Core.Services.Interfaces
+@using School_Manger.Models.PageView
 @model AdminSchool
-
+@inject ISchoolService SchoolService;
 @{
     ViewData["Title"] = "📚 اطلاعات مدرسه";
     Layout = "_AdminLayout";
@@ -37,7 +38,31 @@
             <strong>🗺️ موقعیت مکانی:</strong>
             <div id="schoolMap" style="height: 300px; width: 100%;" class="rounded shadow-sm border border-light mt-2"></div>
         </div>
-
+        <div class="col-md-6">
+            <strong>شیفت های مدرسه :</strong>
+            <select class="form-control">
+                @{
+                    var Shifts = await SchoolService.GetSchoolShifts(Model.School.Id);
+                }
+                @if (Shifts.Count > 0)
+                {
+                    @foreach (var school in Shifts)
+                    {
+                        <option>
+                            @school.Name : نام شیفت 
+                            @school.Start : زمان شروع
+                            @school.End : زمان پایان
+                        </option>
+                    }
+                }
+                else
+                {
+                    <option>
+                        این مدرسه شیفت ندارد
+                    </option>
+                }
+            </select>
+        </div>
         <div class="mt-4">
             <a asp-action="DeleteSchool" asp-route-id="@Model.School.Id"
                class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف"

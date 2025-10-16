@@ -5,6 +5,7 @@ using School_Manager.Core.ViewModels.FModels;
 using School_Manger.Extension;
 using School_Manger.Models.PageView;
 using System.Threading.Tasks;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace School_Manger.Controllers.Admin
 {
@@ -14,11 +15,13 @@ namespace School_Manger.Controllers.Admin
         private readonly ISchoolService _schoolService;
         private readonly IChildService _childService;
         private readonly IDriverService _driverService;
-        public SchoolController(ISchoolService schoolService, IChildService childService, IDriverService driverService)
+        private readonly IShiftService _shiftService;
+        public SchoolController(ISchoolService schoolService, IChildService childService, IDriverService driverService, IShiftService shiftService)
         {
             _schoolService = schoolService;
             _childService = childService;
             _driverService = driverService;
+            _shiftService = shiftService;
         }
 
         public async Task<IActionResult> Index()
@@ -108,6 +111,79 @@ namespace School_Manger.Controllers.Admin
                 }
             }
             return View("Index");
+        }
+        public async Task<IActionResult> Shift(long id)
+        {
+            var School = _schoolService.GetSchool(id);
+            if (School == null)
+                return await Index();
+            var Drivers = await _driverService.GetDrivers(id);
+            var Childern = await _schoolService.GetChildren(id);
+            AdminSchool dashbord = new AdminSchool()
+            {
+                School = School,
+                Drivers = Drivers,
+                Students = Childern
+            };
+            return View("Shift",dashbord);
+        }
+
+        [HttpPost]
+        public IActionResult CreateShift(CreateShiftDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                _shiftService.CreateShift(model);
+                ControllerExtensions.ShowSuccess(this, "موفق", "شیفت با موفقیت اضافه شد");
+            }
+            else
+            {
+                ControllerExtensions.ShowError(this, "خطا", "اطلاعات وارد شده صحیح نیست");
+            }
+            return RedirectToAction("Shift", new { id = model.SchoolRef });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditShift(long id)
+        {
+            var shift = _shiftService.GetShiftById(id);
+            ViewBag.EditingShift = shift;
+            var schoolId = shift.SchoolRef;
+            var School = _schoolService.GetSchool(schoolId);
+            var Drivers = await _driverService.GetDrivers(schoolId);
+            var Childern = await _schoolService.GetChildren(schoolId);
+            AdminSchool dashbord = new AdminSchool()
+            {
+                School = School,
+                Drivers = Drivers,
+                Students = Childern
+            };
+            return View("Shift", dashbord);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateShift(UpdateShiftDto model)
+        {
+            if (ModelState.IsValid)
+            {
+                _shiftService.UpdateShift(model);
+                ControllerExtensions.ShowSuccess(this, "موفق", "شیفت با موفقیت ویرایش شد");
+            }
+            else
+            {
+                ControllerExtensions.ShowError(this, "خطا", "اطلاعات وارد شده صحیح نیست");
+            }
+            return RedirectToAction("Shift", new { id = model.SchoolRef });
+        }
+
+        [HttpPost]
+        public IActionResult DeleteShift(long id)
+        {
+            var shift = _shiftService.GetShiftById(id);
+            var schoolId = shift?.SchoolRef ?? 0;
+            _shiftService.DeleteShift((int)id);
+            ControllerExtensions.ShowSuccess(this, "موفق", "شیفت حذف شد");
+            return RedirectToAction("Shift", new { id = schoolId });
         }
     }
 }

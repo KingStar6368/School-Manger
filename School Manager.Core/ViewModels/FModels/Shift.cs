@@ -9,6 +9,7 @@ namespace School_Manager.Core.ViewModels.FModels
 {
     public class ShiftDto
     {
+        public long Id { get; set; }
         public string Name { get; set; }
         //مدرسه
         public long SchoolRef { get; set; }
