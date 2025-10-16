@@ -1,4 +1,5 @@
 ﻿using School_Manager.Core.ViewModels.FModels;
+using School_Manager.Domain.Entities.Catalog.Operation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,8 @@ namespace School_Manager.Core.Services.Interfaces
         public bool DeleteShift(int Id);
         ShiftDto GetShiftById(long id);
         List<ShiftDto> GetAllShifts();
+        List<ShiftDto> GetAllDriverShifts(long DriverId);
+        List<DriverShift> GetDriverShifts(long DriverId);
+        List<ShiftDto> GetAllSchoolShifts(long SchoolId);
     }
 }

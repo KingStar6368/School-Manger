@@ -56,6 +56,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// لیست قبص ها
         /// </summary>
         public List<BillDto> Bills { get; set; }
+        public long ShiftId { get; set; }
     }
     public interface IChildDto
     {
@@ -88,6 +89,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public int Class { get; set; }
         public string Description { get; set; }
+        public long ShiftId { get; set; }
         //public List<LocationPairCreateDto> LocationPairs { get; set; }
     }
     public class ChildCreateDto : IChildDto
@@ -121,6 +123,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public int Class { get; set; }
         public string Description { get; set; }
+        public long ShiftId { get; set; }
         public List<LocationPairCreateDto> LocationPairs { get; set; } = new();
     }
     public class ChildUpdateDto : IChildDto
@@ -155,6 +158,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// </summary>
         public int Class { get; set; }
         public string Description { get; set; }
+        public long ShiftId { get; set; }
         public List<LocationPairUpdateDto> LocationPairs { get; set; } = new();
     }
 }

@@ -1,5 +1,7 @@
-﻿@using School_Manger.Extension
+﻿@using School_Manager.Core.Services.Interfaces
+@using School_Manger.Extension
 @using School_Manger.Models.PageView
+@inject IShiftService ShiftService;
 @model AdminDriver
 @{
     ViewData["Title"] = "جزئیات راننده";
@@ -42,7 +44,31 @@
                 </ul>
             </div>
         </div>
-
+        <div class="mb-6">
+            <label class="form-label">شیفت‌های قابل انتخاب و تعداد صندلی:</label>
+            <input type="text" id="shiftFilter" class="form-control mb-2" placeholder="جستجو شیفت..." onkeyup="filterShifts()" />
+            <table class="table table-bordered table-dark table-striped" id="shiftTable">
+                <thead>
+                    <tr>
+                        <th>نام شیفت</th>
+                        <th>زمان شروع</th>
+                        <th>زمان پایان</th>
+                        <th>تعداد صندلی</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var shift in ShiftService.GetAllDriverShifts(Model.Driver.Id))
+                    {
+                        <tr>
+                            <td>@shift.Name</td>
+                            <td>@shift.Start.ToString("HH:mm")</td>
+                            <td>@shift.End.ToString("HH:mm")</td>
+                            <td>@ShiftService.GetDriverShifts(Model.Driver.Id).FirstOrDefault(x=>x.ShiftRef == shift.Id).Seats</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
         <div class="mt-4">
             <a asp-action="Index" class="btn btn-outline-light rounded-4">
                 <i class="bi bi-arrow-right"></i> بازگشت به لیست
@@ -94,10 +120,10 @@
                                     </button>
                                 </form>
                                 <form asp-action="DeletePassanger"
-                                   class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm title="حذف">
-                                    <input hidden name="ChildId" value="@passanger.Id"/>
-                                    <input hidden name="DriverId" value="@Model.Driver.Id"/>
-                                    <input type="submit" class="bi bi-trash" style="background-color:transparent" value="🗑️ حذف از لیست"/>
+                                      class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm title="حذف">
+                                    <input hidden name="ChildId" value="@passanger.Id" />
+                                    <input hidden name="DriverId" value="@Model.Driver.Id" />
+                                    <input type="submit" class="bi bi-trash" style="background-color:transparent" value="🗑️ حذف از لیست" />
                                 </form>
                             </td>
                         </tr>

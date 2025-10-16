@@ -1,7 +1,9 @@
 ﻿@model School_Manager.Core.ViewModels.FModels.ChildUpdateDto
+@using School_Manager.Core.Services.Interfaces
 @using School_Manger.Extension;
 @using System.Collections.Generic
 @using School_Manager.Core.ViewModels.FModels
+@inject IShiftService ShiftService;
 @{
     ViewData["Title"] = "ویرایش فرزند";
     Layout = "_AdminLayout";
@@ -113,15 +115,27 @@
                         <label class="form-label">موقعیت دوم (مقصد):</label>
                         <select class="form-select bg-dark text-white border-secondary mb-3" id="location2Select">
                             <option value="" selected>-- انتخاب مقصد --</option>
-                            @if (schools != null && schools.Count > 0)
+                            @foreach (var school in schools)
                             {
-                                foreach (var school in schools)
+                                if (ShiftService.GetAllShifts().FirstOrDefault(x=>x.SchoolRef == school.Id) != null)
                                 {
-                                    <option value="@school.Id|@school.Address.Latitude,@school.Address.Longitude|@school.Name">@school.Name</option>
+                                    foreach (var shift in ShiftService.GetAllShifts().Where(x => x.SchoolRef == school.Id))
+                                    {
+                                        <option value="@school.Id|@school.Address.Latitude,@school.Address.Longitude|@school.Name - @shift.Name">
+                                            @school.Name - @shift.Name (@shift.Start - @shift.End)
+                                        </option>
+                                    }
+                                }
+                                else
+                                {
+                                    <option value="@school.Id|@school.Address.Latitude,@school.Address.Longitude|@school.Name">
+                                        @school.Name
+                                    </option>
                                 }
                             }
-                            else
+                            @if (schools == null || schools.Count == 0)
                             {
+                                <option value="0|34.0918,49.6892|مدرسه نمونه اراک">نمونه تستی</option>
                                 <option value="0|34.0918,49.6892|مدرسه نمونه اراک">مدرسه نمونه اراک</option>
                                 <option value="0|34.0854,49.7003|مدرسه شهید بهشتی اراک">مدرسه شهید بهشتی اراک</option>
                                 <option value="0|34.0789,49.6956|مدرسه علامه حلی اراک">مدرسه علامه حلی اراک</option>

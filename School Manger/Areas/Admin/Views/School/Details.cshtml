@@ -1,6 +1,7 @@
 ﻿@using School_Manager.Core.Services.Interfaces
 @using School_Manger.Models.PageView
 @model AdminSchool
+@inject IShiftService ShiftService;
 @inject ISchoolService SchoolService;
 @{
     ViewData["Title"] = "📚 اطلاعات مدرسه";
@@ -134,6 +135,7 @@
                     <th>🆔 کد ملی</th>
                     <th>🏷️ کلاس</th>
                     <th>💰 پرداخت</th>
+                    <th>شیفت</th>
                     <th>نمایش</th>
                 </tr>
             </thead>
@@ -155,6 +157,7 @@
                                 <span class="badge bg-danger">❌ پرداخت نشده</span>
                             }
                         </td>
+                        <td>@(ShiftService.GetShiftById(student.ShiftId) != null? ShiftService.GetShiftById(student.ShiftId).Name:"شیفت انتخاب نشده")</td>
                         <td>
                             <form asp-controller="Parents" asp-action="CreateBill" method="post" class="d-inline">
                                 <input name="ChildId" type="hidden" value="@student.Id" />

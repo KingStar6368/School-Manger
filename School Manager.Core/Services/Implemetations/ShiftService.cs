@@ -75,5 +75,24 @@ namespace School_Manager.Core.Services.Implemetations
             var shifts = _unitOfWork.GetRepository<Shift>().GetAll();
             return _mapper.Map<List<ShiftDto>>(shifts);
         }
+
+        public List<ShiftDto> GetAllDriverShifts(long DriverId)
+        {
+            var dshifts = _unitOfWork.GetRepository<DriverShift>().Query(x => x.DriverRef == DriverId).Select(x=>x.ShiftRef);
+            var shifts = _unitOfWork.GetRepository<Shift>().Query(x => dshifts.Contains(x.Id)).ToList();
+            return _mapper.Map<List<ShiftDto>>(shifts);
+        }
+
+        public List<DriverShift> GetDriverShifts(long DriverId)
+        {
+            var dshifts = _unitOfWork.GetRepository<DriverShift>().Query(x => x.DriverRef == DriverId).ToList();
+            return dshifts;
+        }
+
+        public List<ShiftDto> GetAllSchoolShifts(long SchoolId)
+        {
+            var sshifts = _unitOfWork.GetRepository<Shift>().Query(x=>x.SchoolRef == SchoolId).ToList();
+            return _mapper.Map<List<ShiftDto>>(sshifts);
+        }
     }
 }
