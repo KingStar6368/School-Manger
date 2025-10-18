@@ -175,6 +175,7 @@ namespace School_Manager.Data.Configuration
             builder.HasOne(d=>d.SchoolNavigation).WithMany(d=>d.Shifts)
                 .HasForeignKey(fk=>fk.SchoolRef)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
     public class DriverShiftConfig : IEntityTypeConfiguration<DriverShift>
@@ -193,6 +194,7 @@ namespace School_Manager.Data.Configuration
             builder.HasMany(d => d.Passenger).WithOne(p => p.DriverShiftNavigation)
                 .HasForeignKey(f => f.DriverShiftRef)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
     public class DriverContractConfig : IEntityTypeConfiguration<DriverContract>
