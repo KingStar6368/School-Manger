@@ -2,6 +2,7 @@
 @model AdminUser
 @using School_Manager.Core.Services.Interfaces
 @inject IShiftService ShiftService
+@inject ISchoolService SchoolService
 @{
     var userType = ViewBag.UserType?.ToString() ?? "Parent";
     var allShifts = ShiftService.GetAllShifts();
@@ -88,6 +89,7 @@
                                 <thead>
                                     <tr>
                                         <th>انتخاب</th>
+                                        <th>نام مدرسه</th>
                                         <th>نام شیفت</th>
                                         <th>زمان شروع</th>
                                         <th>زمان پایان</th>
@@ -102,6 +104,7 @@
                                                 <input class="form-check-input shift-checkbox" type="checkbox" name="SelectedShiftIds" value="@shift.Id" id="shift_@shift.Id"
                                                        onchange="toggleSeatInput(@shift.Id)" />
                                             </td>
+                                            <td>@SchoolService.GetSchool(shift.SchoolRef).Name</td>
                                             <td>
                                                 <label class="form-check-label" for="shift_@shift.Id">
                                                     @shift.Name
