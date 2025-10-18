@@ -10,6 +10,7 @@ using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Entities.Catalog.Enums;
+using School_Manager.Domain.Entities.Catalog.Operation;
 using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models;
@@ -42,11 +43,11 @@ namespace School_Manger.Controllers
         private readonly IPayment PaymentService;
         private readonly IAppConfigService AppConfigService;
         private readonly IZarinPalService zarinPalService;
-        public HomeController(IParentService PService,IChildService CService,
-            IUserService UService,IBillService billService,
-            ISchoolService schoolService,ISMSService sMSService, IWebHostEnvironment env,ISettingService _settingservice,
-            IPayment _payment,IZarinPalService _zarinPalService,IAppConfigService appConfigService
-            ,IShiftService shiftService/*,IDriverService driverService,IContractService contractService*/)
+        public HomeController(IParentService PService, IChildService CService,
+            IUserService UService, IBillService billService,
+            ISchoolService schoolService, ISMSService sMSService, IWebHostEnvironment env, ISettingService _settingservice,
+            IPayment _payment, IZarinPalService _zarinPalService, IAppConfigService appConfigService
+            , IShiftService shiftService/*,IDriverService driverService,IContractService contractService*/)
         {
             //_DriverService = driverService;
             _PService = PService;
@@ -76,7 +77,7 @@ namespace School_Manger.Controllers
             ControllerExtensions.AddKey(this, "PhoneNumber", PhoneNumber);
             if (_UserService.IsMobileRegistered(ControllerExtensions.GetKey<string>(this, "PhoneNumber")))
             {
-                ControllerExtensions.ShowError(this,"خطا", "این شماره موبایل در سیستم موجود است");
+                ControllerExtensions.ShowError(this, "خطا", "این شماره موبایل در سیستم موجود است");
                 return Redirect("Index");
             }
             //send code
@@ -97,7 +98,7 @@ namespace School_Manger.Controllers
         {
             otpCode = int.Parse(new string(otpCode.ToString().Reverse().ToArray()));
             int Code = ControllerExtensions.GetKey<int>(this, "Code");
-            if(Code == otpCode)
+            if (Code == otpCode)
                 return View("UserInfo");
             ControllerExtensions.ShowError(this, "خطا", "کد وارد شده اشتباه است");
             return View("OTPConfirmation");
@@ -180,8 +181,8 @@ namespace School_Manger.Controllers
                 Active = true,
                 Address = "",
             });
-            ControllerExtensions.AddKey(this,"Uref",UseRref);
-            ControllerExtensions.AddKey(this,"Pref", ParentRef);
+            ControllerExtensions.AddKey(this, "Uref", UseRref);
+            ControllerExtensions.AddKey(this, "Pref", ParentRef);
             // Redirect to Login With Message موفق 
             return View("Login");
         }
@@ -190,7 +191,7 @@ namespace School_Manger.Controllers
         #region AfterLogin
         public IActionResult ParentMenu()
         {
-            long Uref = ControllerExtensions.GetKey<long>(this,"Uref");
+            long Uref = ControllerExtensions.GetKey<long>(this, "Uref");
             long Pref = ControllerExtensions.GetKey<long>(this, "Pref");
             ParentDto parent = _PService.GetParent(Pref);
             parent.Children = _CService.GetChildrenParent(parent.Id);
@@ -200,7 +201,7 @@ namespace School_Manger.Controllers
             });
         }
         [HttpPost]
-        public async Task<IActionResult> LocationSelector(ParentDashbordView view,string Date)
+        public async Task<IActionResult> LocationSelector(ParentDashbordView view, string Date)
         {
             view.SelectedChild.BirthDate = Date.ConvertPersianToEnglish().ToMiladi();
             view.Schools = await _Sservice.GetSchools();
@@ -208,9 +209,9 @@ namespace School_Manger.Controllers
             return View(view);
         }
         [HttpPost]
-        public IActionResult AddChild(ParentDashbordView model)
+        public IActionResult AddChild(ParentDashbordView model, string ShiftId)
         {
-            if(_CService.GetChildByNationCode(model.SelectedChild.NationalCode)!= null)
+            if (_CService.GetChildByNationCode(model.SelectedChild.NationalCode) != null)
             {
                 ControllerExtensions.ShowError(this, "خطا", "این فرزند وجود دارد");
                 return ParentMenu();
@@ -222,10 +223,11 @@ namespace School_Manger.Controllers
                     FirstName = model.SelectedChild.FirstName,
                     LastName = model.SelectedChild.LastName,
                     NationalCode = model.SelectedChild.NationalCode.ConvertPersianToEnglish(),
-                    ParentRef = ControllerExtensions.GetKey<long>(this,"Pref"),
+                    ParentRef = ControllerExtensions.GetKey<long>(this, "Pref"),
                     BirthDate = model.SelectedChild.BirthDate,
                     Class = int.Parse(model.SelectedChild.Class),
                     SchoolRef = model.SelectedChild.SchoolId,
+                    ShiftId = int.Parse(ShiftId),
                     LocationPairs = new List<LocationPairCreateDto>()
                     {
                         new LocationPairCreateDto()
@@ -268,7 +270,7 @@ namespace School_Manger.Controllers
         [HttpPost]
         public async Task<IActionResult> Bills(long Id)
         {
-            ParentDto parent = _PService.GetParent(ControllerExtensions.GetKey<long>(this,"Pref"));
+            ParentDto parent = _PService.GetParent(ControllerExtensions.GetKey<long>(this, "Pref"));
             ChildInfo child = _CService.GetChild(Id);
             List<BillDto> bills = await _BillService.GetChildBills(Id);
             BillDashbord dashbord = new BillDashbord()
@@ -316,7 +318,7 @@ namespace School_Manger.Controllers
 
             return File(pdfBytes, "application/pdf", "Bill.pdf");
         }
-        [HttpPost]  
+        [HttpPost]
         public async Task<IActionResult> PayBill(long BillId)
         {
             BillDto bill = _BillService.GetBill(BillId);
@@ -325,9 +327,9 @@ namespace School_Manger.Controllers
                 ControllerExtensions.ShowError(this, "خطا", "قبض پیدا نشد");
                 return ParentMenu();
             }
-            int Amount = (int)(bill.TotalPrice - bill.PaidPrice)/10; //Remove Last 0 Must be toman
-            var respance = await zarinPalService.RequestPaymentAsync(Amount, "پرداخت قبض " + bill.Name, settingService.Get("PayUrl"),settingService.Get("PayEmail"),settingService.Get("PayMobile"));
-            if(!string.IsNullOrEmpty(respance))
+            int Amount = (int)(bill.TotalPrice - bill.PaidPrice) / 10; //Remove Last 0 Must be toman
+            var respance = await zarinPalService.RequestPaymentAsync(Amount, "پرداخت قبض " + bill.Name, settingService.Get("PayUrl"), settingService.Get("PayEmail"), settingService.Get("PayMobile"));
+            if (!string.IsNullOrEmpty(respance))
             {
                 PaymentService.Add(new PayData()
                 {
@@ -341,6 +343,29 @@ namespace School_Manger.Controllers
             }
             ControllerExtensions.ShowError(this, "خطا", "مشکلی در انتفال به درگاه شده لطفا بعدا امتحان کنید");
             return ParentMenu();
+        }
+        [HttpGet]
+        public async Task<JsonResult> GetSchoolShifts(long SchoolId)
+        {
+            try
+            {
+                //var Json = DataEncripter.MakeJson();
+                return new JsonResult(_ShiftService.GetAllSchoolShifts(SchoolId));
+            }
+            catch (HttpRequestException ex)
+            {
+                return new JsonResult(new { error = $"API request failed: {ex.Message}" })
+                {
+                    StatusCode = 500
+                };
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { error = $"An error occurred: {ex.Message}" })
+                {
+                    StatusCode = 500
+                };
+            }
         }
     }
 }

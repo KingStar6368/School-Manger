@@ -15,6 +15,14 @@ namespace School_Manger.Extension
         {
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(obj)));
         }
+        public static string MakeJson<T>(this T obj)
+        {
+            return JsonSerializer.Serialize(obj);
+        }
+        public static T GetJson<T>(this string Data)
+        {
+            return JsonSerializer.Deserialize<T>(Data);
+        }
     }
     public static class Helper
     {

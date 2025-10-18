@@ -26,9 +26,9 @@
                             <label for="locationSearch" class="form-label">جستجوی آدرس</label>
                             <div class="input-group">
                                 <input type="text"
-                                class="form-control bg-dark text-white border-secondary"
-                                id="locationSearch"
-                                placeholder="آدرس یا نام مکان">
+                                       class="form-control bg-dark text-white border-secondary"
+                                       id="locationSearch"
+                                       placeholder="آدرس یا نام مکان">
                                 <button class="btn btn-outline-secondary" type="button" id="searchButton">
                                     <i class="bi bi-search"></i>
                                 </button>
@@ -46,7 +46,7 @@
                                 <option value="" selected>-- انتخاب مقصد --</option>
                                 @foreach (var school in Model.Schools)
                                 {
-                                    if (Model.Shifts != null)
+                                    @*                                  if (Model.Shifts != null)
                                     {
                                         foreach (var shift in Model.Shifts.Where(x=>x.SchoolRef == school.Id))
                                         {
@@ -56,11 +56,11 @@
                                         }
                                     }
                                     else
-                                    {
-                                        <option value="@school.Id|@school.Address.Latitude,@school.Address.Longitude|@school.Name">
-                                            @school.Name
-                                        </option>
-                                    }
+                                    { *@
+                                    <option value="@school.Id|@school.Address.Latitude,@school.Address.Longitude|@school.Name">
+                                        @school.Name
+                                    </option>
+                                    @* } *@
                                 }
                                 @if (Model.Schools == null || Model.Schools.Count == 0)
                                 {
@@ -72,7 +72,7 @@
                                     <option value="0|34.0801,49.6815|مدرسه انرژی اتمی اراک">مدرسه انرژی اتمی اراک</option>
                                 }
                             </select>
-                            <input asp-for="SelectedChild.SchoolId" hidden id="SchoolRef"/>
+                            <input asp-for="SelectedChild.SchoolId" hidden id="SchoolRef" />
                             <div id="location2Info" class="p-3 bg-danger rounded mb-3" style="min-height: 100px; display: none;">
                                 <!-- اطلاعات موقعیت دوم اینجا نمایش داده می شود -->
                             </div>
@@ -91,11 +91,17 @@
                             <input asp-for="SelectedChild.Class" value="@Model.SelectedChild.Class" type="hidden" />
                             <input asp-for="SelectedChild.NationalCode" value="@Model.SelectedChild.NationalCode" type="hidden" />
                             <input asp-for="SelectedChild.BirthDate" value="@Model.SelectedChild.BirthDate" type="hidden" />
-                            <input asp-for="SelectedChild.Path.PickTime1" value="@Model.SelectedChild.Path.PickTime1" type="hidden" />
-                            <input asp-for="SelectedChild.Path.PickTime2" value="@Model.SelectedChild.Path.PickTime2" type="hidden" />
+                            <input id="PickTime1" asp-for="SelectedChild.Path.PickTime1" type="hidden" />
+                            <input id="PickTime2" asp-for="SelectedChild.Path.PickTime2" type="hidden" />
 
                         </div>
-
+                        <div>
+                            <label for="ShiftOption" class="form-label">انتخاب شیفت</label>
+                            <select id="ShiftOption" name="SelectedChild.ShiftId" class="form-select bg-dark text-white border-secondary">
+                                <option value="">-- ابتدا مدرسه را انتخاب کنید --</option>
+                            </select>
+                            <input id="ShiftId" name="ShiftId" type="hidden"/>
+                        </div>
                         <div class="d-grid gap-2">
                             <button type="submit" id="confirmLocations" class="btn btn-primary py-2" disabled>
                                 <i class="bi bi-check-circle"></i> تایید موقعیت‌ها
@@ -203,11 +209,16 @@
             getAddressFromCoordinates(e.latlng.lat, e.latlng.lng, 1);
         });
 
-        // Handle location2 select change
+                // Handle location2 select change
         document.getElementById('location2Select').addEventListener('change', function() {
             const selectedValue = this.value;
+            const shiftSelect = document.getElementById('ShiftOption');
+
+            // Clear previous shifts
+            shiftSelect.innerHTML = '<option value="">-- ابتدا مدرسه را انتخاب کنید --</option>';
+
             if (selectedValue) {
-                const [Id,coords, address] = selectedValue.split('|');
+                const [Id, coords, address] = selectedValue.split('|');
                 const [lat, lng] = coords.split(',');
 
                 location2 = {
@@ -247,6 +258,9 @@
                 document.getElementById('location2Lng').value = lng;
                 document.getElementById('location2Address').value = address;
 
+                // Fetch shifts for selected school
+                GetShifts(parseInt(Id));
+
                 // Enable confirm button if both locations are selected
                 if (location1 && location2) {
                     document.getElementById('confirmLocations').disabled = false;
@@ -268,6 +282,39 @@
             }
         });
 
+        function GetShifts(schoolId) {
+            const shiftSelect = document.getElementById('ShiftOption');
+            shiftSelect.innerHTML = '<option value="">در حال دریافت شیفت‌ها...</option>';
+
+            fetch(`/Home/GetSchoolShifts?SchoolId=${schoolId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Received shifts data:', data);
+                    shiftSelect.innerHTML = '<option value="">-- شیفت را انتخاب کنید --</option>';
+
+                    if (data && data.length > 0) {
+                        data.forEach(shift => {
+                            const option = document.createElement('option');
+                            option.value = shift.id+"|"+shift.start+"|"+shift.end;
+                            option.textContent = `${shift.name} (${shift.start} - ${shift.end})`;
+                            shiftSelect.appendChild(option);
+                        });
+                    } else {
+                        shiftSelect.innerHTML = '<option value="">شیفتی برای این مدرسه یافت نشد</option>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching shifts:', error);
+                    shiftSelect.innerHTML = '<option value="">خطا در دریافت شیفت‌ها</option>';
+                });
+        }
+                // Update hidden shift field when shift selection changes
+        document.getElementById('ShiftOption').addEventListener('change', function() {
+            const [Id, Start, End] = document.getElementById('ShiftOption').value.split('|');
+            document.getElementById('ShiftId').value = Id;
+            document.getElementById('PickTime1').value = Start;
+            document.getElementById('PickTime2').value = End;
+        });
         // Function to get address from coordinates (using Nominatim)
         function getAddressFromCoordinates(lat, lng, locationNumber) {
         const apiKey = '7902de30b04b42558af4300bad6c27a0';
@@ -368,10 +415,19 @@
 
         // Confirm locations button
         document.getElementById('confirmLocations').addEventListener('click', function(e) {
-            // Check if both locations are selected
+            const shiftSelect = document.getElementById('ShiftOption');
+
+            // Check if both locations are selected and shift is chosen
             if (!location1 || !location2) {
                 alert("لطفاً موقعیت مبدا و مقصد را انتخاب کنید");
                 e.preventDefault();
+                return;
+            }
+
+            if (!shiftSelect.value) {
+                alert("لطفاً شیفت را انتخاب کنید");
+                e.preventDefault();
+                return;
             }
         });
     </script>
