@@ -1,6 +1,6 @@
 ﻿@using School_Manager.Core.Services.Interfaces
 @using School_Manager.Core.ViewModels.FModels
-@inject IChildService childService;
+@* @inject IChildService childService; *@
 @model List<ParentDto>
 
 @{
@@ -29,7 +29,7 @@
                         <th>🆔 کد ملی</th>
                         <th>👶 تعداد فرزندان</th>
                         <th>⚙️ وضعیت</th>
-                        <th>🆔 تعداد قبض ها</th>
+                        @* <th>🆔 تعداد قبض ها</th> *@
                         @* <th>💰 وضعیت مالی</th> *@
                         <th>🔧 عملیات</th>
                     </tr>
@@ -56,9 +56,9 @@
                                     @(isActive ? "فعال ✅" : "غیرفعال ❌")
                                 </span>
                             </td>
-                            <td>
+                            @* <td>
                                 <span class="badge bg-info">@childService.GetChildrenParent(parent.Id).Sum(x=>x.Bills.Count)</span>
-                            </td>
+                            </td> *@
 @*                             <td>
                                 <span class="badge fw-bold @(debt > 0 ? "bg-danger" : "bg-success")">
                                     @(debt > 0 ? $"{debt:N0} ریال 💸" : "تسویه شده 🟢")
