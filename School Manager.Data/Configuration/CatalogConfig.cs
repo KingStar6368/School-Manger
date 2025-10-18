@@ -27,7 +27,7 @@ namespace School_Manager.Data.Configuration
 
             builder.HasOne(p=>p.ServiceContractNavigation).WithMany(b=>b.Bills)
                 .HasForeignKey(fk=>fk.ServiceContractRef)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
             builder.HasQueryFilter(x=>!x.IsDeleted);
         }
     }

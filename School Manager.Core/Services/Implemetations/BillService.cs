@@ -39,12 +39,12 @@ namespace School_Manager.Core.Services.Implemetations
         public BillDto GetBill(long id)
         {
             var result = new BillDto();
-            var ds = _unitOfWork.GetRepository<Bill>().Query(c=>c.Id == id).Include(c=>c.ServiceContractNavigation)
-                .Include(c=>c.PayBills).ThenInclude(c=>c.PayNavigation).FirstOrDefault();
-                
+            var ds = _unitOfWork.GetRepository<Bill>().Query(c => c.Id == id).Include(c => c.ServiceContractNavigation)
+                .Include(c => c.PayBills).ThenInclude(c => c.PayNavigation).FirstOrDefault();
+
             if (ds != null)
             {
-               result = _mapper.Map<BillDto>(ds);
+                result = _mapper.Map<BillDto>(ds);
             }
             return result;
         }
@@ -55,19 +55,19 @@ namespace School_Manager.Core.Services.Implemetations
             var result = new List<BillDto>();
             var dss = await _unitOfWork.GetRepository<Bill>().Query().Include(c => c.ServiceContractNavigation)
                 .Include(c => c.PayBills).ThenInclude(c => c.PayNavigation).ToListAsync();
-        //predicate: p => p.Id > 0,
-        //        orderBy: null,
-        //        includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
-        //        {
-        //            c=>c.ServiceContractNavigation,
-        //            c=>c.PayBills
-        //        },
-        //        new List<Func<IQueryable<Bill>, IQueryable<Bill>>>
-        //        {
-        //            q => q.Include(r=>r.PayBills)
-        //                .ThenInclude(d=>d.PayNavigation)
-        //        }
-        //        ).ToListAsync();
+            //predicate: p => p.Id > 0,
+            //        orderBy: null,
+            //        includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
+            //        {
+            //            c=>c.ServiceContractNavigation,
+            //            c=>c.PayBills
+            //        },
+            //        new List<Func<IQueryable<Bill>, IQueryable<Bill>>>
+            //        {
+            //            q => q.Include(r=>r.PayBills)
+            //                .ThenInclude(d=>d.PayNavigation)
+            //        }
+            //        ).ToListAsync();
             if (dss != null)
             {
                 result = _mapper.Map<List<BillDto>>(dss);
@@ -77,7 +77,7 @@ namespace School_Manager.Core.Services.Implemetations
         public async Task<List<BillDto>> GetChildBills(long id)
         {
             var result = new List<BillDto>();
-            var dss = await _unitOfWork.GetRepository<Bill>().Query(x=>x.ServiceContractNavigation.ChildRef == id).Include(c => c.ServiceContractNavigation)
+            var dss = await _unitOfWork.GetRepository<Bill>().Query(x => x.ServiceContractNavigation.ChildRef == id).Include(c => c.ServiceContractNavigation)
                 .Include(c => c.PayBills).ThenInclude(c => c.PayNavigation).ToListAsync();
             //predicate: p => p.ServiceContractNavigation.ChildRef == id,
             //        orderBy: null,
@@ -102,21 +102,21 @@ namespace School_Manager.Core.Services.Implemetations
         public ServiceContractDto GetContract(long id)
         {
             var result = new ServiceContractDto();
-            var dss =  _unitOfWork.GetRepository<Bill>().Query(c => c.Id == id).Include(c => c.ServiceContractNavigation)
+            var dss = _unitOfWork.GetRepository<Bill>().Query(c => c.Id == id).Include(c => c.ServiceContractNavigation)
                 .Include(c => c.PayBills).ThenInclude(c => c.PayNavigation).FirstOrDefault()?.ServiceContractNavigation;
-        //predicate: p => p.Id == id,
-        //        orderBy: null,
-        //        includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
-        //        {
-        //            c=>c.ServiceContractNavigation,
-        //            c=>c.PayBills
-        //        },
-        //        new List<Func<IQueryable<Bill>, IQueryable<Bill>>>
-        //        {
-        //            q => q.Include(r=>r.PayBills)
-        //                .ThenInclude(d=>d.PayNavigation)
-        //        }
-        //        ).FirstOrDefault()?.ServiceContractNavigation;
+            //predicate: p => p.Id == id,
+            //        orderBy: null,
+            //        includes: new List<System.Linq.Expressions.Expression<Func<Bill, object>>>
+            //        {
+            //            c=>c.ServiceContractNavigation,
+            //            c=>c.PayBills
+            //        },
+            //        new List<Func<IQueryable<Bill>, IQueryable<Bill>>>
+            //        {
+            //            q => q.Include(r=>r.PayBills)
+            //                .ThenInclude(d=>d.PayNavigation)
+            //        }
+            //        ).FirstOrDefault()?.ServiceContractNavigation;
             if (dss != null)
             {
                 result = _mapper.Map<ServiceContractDto>(dss);
@@ -154,8 +154,8 @@ namespace School_Manager.Core.Services.Implemetations
         }
         public bool Update(BillUpdateDto bill)
         {
-            var mainBill = _unitOfWork.GetRepository<Bill>().Query(x=>x.Id == bill.Id).Include(x=>x.PayBills).FirstOrDefault();
-            if(mainBill == null)  return false; 
+            var mainBill = _unitOfWork.GetRepository<Bill>().Query(x => x.Id == bill.Id).Include(x => x.PayBills).FirstOrDefault();
+            if (mainBill == null) return false;
             if (mainBill.PayBills != null && mainBill.PayBills.Count > 0 /*mainBill.Price != bill.Price*/)
             {
                 throw new InvalidOperationException("این قبض دارای پرداختی است و امکان بروزرسانی مبلغ آن وجود ندارد.");
@@ -166,7 +166,7 @@ namespace School_Manager.Core.Services.Implemetations
                 var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
                 throw new ValidationException(errors);
             }
-            _mapper.Map(bill,mainBill);
+            _mapper.Map(bill, mainBill);
             _unitOfWork.GetRepository<Bill>().Update(mainBill);
             return _unitOfWork.SaveChanges() > 0;
         }
@@ -183,14 +183,22 @@ namespace School_Manager.Core.Services.Implemetations
                     .Include(x => x.PayBills)
                     .Include(x => x.ServiceContractNavigation)
                     .FirstOrDefault();
-
+                if (bill.Type == BillType.Pre)
+                {
+                    var otherbills = billRepo.Query(x => bill.ServiceContractRef == x.ServiceContractRef);
+                    if (otherbills.Any(x => x.PayBills.Any() == true))
+                        throw new InvalidOperationException("امکان حذف قبض پیش پرداخت وجود ندارد");
+                    var serviceContract = bill.ServiceContractNavigation;
+                    serviceContractRepo.Remove(serviceContract);
+                    _unitOfWork.SaveChanges();
+                }
                 if (bill == null)
                     throw new InvalidOperationException("قبض یافت نشد.");
 
                 if (bill.PayBills?.Any() ?? false)
                     throw new InvalidOperationException("این قبض دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
 
-                var serviceContract = bill.ServiceContractNavigation;
+                //var serviceContract = bill.ServiceContractNavigation;
 
                 // جدا کردن navigation قبل از حذف (برای جلوگیری از ارور EF)
                 bill.ServiceContractNavigation = null;
@@ -199,16 +207,16 @@ namespace School_Manager.Core.Services.Implemetations
                 billRepo.Remove(bill);
                 _unitOfWork.SaveChanges();
 
-                // اگر قبض از نوع پیش‌پرداخت بود و قرارداد مرتبط قبض دیگری ندارد، قرارداد را هم حذف کن
-                if (bill.Type == BillType.Pre && serviceContract != null)
-                {
-                    bool hasOtherBills = billRepo.Query(x => x.ServiceContractRef == serviceContract.Id).Any();
-                    if (!hasOtherBills)
-                    {
-                        serviceContractRepo.Remove(serviceContract);
-                        _unitOfWork.SaveChanges();
-                    }
-                }
+                //// اگر قبض از نوع پیش‌پرداخت بود و قرارداد مرتبط قبض دیگری ندارد، قرارداد را هم حذف کن
+                //if (bill.Type == BillType.Pre && serviceContract != null)
+                //{
+                //    bool hasOtherBills = billRepo.Query(x => x.ServiceContractRef == serviceContract.Id).Any();
+                //    if (!hasOtherBills)
+                //    {
+                //        serviceContractRepo.Remove(serviceContract);
+                //        _unitOfWork.SaveChanges();
+                //    }
+                //}
 
                 _unitOfWork.Commit();
                 return true;
@@ -224,17 +232,17 @@ namespace School_Manager.Core.Services.Implemetations
 
         public async Task<SavePreBillResult> CreatePreBillAsync(CreatePreBillDto bill)
         {
-            SavePreBillResult result = new SavePreBillResult { BillId =0,ServiceContractRef =0};
-            var validationResult =await _createPreBillValidator.ValidateAsync(bill);
+            SavePreBillResult result = new SavePreBillResult { BillId = 0, ServiceContractRef = 0 };
+            var validationResult = await _createPreBillValidator.ValidateAsync(bill);
             if (!validationResult.IsValid)
             {
                 var errors = string.Join("\n", validationResult.Errors.Select(e => e.ErrorMessage));
                 throw new ValidationException(errors);
             }
-            
+
             var saveItem = _mapper.Map<ServiceContract>(bill);
             _unitOfWork.GetRepository<ServiceContract>().Add(saveItem);
-            if(_unitOfWork.SaveChanges() > 0)
+            if (_unitOfWork.SaveChanges() > 0)
             {
                 result.BillId = saveItem.Bills.FirstOrDefault()?.Id ?? 0;
                 result.ServiceContractRef = saveItem.Id;
@@ -277,7 +285,7 @@ namespace School_Manager.Core.Services.Implemetations
 
         public bool Delete(List<long> billIds)
         {
-            var ds = _unitOfWork.GetRepository<Bill>().Query(x=>billIds.Contains(x.Id)).ToList();
+            var ds = _unitOfWork.GetRepository<Bill>().Query(x => billIds.Contains(x.Id)).ToList();
             if (ds == null)
             {
                 return false;

@@ -5,7 +5,7 @@
     <div class="notification @Model.Type">
         <div class="notification-header">
             <strong>@Model.Title</strong>
-            <button class="close-notification">&times;</button>
+            <button class="close-notification" type="button" aria-label="Close notification">&times;</button>
         </div>
         <div class="notification-body">
             @Model.Message
@@ -52,60 +52,47 @@
         }
 
         .notification.Success {
-            background-color: #28a745 !important;
-            border: 1px solid #218838 !important;
+            background-color: #28a745;
+            border: 1px solid #218838;
         }
 
         .notification.Warning {
-            background-color: #ffc107 !important;
-            color: #212529 !important;
-            border: 1px solid #e0a800 !important;
+            background-color: #ffc107;
+            color: #212529;
+            border: 1px solid #e0a800;
         }
 
         .notification.Error {
-            background-color: #dc3545 !important;
-            border: 1px solid #c82333 !important;
+            background-color: #dc3545;
+            border: 1px solid #c82333;
         }
 
         .notification-header {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            margin-bottom: 5px !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
         }
 
         .close-notification {
-            background: none !important;
-            border: none !important;
-            color: inherit !important;
-            font-size: 1.2rem !important;
-            cursor: pointer !important;
-            padding: 0 !important;
-            line-height: 1 !important;
-            margin-right: 10px !important;
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.8;
+            transition: opacity 0.2s;
         }
+
+            .close-notification:hover {
+                opacity: 1;
+            }
     </style>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Close notification when X is clicked
-            const closeBtn = document.querySelector('.close-notification');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', function() {
-                    const notification = this.closest('.notification');
-                    notification.style.animation = 'slideOut 0.5s forwards';
-                    setTimeout(() => notification.remove(), 500);
-                });
-            }
-
-            // Auto-close notification after 5 seconds
-            const notification = document.querySelector('.notification');
-            if (notification) {
-                setTimeout(() => {
-                    notification.style.animation = 'slideOut 0.5s forwards';
-                    setTimeout(() => notification.remove(), 500);
-                }, 5000);
-            }
-        });
-    </script>
 }

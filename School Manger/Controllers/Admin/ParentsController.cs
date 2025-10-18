@@ -34,10 +34,10 @@ namespace School_Manger.Controllers.Admin
         private readonly ITempLink _tempLink;
         private readonly ISettingService _settingService;
         private readonly IWebHostEnvironment _env;
-        public ParentsController(IParentService parentService, IChildService childService, IContractService contractService, 
-            IBillService billService,ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService,
-            ITariffService tariffService,IWebHostEnvironment env,ITempLink appConfigService, ISMSService smsService,
-            IAppConfigService appconfigService,IUserService userService,ISettingService settingService)
+        public ParentsController(IParentService parentService, IChildService childService, IContractService contractService,
+            IBillService billService, ISchoolService schoolService, IDriverService driverService, IPayBillService payBillService,
+            ITariffService tariffService, IWebHostEnvironment env, ITempLink appConfigService, ISMSService smsService,
+            IAppConfigService appconfigService, IUserService userService, ISettingService settingService)
         {
             _parentService = parentService;
             _childService = childService;
@@ -97,39 +97,45 @@ namespace School_Manger.Controllers.Admin
         [HttpPost]
         public IActionResult MakeBill(long ChildId, string Name, long TotalPrice, string StartTime, string EndTime, string Estimate, string IsPerBill)
         {
-            if (IsPerBill == "on")
+            try
             {
-                SavePreBillResult result = _billService.CreatePreBill(new CreatePreBillDto()
+                if (IsPerBill == "on")
                 {
-                    ChildRef = ChildId,
-                    Name = Name,
-                    EndTime = EndTime.ToMiladi(),
-                    EstimateTime = Estimate.ToMiladi(),
-                    Price = TotalPrice,
-                    StartTime = StartTime.ToMiladi()
-                });
-                var child = _childService.GetChild(ChildId);
-                return CreateBill(ChildId);
-            }
-            else
-            {
-                long contractref = _contractService.GetContractWithChild(ChildId).Id;
-                if (contractref == 0 || contractref == null)
-                {
-                    ControllerExtensions.ShowError(this, "خطا", "این دانش آموز قرار داد فعال ندارد");
-                    return CreateBill(ChildId);
+                    SavePreBillResult result = _billService.CreatePreBill(new CreatePreBillDto()
+                    {
+                        ChildRef = ChildId,
+                        Name = Name,
+                        EndTime = EndTime.ToMiladi(),
+                        EstimateTime = Estimate.ToMiladi(),
+                        Price = TotalPrice,
+                        StartTime = StartTime.ToMiladi()
+                    });
                 }
-                _billService.Create(new BillCreateDto()
+                else
                 {
-                    Name = Name,
-                    Price = TotalPrice,
-                    EstimateTime = Estimate.ToMiladi(),
-                    ServiceContractRef = contractref,
-                    Type = (int)BillType.Normal
-                });
-                var child = _childService.GetChild(ChildId);
-                return CreateBill(ChildId);
+                    long contractref = _contractService.GetContractWithChild(ChildId).Id;
+                    if (contractref == 0 || contractref == null)
+                    {
+                        ControllerExtensions.ShowError(this, "خطا", "این دانش آموز قرار داد فعال ندارد");
+                        return CreateBill(ChildId);
+                    }
+                    _billService.Create(new BillCreateDto()
+                    {
+                        Name = Name,
+                        Price = TotalPrice,
+                        EstimateTime = Estimate.ToMiladi(),
+                        ServiceContractRef = contractref,
+                        Type = (int)BillType.Normal
+                    });
+
+                }
             }
+            catch (Exception ex)
+            {
+                ControllerExtensions.ShowError(this, "خطا", ex.Message);
+            }
+            var child = _childService.GetChild(ChildId);
+            return CreateBill(ChildId);
         }
         [HttpGet]
         public IActionResult BillCal(long Id)
@@ -152,7 +158,7 @@ namespace School_Manger.Controllers.Admin
             });
         }
         [HttpPost]
-        public IActionResult BillCalPerView(BillCalViewModel data, string PreStartDate, string PreEndDate,string Round,string RoundFirst)
+        public IActionResult BillCalPerView(BillCalViewModel data, string PreStartDate, string PreEndDate, string Round, string RoundFirst)
         {
             data.Installment.StartDate = PreStartDate.ToMiladi();
             data.Installment.EndDate = PreEndDate.ToMiladi();
@@ -182,9 +188,16 @@ namespace School_Manger.Controllers.Admin
             {
                 ControllerExtensions.ShowSuccess(this, "موفق", "قبض ها صادر شد");
                 //Generate One use link with auto login to parent page and send it to parent
-                long ParentId = ControllerExtensions.GetKey<long>(this,"ParentId");
-                long ChildId = ControllerExtensions.GetKey<long>(this,"ChildId");
-                 _smsService.Send(_userService.GetUserByParent(ParentId).Mobile, _tempLink.GenerateBillTempLink(ParentId, ChildId));
+                long ParentId = ControllerExtensions.GetKey<long>(this, "ParentId");
+                long ChildId = ControllerExtensions.GetKey<long>(this, "ChildId");
+                try
+                {
+                    _smsService.Send(_userService.GetUserByParent(ParentId).Mobile, _tempLink.GenerateBillTempLink(ParentId, ChildId));
+                }
+                catch
+                {
+                    ControllerExtensions.ShowWarning(this, "هشدار", "مشکلی در ارسال پیامک پیش آمده");
+                }
             }
             else
                 ControllerExtensions.ShowError(this, "خطا", "مشکلی در صادر قبض ها پیش آمده");
@@ -216,7 +229,7 @@ namespace School_Manger.Controllers.Admin
             };
             List<ContractDlcTableData> TableData = new List<ContractDlcTableData>();
             int i = 1;
-            foreach(var bill in bills)
+            foreach (var bill in bills)
             {
                 TableData.Add(new ContractDlcTableData()
                 {
@@ -360,7 +373,7 @@ namespace School_Manger.Controllers.Admin
         }
 
         [HttpPost]
-        public IActionResult EditBill(long billId, long childId, BillUpdateDto model, string EstimateTime,string type)
+        public IActionResult EditBill(long billId, long childId, BillUpdateDto model, string EstimateTime, string type)
         {
             try
             {
@@ -379,9 +392,9 @@ namespace School_Manger.Controllers.Admin
                 ControllerExtensions.ShowSuccess(this, "موفق", "تغییرات اعمال شد");
                 return CreateBill(childId);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                ControllerExtensions.ShowError(this,"خطا",ex.Message);
+                ControllerExtensions.ShowError(this, "خطا", ex.Message);
                 ViewBag.ChildId = childId;
                 var bill = _billService.GetBill(billId);
                 return View("EditBill", bill);
@@ -441,7 +454,7 @@ namespace School_Manger.Controllers.Admin
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateChild(ChildUpdateDto model, long parentId, string BirthDate)
+        public async Task<IActionResult> UpdateChild(ChildUpdateDto model, long parentId, string BirthDate, string ShiftId)
         {
             try
             {
@@ -449,6 +462,7 @@ namespace School_Manger.Controllers.Admin
                 model.LocationPairs[0].Locations[1].IsActive = true;
                 model.NationalCode = model.NationalCode.ConvertPersianToEnglish();
                 model.BirthDate = BirthDate.ConvertEnglishToPersian().ToMiladi();
+                model.ShiftId = int.Parse(ShiftId);
                 var result = _childService.UpdateChild(model);
                 if (result)
                 {
@@ -486,7 +500,7 @@ namespace School_Manger.Controllers.Admin
                 using (var httpClient = new HttpClient())
                 {
                     // Build the API URL with the provided coordinates
-                    string apiUrl = _appConfigService.ApiUrl()+$"/Route?fromLat={fromLat}&fromLon={fromLon}&toLat={toLat}&toLon={toLon}";
+                    string apiUrl = _appConfigService.ApiUrl() + $"/Route?fromLat={fromLat}&fromLon={fromLon}&toLat={toLat}&toLon={toLon}";
 
                     // Make the GET request to the external API
                     HttpResponseMessage response = await httpClient.GetAsync(apiUrl);

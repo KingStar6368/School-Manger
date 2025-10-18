@@ -68,7 +68,7 @@ namespace School_Manger.Controllers
         #region Login&SignIn
         public IActionResult Index()
         {
-            return View();
+            return View("Index");
         }
 
         [HttpPost]
@@ -129,6 +129,15 @@ namespace School_Manger.Controllers
             {
                 case UserType.Parent:
                     var parent = _PService.GetParentByNationCode(NationalCode);
+                    if (parent == null)
+                    {
+                        ControllerExtensions.AddKey(this, "PhoneNumber", user.Mobile);
+                        ControllerExtensions.AddKey(this, "nationalCode",user.UserName);
+                        ControllerExtensions.AddKey(this, "firstName",user.FirstName);
+                        ControllerExtensions.AddKey(this, "lastName",user.LastName);
+                        ControllerExtensions.AddKey(this, "password",user.PasswordHash);
+                        return ReCompleteProfile();
+                    }
                     claims.Add(new Claim("ParentId", parent.Id.ToString()));
                     ControllerExtensions.AddKey(this, "Pref", parent.Id);
                     break;
@@ -158,32 +167,78 @@ namespace School_Manger.Controllers
                     return View();
             }
         }
+        [HttpGet]
+        public IActionResult ReCompleteProfile()
+        {
+            try
+            {
+                string nationalCode = ControllerExtensions.GetKey<string>(this, "nationalCode");
+                string firstName = ControllerExtensions.GetKey<string>(this, "firstName");
+                string lastName = ControllerExtensions.GetKey<string>(this, "lastName");
+                string password = ControllerExtensions.GetKey<string>(this, "password");
+                nationalCode = nationalCode.ConvertPersianToEnglish();
+                password = password.ConvertPersianToEnglish();
+                long UseRref = _UserService.CreateUser(new UserCreateDTO()
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    IsActive = true,
+                    Mobile = ControllerExtensions.GetKey<string>(this, "PhoneNumber"),
+                    PasswordHash = password,
+                    UserName = nationalCode
+                });
+                long ParentRef = _PService.CreateParent(new ParentCreateDto()
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    NationalCode = nationalCode,
+                    UserRef = UseRref,
+                    Active = true,
+                    Address = "",
+                });
+                ControllerExtensions.AddKey(this, "Uref", UseRref);
+                ControllerExtensions.AddKey(this, "Pref", ParentRef);
+                // Redirect to Login With Message موفق 
+            }
+            catch (Exception ex)
+            {
+                ControllerExtensions.ShowError(this, "خطا", ex.Message);
+            }
+            return View("Login");
+        }
         [HttpPost]
         public IActionResult CompleteProfile(string nationalCode, string firstName, string lastName, string password)
         {
-            nationalCode = nationalCode.ConvertPersianToEnglish();
-            password = password.ConvertPersianToEnglish();
-            long UseRref = _UserService.CreateUser(new UserCreateDTO()
+            try
             {
-                FirstName = firstName,
-                LastName = lastName,
-                IsActive = true,
-                Mobile = ControllerExtensions.GetKey<string>(this, "PhoneNumber"),
-                PasswordHash = password,
-                UserName = nationalCode
-            });
-            long ParentRef = _PService.CreateParent(new ParentCreateDto()
+                nationalCode = nationalCode.ConvertPersianToEnglish();
+                password = password.ConvertPersianToEnglish();
+                long UseRref = _UserService.CreateUser(new UserCreateDTO()
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    IsActive = true,
+                    Mobile = ControllerExtensions.GetKey<string>(this, "PhoneNumber"),
+                    PasswordHash = password,
+                    UserName = nationalCode
+                });
+                long ParentRef = _PService.CreateParent(new ParentCreateDto()
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    NationalCode = nationalCode,
+                    UserRef = UseRref,
+                    Active = true,
+                    Address = "",
+                });
+                ControllerExtensions.AddKey(this, "Uref", UseRref);
+                ControllerExtensions.AddKey(this, "Pref", ParentRef);
+                // Redirect to Login With Message موفق 
+            }
+            catch (Exception ex)
             {
-                FirstName = firstName,
-                LastName = lastName,
-                NationalCode = nationalCode,
-                UserRef = UseRref,
-                Active = true,
-                Address = "",
-            });
-            ControllerExtensions.AddKey(this, "Uref", UseRref);
-            ControllerExtensions.AddKey(this, "Pref", ParentRef);
-            // Redirect to Login With Message موفق 
+                ControllerExtensions.ShowError(this, "خطا", ex.Message);
+            }
             return View("Login");
         }
         #endregion

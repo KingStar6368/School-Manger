@@ -3,6 +3,7 @@
 @using School_Manager.Core.Services.Interfaces
 @using School_Manager.Core.ViewModels.FModels
 @inject IShiftService ShiftService
+@inject ISchoolService SchoolService;
 @model UserEditDriver
 @{
     ViewData["Title"] = "ویرایش راننده";
@@ -84,6 +85,7 @@
                                 <thead>
                                     <tr>
                                         <th>انتخاب</th>
+                                        <th>مدرسه</th>
                                         <th>نام شیفت</th>
                                         <th>زمان شروع</th>
                                         <th>زمان پایان</th>
@@ -99,6 +101,7 @@
                                                 <input class="form-check-input shift-checkbox" type="checkbox" name="SelectedShiftIds" value="@shift.Id" id="shift_@shift.Id"
                                                        @(assigned != null ? "checked" : "") onchange="toggleSeatInput(@shift.Id)" />
                                             </td>
+                                            <td>@SchoolService.GetSchool(shift.SchoolRef).Name</td>
                                             <td>
                                                 <label class="form-check-label" for="shift_@shift.Id">
                                                     @shift.Name

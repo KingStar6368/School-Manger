@@ -34,7 +34,8 @@
     </div>
     @await Html.PartialAsync("_Footer")
 
-    @await Html.PartialAsync("_NotificationPartial", notification);
+    <!-- Render notification partial here -->
+    @await Html.PartialAsync("_NotificationPartial", notification)
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -55,6 +56,35 @@
                 altFormat: 'X',  // Unix timestamp
                 autoClose: true
             });
+
+            // Notification close functionality
+            function closeNotification(notificationElement) {
+                notificationElement.style.animation = 'slideOut 0.5s forwards';
+                setTimeout(() => {
+                    if (notificationElement.parentNode) {
+                        notificationElement.remove();
+                    }
+                }, 500);
+            }
+
+            // Close notification when X is clicked - using event delegation
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('close-notification') ||
+                    e.target.closest('.close-notification')) {
+                    const notification = e.target.closest('.notification');
+                    if (notification) {
+                        closeNotification(notification);
+                    }
+                }
+            });
+
+            // Auto-close notification after 5 seconds
+            const notification = document.querySelector('.notification');
+            if (notification) {
+                setTimeout(() => {
+                    closeNotification(notification);
+                }, 5000);
+            }
         });
     </script>
 

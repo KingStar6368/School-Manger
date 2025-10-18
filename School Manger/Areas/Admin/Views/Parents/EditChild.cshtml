@@ -39,6 +39,7 @@
                 <input type="hidden" id="Time2" name="LocationPairs[0].PickTime2" value="@Model.LocationPairs[0].PickTime2" />
                 <input type="hidden" value="End" name="LocationPairs[0].Locations[1].LocationType" />
                 <input type="hidden" id="PreSchool" value="@Model.SchoolRef" />
+                <input id="ShiftId" name="ShiftId" type="hidden" />
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">🧑‍🦱 نام</label>
@@ -102,14 +103,23 @@
                 </div>
                 <div id="map" style="height: 400px; width: 100%; border-radius: 8px;"></div>
                 <div class="row mt-3">
+                    <input type="hidden" class="form-control bg-dark text-white border-secondary" id="PickTime1" name="LocationPairs[0].PickTime1" value="@Model.LocationPairs[0].PickTime1" />
+                    <input type="hidden" class="form-control bg-dark text-white border-secondary" id="PickTime2" name="LocationPairs[0].PickTime2" value="@Model.LocationPairs[0].PickTime2" />
                     <div class="col-md-6">
                         <div id="location1Info" class="p-3 bg-success rounded mb-2 text-dark" style="min-height: 100px;">
                             <p class="text-muted mb-1">موقعیت اول انتخاب نشده است</p>
                         </div>
-                        <div class="mb-3">
+                        <div>
+                            <label for="ShiftOption" class="form-label">انتخاب شیفت</label>
+                            <select id="ShiftOption" name="SelectedChild.ShiftId" class="form-select bg-dark text-white border-secondary">
+                                <option value="">-- ابتدا مدرسه را انتخاب کنید --</option>
+                            </select>
+                           
+                        </div>
+                       @*  <div class="mb-3">
                             <label class="form-label">⏰ زمان رفت (PickTime1):</label>
                             <input type="time" class="form-control bg-dark text-white border-secondary" id="PickTime1" name="LocationPairs[0].PickTime1" value="@Model.LocationPairs[0].PickTime1" />
-                        </div>
+                        </div> *@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">موقعیت دوم (مقصد):</label>
@@ -117,7 +127,7 @@
                             <option value="" selected>-- انتخاب مقصد --</option>
                             @foreach (var school in schools)
                             {
-                                if (ShiftService.GetAllShifts().FirstOrDefault(x=>x.SchoolRef == school.Id) != null)
+                                @*                    if (ShiftService.GetAllShifts().FirstOrDefault(x=>x.SchoolRef == school.Id) != null)
                                 {
                                     foreach (var shift in ShiftService.GetAllShifts().Where(x => x.SchoolRef == school.Id))
                                     {
@@ -127,11 +137,11 @@
                                     }
                                 }
                                 else
-                                {
-                                    <option value="@school.Id|@school.Address.Latitude,@school.Address.Longitude|@school.Name">
-                                        @school.Name
-                                    </option>
-                                }
+                                { *@
+                                <option value="@school.Id|@school.Address.Latitude,@school.Address.Longitude|@school.Name">
+                                    @school.Name
+                                </option>
+                                @* } *@
                             }
                             @if (schools == null || schools.Count == 0)
                             {
@@ -145,10 +155,10 @@
                         </select>
                         <input type="hidden" id="SchoolRef" name="SchoolRef" />
                         <div id="location2Info" class="p-3 bg-danger rounded mb-2 text-dark" style="min-height: 100px; display: none;"></div>
-                        <div class="mb-3">
+                        @* <div class="mb-3">
                             <label class="form-label">⏰ زمان برگشت (PickTime2):</label>
                             <input type="time" class="form-control bg-dark text-white border-secondary" id="PickTime2" name="LocationPairs[0].PickTime2" value="@Model.LocationPairs[0].PickTime2" />
-                        </div>
+                        </div> *@
                     </div>
                 </div>
             </div>
@@ -378,6 +388,8 @@
                         })
                     }).addTo(map).bindPopup('<div class="bg-danger">موقعیت دوم (مقصد)</div>').openPopup();
                     document.getElementById('SchoolRef').value = Id;
+                    // Fetch shifts for selected school
+                    GetShifts(parseInt(Id));
                     updateLocation2Display();
                     if (location1 && location2) {
                         document.getElementById('saveLocations').disabled = false;
@@ -389,6 +401,7 @@
                     }
                     location2 = null;
                     updateLocation2Display();
+                  
                 }
             });
             document.getElementById('clearLocations').addEventListener('click', function(e) {
@@ -421,7 +434,38 @@
             };
             updateLocationDisplay();
             updateLocation2Display();
+            document.getElementById('ShiftOption').addEventListener('change', function() {
+                const [Id, Start, End] = document.getElementById('ShiftOption').value.split('|');
+                document.getElementById('ShiftId').value = Id;
+                document.getElementById('Time1').value = Start;
+                document.getElementById('Time2').value = End;
+            });
+            function GetShifts(schoolId) {
+                const shiftSelect = document.getElementById('ShiftOption');
+                shiftSelect.innerHTML = '<option value="">در حال دریافت شیفت‌ها...</option>';
 
+                fetch(`/Home/GetSchoolShifts?SchoolId=${schoolId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Received shifts data:', data);
+                        shiftSelect.innerHTML = '<option value="">-- شیفت را انتخاب کنید --</option>';
+
+                        if (data && data.length > 0) {
+                            data.forEach(shift => {
+                                const option = document.createElement('option');
+                                option.value = shift.id+"|"+shift.start+"|"+shift.end;
+                                option.textContent = `${shift.name} (${shift.start} - ${shift.end})`;
+                                shiftSelect.appendChild(option);
+                            });
+                        } else {
+                            shiftSelect.innerHTML = '<option value="">شیفتی برای این مدرسه یافت نشد</option>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching shifts:', error);
+                        shiftSelect.innerHTML = '<option value="">خطا در دریافت شیفت‌ها</option>';
+                    });
+            }
         });
     </script>
 }
