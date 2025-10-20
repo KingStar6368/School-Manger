@@ -1,92 +1,91 @@
 ﻿@using System.Text.Json
 <!DOCTYPE html>
 <html dir="rtl" lang="fa">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@ViewData["Title"] - سرویس یار</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/School_Manger.styles.css" asp-append-version="true" />
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>@ViewData["Title"] - سرویس یار</title>
+        <script type="importmap"></script>
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/School_Manger.styles.css" asp-append-version="true" />
 
-    <link href="~/css/persian-datepicker.min.css" rel="stylesheet" />
+        <link href="~/css/persian-datepicker.min.css" rel="stylesheet" />
 
-    @RenderSection("Styles", required: false)
-</head>
-<body>
+        @RenderSection("Styles", required: false)
+    </head>
+    <body>
 
-    @{
-        Notification notification = null;
-        if (TempData["Notification"] is string jsonNotification)
-        {
-            notification = JsonSerializer.Deserialize<Notification>(jsonNotification);
-        }
-    }
-
-    @await Html.PartialAsync("_Header")
-
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-    @await Html.PartialAsync("_Footer")
-
-    <!-- Render notification partial here -->
-    @await Html.PartialAsync("_NotificationPartial", notification)
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-
-    <script src="~/js/persian-date.min.js"></script>
-    <script src="~/js/persian-datepicker.min.js"></script>
-
-    @await RenderSectionAsync("Scripts", required: false)
-
-    <script>
-        $(document).ready(function() {
-            // Initialize Persian datepicker for all elements with class 'persian-date'
-            $('.persian-date').persianDatepicker({
-                observer: true,  // Automatically detects new date inputs added dynamically
-                format: 'YYYY/MM/DD',
-                altField: '.gregorian-date',
-                altFormat: 'X',  // Unix timestamp
-                autoClose: true
-            });
-
-            // Notification close functionality
-            function closeNotification(notificationElement) {
-                notificationElement.style.animation = 'slideOut 0.5s forwards';
-                setTimeout(() => {
-                    if (notificationElement.parentNode) {
-                        notificationElement.remove();
-                    }
-                }, 500);
+        @{
+            Notification notification = null;
+            if (TempData["Notification"] is string jsonNotification)
+            {
+                notification = JsonSerializer.Deserialize<Notification>(jsonNotification);
             }
+        }
 
-            // Close notification when X is clicked - using event delegation
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('close-notification') ||
-                    e.target.closest('.close-notification')) {
-                    const notification = e.target.closest('.notification');
-                    if (notification) {
-                        closeNotification(notification);
+        @await Html.PartialAsync("_Header")
+
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+        @await Html.PartialAsync("_Footer")
+
+        <!-- Render notification partial here -->
+        @await Html.PartialAsync("_NotificationPartial", notification)
+
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+
+        <script src="~/js/persian-date.min.js"></script>
+        <script src="~/js/persian-datepicker.min.js"></script>
+
+        @await RenderSectionAsync("Scripts", required: false)
+
+        <script>
+            $(document).ready(function() {
+                // Initialize Persian datepicker for all elements with class 'persian-date'
+                $('.persian-date').persianDatepicker({
+                    observer: true,  // Automatically detects new date inputs added dynamically
+                    format: 'YYYY/MM/DD',
+                    altField: '.gregorian-date',
+                    altFormat: 'X',  // Unix timestamp
+                    autoClose: true
+                });
+
+                // Notification close functionality
+                function closeNotification(notificationElement) {
+                    notificationElement.style.animation = 'slideOut 0.5s forwards';
+                    setTimeout(() => {
+                        if (notificationElement.parentNode) {
+                            notificationElement.remove();
+                        }
+                    }, 500);
+                }
+
+                // Close notification when X is clicked - using event delegation
+                document.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('close-notification') ||
+                        e.target.closest('.close-notification')) {
+                        const notification = e.target.closest('.notification');
+                        if (notification) {
+                            closeNotification(notification);
+                        }
                     }
+                });
+
+                // Auto-close notification after 5 seconds
+                const notification = document.querySelector('.notification');
+                if (notification) {
+                    setTimeout(() => {
+                        closeNotification(notification);
+                    }, 5000);
                 }
             });
-
-            // Auto-close notification after 5 seconds
-            const notification = document.querySelector('.notification');
-            if (notification) {
-                setTimeout(() => {
-                    closeNotification(notification);
-                }, 5000);
-            }
-        });
-    </script>
-
-</body>
+        </script>
+    </body>
 </html>

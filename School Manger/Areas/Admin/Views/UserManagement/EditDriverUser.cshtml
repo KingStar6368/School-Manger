@@ -76,70 +76,7 @@
                             <label class="form-label">🆔 شماره پرونده</label>
                             <textarea asp-for="DriverUpdateDto.Code" class="form-control" rows="2"></textarea>
                         </div>
-                        <hr />
-                        <h5 class="text-info"><i class="bi bi-clock"></i> ویرایش شیفت‌ها</h5>
-                        <div class="mb-6">
-                            <label class="form-label">شیفت‌های قابل انتخاب و تعداد صندلی:</label>
-                            <input type="text" id="shiftFilter" class="form-control mb-2" placeholder="جستجو شیفت..." onkeyup="filterShifts()" />
-                            <table class="table table-bordered table-dark table-striped" id="shiftTable">
-                                <thead>
-                                    <tr>
-                                        <th>انتخاب</th>
-                                        <th>مدرسه</th>
-                                        <th>نام شیفت</th>
-                                        <th>زمان شروع</th>
-                                        <th>زمان پایان</th>
-                                        <th>تعداد صندلی</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var shift in allShifts.OrderByDescending(s => driverShifts.Any(ds => ds.ShiftRef == s.Id)))
-                                    {
-                                        var assigned = driverShifts.FirstOrDefault(ds => ds.ShiftRef == shift.Id);
-                                        <tr class="shift-row @(assigned != null ? "table-success" : "")">
-                                            <td>
-                                                <input class="form-check-input shift-checkbox" type="checkbox" name="SelectedShiftIds" value="@shift.Id" id="shift_@shift.Id"
-                                                       @(assigned != null ? "checked" : "") onchange="toggleSeatInput(@shift.Id)" />
-                                            </td>
-                                            <td>@SchoolService.GetSchool(shift.SchoolRef).Name</td>
-                                            <td>
-                                                <label class="form-check-label" for="shift_@shift.Id">
-                                                    @shift.Name
-                                                </label>
-                                            </td>
-                                            <td>@shift.Start</td>
-                                            <td>@shift.End</td>
-                                            <td>
-                                                <input type="number" name="ShiftSeats_@shift.Id" id="seat_@shift.Id" class="form-control"
-                                                       style="width:90px;display:inline-block;" min="1" max="99" placeholder="صندلی"
-                                                       value="@(assigned?.Seats ?? 1)" @(assigned == null ? "disabled" : "") required />
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <script>
-                            function toggleSeatInput(shiftId) {
-                                var checkbox = document.getElementById('shift_' + shiftId);
-                                var seatInput = document.getElementById('seat_' + shiftId);
-                                seatInput.disabled = !checkbox.checked;
-                                if (!checkbox.checked) seatInput.value = '';
-                            }
-                            function filterShifts() {
-                                var input = document.getElementById('shiftFilter');
-                                var filter = input.value.toLowerCase();
-                                var rows = document.querySelectorAll('#shiftTable .shift-row');
-                                rows.forEach(function(row) {
-                                    var label = row.querySelector('.form-check-label').textContent.toLowerCase();
-                                    if (label.indexOf(filter) > -1) {
-                                        row.style.display = '';
-                                    } else {
-                                        row.style.display = 'none';
-                                    }
-                                });
-                            }
-                        </script>
+                    
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
@@ -162,6 +99,70 @@
                         </div>
                     </div>
                 </div>
+                <hr />
+                <h5 class="text-info"><i class="bi bi-clock"></i> ویرایش شیفت‌ها</h5>
+                <div class="mb-6">
+                    <label class="form-label">شیفت‌های قابل انتخاب و تعداد صندلی:</label>
+                    <input type="text" id="shiftFilter" class="form-control mb-2" placeholder="جستجو شیفت..." onkeyup="filterShifts()" />
+                    <table class="table table-bordered table-dark table-striped" id="shiftTable">
+                        <thead>
+                            <tr>
+                                <th>انتخاب</th>
+                                <th>مدرسه</th>
+                                <th>نام شیفت</th>
+                                <th>زمان شروع</th>
+                                <th>زمان پایان</th>
+                                <th>تعداد صندلی</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var shift in allShifts.OrderByDescending(s => driverShifts.Any(ds => ds.ShiftRef == s.Id)))
+                            {
+                                var assigned = driverShifts.FirstOrDefault(ds => ds.ShiftRef == shift.Id);
+                                <tr class="shift-row @(assigned != null ? "table-success" : "")">
+                                    <td>
+                                        <input class="form-check-input shift-checkbox" type="checkbox" name="SelectedShiftIds" value="@shift.Id" id="shift_@shift.Id"
+                                               @(assigned != null ? "checked" : "") onchange="toggleSeatInput(@shift.Id)" />
+                                    </td>
+                                    <td>@SchoolService.GetSchool(shift.SchoolRef).Name</td>
+                                    <td>
+                                        <label class="form-check-label" for="shift_@shift.Id">
+                                            @shift.Name
+                                        </label>
+                                    </td>
+                                    <td>@shift.Start</td>
+                                    <td>@shift.End</td>
+                                    <td>
+                                        <input type="number" name="ShiftSeats_@shift.Id" id="seat_@shift.Id" class="form-control"
+                                               style="width:90px;display:inline-block;" min="1" max="99" placeholder="صندلی"
+                                               value="@(assigned?.Seats ?? 1)" @(assigned == null ? "disabled" : "") required />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <script>
+                    function toggleSeatInput(shiftId) {
+                        var checkbox = document.getElementById('shift_' + shiftId);
+                        var seatInput = document.getElementById('seat_' + shiftId);
+                        seatInput.disabled = !checkbox.checked;
+                        if (!checkbox.checked) seatInput.value = '';
+                    }
+                    function filterShifts() {
+                        var input = document.getElementById('shiftFilter');
+                        var filter = input.value.toLowerCase();
+                        var rows = document.querySelectorAll('#shiftTable .shift-row');
+                        rows.forEach(function(row) {
+                            var label = row.querySelector('.form-check-label').textContent.toLowerCase();
+                            if (label.indexOf(filter) > -1) {
+                                row.style.display = '';
+                            } else {
+                                row.style.display = 'none';
+                            }
+                        });
+                    }
+                </script>
                 <div class="form-group text-center mt-4 d-flex justify-content-center gap-3">
                     <button type="submit" class="btn btn-success col-md-2">
                         <i class="bi bi-save2 me-1"></i> ذخیره
