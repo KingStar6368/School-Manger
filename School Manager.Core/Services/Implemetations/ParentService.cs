@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Base;
+using School_Manager.Domain.Entities.Catalog.Identity;
 using School_Manager.Domain.Entities.Catalog.Operation;
 using System;
 using System.Collections.Generic;
@@ -128,6 +129,16 @@ namespace School_Manager.Core.Services.Implemetations
                 throw new InvalidOperationException("این والد دارای اطلاعات وابسته است و امکان حذف آن وجود ندارد.");
             }
             _unitOfWork.GetRepository<Parent>().Remove(Parent);
+
+            //Check If User Have Other Data in DataBase if Dos not exis Other Data Remove user
+            var Driver = _unitOfWork.GetRepository<Driver>().Query(x => x.UserRef == UserId).FirstOrDefault();
+            if (Driver == null)
+            {
+                var user = _unitOfWork.GetRepository<User>().Query(x => x.Id == UserId).FirstOrDefault();
+                if (user != null)
+                    _unitOfWork.GetRepository<User>().Remove(user);
+            }
+
             return _unitOfWork.SaveChanges() > 0;
         }
 

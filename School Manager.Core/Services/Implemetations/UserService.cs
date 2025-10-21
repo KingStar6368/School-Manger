@@ -230,5 +230,31 @@ namespace School_Manager.Core.Services.Implemetations
             var ds = _unitOfWork.GetRepository<User>().Query(x => x.Drivers.Any(y => y.Id == id)).FirstOrDefault();
             return _mapper.Map<UserDTO>(ds);
         }
+
+        public bool IsNationCodeExis(string NationalCode)
+        {
+            var ds = _unitOfWork.GetRepository<User>().Query(x=>x.UserName == NationalCode).IgnoreQueryFilters();
+            return ds.Any();
+        }
+
+        public UserDTO GetNationCode(string NationalCode)
+        {
+            var ds = _unitOfWork.GetRepository<User>().Query(x => x.UserName == NationalCode).IgnoreQueryFilters().FirstOrDefault();
+            return _mapper.Map<UserDTO>(ds);
+        }
+
+        public bool RecoverUser(UserDTO user)
+        {
+            var ds = _unitOfWork.GetRepository<User>().Query(x => x.Id == user.Id).IgnoreQueryFilters().FirstOrDefault();
+            if (ds == null)
+                throw new InvalidOperationException("یوزر وجود ندارد");
+            ds.FirstName = user.FirstName;
+            ds.LastName = user.LastName;
+            ds.Mobile = user.Mobile;
+            ds.PasswordHash = user.PasswordHash;
+            ds.IsDeleted = false;
+            _unitOfWork.GetRepository<User>().Update(ds);
+            return _unitOfWork.SaveChanges() > 0;
+        }
     }
 }

@@ -3,6 +3,7 @@
 @inject ISchoolService SchoolService
 @inject IBillService BillService
 @inject IDriverService DriverService
+@inject IParentService ParentService
 @model List<ChildInfo>
 @{
     Layout = "_AdminLayout";
@@ -95,6 +96,7 @@
                 <thead class="table-light text-dark">
                     <tr>
                         <th>#ردیف</th>
+                        <th>نام کامل والد</th>
                         <th>نام</th>
                         <th>نام خانوادگی</th>
                         <th>کدملی</th>
@@ -109,13 +111,16 @@
                     @for (int i = 0; i < Model.Count; i++)
                     {
                         var SelectedModel = Model[i];
+                        var Parent = ParentService.GetParentWithChild(SelectedModel.Id);
+                        string PFullName = $"{Parent.ParentFirstName} {Parent.ParentLastName}";
                         <tr>
                             <td>@(i + 1)</td>
+                            <td>@PFullName</td>
                             <td>@SelectedModel.FirstName</td>
                             <td>@SelectedModel.LastName</td>
                             <td>@SelectedModel.NationalCode</td>
                             <td>
-                                @if(!BillService.GetChildBills(SelectedModel.Id).Result.Any(x=>!x.HasPaid))
+                                @if (!BillService.GetChildBills(SelectedModel.Id).Result.Any(x => !x.HasPaid))
                                 {
                                     <i class="badge bg-success">پرداخت شده</i>
                                 }
@@ -127,16 +132,18 @@
                             <td>
                                 @{
                                     int BillCount = BillService.GetChildBills(SelectedModel.Id).Result.Count;
-                                    if(BillCount > 0){
+                                    if (BillCount > 0)
+                                    {
                                         <i class="badge bg-info">@BillCount</i>
                                     }
-                                    else{
+                                    else
+                                    {
                                         <i class="badge bg-danger">قبضی صادر نشده</i>
                                     }
                                 }
                             </td>
-                            <td>@(SelectedModel.DriverId>0?DriverService.GetDriver((long)SelectedModel.DriverId):"راننده ندارد")</td>
-                            <td>@(SelectedModel.SchoolId.HasValue?SchoolService.GetSchool((long)SelectedModel.SchoolId).Name:"ندارد")</td>
+                            <td>@(SelectedModel.DriverId > 0 ? DriverService.GetDriver((long)SelectedModel.DriverId) : "راننده ندارد")</td>
+                            <td>@(SelectedModel.SchoolId.HasValue? SchoolService.GetSchool((long)SelectedModel.SchoolId).Name:"ندارد")</td>
                             <td class="row container">
                                 @if (SelectedModel.DriverId > 0)
                                 {
@@ -148,7 +155,7 @@
                                     </form>
                                 }
                                 <form asp-controller="School" asp-action="Details">
-                                    <input type="hidden" name="id" value="@SelectedModel.SchoolId"/>
+                                    <input type="hidden" name="id" value="@SelectedModel.SchoolId" />
                                     <button class="btn btn-sm btn-outline-info" type="submit">
                                         <i class="bi bi-file-earmark-text"></i> نمایش مدرسه
                                     </button>

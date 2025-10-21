@@ -11,13 +11,14 @@
             <a asp-action="Index" class="btn btn-outline-light">
                 <i class="bi bi-arrow-right"></i> بازگشت
             </a>
-            <h5 class="m-0">تکمیل اطلاعات کاربری</h5>
+            <h4 class="m-0"> تکمیل اطلاعات کاربری <strong>خانواده</strong></h4>
         </div>
 
         <div class="card-body p-4">
+            <h5 class="m-0 text-danger">لطفا اطلاعات خانواده را وارد نمایید</h5>
             <form asp-action="CompleteProfile" method="post" id="profileForm">
                 <div class="mb-3">
-                    <label for="nationalCode" class="form-label">کد ملی</label>
+                    <label for="nationalCode" class="form-label">کد ملی والدین</label>
                     <input type="text"
                            class="form-control bg-dark text-white border-secondary"
                            id="nationalCode"
@@ -31,7 +32,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="firstName" class="form-label">نام</label>
+                    <label for="firstName" class="form-label">نام والدین</label>
                     <input type="text"
                            class="form-control bg-dark text-white border-secondary"
                            id="firstName"
@@ -42,7 +43,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="lastName" class="form-label">نام خانوادگی</label>
+                    <label for="lastName" class="form-label">نام خانوادگی والدین</label>
                     <input type="text"
                            class="form-control bg-dark text-white border-secondary"
                            id="lastName"

@@ -132,10 +132,10 @@ namespace School_Manger.Controllers
                     if (parent == null)
                     {
                         ControllerExtensions.AddKey(this, "PhoneNumber", user.Mobile);
-                        ControllerExtensions.AddKey(this, "nationalCode",user.UserName);
-                        ControllerExtensions.AddKey(this, "firstName",user.FirstName);
-                        ControllerExtensions.AddKey(this, "lastName",user.LastName);
-                        ControllerExtensions.AddKey(this, "password",user.PasswordHash);
+                        ControllerExtensions.AddKey(this, "nationalCode", user.UserName);
+                        ControllerExtensions.AddKey(this, "firstName", user.FirstName);
+                        ControllerExtensions.AddKey(this, "lastName", user.LastName);
+                        ControllerExtensions.AddKey(this, "password", user.PasswordHash);
                         return ReCompleteProfile();
                     }
                     claims.Add(new Claim("ParentId", parent.Id.ToString()));
@@ -213,15 +213,31 @@ namespace School_Manger.Controllers
             {
                 nationalCode = nationalCode.ConvertPersianToEnglish();
                 password = password.ConvertPersianToEnglish();
-                long UseRref = _UserService.CreateUser(new UserCreateDTO()
+                long UseRref = 0;
+                if (!_UserService.IsNationCodeExis(nationalCode))
+                    UseRref = _UserService.CreateUser(new UserCreateDTO()
+                    {
+                        FirstName = firstName,
+                        LastName = lastName,
+                        IsActive = true,
+                        Mobile = ControllerExtensions.GetKey<string>(this, "PhoneNumber"),
+                        PasswordHash = password,
+                        UserName = nationalCode
+                    });
+                else
                 {
-                    FirstName = firstName,
-                    LastName = lastName,
-                    IsActive = true,
-                    Mobile = ControllerExtensions.GetKey<string>(this, "PhoneNumber"),
-                    PasswordHash = password,
-                    UserName = nationalCode
-                });
+                    UseRref = _UserService.GetNationCode(nationalCode).Id;
+                    _UserService.RecoverUser(new UserDTO()
+                    {
+                        Id = UseRref,
+                        FirstName = firstName,
+                        LastName=lastName,
+                        UserName=nationalCode,
+                        PasswordHash = password,
+                        Mobile = ControllerExtensions.GetKey<string>(this, "PhoneNumber"),
+                        IsActive=true,
+                    });
+                }
                 long ParentRef = _PService.CreateParent(new ParentCreateDto()
                 {
                     FirstName = firstName,
