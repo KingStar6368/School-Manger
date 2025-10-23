@@ -36,6 +36,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// کلاس تحصیلی
         /// </summary>
         public string Class { get; set; }
+        public ClassNumber ClassEnum { get; set; }
         /// <summary>
         /// کد راننده 
         /// </summary>

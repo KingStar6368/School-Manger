@@ -39,30 +39,37 @@
             <strong>🗺️ موقعیت مکانی:</strong>
             <div id="schoolMap" style="height: 300px; width: 100%;" class="rounded shadow-sm border border-light mt-2"></div>
         </div>
-        <div class="col-md-6">
-            <strong>شیفت های مدرسه :</strong>
-            <select class="form-control">
+        <div class="col-md-4">
+            <form asp-area="Admin" asp-controller="AssignD2S" asp-action="ShiftIndex">
+                <strong>شیفت های مدرسه :</strong>
                 @{
                     var Shifts = await SchoolService.GetSchoolShifts(Model.School.Id);
                 }
-                @if (Shifts.Count > 0)
-                {
-                    @foreach (var school in Shifts)
+                <select id="ShiftOption" class="form-control">
+                    @if (Shifts.Count > 0)
+                    {
+                        @foreach (var shift in Shifts)
+                        {
+                            <option value="@shift.Id">
+                                @shift.Name : نام شیفت
+                                @shift.Start : زمان شروع
+                                @shift.End : زمان پایان
+                            </option>
+                        }
+                    }
+                    else
                     {
                         <option>
-                            @school.Name : نام شیفت 
-                            @school.Start : زمان شروع
-                            @school.End : زمان پایان
+                            این مدرسه شیفت ندارد
                         </option>
                     }
-                }
-                else
+                </select>
+                @if (Shifts.Count > 0)
                 {
-                    <option>
-                        این مدرسه شیفت ندارد
-                    </option>
+                    <input name="ShiftId" id="ShiftId" value="@Shifts.FirstOrDefault().Id" type="hidden" />
+                    <button class="mt-4 form-control bg-success text-white" type="submit">اختصاص دادن رانندگان این شیفت به دانش آموزان</button>
                 }
-            </select>
+            </form>
         </div>
         <div class="mt-4">
             <a asp-action="DeleteSchool" asp-route-id="@Model.School.Id"
@@ -92,7 +99,7 @@
                     <th>👤 نام</th>
                     <th>👥 نام خانوادگی</th>
                     <th>🆔 کد ملی</th>
-                    <th>💺 تعداد صندلی</th>
+                    <th>💺 تعداد صندلی خودرو</th>
                     <th>🚗 خودرو</th>
                     <th>عملیات</th>
                 </tr>
@@ -157,7 +164,7 @@
                                 <span class="badge bg-danger">❌ پرداخت نشده</span>
                             }
                         </td>
-                        <td>@(ShiftService.GetShiftById(student.ShiftId) != null? ShiftService.GetShiftById(student.ShiftId).Name:"شیفت انتخاب نشده")</td>
+                        <td>@(ShiftService.GetShiftById(student.ShiftId) != null ? ShiftService.GetShiftById(student.ShiftId).Name : "شیفت انتخاب نشده")</td>
                         <td>
                             <form asp-controller="Parents" asp-action="CreateBill" method="post" class="d-inline">
                                 <input name="ChildId" type="hidden" value="@student.Id" />
@@ -193,6 +200,10 @@
         L.marker([lat, lng]).addTo(map)
             .bindPopup('📍 موقعیت مدرسه')
             .openPopup();
+                // Update hidden shift field when shift selection changes
+        document.getElementById('ShiftOption').addEventListener('change', function() {
+            document.getElementById('ShiftId').value =  document.getElementById('ShiftOption').value;
+        });
     </script>
 }
 

@@ -33,6 +33,7 @@ namespace School_Manager.Core.Services.Implemetations
         {
             var ds = _unitOfWork.GetRepository<Driver>()
                 .Query()
+                .Include(x=>x.DriverShifts).ThenInclude(x=>x.Passenger).ThenInclude(x=>x.ChildNavigation)
                 .Include(x => x.Cars)
                 .Include(x => x.Passanger).ThenInclude(x => x.ChildNavigation)
                 .FirstOrDefault(x=>x.Id == Id /*&& x.Passanger.Any(y=>y.IsEnabled)*/);
@@ -82,12 +83,9 @@ namespace School_Manager.Core.Services.Implemetations
             return _mapper.Map<List<DriverDto>>(ds);
         }
 
-        public List<ChildInfo> GetPassngers(long id)
+        public List<ChildInfo> GetPassngers(long DriverShiftId)
         {
-            var ds =  _unitOfWork.GetRepository<Driver>().Query()
-                .Include(x => x.Passanger).ThenInclude(x => x.ChildNavigation).FirstOrDefault(x=>x.Passanger.Any(y=>y.IsEnabled && y.EndDate > DateTime.Now) && x.Id == id);
-            if (ds == null) return new List<ChildInfo>();
-            var child = ds.Passanger.Where(x=>x.IsEnabled && x.EndDate > DateTime.Now).Select(x => x.ChildNavigation).ToList();
+            var child = _unitOfWork.GetRepository<Child>().Query(x => x.DriverChilds.Any(y=>y.DriverShiftRef == DriverShiftId && y.IsEnabled && y.EndDate >= DateTime.Now)).ToList();
             return _mapper.Map<List<ChildInfo>>(child);
         }
 

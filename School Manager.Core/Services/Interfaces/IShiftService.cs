@@ -18,5 +18,8 @@ namespace School_Manager.Core.Services.Interfaces
         List<ShiftDto> GetAllDriverShifts(long DriverId);
         List<DriverShift> GetDriverShifts(long DriverId);
         List<ShiftDto> GetAllSchoolShifts(long SchoolId);
+        Task<List<DriverDto>> GetDriversOfShift(long ShiftId);
+        Task<List<ChildInfo>> GetChildernOfShift(long ShiftId);
+        DriverShift GetDriverShift(long ShiftId,long DriverId);
     }
 }

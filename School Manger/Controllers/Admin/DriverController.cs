@@ -17,25 +17,28 @@ namespace School_Manger.Controllers.Admin
         private readonly IChildService _childService;
         private readonly IUserService _userService;
         private readonly ISMSService _smsservice;
+        private readonly IShiftService _shiftService;
         private readonly ISettingService _settingService;
-        public DriverController(IDriverService driverService, IUserService userService, IChildService childService,ISMSService sMSService, ISettingService settingService)
+        public DriverController(IDriverService driverService, IUserService userService, IChildService childService,ISMSService sMSService,IShiftService shiftService, ISettingService settingService)
         {
             _driverService = driverService;
             _userService = userService;
             _childService = childService;
             _smsservice = sMSService;
             _settingService = settingService;
+            _shiftService = shiftService;
         }
         public async Task<IActionResult> Index()
         {
             var Drivers = await _driverService.GetDrivers();
             return View("Index",Drivers);
         }
-        public IActionResult Details(long id)
+        public IActionResult Details(long id,long ShiftId = 0)
         {
             var driver = _driverService.GetDriver(id);
             if (driver == null) return NotFound();
-            var passanger = _driverService.GetPassngers(id);
+            var Sid = ShiftId == 0 ? _shiftService.GetDriverShifts(driver.Id).FirstOrDefault().Id : ShiftId;
+            var passanger = _driverService.GetPassngers(Sid);
             AdminDriver admindashbord = new AdminDriver()
             {
                 Driver = driver,

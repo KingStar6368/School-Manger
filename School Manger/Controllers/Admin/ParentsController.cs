@@ -415,7 +415,7 @@ namespace School_Manger.Controllers.Admin
                 LastName = child.LastName,
                 NationalCode = child.NationalCode.ConvertPersianToEnglish(),
                 BirthDate = child.BirthDate,
-                Class = int.TryParse(child.Class, out var c) ? c : 0,
+                Class = (int)child.ClassEnum,
                 LocationPairs = new List<LocationPairUpdateDto>()
                 {
                     new()

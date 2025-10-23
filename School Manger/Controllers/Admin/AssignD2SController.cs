@@ -14,10 +14,12 @@ namespace School_Manger.Controllers.Admin
     {
         private readonly IChildService _childService;
         private readonly IDriverService _driverService;
-        public AssignD2SController(IChildService childService,IDriverService driverService) 
+        private readonly IShiftService _shiftService;
+        public AssignD2SController(IChildService childService,IDriverService driverService,IShiftService shiftService) 
         {
             _childService = childService;
             _driverService = driverService;
+            _shiftService = shiftService;
         }
         public async Task<IActionResult> Index()
         {
@@ -31,10 +33,24 @@ namespace School_Manger.Controllers.Admin
             };
             return View("Index",Dashbord);
         }
+        public async Task<IActionResult> ShiftIndex(long ShiftId)
+        {
+            var Children = await _shiftService.GetChildernOfShift(ShiftId);
+            var DriverShifts = await _shiftService.GetDriversOfShift(ShiftId);
+            ControllerExtensions.AddKey(this, "ShiftId", ShiftId);
+            var Dashbrod = new AdminNONChildDriver()
+            {
+                AvailableDrivers = DriverShifts,
+                NonDivers = Children,
+            };
+            return View("Index",Dashbrod);
+        }
         public async Task<IActionResult> AssignDriver(long DriverId, long StudentId)
         {
+            var ShiftId = ControllerExtensions.GetKey<long>(this, "ShiftId");
+            var DriverShiftId = _shiftService.GetDriverShift(ShiftId, DriverId).Id;
             //todo: change driverId to DriverShiftId
-            bool result = _childService.SetDriver(StudentId, DriverId);
+            bool result = _childService.SetDriver(StudentId, DriverShiftId);
             if (result)
                 ControllerExtensions.ShowSuccess(this, "موفق", "راننده اختصاص داده شد");
             else

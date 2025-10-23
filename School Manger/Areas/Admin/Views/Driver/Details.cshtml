@@ -38,9 +38,7 @@
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item bg-dark text-white border-0">🚗 <strong>مدل:</strong> @Model.Driver.Car.Name</li>
                     <li class="list-group-item bg-dark text-white border-0">🎨 <strong>رنگ:</strong> @Model.Driver.Car.Color</li>
-                    <li class="list-group-item bg-dark text-white border-0">💺 <strong>تعداد صندلی:</strong> @Model.Driver.Car.SeatNumber</li>
                     <li class="list-group-item bg-dark text-white border-0">🔢 <strong>پلاک:</strong> @Html.Partial("_CarPlate", Model.Driver.Car.PlateNumber)</li>
-                    <li class="list-group-item bg-dark text-white border-0">🟢 <strong>صندلی خالی:</strong> @Model.Driver.AvailableSeats</li>
                 </ul>
             </div>
         </div>
@@ -53,17 +51,24 @@
                         <th>نام شیفت</th>
                         <th>زمان شروع</th>
                         <th>زمان پایان</th>
-                        <th>تعداد صندلی</th>
+                        <th>تعداد مسافر / تعداد کل صندلی</th>
+                        <th>عملیات</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var shift in ShiftService.GetAllDriverShifts(Model.Driver.Id))
                     {
+                        var PassangerCount = ShiftService.GetDriverShift(shift.Id, Model.Driver.Id).Passenger?.Count ?? 0;
                         <tr>
-                            <td>@shift.Name</td>
-                            <td>@shift.Start.ToString("HH:mm")</td>
-                            <td>@shift.End.ToString("HH:mm")</td>
-                            <td>@ShiftService.GetDriverShifts(Model.Driver.Id).FirstOrDefault(x=>x.ShiftRef == shift.Id).Seats</td>
+                            <form asp-action="Details">
+                                <input name="id" type="hidden" value="@Model.Driver.Id"/>
+                                <input name="ShiftId" type="hidden" value="@shift.Id" />
+                                <td>@shift.Name</td>
+                                <td>@shift.Start.ToString("HH:mm")</td>
+                                <td>@shift.End.ToString("HH:mm")</td>
+                                <td>@PassangerCount / @ShiftService.GetDriverShifts(Model.Driver.Id).FirstOrDefault(x => x.ShiftRef == shift.Id).Seats </td>
+                                <td><button class="bg-success text-white" type="submit">مشاهده مسافرین شیفت</button></td>
+                            </form>
                         </tr>
                     }
                 </tbody>
