@@ -17,7 +17,7 @@
     <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
         <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
             <h4 class="mb-0 fw-bold">
-                ✏️ ویرایش کاربر راننده: <span class="text-warning">@Model.DriverUpdateDto.Name</span>
+                <i class="bi bi-pen"></i> ویرایش کاربر راننده: <span class="text-warning">@Model.DriverUpdateDto.Name</span>
             </h4>
             <form action="@Url.Action("Drivers")" method="post">
                 <input type="submit" class="btn btn-secondary fw-bold shadow-sm" value="🔙 بازگشت" />
@@ -32,7 +32,7 @@
                         <input type="hidden" asp-for="DriverUpdateDto.UserRef" value="@Model.UserUpdateDto.Id" />
                         <input type="hidden" asp-for="UserUpdateDto.IsActive" />
                         <div class="mb-3">
-                            <label class="form-label">👤 نام</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person"></i> نام</label><label style="color:red;font-size:20px">*</label>
                             <input asp-for="DriverUpdateDto.Name" id="DName" class="form-control form-control-lg" required />
                             <input asp-for="UserUpdateDto.FirstName" value="@Model.DriverUpdateDto.Name" id="UName" hidden required />
                         </div>
@@ -46,13 +46,13 @@
                             <input asp-for="DriverUpdateDto.FatherName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🎂 تاریخ تولد</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-cake2-fill"></i> تاریخ تولد</label><label style="color:red;font-size:20px">*</label>
                             <label class="form-label">@Model.DriverUpdateDto.BirthDate.ToPersianString()</label>
                             <input name="BirthDate" class="persian-date form-control bg-secondary text-white" required />
                             <input type="hidden" value="@Model.DriverUpdateDto.BirthDate.ToPersianString()" class="gregorian-date" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🆔 کد ملی</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person-vcard"></i> کد ملی</label><label style="color:red;font-size:20px">*</label>
                             <input asp-for="DriverUpdateDto.NationCode" id="DserName" class="form-control form-control-lg" required />
                             <input asp-for="UserUpdateDto.UserName" value="@Model.DriverUpdateDto.NationCode" id="UserName" hidden required />
                         </div>
@@ -73,7 +73,7 @@
                             <textarea asp-for="DriverUpdateDto.Address" class="form-control" rows="2" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🆔 شماره پرونده</label>
+                            <label class="form-label"><i class="bi bi-person-vcard"></i> شماره پرونده</label>
                             <textarea asp-for="DriverUpdateDto.Code" class="form-control" rows="2"></textarea>
                         </div>
                     

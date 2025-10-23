@@ -25,10 +25,10 @@
                         <thead class="table-light text-dark">
                             <tr>
                                 <th>🔢 ردیف</th>
-                                <th>👤 نام کاربری</th>
-                                <th>👤 نام کامل</th>
+                                <th><i class="bi bi-person"></i> نام کاربری</th>
+                                <th><i class="bi bi-person"></i> نام کامل</th>
                                 <th>📞 شماره تماس</th>
-                                <th>⚙️ عملیات</th>
+                                <th><i class="bi bi-gear"></i> عملیات</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -43,7 +43,7 @@
                                         <a asp-action="DeleteDriver" asp-route-id="@user.User.Id"
                                            class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف"
                                            onclick="return confirm('آیا از حذف این راننده مطمئن هستید؟')">
-                                            <i class="bi bi-trash"></i> 🗑️ حذف
+                                            <i class="bi bi-trash"></i> ️ حذف
                                         </a>
                                         <a asp-action="EditDriver" asp-route-UserId="@user.User.Id" asp-route-NationCode="@user.User.UserName"
                                            class="btn text-black bg-warning btn-sm btn-outline-light rounded-pill shadow-sm" title="ویرایش">

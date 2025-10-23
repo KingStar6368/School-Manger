@@ -18,12 +18,12 @@
             <div class="col-md-6">
                 <h5 class="border-bottom pb-2 mb-3 text-info">اطلاعات راننده</h5>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item bg-dark text-white border-0">👤 <strong>نام کامل:</strong> @Model.Driver.Name @Model.Driver.LastName</li>
-                    <li class="list-group-item bg-dark text-white border-0">🆔 <strong>کد ملی:</strong> @Model.Driver.NationCode</li>
+                    <li class="list-group-item bg-dark text-white border-0"><i class="bi bi-person"></i> <strong>نام کامل:</strong> @Model.Driver.Name @Model.Driver.LastName</li>
+                    <li class="list-group-item bg-dark text-white border-0"><i class="bi bi-person-vcard"></i> <strong>کد ملی:</strong> @Model.Driver.NationCode</li>
                     <li class="list-group-item bg-dark text-white border-0">👨‍👦 <strong>نام پدر:</strong> @Model.Driver.FutherName</li>
                     <li class="list-group-item bg-dark text-white border-0">🏦 <strong>بانک:</strong> @* @Model.Driver.BankAccount *@</li>
                     <li class="list-group-item bg-dark text-white border-0">🔢 <strong>شماره حساب:</strong> @Model.Driver.BankNumber</li>
-                    <li class="list-group-item bg-dark text-white border-0">🎂 <strong>تاریخ تولد:</strong> @Model.Driver.BirthDate.ToPersianString()</li>
+                    <li class="list-group-item bg-dark text-white border-0"><i class="bi bi-cake2-fill"></i> <strong>تاریخ تولد:</strong> @Model.Driver.BirthDate.ToPersianString()</li>
                     <li class="list-group-item bg-dark text-white border-0">⭐ <strong>امتیاز:</strong> <span class="badge bg-success">@Model.Driver.Rate</span></li>
                     <li class="list-group-item bg-dark text-white border-0">⚠️ <strong>اخطارها:</strong> <span class="badge bg-warning text-dark">@Model.Driver.Warnning</span></li>
                     <li class="list-group-item bg-dark text-white border-0">🏠 <strong>آدرس:</strong> @Model.Driver.Address</li>
@@ -67,7 +67,7 @@
                                 <td>@shift.Start.ToString("HH:mm")</td>
                                 <td>@shift.End.ToString("HH:mm")</td>
                                 <td>@PassangerCount / @ShiftService.GetDriverShifts(Model.Driver.Id).FirstOrDefault(x => x.ShiftRef == shift.Id).Seats </td>
-                                <td><button class="bg-success text-white" type="submit">مشاهده مسافرین شیفت</button></td>
+                                <td><button class="bg-success text-white rounded" type="submit"><i class="bi bi-eye"></i> مشاهده مسافرین شیفت</button></td>
                             </form>
                         </tr>
                     }
@@ -124,11 +124,12 @@
                                         <i class="bi bi-file-earmark-text"></i> صدور قبض
                                     </button>
                                 </form>
-                                <form asp-action="DeletePassanger"
-                                      class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm title="حذف">
+                                <form asp-action="DeletePassanger">
                                     <input hidden name="ChildId" value="@passanger.Id" />
                                     <input hidden name="DriverId" value="@Model.Driver.Id" />
-                                    <input type="submit" class="bi bi-trash" style="background-color:transparent" value="🗑️ حذف از لیست" />
+                                    <button class="btn btn-sm btn-outline-danger" type="submit">
+                                        <i class="bi bi-trash"></i> حذف از لیست
+                                    </button>
                                 </form>
                             </td>
                         </tr>

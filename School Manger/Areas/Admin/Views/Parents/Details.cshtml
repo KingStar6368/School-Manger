@@ -36,13 +36,13 @@
         </div>
         <div class="card-body text-center">
             <div class="row">
-                <div class="col-md-4"><strong>🧑‍🦱 نام:</strong> @Model.Parent.ParentFirstName</div>
-                <div class="col-md-4"><strong>👩 نام خانوادگی:</strong> @Model.Parent.ParentLastName</div>
-                <div class="col-md-4"><strong>🆔 کد ملی:</strong> @Model.Parent.ParentNationalCode</div>
+                <div class="col-md-4"><strong><i class="bi bi-person"></i> نام:</strong> @Model.Parent.ParentFirstName</div>
+                <div class="col-md-4"><strong><i class="bi bi-person"></i> نام خانوادگی:</strong> @Model.Parent.ParentLastName</div>
+                <div class="col-md-4"><strong><i class="bi bi-person-vcard"></i> کد ملی:</strong> @Model.Parent.ParentNationalCode</div>
             </div>
 
             <div class="mt-4">
-                <h5>💳 جمع مبالغ پرداخت نشده:</h5>
+                <h5><i class="bi bi-credit-card-fill"></i> جمع مبالغ پرداخت نشده:</h5>
                 @if (Model.Parent.Children.All(x => x.HasPaid))
                 {
                     <span class="badge bg-success px-3 py-2">✅ همه پرداخت‌ها انجام شده است</span>
@@ -66,16 +66,16 @@
                 <thead class="table-light text-dark">
                     <tr>
                         <th>ردیف</th>
-                        <th>👶 نام</th>
-                        <th>🆔 کد ملی</th>
-                        <th>🎂 تولد</th>
-                        <th>🏫 پایه</th>
-                        <th>💰 پرداخت</th>
-                        <th>🧑‍✈️ راننده</th>
+                        <th><i class="bi bi-person"></i> نام</th>
+                        <th><i class="bi bi-person-vcard"></i> کد ملی</th>
+                        <th><i class="bi bi-cake2-fill"></i> تولد</th>
+                        <th><i class="bi bi-building"></i> پایه</th>
+                        <th><i class="bi bi-cash"></i> پرداخت</th>
+                        <th><i class="bi bi-car-front-fill"></i> راننده</th>
                         <th>🗺 مسیر</th>
-                        <th>🧾 قبض</th>
-                        <th>⚙️ عملیات</th>
-                        <th>✏️ ویرایش</th>
+                        <th><i class="bi bi-receipt"></i> قبض</th>
+                        <th><i class="bi bi-gear"></i> عملیات</th>
+                        <th><i class="bi bi-pen"></i> ویرایش</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -110,7 +110,7 @@
                                 }
                                 else
                                 {
-                                    <span>🧑‍✈️ @driver.Id - @driver.Name @driver.LastName</span>
+                                    <span><i class="bi bi-car-front-fill"></i> @driver.Id - @driver.Name @driver.LastName</span>
                                 }
                             </td>
                             <td>
@@ -138,7 +138,7 @@
                                 <a asp-action="DeleteChild" asp-route-id="@child.Child.Id" asp-route-PId="@Model.Parent.Id"
                                    class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف"
                                    onclick="return confirm('آیا از حذف این فرزند مطمئن هستید؟')">
-                                    <i class="bi bi-trash"></i> 🗑️ حذف
+                                    <i class="bi bi-trash"></i>  حذف
                                 </a>
                             </td>
                             <td>

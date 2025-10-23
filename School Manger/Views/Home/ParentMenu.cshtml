@@ -11,7 +11,7 @@
 
     <!-- Parent Info -->
     <div class="row bg-black rounded-4 shadow-sm py-4 mb-4 text-center">
-        <h3 class="fw-bold">🧾 اطلاعات والدین</h3>
+        <h3 class="fw-bold"><i class="bi bi-receipt"></i> اطلاعات والدین</h3>
         <div class="d-flex justify-content-center flex-wrap gap-4 mt-3">
             <div>
                 <span class="fw-semibold">نام:</span>
@@ -32,7 +32,7 @@
                 }
                 else
                 {
-                    <span class="fw-semibold">💰 مبالغ پرداخت‌نشده:</span>
+                    <span class="fw-semibold"><i class="bi bi-cash"></i> مبالغ پرداخت‌نشده:</span>
                     <span class="badge bg-danger fs-5 mt-2">
                         @Model.Parent.Children.Where(x=>x.Bills != null).Sum(x =>x.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice)) 
                         ریال

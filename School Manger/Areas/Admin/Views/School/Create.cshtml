@@ -2,7 +2,7 @@
 @model SchoolDto
 
 @{
-    ViewData["Title"] = "🏫 مدرسه جدید";
+    ViewData["Title"] = "<i class=\"bi bi-building\"></i> مدرسه جدید";
     Layout = "_AdminLayout";
 }
 
@@ -26,7 +26,7 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label class="control-label">👨‍🏫 نام مدیر مدرسه</label>
+                        <label class="control-label">👨‍<i class="bi bi-building"></i> نام مدیر مدرسه</label>
                         <input asp-for="ManagerName" class="form-control shadow-sm" />
                         <span asp-validation-for="ManagerName" class="text-danger small"></span>
                     </div>

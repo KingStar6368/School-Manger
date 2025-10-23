@@ -10,7 +10,7 @@
     <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
         <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
             <h4 class="mb-0 fw-bold">
-                ✏️ ویرایش قبض: <span class="text-warning">@Model.Name</span>
+                <i class="bi bi-pen"></i> ویرایش قبض: <span class="text-warning">@Model.Name</span>
             </h4>
             <form asp-action="CreateBill" method="post">
                 <input hidden name="ChildId" value="@childId" />
@@ -29,7 +29,7 @@
                         <input type="text" name="Name" class="form-control bg-dark text-white shadow-sm" value="@Model.Name" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">💰 مبلغ کل (ریال)</label>
+                        <label class="form-label fw-bold"><i class="bi bi-cash"></i> مبلغ کل (ریال)</label>
                         <input type="number" name="Price" class="form-control bg-dark text-white shadow-sm" value="@Model.TotalPrice" required />
                     </div>
                     <div class="col-md-6">

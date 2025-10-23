@@ -38,7 +38,7 @@
                         <input type="text" name="Name" class="form-control bg-dark text-white shadow-sm" placeholder="مثلاً شهریه مهر ماه" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">💰 مبلغ کل (ریال)</label>
+                        <label class="form-label fw-bold"><i class="bi bi-cash"></i> مبلغ کل (ریال)</label>
                         <input type="text" name="TotalPrice" class="form-control bg-dark text-white shadow-sm price-separator" required />
                     </div>
                     <div class="col-md-6">
@@ -74,7 +74,7 @@
                 <input type="hidden" name="ChildId" value="@Model.Id" />
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">🆔 شماره قبض</label>
+                        <label class="form-label fw-bold"><i class="bi bi-person-vcard"></i> شماره قبض</label>
                         <input type="number" id="BillId" name="BillId" class="form-control bg-dark text-white shadow-sm" required />
                     </div>
                     <div class="col-md-6">
@@ -126,14 +126,14 @@
                     <thead class="table-light text-dark">
                         <tr>
                             <th>🔢 ردیف</th>
-                            <th>🆔 شناسه قبض</th>
-                            <th>🆔 شناسه قرارداد</th>
+                            <th><i class="bi bi-person-vcard"></i> شناسه قبض</th>
+                            <th><i class="bi bi-person-vcard"></i> شناسه قرارداد</th>
                             <th>📄 نام قبض</th>
                             <th>💵 مبلغ کل</th>
                             <th>💳 مبلغ پرداخت شده</th>
                             <th>✅ وضعیت</th>
                             <th>⏰ زمان پرداخت/مهلت</th>
-                            <th>⚙️ عملیات</th>
+                            <th><i class="bi bi-gear"></i> عملیات</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -166,7 +166,7 @@
                             <a asp-action="DeleteBill" asp-route-id="@bill.Id" asp-route-secondId="@Model.Id"
                                class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف"
                                onclick="return confirm('آیا از حذف این قبض مطمئن هستید؟')">
-                                <i class="bi bi-trash"></i> 🗑️ حذف
+                                <i class="bi bi-trash"></i> ️ حذف
                             </a>
                             <a asp-action="EditBill" asp-route-billId="@bill.Id" asp-route-childId="@Model.Id"
                                class="btn btn-sm btn-outline-info rounded-pill shadow-sm ms-2" title="ویرایش">

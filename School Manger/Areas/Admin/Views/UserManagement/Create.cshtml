@@ -21,15 +21,15 @@
                     @if (userType == "Parent")
                     {
                         <div class="mb-3">
-                            <label class="form-label">👤 نام</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person"></i> نام</label><label style="color:red;font-size:20px">*</label>
                             <input asp-for="User.FirstName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">👥 نام خانوادگی</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person"></i> نام خانوادگی</label><label style="color:red;font-size:20px">*</label>
                             <input asp-for="User.LastName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🆔 کد ملی</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person-vcard"></i> کد ملی</label><label style="color:red;font-size:20px">*</label>
                             <input asp-for="User.UserName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
@@ -40,11 +40,11 @@
                     else
                     {
                         <div class="mb-3">
-                            <label class="form-label">👤 نام</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person"></i> نام</label><label style="color:red;font-size:20px">*</label>
                             <input asp-for="User.FirstName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">👥 نام خانوادگی</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person"></i> نام خانوادگی</label><label style="color:red;font-size:20px">*</label>
                             <input asp-for="User.LastName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
@@ -52,12 +52,12 @@
                             <input asp-for="Driver.FutherName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🎂 تاریخ تولد</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-cake2-fill"></i> تاریخ تولد</label><label style="color:red;font-size:20px">*</label>
                             <input name="BirthDate" class="persian-date form-control bg-secondary text-white" required />
                             <input type="hidden" class="gregorian-date" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🆔 کد ملی</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person-vcard"></i> کد ملی</label><label style="color:red;font-size:20px">*</label>
                             <input asp-for="User.UserName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
@@ -77,7 +77,7 @@
                             <textarea asp-for="Driver.Address" data-val="false" class="form-control" rows="2" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🆔 شماره پرونده</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person-vcard"></i> شماره پرونده</label><label style="color:red;font-size:20px">*</label>
                             <textarea asp-for="Driver.Code" data-val="false" class="form-control" rows="2"></textarea>
                         </div>
                         

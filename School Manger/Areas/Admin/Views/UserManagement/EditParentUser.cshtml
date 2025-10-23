@@ -7,7 +7,7 @@
     <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
         <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
             <h4 class="mb-0 fw-bold">
-                ✏️ ویرایش والد: <span class="text-warning">@Model.ParentUpdateDto.FirstName</span>
+                <i class="bi bi-pen"></i> ویرایش والد: <span class="text-warning">@Model.ParentUpdateDto.FirstName</span>
             </h4>
             <form asp-action="Parents" method="post">
                 <input type="submit" class="btn btn-secondary fw-bold shadow-sm" value="🔙 بازگشت" />
@@ -22,7 +22,7 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">👤 نام</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person"></i> نام</label><label style="color:red;font-size:20px">*</label>
                             <input asp-for="@Model.ParentUpdateDto.FirstName" id="PName" value="@Model.ParentUpdateDto.FirstName" class="form-control form-control-lg" required />
                             <input asp-for="@Model.UserUpdateDto.FirstName" id="UName" hidden value="@Model.ParentUpdateDto.FirstName" required />
                         </div>
@@ -32,7 +32,7 @@
                             <input asp-for="@Model.UserUpdateDto.LastName" id="ULastName" hidden value="@Model.ParentUpdateDto.LastName" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🆔 کد ملی</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person-vcard"></i> کد ملی</label><label style="color:red;font-size:20px">*</label>
                             <input asp-for="@Model.ParentUpdateDto.NationalCode" id="PerName" value="@Model.ParentUpdateDto.NationalCode" class="form-control form-control-lg" required />
                             <input asp-for="@Model.UserUpdateDto.UserName" id="UserName" hidden value="@Model.ParentUpdateDto.NationalCode" required />
                         </div>

@@ -15,7 +15,7 @@
     <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
         <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
             <h4 class="mb-0 fw-bold">
-                ✏️ ویرایش مدرسه: <span class="text-warning">@Model.Name</span>
+                <i class="bi bi-pen"></i> ویرایش مدرسه: <span class="text-warning">@Model.Name</span>
             </h4>
             <form asp-action="Index">
                 <input type="submit" class="btn btn-secondary fw-bold shadow-sm" value="🔙 بازگشت" />
@@ -30,7 +30,7 @@
                         <input type="text" class="form-control bg-dark text-white shadow-sm" asp-for="@Model.Name" value="@Model.Name" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">💰 نام مدیر</label>
+                        <label class="form-label fw-bold"><i class="bi bi-cash"></i> نام مدیر</label>
                         <input type="number" class="form-control bg-dark text-white shadow-sm" asp-for="@Model.ManagerName" value="@Model.ManagerName" required />
                     </div>
                     <div class="form-group col-md-6">

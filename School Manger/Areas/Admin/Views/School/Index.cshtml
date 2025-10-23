@@ -2,7 +2,7 @@
 @model List<SchoolDto>
 
 @{
-    ViewData["Title"] = "🏫 مدیریت مدارس";
+    ViewData["Title"] = "<i class=\"bi bi-building\"></i> مدیریت مدارس";
     Layout = "_AdminLayout";
 }
 
@@ -23,7 +23,7 @@
                         <thead class="table-light text-dark">
                             <tr>
                                 <th>🔢 ردیف</th>
-                                <th>🏫 نام مدرسه</th>
+                                <th><i class="bi bi-building"></i> نام مدرسه</th>
                                 <th>👨‍💼 نام مدیر</th>
                                 <th>⭐ امتیاز</th>
                                 <th>📍 آدرس</th>
@@ -38,23 +38,25 @@
                                     <td>@school.School.Name</td>
                                     <td>@school.School.ManagerName</td>
                                     <td>
-                                        <div class="rating p-0" style="font-size : 10px;">
-                                            @for (int i = 1; i <= school.School.Rate; i++)
-                                            {
-                                                <i>⭐</i>
-                                                @* <i class="bi bi-star@(i <= school.School.Rate ? "-fill" : "") text-warning"></i> *@
-                                            }
+                                        <div class="col-md-6 mb-3">
+                                            <strong>⭐ امتیاز:</strong>
+                                            <div>
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    <i class="bi bi-star@(i <= school.School.Rate ? "-fill" : "") text-warning fs-6"></i>
+                                                }
+                                            </div>
                                         </div>
                                     </td>
                                     <td>@school.School.Address.Address</td>
                                     <td>
                                         <a asp-action="EditSchool" asp-route-SchoolId="@school.School.Id"
                                            class="btn bg-warning btn-sm btn-outline-light rounded-pill shadow-sm text-black" title="ویرایش">
-                                            <i class="bi bi-pencil"></i> 🖊️ تغییر
+                                            <i class="bi bi-pencil"></i> تغییر
                                         </a>
                                         <a asp-action="Details" asp-route-id="@school.School.Id"
                                            class="btn btn-sm btn-outline-light rounded-pill shadow-sm" title="نمایش">
-                                            <i class="bi bi-eye"></i> 👁️‍🗨️ نمایش
+                                            <i class="bi bi-eye"></i> نمایش
                                         </a>
                                     </td>
                                 </tr>

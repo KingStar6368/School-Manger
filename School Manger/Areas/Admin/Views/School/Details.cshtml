@@ -11,7 +11,7 @@
 <!-- School Info -->
 <div class="card bg-dark text-white shadow-lg rounded-4 mb-4 border-primary border-2">
     <div class="card-header bg-primary bg-gradient rounded-top">
-        <h4 class="mb-0 fw-bold">🏫 اطلاعات مدرسه</h4>
+        <h4 class="mb-0 fw-bold"><i class="bi bi-building"></i> اطلاعات مدرسه</h4>
     </div>
     <div class="card-body row">
         <div class="col-md-6 mb-3">
@@ -19,7 +19,7 @@
             <div class="ms-2">@Model.School.Name</div>
         </div>
         <div class="col-md-6 mb-3">
-            <strong>👨‍🏫 نام مدیر:</strong>
+            <strong>👨‍<i class="bi bi-building"></i> نام مدیر:</strong>
             <div class="ms-2">@Model.School.ManagerName</div>
         </div>
         <div class="col-md-6 mb-3">
@@ -75,7 +75,7 @@
             <a asp-action="DeleteSchool" asp-route-id="@Model.School.Id"
                class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف"
                onclick="return confirm('آیا از حذف این مدرسه مطمئن هستید؟')">
-                <i class="bi bi-trash"></i> 🗑️ حذف
+                <i class="bi bi-trash"></i> ️ حذف
             </a>
         </div>
         <div class="mt-4">
@@ -90,15 +90,15 @@
 <!-- Drivers -->
 <div class="card bg-dark text-white shadow rounded-4 mb-4 border-secondary border-2">
     <div class="card-header bg-secondary bg-gradient rounded-top">
-        <h5 class="mb-0 fw-semibold">🧑‍✈️ رانندگان</h5>
+        <h5 class="mb-0 fw-semibold"><i class="bi bi-car-front-fill"></i> رانندگان</h5>
     </div>
     <div class="card-body table-responsive">
         <table class="table table-dark table-hover align-middle text-center">
             <thead class="table-light text-dark">
                 <tr>
-                    <th>👤 نام</th>
+                    <th><i class="bi bi-person"></i> نام</th>
                     <th>👥 نام خانوادگی</th>
-                    <th>🆔 کد ملی</th>
+                    <th><i class="bi bi-person-vcard"></i> کد ملی</th>
                     <th>💺 تعداد صندلی خودرو</th>
                     <th>🚗 خودرو</th>
                     <th>عملیات</th>
@@ -139,9 +139,9 @@
                 <tr>
                     <th>👶 نام</th>
                     <th>👨‍👧 نام خانوادگی</th>
-                    <th>🆔 کد ملی</th>
+                    <th><i class="bi bi-person-vcard"></i> کد ملی</th>
                     <th>🏷️ کلاس</th>
-                    <th>💰 پرداخت</th>
+                    <th><i class="bi bi-cash"></i> پرداخت</th>
                     <th>شیفت</th>
                     <th>نمایش</th>
                 </tr>

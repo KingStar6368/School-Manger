@@ -82,7 +82,7 @@
             </form>
         </div>
         <div class="container row col-md-4">
-            <select class="form-control m-3" id="PDropBox">
+            <select class="dropdown rounded m-3" id="PDropBox">
                 <option value="Child">دانش آموزان</option>
                 <option value="Parent">خانواده</option>
                 <option value="Driver" selected>راننده</option>
@@ -120,7 +120,7 @@
                                 <td>
                                     <a asp-action="Details" asp-controller="Driver" asp-area="Admin" asp-route-id="@Model[i].Id"
                                        class="btn btn-sm btn-outline-light rounded-pill shadow-sm" title="مشاهده جزئیات">
-                                        <i class="bi bi-eye"></i> 👁️‍🗨️ جزئیات
+                                        <i class="bi bi-eye"></i> جزئیات
                                     </a>
                                 </td>
                             </tr>

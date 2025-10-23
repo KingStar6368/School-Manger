@@ -14,7 +14,7 @@
     <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
         <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
             <h4 class="mb-0 fw-bold">
-                ✏️ ویرایش فرزند
+                <i class="bi bi-pen"></i> ویرایش فرزند
             </h4>
             <a asp-action="Details" asp-route-id="@parentId" class="btn btn-secondary fw-bold shadow-sm">
                 <i class="bi bi-arrow-right"></i> بازگشت
@@ -50,21 +50,21 @@
                         <input type="text" name="LastName" class="form-control bg-dark text-white shadow-sm" value="@Model.LastName" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">🆔 کد ملی</label>
+                        <label class="form-label fw-bold"><i class="bi bi-person-vcard"></i> کد ملی</label>
                         <input type="text" name="NationalCode" class="form-control bg-dark text-white shadow-sm" value="@Model.NationalCode" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">🎂 تاریخ تولد</label>
+                        <label class="form-label fw-bold"><i class="bi bi-cake2-fill"></i> تاریخ تولد</label>
                         <label class="form-label">@Model.BirthDate.ToPersianString()</label>
                         <input name="BirthDate" class="persian-date form-control bg-secondary text-white" required />
                         <input type="hidden" value="@Model.BirthDate.ToPersianString()" class="gregorian-date" />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">🏫 پایه</label>
+                        <label class="form-label fw-bold"><i class="bi bi-building"></i> پایه</label>
                         <input type="number" name="Class" class="form-control bg-dark text-white shadow-sm" value="@Model.Class" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">🏫 مدرسه (اختیاری)</label>
+                        <label class="form-label fw-bold"><i class="bi bi-building"></i> مدرسه (اختیاری)</label>
                         <input type="number" name="SchoolRef" class="form-control bg-dark text-white shadow-sm" value="@Model.SchoolRef" />
                     </div>
                     <div class="mt-4">
