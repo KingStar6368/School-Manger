@@ -171,21 +171,21 @@
                                     </td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
-                                            <a asp-action="EditSchool" asp-route-SchoolId="@school.School.Id"
-                                               class="btn btn-sm btn-outline-warning rounded-pill shadow-sm"
-                                               data-bs-toggle="tooltip" title="ویرایش مدرسه">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
                                             <a asp-action="Details" asp-route-id="@school.School.Id"
                                                class="btn btn-sm btn-outline-info rounded-pill shadow-sm"
                                                data-bs-toggle="tooltip" title="مشاهده جزئیات">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            <a asp-action="ManageShifts" asp-route-schoolId="@school.School.Id"
+                                            <a asp-action="EditSchool" asp-route-SchoolId="@school.School.Id"
+                                               class="btn btn-sm btn-outline-warning rounded-pill shadow-sm"
+                                               data-bs-toggle="tooltip" title="ویرایش مدرسه">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                        @*     <a asp-action="ManageShifts" asp-route-schoolId="@school.School.Id"
                                                class="btn btn-sm btn-outline-primary rounded-pill shadow-sm"
                                                data-bs-toggle="tooltip" title="مدیریت شیفت‌ها">
                                                 <i class="bi bi-clock-history"></i>
-                                            </a>
+                                            </a> *@
                                         </div>
                                     </td>
                                 </tr>

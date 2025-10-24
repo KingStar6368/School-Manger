@@ -169,7 +169,7 @@
             <div class="card bg-info text-white text-center">
                 <div class="card-body">
                     <i class="bi bi-clock-history fs-1 d-block mb-2"></i>
-                    <h4>@(await SchoolService.GetSchoolShifts(Model.School.Id)).Count</h4>
+                    <h4>@((await SchoolService.GetSchoolShifts(Model.School.Id)).Count)</h4>
                     <p class="mb-0">شیفت فعال</p>
                 </div>
             </div>
