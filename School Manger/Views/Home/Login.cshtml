@@ -5,52 +5,77 @@
     Layout = "_Layout";
 }
 <div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-dark" dir="rtl">
-    <div class="card bg-black text-white border-secondary" style="width: 100%; max-width: 500px;">
-        <div class="card-header bg-dark border-secondary text-center">
-            <h3 class="m-0">ورود به سامانه</h3>
+    <div class="card bg-black text-white border-primary shadow-lg" style="width: 100%; max-width: 500px; border-radius: 20px; border-width: 2px;">
+        <div class="card-header bg-primary bg-gradient text-center rounded-top-4 py-4">
+            <i class="bi bi-person-badge fs-1 text-white mb-3 d-block"></i>
+            <h3 class="m-0 fw-bold">ورود به سامانه</h3>
         </div>
         <div class="card-body p-4">
             <form asp-action="Login" method="post" id="loginForm">
                 <div class="mb-4">
-                    <label for="NationalCode" class="form-label">کد ملی</label>
-                    <input type="text"
-                           class="form-control bg-dark text-white border-secondary"
-                           id="nationalCode"
-                           name="NationalCode"
-                           placeholder="۰۱۲۳۴۵۶۷۸۹"
-                           maxlength="10"
-                           required
-                           onkeypress="return isNumberKey(event)"
-                           asp-for="NationCode">
-                    <div id="nationalCodeFeedback" class="form-text"></div>
+                    <label for="NationalCode" class="form-label fw-semibold">
+                        <i class="bi bi-credit-card me-2"></i>کد ملی
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark text-white border-primary">
+                            <i class="bi bi-123"></i>
+                        </span>
+                        <input type="text"
+                               class="form-control form-control-lg bg-dark text-white border-primary"
+                               id="nationalCode"
+                               name="NationalCode"
+                               placeholder="۰۱۲۳۴۵۶۷۸۹"
+                               maxlength="10"
+                               required
+                               onkeypress="return isNumberKey(event)"
+                               asp-for="NationCode">
+                    </div>
+                    <div id="nationalCodeFeedback" class="form-text mt-2"></div>
                 </div>
 
                 <div class="mb-4">
-                    <label for="password" class="form-label">رمز عبور</label>
-                    <input type="password"
-                           class="form-control bg-dark text-white border-secondary"
-                           id="password"
-                           name="password"
-                           placeholder="رمز عبور خود را وارد کنید"
-                           required
-                           minlength="8"
-                           asp-for="Password">
-                    <div class="form-text text-white-50">حداقل 8 کاراکتر</div>
+                    <label for="password" class="form-label fw-semibold">
+                        <i class="bi bi-key me-2"></i>رمز عبور
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark text-white border-primary">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        <input type="password"
+                               class="form-control form-control-lg bg-dark text-white border-primary"
+                               id="password"
+                               name="password"
+                               placeholder="رمز عبور خود را وارد کنید"
+                               required
+                               minlength="8"
+                               asp-for="Password">
+                        <button type="button" class="btn btn-outline-secondary border-primary" id="passwordToggle">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div id="passwordHelp" class="form-text mt-2">
+                        <i class="bi bi-info-circle me-1"></i>رمز عبور باید حداقل ۸ کاراکتر داشته باشد
+                    </div>
                 </div>
 
-                <div class="mb-3 form-check">
+                <div class="mb-4 form-check">
                     <input type="checkbox" class="form-check-input" id="rememberMe">
-                    <label class="form-check-label" for="rememberMe">مرا به خاطر بسپار</label>
+                    <label class="form-check-label" for="rememberMe">
+                        <i class="bi bi-check2-square me-1"></i>مرا به خاطر بسپار
+                    </label>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 py-2 mb-3">ورود</button>
+                <button type="submit" class="btn btn-primary w-100 py-2 mb-3 fw-bold">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>ورود به سامانه
+                </button>
 
-                <div class="text-center">
-                    <a asp-controller="ForgetPassword" asp-action="Index" class="text-decoration-none text-info">رمز عبور خود را فراموش کرده‌اید؟</a>
-                </div>
-                <br/>
-                <div class="text-center">
-                    <a href="index" class="text-decoration-none text-info">حساب کاربری ندارید؟</a>
+                <div class="text-center mt-4 pt-3 border-top border-secondary">
+                    <a asp-controller="ForgetPassword" asp-action="Index" class="text-decoration-none text-info fw-semibold d-block mb-2">
+                        <i class="bi bi-key me-1"></i>رمز عبور خود را فراموش کرده‌اید؟
+                    </a>
+                    <a href="index" class="text-decoration-none text-warning fw-semibold">
+                        <i class="bi bi-person-plus me-1"></i>حساب کاربری ندارید؟
+                    </a>
                 </div>
             </form>
         </div>
@@ -90,6 +115,24 @@
                    (remainder >= 2 && controlDigit === (11 - remainder));
         }
 
+        // Password toggle functionality
+        document.getElementById('passwordToggle').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('bi-eye');
+                eyeIcon.classList.add('bi-eye-slash');
+                this.classList.add('btn-warning');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('bi-eye-slash');
+                eyeIcon.classList.add('bi-eye');
+                this.classList.remove('btn-warning');
+            }
+        });
+
         // Validate national code on input
         document.getElementById('nationalCode').addEventListener('input', function(e) {
             this.value = this.value.replace(/[^۰-۹0-9]/g, '');
@@ -100,49 +143,90 @@
                 if (checkCodeMeli(englishCode)) {
                     this.classList.remove('border-danger', 'is-invalid');
                     this.classList.add('border-success', 'is-valid');
-                    feedbackEl.textContent = 'کد ملی معتبر است';
-                    feedbackEl.className = 'form-text text-success';
+                    feedbackEl.innerHTML = '<i class="bi bi-check-circle me-1"></i> کد ملی معتبر است';
+                    feedbackEl.className = 'form-text text-success mt-2';
                 } else {
                     this.classList.remove('border-success', 'is-valid');
                     this.classList.add('border-danger', 'is-invalid');
-                    feedbackEl.textContent = 'کد ملی نامعتبر است';
-                    feedbackEl.className = 'form-text text-danger';
+                    feedbackEl.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i> کد ملی نامعتبر است';
+                    feedbackEl.className = 'form-text text-danger mt-2';
                 }
             } else {
                 this.classList.remove('border-success', 'border-danger', 'is-valid', 'is-invalid');
-                feedbackEl.textContent = 'کد ملی ۱۰ رقمی خود را وارد کنید';
-                feedbackEl.className = 'form-text text-white-50';
+                feedbackEl.innerHTML = '<i class="bi bi-info-circle me-1"></i> کد ملی ۱۰ رقمی خود را وارد کنید';
+                feedbackEl.className = 'form-text text-white-50 mt-2';
             }
         });
 
-        // Form submission validation
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            const nationalCode = document.getElementById('nationalCode');
-            const englishCode = convertToEnglish(nationalCode.value);
-
-            if (!checkCodeMeli(englishCode)) {
-                e.preventDefault();
-                nationalCode.classList.add('border-danger', 'is-invalid');
-                document.getElementById('nationalCodeFeedback').textContent = 'لطفاً کد ملی معتبر وارد کنید';
-                document.getElementById('nationalCodeFeedback').className = 'form-text text-danger';
-                nationalCode.focus();
-            }
-        });
-         // Password validation
+        // Password validation
         document.getElementById('password').addEventListener('input', function(e) {
             const passwordHelp = document.getElementById('passwordHelp');
 
             if (this.value.length < 8) {
                 this.classList.remove('border-success', 'is-valid');
                 this.classList.add('border-danger', 'is-invalid');
-                passwordHelp.textContent = 'رمز عبور باید حداقل ۸ کاراکتر داشته باشد';
-                passwordHelp.className = 'form-text text-danger';
+                passwordHelp.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i> رمز عبور باید حداقل ۸ کاراکتر داشته باشد';
+                passwordHelp.className = 'form-text text-danger mt-2';
             } else {
                 this.classList.remove('border-danger', 'is-invalid');
                 this.classList.add('border-success', 'is-valid');
-                passwordHelp.textContent = 'رمز عبور معتبر است';
-                passwordHelp.className = 'form-text text-success';
+                passwordHelp.innerHTML = '<i class="bi bi-check-circle me-1"></i> رمز عبور معتبر است';
+                passwordHelp.className = 'form-text text-success mt-2';
             }
+        });
+
+        // Form submission validation
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const nationalCode = document.getElementById('nationalCode');
+            const password = document.getElementById('password');
+            const englishCode = convertToEnglish(nationalCode.value);
+
+            let isValid = true;
+
+            if (!checkCodeMeli(englishCode)) {
+                nationalCode.classList.add('border-danger', 'is-invalid');
+                document.getElementById('nationalCodeFeedback').innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i> لطفاً کد ملی معتبر وارد کنید';
+                document.getElementById('nationalCodeFeedback').className = 'form-text text-danger mt-2';
+                nationalCode.focus();
+                isValid = false;
+            }
+
+            if (password.value.length < 8) {
+                password.classList.add('border-danger', 'is-invalid');
+                document.getElementById('passwordHelp').innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i> رمز عبور باید حداقل ۸ کاراکتر داشته باشد';
+                document.getElementById('passwordHelp').className = 'form-text text-danger mt-2';
+                if (isValid) password.focus();
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                showAlert('لطفا اطلاعات فرم را به درستی وارد کنید', 'danger');
+            }
+        });
+
+        // Show alert function
+        function showAlert(message, type) {
+            // Remove existing alerts
+            const existingAlert = document.querySelector('.alert-dismissible');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show mt-3`;
+            alert.innerHTML = `
+                <i class="bi bi-${type === 'danger' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+            document.querySelector('form').prepend(alert);
+        }
+
+        // Auto-focus on national code field
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('nationalCode').focus();
         });
     </script>
 }
@@ -162,27 +246,54 @@
         border-color: #dc3545 !important;
     }
 
-    .text-success {
-        color: #28a745 !important;
-    }
-
-    .text-danger {
-        color: #dc3545 !important;
-    }
-
     /* Input focus styling */
     .form-control:focus {
         background-color: #222;
         color: white;
-        box-shadow: 0 0 0 0.25rem rgba(100, 100, 100, 0.25);
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
     }
 
-    /* Password toggle (optional) */
-    .password-toggle {
-        cursor: pointer;
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
+    /* Password toggle button */
+    .btn-outline-secondary {
+        border-color: #0d6efd;
+        color: #6c757d;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #000;
+    }
+
+    /* Smooth transitions */
+    .form-control, .btn {
+        transition: all 0.3s ease;
+    }
+
+    /* Card animation */
+    .card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Link hover effects */
+    a.text-info:hover, a.text-warning:hover {
+        text-decoration: underline !important;
     }
 </style>

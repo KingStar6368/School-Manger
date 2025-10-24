@@ -4,35 +4,74 @@
     Layout = "_AdminLayout";
     ViewData["Title"] = "تنظیمات";
 }
-<div class="card">
-    <div class="card-header bg-info">
-        <h3>تنظیمات</h3>
+<div class="card bg-dark text-white shadow-lg rounded-4 border-info border-2">
+    <div class="card-header bg-info bg-gradient d-flex justify-content-between align-items-center">
+        <h4 class="mb-0 fw-bold">
+            <i class="bi bi-gear-fill me-2"></i> تنظیمات
+        </h4>
     </div>
-    <div class="card-body bg-dark">
-        @foreach (var setting in Model)
+    <div class="card-body">
+        @if (Model != null && Model.Any())
         {
-            <form method="post" asp-controller="Setting" asp-action="Edit" enctype="multipart/form-data">
-                <div class="form-control">
-                    <label class="col-md-4">@setting.Key</label>
-                    @if(setting.Value.Item2 == "Text")
-                    {
-                        <input name="Value" type="text" class="form-control" value="@setting.Value.Item1"/>
-                        <input hidden name="Type" value="Text"/>
-                    }
-                    else
-                    {
-                        <input name="IFile" type="file" class="form-control"/>
-                        <input hidden name="Type" value="Image"/>
-                    }
-                </div>
-                <div class="col-md-4 mb-2 mt-2">
-                    <input hidden name="Key" value="@setting.Key"/>
-                    <input type="submit" class="btn btn-sm rounded-pill shadow-sm ms-2 bg-warning bi bi-pencil-square" value=" ویرایش"/>
-                    <a asp-action="Delete" class="btn btn-sm rounded-pill shadow-sm ms-2 bg-danger" asp-route-Key="@setting.Key">
-                        <i class="bi bi-trash"></i> حذف
-                    </a>
-                </div>
-            </form>
+            <div class="row g-4">
+                @foreach (var setting in Model)
+                {
+                    <div class="col-12">
+                        <div class="card bg-secondary border-light mb-3">
+                            <div class="card-body">
+                                <form method="post" asp-controller="Setting" asp-action="Edit" enctype="multipart/form-data" class="row g-3 align-items-center">
+                                    <div class="col-md-4">
+                                        <label class="form-label fw-bold text-white">
+                                            <i class="bi bi-tag me-1"></i> @setting.Key
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        @if (setting.Value.Item2 == "Text")
+                                        {
+                                            <input name="Value" type="text" class="form-control form-control-lg" value="@setting.Value.Item1" />
+                                            <input hidden name="Type" value="Text" />
+                                        }
+                                        else
+                                        {
+                                            <div class="input-group">
+                                                <input name="IFile" type="file" class="form-control form-control-lg" />
+                                                <input hidden name="Type" value="Image" />
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(setting.Value.Item1))
+                                            {
+                                                <div class="mt-2">
+                                                    <small class="text-warning">
+                                                        <i class="bi bi-image me-1"></i> فایل فعلی: @setting.Value.Item1
+                                                    </small>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="d-flex gap-2">
+                                            <input hidden name="Key" value="@setting.Key" />
+                                            <button type="submit" class="btn btn-warning btn-sm rounded-pill shadow-sm">
+                                                <i class="bi bi-pencil-square me-1"></i> ویرایش
+                                            </button>
+                                            <a asp-action="Delete" class="btn btn-danger btn-sm rounded-pill shadow-sm"
+                                               asp-route-Key="@setting.Key"
+                                               onclick="return confirm('آیا از حذف این تنظیمات مطمئن هستید؟')">
+                                                <i class="bi bi-trash me-1"></i> حذف
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning text-center fw-bold my-3" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i> تنظیماتی یافت نشد!
+            </div>
         }
     </div>
 </div>

@@ -20,46 +20,142 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
     #map {
-        height: 350px;
-        margin-bottom: 20px;
-        border: 2px solid #ccc;
+        height: 250px;
+        margin-bottom: 1rem;
+        border: 2px solid #495057;
         border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .footer-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .footer-contact-item {
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .enamad-badge {
+        max-width: 100px;
+        height: auto;
+        transition: transform 0.3s ease;
+    }
+
+        .enamad-badge:hover {
+            transform: scale(1.05);
+        }
+
+    .developer-info {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
     }
 </style>
 
 <input type="hidden" id="Lat1" value="@Lat" />
 <input type="hidden" id="Lng1" value="@Lng" />
 
-<footer class="bg-black text-white-50 small py-2 border-top border-secondary mt-auto">
+<footer class="bg-dark text-white-50 py-4 border-top border-primary mt-auto">
     <div class="container">
         <div class="row">
-            <div class="col-6">
-                <div class="col-md-6 text-center text-md-start">
-                    © @DateTime.Now.Year @setting.Get("CompanyName")
+            <!-- Company Info and Map Section -->
+            <div class="col-lg-6 col-md-12 mb-4">
+                <div class="footer-section">
+                    <h6 class="text-white mb-3 fw-bold">
+                        <i class="bi bi-building me-2"></i>اطلاعات شرکت
+                    </h6>
+                    <div class="footer-contact-item">
+                        <i class="bi bi-geo-alt text-primary"></i>
+                        <span>آدرس شرکت: @setting.Get("CompanyAddress")</span>
+                    </div>
+                    <div class="footer-contact-item">
+                        <i class="bi bi-telephone text-primary"></i>
+                        <span>شماره تماس ثابت: @setting.Get("CompanyStaticPhone")</span>
+                    </div>
+                    <div class="footer-contact-item">
+                        <i class="bi bi-phone text-primary"></i>
+                        <span>شماره همراه: @setting.Get("CompanyPhone")</span>
+                    </div>
                 </div>
-                <div class="col-md-6 text-center text-md-start">
-                    <div id="map"></div>
-                </div>
+
+                <!-- Map Section -->
+                @if (!string.IsNullOrEmpty(Lat) && !string.IsNullOrEmpty(Lng))
+                {
+                    <div class="footer-section">
+                        <h6 class="text-white mb-3 fw-bold">
+                            <i class="bi bi-map me-2"></i>موقعیت شرکت روی نقشه
+                        </h6>
+                        <div id="map"></div>
+                    </div>
+                }
             </div>
-            <div class="col-6">
-                <div class="col-md-6 text-center text-md-start">
-                    آدرس شرکت : @setting.Get("CompanyAddress")
+
+            <!-- Trust Badges and Additional Info -->
+            <div class="col-lg-6 col-md-12 mb-4">
+                <div class="footer-section">
+                    <h6 class="text-white mb-3 fw-bold">
+                        <i class="bi bi-shield-check me-2"></i>نماد اعتماد الکترونیکی
+                    </h6>
+                    @if (!string.IsNullOrEmpty(setting.Get("Enamad1")))
+                    {
+                        <a referrerpolicy='origin' target='_blank' href='@setting.Get("Enamad1")' class="d-inline-block">
+                            <img referrerpolicy='origin'
+                                 src='@setting.Get("Enamad2")'
+                                 alt='نماد اعتماد الکترونیکی'
+                                 class='enamad-badge'
+                                 code='@setting.Get("EnamadCode")'>
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning small">
+                            <i class="bi bi-exclamation-triangle me-1"></i>
+                            نماد اعتماد الکترونیکی تنظیم نشده است
+                        </div>
+                    }
                 </div>
-                <div class="col-md-6 text-center text-md-start">
-                    شماره تماس ثابت : @setting.Get("CompanyStaticPhone")
+
+                <!-- Copyright -->
+                <div class="footer-section">
+                    <div class="border-top border-secondary pt-3 mt-3">
+                        <div class="footer-contact-item">
+                            <i class="bi bi-c-circle text-primary"></i>
+                            <span>کلیه حقوق محفوظ است برای ارکاسافت - @DateTime.Now.Year</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6 text-center text-md-start">
-                    شمار همراه : @setting.Get("CompanyPhone")
-                </div>
-                <a referrerpolicy='origin' target='_blank' href='@setting.Get("Enamad1")'>
-                    <img referrerpolicy='origin' src='@setting.Get("Enamad2")' alt='' style='cursor:pointer' code='@setting.Get("EnamadCode")'>
-                    </a>
             </div>
         </div>
-    </div>
-    <div class="col-md-6 text-center text-md-end">
-        <b>طراحی</b> <a href="http://arkasoftarak.ir/" target="_blank" class="text-info"><strong>آرکاسافت</strong></a>
-        <b>شماره پیشتیبانی</b> : <b>+98 9125482286</b>
+
+        <!-- Developer Info -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="developer-info text-center">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 mb-2 mb-md-0">
+                            <div class="footer-contact-item justify-content-center">
+                                <i class="bi bi-code-slash text-info"></i>
+                                <span class="fw-bold">طراحی و توسعه:</span>
+                                <a href="http://arkasoftarak.ir/" target="_blank" class="text-info fw-bold text-decoration-none">
+                                    <i class="bi bi-box-arrow-up-right me-1"></i>آرکاسافت
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="footer-contact-item justify-content-center">
+                                <i class="bi bi-headset text-success"></i>
+                                <span class="fw-bold">پشتیبانی فنی:</span>
+                                <span style="direction:ltr" class="text-success fw-bold">+98 912 548 2286</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </footer>
 
@@ -73,13 +169,92 @@
             const map = L.map("map").setView([lat, lng], 16);
 
             L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                 maxZoom: 19,
             }).addTo(map);
 
-            L.marker([lat, lng])
+            // Custom icon
+            const companyIcon = L.divIcon({
+                className: 'custom-company-icon',
+                html: '<i class="bi bi-building text-danger fs-4"></i>',
+                iconSize: [30, 30],
+                iconAnchor: [15, 30]
+            });
+
+            L.marker([lat, lng], { icon: companyIcon })
                 .addTo(map)
-                .bindPopup('<div class="bg-success">موقعیت شرکت</div>')
+                .bindPopup(`
+                    <div class="text-center">
+                        <i class="bi bi-building text-primary fs-5"></i>
+                        <h6 class="fw-bold mt-1">@setting.Get("CompanyName")</h6>
+                        <p class="mb-1 small">@setting.Get("CompanyAddress")</p>
+                        <p class="mb-0 small text-muted">موقعیت شرکت</p>
+                    </div>
+                `)
                 .openPopup();
+
+            // Add smooth animation to map
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+        } else {
+            // Hide map container if no coordinates
+            const mapElement = document.getElementById('map');
+            if (mapElement) {
+                mapElement.style.display = 'none';
+            }
         }
     });
+
+    // Smooth scroll to top function (optional)
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
 </script>
+
+<style>
+    .custom-company-icon {
+        background: transparent;
+        border: none;
+    }
+
+    .footer-contact-item i {
+        width: 20px;
+        text-align: center;
+    }
+
+    a.text-info:hover {
+        color: #0dcaf0 !important;
+        text-decoration: underline !important;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        #map {
+            height: 200px;
+        }
+
+        .footer-section {
+            margin-bottom: 1rem;
+        }
+
+        .developer-info {
+            padding: 0.75rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .footer-contact-item {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.25rem;
+        }
+
+        .enamad-badge {
+            max-width: 80px;
+        }
+    }
+</style>

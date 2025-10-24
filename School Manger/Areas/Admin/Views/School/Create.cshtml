@@ -2,7 +2,7 @@
 @model SchoolDto
 
 @{
-    ViewData["Title"] = "<i class=\"bi bi-building\"></i> مدرسه جدید";
+    ViewData["Title"] = "مدرسه جدید";
     Layout = "_AdminLayout";
 }
 
@@ -10,81 +10,205 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2 mt-4">
-    <div class="card-header bg-primary bg-gradient rounded-top">
-        <h4 class="mb-0 fw-bold">@ViewData["Title"]</h4>
-    </div>
-    <div class="card-body">
-        <form asp-action="Create">
-            <div class="row">
-                <!-- School Info -->
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="control-label">🏷️ نام مدرسه</label>
-                        <input asp-for="Name" class="form-control shadow-sm" />
-                        <span asp-validation-for="Name" class="text-danger small"></span>
-                    </div>
+<div class="container-fluid bg-dark text-white py-4" dir="rtl">
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-building fs-4 me-2"></i>ایجاد مدرسه جدید
+            </h4>
+            <a asp-action="Index" class="btn btn-outline-light fw-bold shadow-sm">
+                <i class="bi bi-arrow-right-circle me-1"></i>بازگشت به لیست
+            </a>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create">
+                <div class="row g-4">
+                    <!-- School Basic Information -->
+                    <div class="col-md-6">
+                        <div class="card bg-secondary border-warning h-100">
+                            <div class="card-header bg-warning bg-gradient text-dark">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="bi bi-info-circle fs-4 me-2"></i>اطلاعات اصلی مدرسه
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-building me-1"></i>نام مدرسه
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark text-white border-secondary">
+                                            <i class="bi bi-fonts"></i>
+                                        </span>
+                                        <input asp-for="Name" class="form-control bg-dark text-white border-secondary"
+                                               placeholder="نام مدرسه را وارد کنید" />
+                                    </div>
+                                    <span asp-validation-for="Name" class="text-danger small"></span>
+                                </div>
 
-                    <div class="form-group mb-3">
-                        <label class="control-label">👨‍<i class="bi bi-building"></i> نام مدیر مدرسه</label>
-                        <input asp-for="ManagerName" class="form-control shadow-sm" />
-                        <span asp-validation-for="ManagerName" class="text-danger small"></span>
-                    </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-person-badge me-1"></i>نام مدیر مدرسه
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark text-white border-secondary">
+                                            <i class="bi bi-person"></i>
+                                        </span>
+                                        <input asp-for="ManagerName" class="form-control bg-dark text-white border-secondary"
+                                               placeholder="نام مدیر مدرسه را وارد کنید" />
+                                    </div>
+                                    <span asp-validation-for="ManagerName" class="text-danger small"></span>
+                                </div>
 
-                    <div class="form-group mb-3">
-                        <label class="control-label">⭐ امتیاز</label>
-                        <select asp-for="Rate" class="form-control shadow-sm">
-                            @for (int i = 0; i <= 5; i++)
-                            {
-                                <option value="@i">@i ⭐</option>
-                            }
-                        </select>
-                        <span asp-validation-for="Rate" class="text-danger small"></span>
-                    </div>
-                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-star me-1"></i>امتیاز اولیه
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark text-white border-secondary">
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        </span>
+                                        <select asp-for="Rate" class="form-select bg-dark text-white border-secondary">
+                                            @for (int i = 0; i <= 5; i++)
+                                            {
+                                                <option value="@i">
+                                                    <i class="bi bi-star-fill text-warning me-1"></i>@i ستاره
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="Rate" class="text-danger small"></span>
+                                </div>
 
-                <!-- Address Info -->
-                <div class="col-md-6">
-                    <div class="form-group mb-3">
-                        <label class="control-label">📍 آدرس مدرسه</label>
-                        <textarea asp-for="Address.Address" class="form-control shadow-sm" rows="3"></textarea>
-                        <span asp-validation-for="Address.Address" class="text-danger small"></span>
-                    </div>
-
-                    <div class="form-group mb-3">
-                        <label class="control-label">🗺️ انتخاب موقعیت روی نقشه</label>
-                        <div id="map" style="height: 300px;" class="rounded shadow-sm border border-light mb-2"></div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="control-label">🌐 عرض جغرافیایی</label>
-                                <input asp-for="Address.Latitude" id="Latitude" class="form-control shadow-sm" readonly />
-                                <span asp-validation-for="Address.Latitude" class="text-danger small"></span>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-geo me-1"></i>آدرس مدرسه
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark text-white border-secondary">
+                                            <i class="bi bi-geo-alt"></i>
+                                        </span>
+                                        <textarea asp-for="Address.Address" class="form-control bg-dark text-white border-secondary"
+                                                  rows="3" placeholder="آدرس کامل مدرسه را وارد کنید"></textarea>
+                                    </div>
+                                    <span asp-validation-for="Address.Address" class="text-danger small"></span>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label class="control-label">🌐 طول جغرافیایی</label>
-                                <input asp-for="Address.Longitude" id="Longitude" class="form-control shadow-sm" readonly />
-                                <span asp-validation-for="Address.Longitude" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Location Information -->
+                    <div class="col-md-6">
+                        <div class="card bg-secondary border-info h-100">
+                            <div class="card-header bg-info bg-gradient">
+                                <h5 class="mb-0 fw-bold">
+                                    <i class="bi bi-geo-alt fs-4 me-2"></i>موقعیت مکانی
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-map me-1"></i>انتخاب موقعیت روی نقشه
+                                    </label>
+                                    <div id="map" style="height: 250px;" class="rounded shadow-sm border border-secondary mb-3"></div>
+
+                                    <div class="alert alert-info d-flex align-items-center">
+                                        <i class="bi bi-info-circle fs-5 me-3"></i>
+                                        <div>
+                                            <strong>راهنما:</strong> برای انتخاب موقعیت مدرسه، روی نقشه کلیک کنید.
+                                            مختصات به طور خودکار در فیلدهای زیر ثبت می‌شود.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">
+                                                <i class="bi bi-globe me-1"></i>عرض جغرافیایی
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-dark text-white border-secondary">
+                                                    <i class="bi bi-geo-alt"></i>
+                                                </span>
+                                                <input asp-for="Address.Latitude" id="Latitude"
+                                                       class="form-control bg-dark text-white border-secondary" readonly
+                                                       placeholder="روی نقشه کلیک کنید" />
+                                            </div>
+                                            <span asp-validation-for="Address.Latitude" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">
+                                                <i class="bi bi-globe me-1"></i>طول جغرافیایی
+                                            </label>
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-dark text-white border-secondary">
+                                                    <i class="bi bi-geo-alt"></i>
+                                                </span>
+                                                <input asp-for="Address.Longitude" id="Longitude"
+                                                       class="form-control bg-dark text-white border-secondary" readonly
+                                                       placeholder="روی نقشه کلیک کنید" />
+                                            </div>
+                                            <span asp-validation-for="Address.Longitude" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Submit -->
-            <div class="form-group mt-4">
-                <button type="submit" class="btn btn-success fw-bold me-2">
-                    💾 ذخیره
-                </button>
-                <a asp-action="Index" class="btn btn-outline-light">
-                    ❌ انصراف
-                </a>
-            </div>
-        </form>
+                    <!-- Quick Tips -->
+                    <div class="col-12">
+                        <div class="card bg-dark border-success">
+                            <div class="card-header bg-success bg-gradient">
+                                <h6 class="mb-0 fw-bold">
+                                    <i class="bi bi-lightbulb fs-4 me-2"></i>نکات مهم
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            <span class="text-white">موقعیت دقیق مدرسه را روی نقشه مشخص کنید</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            <span class="text-white">آدرس کامل و دقیق وارد شود</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            <span class="text-white">امتیاز اولیه را به درستی انتخاب کنید</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="col-12 mt-4">
+                        <div class="d-flex justify-content-start gap-3">
+                            <button type="submit" class="btn btn-success fw-bold shadow-sm px-4">
+                                <i class="bi bi-check-circle me-1"></i>ایجاد مدرسه
+                            </button>
+                            <button type="reset" class="btn btn-outline-warning fw-bold shadow-sm px-4">
+                                <i class="bi bi-arrow-clockwise me-1"></i>بازنشانی فرم
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-light fw-bold shadow-sm px-4">
+                                <i class="bi bi-x-circle me-1"></i>انصراف
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -108,13 +232,134 @@
             if (marker) {
                 marker.setLatLng(e.latlng);
             } else {
-                marker = L.marker(e.latlng).addTo(map);
+                marker = L.marker(e.latlng, {
+                    icon: L.divIcon({
+                        className: 'school-marker',
+                        html: '<div style="background:#dc3545;color:white;padding:4px 8px;border-radius:6px;border:2px solid white;"><i class="bi bi-building-fill me-1"></i>مدرسه</div>',
+                        iconSize: [60, 30]
+                    })
+                }).addTo(map);
             }
 
             document.getElementById('Latitude').value = lat;
             document.getElementById('Longitude').value = lon;
+
+            // Show popup with coordinates
+            marker.bindPopup(`
+                <div class="text-center">
+                    <i class="bi bi-building-fill text-danger me-1"></i>
+                    <strong>موقعیت مدرسه</strong><br>
+                    عرض: ${lat}<br>
+                    طول: ${lon}
+                </div>
+            `).openPopup();
         }
 
         map.on('click', onMapClick);
+
+        // Add hover effects and loading states
+        $(document).ready(function() {
+            $('.btn').hover(
+                function() {
+                    $(this).addClass('shadow');
+                },
+                function() {
+                    $(this).removeClass('shadow');
+                }
+            );
+
+            // Add loading state to submit button
+            $('form').on('submit', function() {
+                const submitBtn = $(this).find('button[type="submit"]');
+                const originalHtml = submitBtn.html();
+                submitBtn.html('<i class="bi bi-hourglass-split me-1"></i>در حال ایجاد...');
+                submitBtn.prop('disabled', true);
+            });
+
+            // Form validation feedback
+            $('input, textarea, select').on('invalid', function() {
+                $(this).addClass('is-invalid');
+            });
+
+            $('input, textarea, select').on('input', function() {
+                if ($(this).hasClass('is-invalid')) {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+        });
     </script>
 }
+
+<style>
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+    .form-control, .form-select {
+        border: 1px solid #495057;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+
+    .alert {
+        border: none;
+        border-radius: 8px;
+    }
+
+    /* Leaflet popup customization */
+    .leaflet-popup-content {
+        color: #fff;
+        background-color: #222;
+        padding: 1rem;
+        border-radius: 8px;
+        font-family: inherit;
+    }
+
+    /* Validation styles */
+    .input-group .is-invalid {
+        border-color: #dc3545;
+    }
+
+        .input-group .is-invalid:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .card-body {
+            padding: 1rem;
+        }
+
+        .btn {
+            margin-bottom: 0.5rem;
+            width: 100%;
+        }
+
+        .d-flex.gap-3 {
+            gap: 0.5rem !important;
+            flex-direction: column;
+        }
+
+        #map {
+            height: 200px;
+        }
+    }
+</style>

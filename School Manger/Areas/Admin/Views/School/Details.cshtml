@@ -8,177 +8,337 @@
     Layout = "_AdminLayout";
 }
 
-<!-- School Info -->
-<div class="card bg-dark text-white shadow-lg rounded-4 mb-4 border-primary border-2">
-    <div class="card-header bg-primary bg-gradient rounded-top">
-        <h4 class="mb-0 fw-bold"><i class="bi bi-building"></i> اطلاعات مدرسه</h4>
-    </div>
-    <div class="card-body row">
-        <div class="col-md-6 mb-3">
-            <strong>🏷️ نام مدرسه:</strong>
-            <div class="ms-2">@Model.School.Name</div>
+<div class="container-fluid bg-dark text-white py-4" dir="rtl">
+    <!-- School Info -->
+    <div class="card bg-dark text-white shadow-lg rounded-4 mb-4 border-primary">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-building fs-4 me-2"></i>اطلاعات مدرسه
+            </h4>
+            <span class="badge bg-light text-dark fs-6">
+                <i class="bi bi-people me-1"></i>@Model.Students.Count دانش‌آموز
+            </span>
         </div>
-        <div class="col-md-6 mb-3">
-            <strong>👨‍<i class="bi bi-building"></i> نام مدیر:</strong>
-            <div class="ms-2">@Model.School.ManagerName</div>
-        </div>
-        <div class="col-md-6 mb-3">
-            <strong>⭐ امتیاز:</strong>
-            <div>
-                @for (int i = 1; i <= 5; i++)
-                {
-                    <i class="bi bi-star@(i <= Model.School.Rate ? "-fill" : "") text-warning fs-5"></i>
-                }
+        <div class="card-body">
+            <div class="row">
+                <!-- School Details -->
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-building text-warning fs-5 me-3"></i>
+                                <div>
+                                    <strong class="d-block text-white-50">نام مدرسه:</strong>
+                                    <span class="fs-5 fw-bold text-info">@Model.School.Name</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-badge text-warning fs-5 me-3"></i>
+                                <div>
+                                    <strong class="d-block text-white-50">نام مدیر:</strong>
+                                    <span class="fs-5 fw-bold text-info">@Model.School.ManagerName</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-star text-warning fs-5 me-3"></i>
+                                <div>
+                                    <strong class="d-block text-white-50">امتیاز:</strong>
+                                    <div class="rating">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <i class="bi bi-star@(i <= Model.School.Rate ? "-fill" : "") text-warning fs-5"></i>
+                                        }
+                                        <small class="text-white-50 ms-2">(@Model.School.Rate.ToString("0.0") از 5)</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-geo-alt text-warning fs-5 me-3"></i>
+                                <div>
+                                    <strong class="d-block text-white-50">آدرس:</strong>
+                                    <span class="text-info">@Model.School.Address.Address</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shifts Section -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <form asp-area="Admin" asp-controller="AssignD2S" asp-action="ShiftIndex">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="bi bi-clock-history text-warning fs-5 me-3"></i>
+                                    <div>
+                                        <strong class="d-block text-white-50">شیفت‌های مدرسه:</strong>
+                                    </div>
+                                </div>
+                                @{
+                                    var Shifts = await SchoolService.GetSchoolShifts(Model.School.Id);
+                                }
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text bg-dark text-white border-secondary">
+                                        <i class="bi bi-calendar-event"></i>
+                                    </span>
+                                    <select id="ShiftOption" class="form-select bg-dark text-white border-secondary">
+                                        @if (Shifts.Count > 0)
+                                        {
+                                            @foreach (var shift in Shifts)
+                                            {
+                                                <option value="@shift.Id">
+                                                    <i class="bi bi-clock me-1"></i>@shift.Name - @shift.Start تا @shift.End
+                                                </option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option>
+                                                <i class="bi bi-exclamation-triangle me-1"></i>این مدرسه شیفت ندارد
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+                                @if (Shifts.Count > 0)
+                                {
+                                    <input name="ShiftId" id="ShiftId" value="@Shifts.FirstOrDefault().Id" type="hidden" />
+                                    <button class="btn btn-success fw-bold px-4" type="submit">
+                                        <i class="bi bi-person-check me-1"></i>اختصاص رانندگان به دانش‌آموزان
+                                    </button>
+                                }
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <a asp-action="DeleteSchool" asp-route-id="@Model.School.Id"
+                               class="btn btn-outline-danger fw-bold shadow-sm me-2"
+                               onclick="return confirm('آیا از حذف این مدرسه مطمئن هستید؟')">
+                                <i class="bi bi-trash me-1"></i>حذف مدرسه
+                            </a>
+                            <a asp-action="EditSchool" asp-route-SchoolId="@Model.School.Id"
+                               class="btn btn-outline-warning fw-bold shadow-sm me-2">
+                                <i class="bi bi-pencil-square me-1"></i>ویرایش مدرسه
+                            </a>
+                            <a asp-action="Index" class="btn btn-outline-light fw-bold shadow-sm">
+                                <i class="bi bi-arrow-right-circle me-1"></i>بازگشت به لیست
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Section -->
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-map text-warning fs-5 me-2"></i>
+                        <strong class="text-white-50">موقعیت مکانی:</strong>
+                    </div>
+                    <div id="schoolMap" style="height: 300px; width: 100%;" class="rounded shadow-sm border border-secondary"></div>
+                </div>
             </div>
         </div>
-        <div class="col-md-6 mb-3">
-            <strong>📍 آدرس:</strong>
-            <div class="ms-2">@Model.School.Address.Address</div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white text-center">
+                <div class="card-body">
+                    <i class="bi bi-people fs-1 d-block mb-2"></i>
+                    <h4>@Model.Students.Count</h4>
+                    <p class="mb-0">دانش‌آموز</p>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
-            <strong>🗺️ موقعیت مکانی:</strong>
-            <div id="schoolMap" style="height: 300px; width: 100%;" class="rounded shadow-sm border border-light mt-2"></div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white text-center">
+                <div class="card-body">
+                    <i class="bi bi-car-front fs-1 d-block mb-2"></i>
+                    <h4>@Model.Drivers.Count</h4>
+                    <p class="mb-0">راننده</p>
+                </div>
+            </div>
         </div>
-        <div class="col-md-4">
-            <form asp-area="Admin" asp-controller="AssignD2S" asp-action="ShiftIndex">
-                <strong>شیفت های مدرسه :</strong>
-                @{
-                    var Shifts = await SchoolService.GetSchoolShifts(Model.School.Id);
-                }
-                <select id="ShiftOption" class="form-control">
-                    @if (Shifts.Count > 0)
-                    {
-                        @foreach (var shift in Shifts)
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white text-center">
+                <div class="card-body">
+                    <i class="bi bi-clock-history fs-1 d-block mb-2"></i>
+                    <h4>@(await SchoolService.GetSchoolShifts(Model.School.Id)).Count</h4>
+                    <p class="mb-0">شیفت فعال</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-dark text-center">
+                <div class="card-body">
+                    <i class="bi bi-star-fill fs-1 d-block mb-2"></i>
+                    <h4>@Model.School.Rate.ToString("0.0")</h4>
+                    <p class="mb-0">امتیاز</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drivers Section -->
+    <div class="card bg-dark text-white shadow rounded-4 mb-4 border-secondary">
+        <div class="card-header bg-secondary bg-gradient d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold">
+                <i class="bi bi-car-front fs-4 me-2"></i>رانندگان
+            </h5>
+            <span class="badge bg-light text-dark">
+                <i class="bi bi-person me-1"></i>@Model.Drivers.Count راننده
+            </span>
+        </div>
+        <div class="card-body table-responsive">
+            @if (Model.Drivers.Any())
+            {
+                <table class="table table-dark table-hover align-middle text-center">
+                    <thead class="table-light text-dark">
+                        <tr>
+                            <th><i class="bi bi-person-circle me-1"></i>نام</th>
+                            <th><i class="bi bi-person-badge me-1"></i>نام خانوادگی</th>
+                            <th><i class="bi bi-credit-card me-1"></i>کد ملی</th>
+                            <th><i class="bi bi-person-seat me-1"></i>تعداد صندلی</th>
+                            <th><i class="bi bi-car-front me-1"></i>خودرو</th>
+                            <th class="fw-bold"><i class="bi bi-gear me-1"></i>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var driver in Model.Drivers)
                         {
-                            <option value="@shift.Id">
-                                @shift.Name : نام شیفت
-                                @shift.Start : زمان شروع
-                                @shift.End : زمان پایان
-                            </option>
+                            <tr>
+                                <td>@driver.Name</td>
+                                <td>@driver.LastName</td>
+                                <td>
+                                    <span class="badge bg-secondary">
+                                        <i class="bi bi-123 me-1"></i>@driver.NationCode
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">
+                                        <i class="bi bi-person me-1"></i>@driver.Car.SeatNumber
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-car-front me-1"></i>@driver.Car.Name
+                                    </span>
+                                </td>
+                                <td>
+                                    <form asp-controller="Driver" asp-action="Details" class="d-inline">
+                                        <input type="hidden" name="id" value="@driver.Id" />
+                                        <button class="btn btn-sm btn-outline-info rounded-pill shadow-sm" type="submit">
+                                            <i class="bi bi-eye me-1"></i>نمایش
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
                         }
-                    }
-                    else
-                    {
-                        <option>
-                            این مدرسه شیفت ندارد
-                        </option>
-                    }
-                </select>
-                @if (Shifts.Count > 0)
-                {
-                    <input name="ShiftId" id="ShiftId" value="@Shifts.FirstOrDefault().Id" type="hidden" />
-                    <button class="mt-4 form-control bg-success text-white" type="submit">اختصاص دادن رانندگان این شیفت به دانش آموزان</button>
-                }
-            </form>
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-warning text-center py-4">
+                    <i class="bi bi-car-front fs-1 d-block mb-3"></i>
+                    <h5>راننده‌ای یافت نشد</h5>
+                    <p class="mb-0">هنوز هیچ راننده‌ای به این مدرسه اختصاص داده نشده است.</p>
+                </div>
+            }
         </div>
-        <div class="mt-4">
-            <a asp-action="DeleteSchool" asp-route-id="@Model.School.Id"
-               class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف"
-               onclick="return confirm('آیا از حذف این مدرسه مطمئن هستید؟')">
-                <i class="bi bi-trash"></i> ️ حذف
-            </a>
-        </div>
-        <div class="mt-4">
-            <a asp-action="Index" class="btn btn-outline-light rounded-4">
-                <i class="bi bi-arrow-right"></i> بازگشت به لیست
-            </a>
-        </div>
+    </div>
 
+    <!-- Students Section -->
+    <div class="card bg-dark text-white shadow rounded-4 mb-4 border-success">
+        <div class="card-header bg-success bg-gradient d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold">
+                <i class="bi bi-people fs-4 me-2"></i>دانش‌آموزان
+            </h5>
+            <span class="badge bg-light text-dark">
+                <i class="bi bi-person-check me-1"></i>@Model.Students.Count دانش‌آموز
+            </span>
+        </div>
+        <div class="card-body table-responsive">
+            @if (Model.Students.Any())
+            {
+                <table class="table table-dark table-hover align-middle text-center">
+                    <thead class="table-light text-dark">
+                        <tr>
+                            <th><i class="bi bi-person me-1"></i>نام</th>
+                            <th><i class="bi bi-person-badge me-1"></i>نام خانوادگی</th>
+                            <th><i class="bi bi-credit-card me-1"></i>کد ملی</th>
+                            <th><i class="bi bi-book me-1"></i>کلاس</th>
+                            <th><i class="bi bi-cash-coin me-1"></i>پرداخت</th>
+                            <th><i class="bi bi-clock me-1"></i>شیفت</th>
+                            <th class="fw-bold"><i class="bi bi-gear me-1"></i>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var student in Model.Students)
+                        {
+                            <tr>
+                                <td>@student.FirstName</td>
+                                <td>@student.LastName</td>
+                                <td>
+                                    <span class="badge bg-secondary">
+                                        <i class="bi bi-123 me-1"></i>@student.NationalCode
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">
+                                        <i class="bi bi-bookmark me-1"></i>@student.Class
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (student.HasPaid)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i>پرداخت شده
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-x-circle me-1"></i>پرداخت نشده
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">
+                                        <i class="bi bi-clock me-1"></i>@(ShiftService.GetShiftById(student.ShiftId)?.Name ?? "انتخاب نشده")
+                                    </span>
+                                </td>
+                                <td>
+                                    <form asp-controller="Parents" asp-action="CreateBill" method="post" class="d-inline">
+                                        <input name="ChildId" type="hidden" value="@student.Id" />
+                                        <button class="btn btn-sm btn-outline-warning rounded-pill shadow-sm" type="submit">
+                                            <i class="bi bi-receipt me-1"></i>صدور قبض
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-warning text-center py-4">
+                    <i class="bi bi-people fs-1 d-block mb-3"></i>
+                    <h5>دانش‌آموزی یافت نشد</h5>
+                    <p class="mb-0">هنوز هیچ دانش‌آموزی در این مدرسه ثبت‌نام نکرده است.</p>
+                </div>
+            }
+        </div>
     </div>
 </div>
 
-<!-- Drivers -->
-<div class="card bg-dark text-white shadow rounded-4 mb-4 border-secondary border-2">
-    <div class="card-header bg-secondary bg-gradient rounded-top">
-        <h5 class="mb-0 fw-semibold"><i class="bi bi-car-front-fill"></i> رانندگان</h5>
-    </div>
-    <div class="card-body table-responsive">
-        <table class="table table-dark table-hover align-middle text-center">
-            <thead class="table-light text-dark">
-                <tr>
-                    <th><i class="bi bi-person"></i> نام</th>
-                    <th>👥 نام خانوادگی</th>
-                    <th><i class="bi bi-person-vcard"></i> کد ملی</th>
-                    <th>💺 تعداد صندلی خودرو</th>
-                    <th>🚗 خودرو</th>
-                    <th>عملیات</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var driver in Model.Drivers)
-                {
-                    <tr>
-                        <td>@driver.Name</td>
-                        <td>@driver.LastName</td>
-                        <td>@driver.NationCode</td>
-                        <td>@driver.Car.SeatNumber</td>
-                        <td>@driver.Car.Name</td>
-                        <td>
-                            <form asp-controller="Driver" asp-action="Details">
-                                <input type="hidden" name="id" value="@driver.Id" />
-                                <button class="btn btn-sm btn-outline-info" type="submit">
-                                    <i class="bi bi-file-earmark-text"></i> نمایش راننده
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Students -->
-<div class="card bg-dark text-white shadow rounded-4 mb-4 border-success border-2">
-    <div class="card-header bg-success bg-gradient rounded-top">
-        <h5 class="mb-0 fw-semibold">🎓 دانش‌آموزان</h5>
-    </div>
-    <div class="card-body table-responsive">
-        <table class="table table-dark table-hover align-middle text-center">
-            <thead class="table-light text-dark">
-                <tr>
-                    <th>👶 نام</th>
-                    <th>👨‍👧 نام خانوادگی</th>
-                    <th><i class="bi bi-person-vcard"></i> کد ملی</th>
-                    <th>🏷️ کلاس</th>
-                    <th><i class="bi bi-cash"></i> پرداخت</th>
-                    <th>شیفت</th>
-                    <th>نمایش</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var student in Model.Students)
-                {
-                    <tr>
-                        <td>@student.FirstName</td>
-                        <td>@student.LastName</td>
-                        <td>@student.NationalCode</td>
-                        <td>@student.Class</td>
-                        <td>
-                            @if (student.HasPaid)
-                            {
-                                <span class="badge bg-success">✅ پرداخت شده</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger">❌ پرداخت نشده</span>
-                            }
-                        </td>
-                        <td>@(ShiftService.GetShiftById(student.ShiftId) != null ? ShiftService.GetShiftById(student.ShiftId).Name : "شیفت انتخاب نشده")</td>
-                        <td>
-                            <form asp-controller="Parents" asp-action="CreateBill" method="post" class="d-inline">
-                                <input name="ChildId" type="hidden" value="@student.Id" />
-                                <button class="btn btn-sm btn-outline-warning" type="submit">
-                                    <i class="bi bi-file-earmark-text"></i> صدور
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
 @section Scripts {
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -196,14 +356,114 @@
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        // Add a marker at the school location with a popup
-        L.marker([lat, lng]).addTo(map)
-            .bindPopup('📍 موقعیت مدرسه')
-            .openPopup();
-                // Update hidden shift field when shift selection changes
+        // Add a marker at the school location with a custom icon
+        L.marker([lat, lng], {
+            icon: L.divIcon({
+                className: 'school-marker',
+                html: '<div style="background:#dc3545;color:white;padding:4px 8px;border-radius:6px;border:2px solid white;"><i class="bi bi-building-fill me-1"></i>مدرسه</div>',
+                iconSize: [60, 30]
+            })
+        }).addTo(map)
+        .bindPopup('<div class="text-center"><i class="bi bi-building-fill text-danger me-1"></i><strong>موقعیت مدرسه</strong><br>@Model.School.Name</div>')
+        .openPopup();
+
+        // Update hidden shift field when shift selection changes
         document.getElementById('ShiftOption').addEventListener('change', function() {
-            document.getElementById('ShiftId').value =  document.getElementById('ShiftOption').value;
+            document.getElementById('ShiftId').value = this.value;
+        });
+
+        // Add hover effects
+        $(document).ready(function() {
+            $('tbody tr').hover(
+                function() {
+                    $(this).addClass('bg-secondary bg-opacity-25');
+                },
+                function() {
+                    $(this).removeClass('bg-secondary bg-opacity-25');
+                }
+            );
+
+            $('.btn').hover(
+                function() {
+                    $(this).addClass('shadow');
+                },
+                function() {
+                    $(this).removeClass('shadow');
+                }
+            );
         });
     </script>
 }
 
+<style>
+    .rating {
+        direction: ltr;
+        unicode-bidi: bidi-override;
+    }
+
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+    .table th, .table td {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.5em 0.8em;
+    }
+
+    /* Custom scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #2d3748;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #4a5568;
+        border-radius: 4px;
+    }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.9rem;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+    }
+</style>

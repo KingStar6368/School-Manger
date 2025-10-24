@@ -8,134 +8,482 @@
     Layout = "_AdminLayout";
 }
 
-<div class="card bg-dark text-white mb-4 shadow-lg rounded-4 border-primary border-2">
-    <div class="card-header bg-primary text-white rounded-top-4">
-        <h3 class="mb-0"><i class="bi bi-person-badge-fill me-2"></i>@ViewData["Title"]</h3>
-    </div>
-    <div class="card-body">
-        <div class="row g-4">
-            <!-- Driver Info -->
-            <div class="col-md-6">
-                <h5 class="border-bottom pb-2 mb-3 text-info">اطلاعات راننده</h5>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item bg-dark text-white border-0"><i class="bi bi-person"></i> <strong>نام کامل:</strong> @Model.Driver.Name @Model.Driver.LastName</li>
-                    <li class="list-group-item bg-dark text-white border-0"><i class="bi bi-person-vcard"></i> <strong>کد ملی:</strong> @Model.Driver.NationCode</li>
-                    <li class="list-group-item bg-dark text-white border-0">👨‍👦 <strong>نام پدر:</strong> @Model.Driver.FutherName</li>
-                    <li class="list-group-item bg-dark text-white border-0">🏦 <strong>بانک:</strong> @* @Model.Driver.BankAccount *@</li>
-                    <li class="list-group-item bg-dark text-white border-0">🔢 <strong>شماره حساب:</strong> @Model.Driver.BankNumber</li>
-                    <li class="list-group-item bg-dark text-white border-0"><i class="bi bi-cake2-fill"></i> <strong>تاریخ تولد:</strong> @Model.Driver.BirthDate.ToPersianString()</li>
-                    <li class="list-group-item bg-dark text-white border-0">⭐ <strong>امتیاز:</strong> <span class="badge bg-success">@Model.Driver.Rate</span></li>
-                    <li class="list-group-item bg-dark text-white border-0">⚠️ <strong>اخطارها:</strong> <span class="badge bg-warning text-dark">@Model.Driver.Warnning</span></li>
-                    <li class="list-group-item bg-dark text-white border-0">🏠 <strong>آدرس:</strong> @Model.Driver.Address</li>
-                    <li class="list-group-item bg-dark text-white border-0">🎓 <strong>تحصیلات:</strong> @Model.Driver.Education</li>
-                    <li class="list-group-item bg-dark text-white border-0">🚘 <strong>شماره گواهی:</strong> @Model.Driver.CertificateId</li>
-                </ul>
-            </div>
-
-            <!-- Car Info -->
-            <div class="col-md-6">
-                <h5 class="border-bottom pb-2 mb-3 text-info">اطلاعات خودرو</h5>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item bg-dark text-white border-0">🚗 <strong>مدل:</strong> @Model.Driver.Car.Name</li>
-                    <li class="list-group-item bg-dark text-white border-0">🎨 <strong>رنگ:</strong> @Model.Driver.Car.Color</li>
-                    <li class="list-group-item bg-dark text-white border-0">🔢 <strong>پلاک:</strong> @Html.Partial("_CarPlate", Model.Driver.Car.PlateNumber)</li>
-                </ul>
-            </div>
-        </div>
-        <div class="mb-6">
-            <label class="form-label">شیفت‌های قابل انتخاب و تعداد صندلی:</label>
-            <input type="text" id="shiftFilter" class="form-control mb-2" placeholder="جستجو شیفت..." onkeyup="filterShifts()" />
-            <table class="table table-bordered table-dark table-striped" id="shiftTable">
-                <thead>
-                    <tr>
-                        <th>نام شیفت</th>
-                        <th>زمان شروع</th>
-                        <th>زمان پایان</th>
-                        <th>تعداد مسافر / تعداد کل صندلی</th>
-                        <th>عملیات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var shift in ShiftService.GetAllDriverShifts(Model.Driver.Id))
-                    {
-                        var PassangerCount = ShiftService.GetDriverShift(shift.Id, Model.Driver.Id).Passenger?.Count ?? 0;
-                        <tr>
-                            <form asp-action="Details">
-                                <input name="id" type="hidden" value="@Model.Driver.Id"/>
-                                <input name="ShiftId" type="hidden" value="@shift.Id" />
-                                <td>@shift.Name</td>
-                                <td>@shift.Start.ToString("HH:mm")</td>
-                                <td>@shift.End.ToString("HH:mm")</td>
-                                <td>@PassangerCount / @ShiftService.GetDriverShifts(Model.Driver.Id).FirstOrDefault(x => x.ShiftRef == shift.Id).Seats </td>
-                                <td><button class="bg-success text-white rounded" type="submit"><i class="bi bi-eye"></i> مشاهده مسافرین شیفت</button></td>
-                            </form>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-        <div class="mt-4">
-            <a asp-action="Index" class="btn btn-outline-light rounded-4">
-                <i class="bi bi-arrow-right"></i> بازگشت به لیست
+<div class="container-fluid bg-dark text-white py-4" dir="rtl">
+    <!-- Driver Info Card -->
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-person-badge fs-4 me-2"></i>جزئیات راننده
+            </h4>
+            <a asp-action="Index" class="btn btn-outline-light fw-bold shadow-sm">
+                <i class="bi bi-arrow-right-circle me-1"></i>بازگشت به لیست
             </a>
         </div>
-    </div>
-</div>
+        <div class="card-body">
+            <div class="row g-4">
+                <!-- Driver Information -->
+                <div class="col-md-6">
+                    <div class="card bg-secondary border-warning h-100">
+                        <div class="card-header bg-warning bg-gradient text-dark">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="bi bi-person fs-4 me-2"></i>اطلاعات راننده
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-person text-info fs-5 me-3"></i>
+                                        <div>
+                                            <strong class="d-block text-white-50">نام کامل:</strong>
+                                            <span class="fw-bold text-info">@Model.Driver.Name @Model.Driver.LastName</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-credit-card text-info fs-5 me-3"></i>
+                                        <div>
+                                            <strong class="d-block text-white-50">کد ملی:</strong>
+                                            <span class="fw-bold text-info">@Model.Driver.NationCode</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-person-plus text-info fs-5 me-3"></i>
+                                        <div>
+                                            <strong class="d-block text-white-50">نام پدر:</strong>
+                                            <span class="fw-bold text-info">@Model.Driver.FutherName</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-bank text-info fs-5 me-3"></i>
+                                        <div>
+                                            <strong class="d-block text-white-50">شماره حساب:</strong>
+                                            <span class="fw-bold text-info">@Model.Driver.BankNumber</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-balloon text-info fs-5 me-3"></i>
+                                        <div>
+                                            <strong class="d-block text-white-50">تاریخ تولد:</strong>
+                                            <span class="fw-bold text-info">@Model.Driver.BirthDate.ToPersianString()</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-star text-info fs-5 me-3"></i>
+                                        <div>
+                                            <strong class="d-block text-white-50">امتیاز:</strong>
+                                            <span class="badge bg-success fw-bold p-2">
+                                                <i class="bi bi-star-fill me-1"></i>@Model.Driver.Rate
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-exclamation-triangle text-info fs-5 me-3"></i>
+                                        <div>
+                                            <strong class="d-block text-white-50">اخطارها:</strong>
+                                            <span class="badge bg-warning text-dark fw-bold p-2">
+                                                <i class="bi bi-exclamation-triangle-fill me-1"></i>@Model.Driver.Warnning
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-mortarboard text-info fs-5 me-3"></i>
+                                        <div>
+                                            <strong class="d-block text-white-50">تحصیلات:</strong>
+                                            <span class="fw-bold text-info">@Model.Driver.Education</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-geo-alt text-info fs-5 me-3"></i>
+                                        <div>
+                                            <strong class="d-block text-white-50">آدرس:</strong>
+                                            <span class="fw-bold text-info">@Model.Driver.Address</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-award text-info fs-5 me-3"></i>
+                                        <div>
+                                            <strong class="d-block text-white-50">شماره گواهی:</strong>
+                                            <span class="fw-bold text-info">@Model.Driver.CertificateId</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<!-- Passenger List -->
-<div class="card bg-dark shadow-lg rounded-4 border-white border-2">
-    <div class="card-header bg-secondary text-white rounded-top-4">
-        <h4><i class="bi bi-people-fill me-2"></i>لیست مسافرین</h4>
+                <!-- Car Information -->
+                <div class="col-md-6">
+                    <div class="card bg-secondary border-info h-100">
+                        <div class="card-header bg-info bg-gradient">
+                            <h5 class="mb-0 fw-bold">
+                                <i class="bi bi-car-front fs-4 me-2"></i>اطلاعات خودرو
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-car-front text-primary fs-5 me-3"></i>
+                                        <div>
+                                            <strong class="d-block text-white-50">مدل خودرو:</strong>
+                                            <span class="fw-bold text-primary">@Model.Driver.Car.Name</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-palette text-primary fs-5 me-3"></i>
+                                        <div>
+                                            <strong class="d-block text-white-50">رنگ:</strong>
+                                            <span class="fw-bold text-primary">@Model.Driver.Car.Color</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-tag text-primary fs-5 me-3"></i>
+                                        <div>
+                                            <strong class="d-block text-white-50">شماره پلاک:</strong>
+                                            <div class="mt-2">
+                                                @Html.Partial("_CarPlate", Model.Driver.Car.PlateNumber)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shifts Section -->
+            <div class="card bg-dark border-success mt-4">
+                <div class="card-header bg-success bg-gradient">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-clock-history fs-4 me-2"></i>شیفت‌های راننده
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-search me-1"></i>جستجوی شیفت:
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark text-white border-secondary">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" id="shiftFilter" class="form-control bg-dark text-white border-secondary"
+                                   placeholder="جستجو بر اساس نام شیفت..." onkeyup="filterShifts()" />
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-dark table-striped table-hover" id="shiftTable">
+                            <thead class="table-light text-dark">
+                                <tr>
+                                    <th><i class="bi bi-tag me-1"></i>نام شیفت</th>
+                                    <th><i class="bi bi-play-circle me-1"></i>زمان شروع</th>
+                                    <th><i class="bi bi-stop-circle me-1"></i>زمان پایان</th>
+                                    <th><i class="bi bi-people me-1"></i>تعداد مسافر / صندلی</th>
+                                    <th class="fw-bold"><i class="bi bi-gear me-1"></i>عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var shift in ShiftService.GetAllDriverShifts(Model.Driver.Id))
+                                {
+                                    var PassangerCount = ShiftService.GetDriverShift(shift.Id, Model.Driver.Id).Passenger?.Count ?? 0;
+                                    var totalSeats = ShiftService.GetDriverShifts(Model.Driver.Id).FirstOrDefault(x => x.ShiftRef == shift.Id)?.Seats ?? 0;
+                                    var capacityPercent = totalSeats > 0 ? (PassangerCount * 100) / totalSeats : 0;
+
+                                    <tr>
+                                        <form asp-action="Details">
+                                            <input name="id" type="hidden" value="@Model.Driver.Id" />
+                                            <input name="ShiftId" type="hidden" value="@shift.Id" />
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-clock text-warning me-2"></i>
+                                                <strong>@shift.Name</strong>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success fw-bold">
+                                                <i class="bi bi-play-circle me-1"></i>@shift.Start.ToString("HH:mm")
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-danger fw-bold">
+                                                <i class="bi bi-stop-circle me-1"></i>@shift.End.ToString("HH:mm")
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress flex-grow-1 me-2" style="height: 20px;">
+                                                    <div class="progress-bar @(capacityPercent >= 80 ? "bg-danger" : capacityPercent >= 60 ? "bg-warning" : "bg-success")"
+                                                         role="progressbar" style="width: @capacityPercent%;"
+                                                         aria-valuenow="@capacityPercent" aria-valuemin="0" aria-valuemax="100">
+                                                        @PassangerCount/@totalSeats
+                                                    </div>
+                                                </div>
+                                                <small class="text-nowrap">@capacityPercent%</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-info rounded-pill shadow-sm" type="submit">
+                                                <i class="bi bi-eye me-1"></i>مشاهده مسافرین
+                                            </button>
+                                        </td>
+                                        </form>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-dark table-striped table-hover align-middle text-center">
-                <thead class="table-light text-dark">
-                    <tr>
-                        <th>شناسه</th>
-                        <th>نام</th>
-                        <th>نام خانوادگی</th>
-                        <th>سال تحصیلی</th>
-                        <th>آدرس رفت</th>
-                        <th>آدرس برگشت</th>
-                        <th>عملیات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var passanger in Model.Passanger)
-                    {
-                        <tr>
-                            <td>@passanger.Id</td>
-                            <td>@passanger.FirstName</td>
-                            <td>@passanger.LastName</td>
-                            <td>@passanger.Class</td>
-                            <td>@passanger.Path?.Location1?.Address</td>
-                            <td>@passanger.Path?.Location2?.Address</td>
-                            <td>
-                                <form asp-controller="School" asp-action="Details">
-                                    <input type="hidden" name="id" value="@passanger.SchoolId" />
-                                    <button class="btn btn-sm btn-outline-info" type="submit">
-                                        <i class="bi bi-file-earmark-text"></i> نمایش مدرسه
-                                    </button>
-                                </form>
-                                <form asp-controller="Parents" asp-action="CreateBill" method="post" class="d-inline">
-                                    <input name="ChildId" type="hidden" value="@passanger.Id" />
-                                    <button class="btn btn-sm btn-outline-warning" type="submit">
-                                        <i class="bi bi-file-earmark-text"></i> صدور قبض
-                                    </button>
-                                </form>
-                                <form asp-action="DeletePassanger">
-                                    <input hidden name="ChildId" value="@passanger.Id" />
-                                    <input hidden name="DriverId" value="@Model.Driver.Id" />
-                                    <button class="btn btn-sm btn-outline-danger" type="submit">
-                                        <i class="bi bi-trash"></i> حذف از لیست
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+
+    <!-- Passengers List -->
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-warning">
+        <div class="card-header bg-warning bg-gradient text-dark d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-people-fill fs-4 me-2"></i>لیست مسافرین
+            </h4>
+            <span class="badge bg-dark fs-6">
+                <i class="bi bi-person-check me-1"></i>@Model.Passanger.Count مسافر
+            </span>
+        </div>
+        <div class="card-body">
+            @if (Model.Passanger.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped table-hover align-middle text-center">
+                        <thead class="table-light text-dark">
+                            <tr>
+                                <th class="fw-bold"><i class="bi bi-hash me-1"></i>شناسه</th>
+                                <th><i class="bi bi-person me-1"></i>نام</th>
+                                <th><i class="bi bi-person-badge me-1"></i>نام خانوادگی</th>
+                                <th><i class="bi bi-book me-1"></i>سال تحصیلی</th>
+                                <th><i class="bi bi-geo-alt me-1"></i>آدرس رفت</th>
+                                <th><i class="bi bi-geo me-1"></i>آدرس برگشت</th>
+                                <th class="fw-bold"><i class="bi bi-gear me-1"></i>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var passanger in Model.Passanger)
+                            {
+                                <tr>
+                                    <td class="fw-bold text-info">@passanger.Id</td>
+                                    <td>@passanger.FirstName</td>
+                                    <td>@passanger.LastName</td>
+                                    <td>
+                                        <span class="badge bg-primary">
+                                            <i class="bi bi-bookmark me-1"></i>@passanger.Class
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 200px;" title="@passanger.Path?.Location1?.Address">
+                                            <i class="bi bi-house text-success me-1"></i>
+                                            @passanger.Path?.Location1?.Address
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 200px;" title="@passanger.Path?.Location2?.Address">
+                                            <i class="bi bi-building text-danger me-1"></i>
+                                            @passanger.Path?.Location2?.Address
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <form asp-controller="School" asp-action="Details" class="d-inline">
+                                                <input type="hidden" name="id" value="@passanger.SchoolId" />
+                                                <button class="btn btn-sm btn-outline-info rounded-pill shadow-sm"
+                                                        data-bs-toggle="tooltip" title="مشاهده مدرسه">
+                                                    <i class="bi bi-building"></i>
+                                                </button>
+                                            </form>
+                                            <form asp-controller="Parents" asp-action="CreateBill" method="post" class="d-inline">
+                                                <input name="ChildId" type="hidden" value="@passanger.Id" />
+                                                <button class="btn btn-sm btn-outline-warning rounded-pill shadow-sm"
+                                                        data-bs-toggle="tooltip" title="صدور قبض">
+                                                    <i class="bi bi-receipt"></i>
+                                                </button>
+                                            </form>
+                                            <form asp-action="DeletePassanger" class="d-inline">
+                                                <input hidden name="ChildId" value="@passanger.Id" />
+                                                <input hidden name="DriverId" value="@Model.Driver.Id" />
+                                                <button class="btn btn-sm btn-outline-danger rounded-pill shadow-sm"
+                                                        data-bs-toggle="tooltip" title="حذف از لیست"
+                                                        onclick="return confirm('آیا از حذف این مسافر مطمئن هستید؟')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning text-center py-4">
+                    <i class="bi bi-people fs-1 d-block mb-3"></i>
+                    <h5>مسافری یافت نشد</h5>
+                    <p class="mb-0">هنوز هیچ مسافری به این راننده اختصاص داده نشده است.</p>
+                </div>
+            }
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function filterShifts() {
+            var input = document.getElementById("shiftFilter");
+            var filter = input.value.toUpperCase();
+            var table = document.getElementById("shiftTable");
+            var tr = table.getElementsByTagName("tr");
+
+            for (var i = 0; i < tr.length; i++) {
+                var td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    var txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        $(document).ready(function () {
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+
+            // Add hover effects
+            $('tbody tr').hover(
+                function() {
+                    $(this).addClass('bg-secondary bg-opacity-25');
+                },
+                function() {
+                    $(this).removeClass('bg-secondary bg-opacity-25');
+                }
+            );
+
+            $('.btn').hover(
+                function() {
+                    $(this).addClass('shadow');
+                },
+                function() {
+                    $(this).removeClass('shadow');
+                }
+            );
+        });
+    </script>
+}
+
+<style>
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+    .table th, .table td {
+        vertical-align: middle;
+        text-align: center;
+        padding: 1rem 0.75rem;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.5em 0.8em;
+    }
+
+    .progress {
+        background-color: #2d3748;
+    }
+
+    /* Custom scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #2d3748;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #4a5568;
+        border-radius: 4px;
+    }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.9rem;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .d-flex.gap-2 {
+            gap: 0.25rem !important;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        .text-truncate {
+            max-width: 150px !important;
+        }
+    }
+</style>

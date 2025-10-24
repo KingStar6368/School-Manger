@@ -14,134 +14,426 @@
     }
 }
 
-<!-- School Info -->
-<div class="card bg-dark text-white shadow-lg rounded-4 mb-4 border-primary border-2">
-    <div class="card-header bg-primary bg-gradient rounded-top">
-        <h4 class="mb-0 fw-bold"><i class="bi bi-building"></i> @Model.School.Name</h4>
-    </div>
-    <div class="card-body">
-        <div class="mb-3">
-            <strong>🏷️ نام مدرسه:</strong> @Model.School.Name
+<div class="container-fluid bg-dark text-white py-4" dir="rtl">
+    <!-- School Info Header -->
+    <div class="card bg-dark text-white shadow-lg rounded-4 mb-4 border-primary">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-building fs-4 me-2"></i>مدیریت شیفت‌های مدرسه:
+                <span class="text-warning">@Model.School.Name</span>
+            </h4>
+            <a asp-action="Details" asp-route-id="@Model.School.Id" class="btn btn-outline-light fw-bold shadow-sm">
+                <i class="bi bi-arrow-right-circle me-1"></i>بازگشت به مدرسه
+            </a>
         </div>
-        <div class="mb-3">
-            <strong>شیفت های مدرسه :</strong>
-            <table class="table table-bordered table-striped table-dark">
-                <thead>
-                    <tr>
-                        <th>نام شیفت</th>
-                        <th>نوع</th>
-                        <th>زمان شروع</th>
-                        <th>زمان پایان</th>
-                        <th>عملیات</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <div class="card-body">
+            <!-- School Basic Info -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-building text-warning fs-5 me-3"></i>
+                        <div>
+                            <strong class="d-block text-white-50">نام مدرسه:</strong>
+                            <span class="fs-5 fw-bold text-info">@Model.School.Name</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-clock-history text-warning fs-5 me-3"></i>
+                        <div>
+                            <strong class="d-block text-white-50">تعداد شیفت‌ها:</strong>
+                            <span class="fs-5 fw-bold text-info">@Shifts.Count شیفت</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Shifts Table -->
+            <div class="card bg-secondary border-warning mb-4">
+                <div class="card-header bg-warning bg-gradient text-dark">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-list-check fs-4 me-2"></i>شیفت‌های فعلی مدرسه
+                    </h5>
+                </div>
+                <div class="card-body">
                     @if (Shifts.Count > 0)
                     {
-                        foreach (var shift in Shifts)
-                        {
-                            <tr>
-                                <td>@shift.Name</td>
-                                <td>@shift.ShiftType</td>
-                                <td>@shift.Start</td>
-                                <td>@shift.End</td>
-                                <td>
-                                    <form asp-action="EditShift" asp-controller="School" asp-area="Admin" method="get" style="display:inline">
-                                        <input type="hidden" name="id" value="@shift.Id" />
-                                        <button type="submit" class="btn btn-warning btn-sm">ویرایش</button>
-                                    </form>
-                                    <form asp-action="DeleteShift" asp-controller="School" asp-area="Admin" method="post" style="display:inline" onsubmit="return confirm('آیا مطمئن هستید؟');">
-                                        <input type="hidden" name="id" value="@shift.Id" />
-                                        <button type="submit" class="btn btn-danger btn-sm">حذف</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        }
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover align-middle text-center">
+                                <thead class="table-light text-dark">
+                                    <tr>
+                                        <th class="fw-bold"><i class="bi bi-tag me-1"></i>نام شیفت</th>
+                                        <th><i class="bi bi-clock me-1"></i>نوع</th>
+                                        <th><i class="bi bi-play-circle me-1"></i>زمان شروع</th>
+                                        <th><i class="bi bi-stop-circle me-1"></i>زمان پایان</th>
+                                        <th class="fw-bold"><i class="bi bi-gear me-1"></i>عملیات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var shift in Shifts)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center justify-content-center">
+                                                    <i class="bi bi-clock text-info me-2"></i>
+                                                    <strong>@shift.Name</strong>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @{
+                                                    var shiftTypeText = Convert.ToInt32(shift.ShiftType) == 0 ? "صبح" :
+                                                    Convert.ToInt32(shift.ShiftType) == 1 ? "عصر" : "چرخشی";
+                                                    var shiftTypeBadge = Convert.ToInt32(shift.ShiftType) == 0 ? "bg-primary" :
+                                                    Convert.ToInt32(shift.ShiftType) == 1 ? "bg-warning text-dark" : "bg-info";
+                                                }
+                                                <span class="badge @shiftTypeBadge fw-bold p-2">
+                                                    <i class="bi bi-@(Convert.ToInt32(shift.ShiftType) == 0 ? "sun" : Convert.ToInt32(shift.ShiftType) == 1 ? "moon" : "arrow-repeat") me-1"></i>
+                                                    @shiftTypeText
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-success fw-bold p-2">
+                                                    <i class="bi bi-play-circle me-1"></i>@shift.Start
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-danger fw-bold p-2">
+                                                    <i class="bi bi-stop-circle me-1"></i>@shift.End
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    <form asp-action="EditShift" asp-controller="School" asp-area="Admin" method="get" class="d-inline">
+                                                        <input type="hidden" name="id" value="@shift.Id" />
+                                                        <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill shadow-sm"
+                                                                data-bs-toggle="tooltip" title="ویرایش شیفت">
+                                                            <i class="bi bi-pencil-square"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form asp-action="DeleteShift" asp-controller="School" asp-area="Admin" method="post" class="d-inline"
+                                                          onsubmit="return confirm('آیا از حذف این شیفت مطمئن هستید؟');">
+                                                        <input type="hidden" name="id" value="@shift.Id" />
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill shadow-sm"
+                                                                data-bs-toggle="tooltip" title="حذف شیفت">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     }
                     else
                     {
-                        <tr><td colspan="5">این مدرسه شیفت ندارد</td></tr>
+                        <div class="alert alert-warning text-center py-4">
+                            <i class="bi bi-clock fs-1 d-block mb-3"></i>
+                            <h5>شیفتی یافت نشد</h5>
+                            <p class="mb-0">هنوز هیچ شیفتی برای این مدرسه تعریف نشده است.</p>
+                        </div>
                     }
-                </tbody>
-            </table>
-        </div>
-        <div class="mb-3">
-            <h5>افزودن شیفت جدید</h5>
-            <form asp-action="CreateShift" asp-controller="School" asp-area="Admin" method="post" class="row g-2">
-                <input type="hidden" name="SchoolRef" value="@Model.School.Id" />
-                <div class="col-md-3">
-                    <input type="text" name="Name" class="form-control" placeholder="نام شیفت" required />
                 </div>
-                <div class="col-md-2">
-                    <select name="ShiftType" class="form-control" required>
-                        <option value="0">صبح</option>
-                        <option value="1">عصر</option>
-                        <option value="2">چرخشی</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <input type="time" name="Start" class="form-control" required />
-                </div>
-                <div class="col-md-2">
-                    <input type="time" name="End" class="form-control" required />
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-success">افزودن</button>
-                </div>
-            </form>
-        </div>
-        @if (editingShift != null)
-        {
-            <div class="mb-3">
-                <h5>ویرایش شیفت</h5>
-                <form asp-action="UpdateShift" asp-controller="School" asp-area="Admin" method="post" class="row g-2">
-                    <input type="hidden" name="Id" value="@editingShift.Id" />
-                    <input type="hidden" name="SchoolRef" value="@Model.School.Id" />
-                    <div class="col-md-3">
-                        <input type="text" name="Name" class="form-control" value="@editingShift.Name" required />
-                    </div>
-                    <div class="col-md-2">
-                        <select name="ShiftType" class="form-control" required>
-                            <option value="0" selected="@(Convert.ToInt32(editingShift.ShiftType) == 0)">صبح</option>
-                            <option value="1" selected="@(Convert.ToInt32(editingShift.ShiftType) == 1)">عصر</option>
-                            <option value="2" selected="@(Convert.ToInt32(editingShift.ShiftType) == 2)">چرخشی</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <input type="time" name="Start" class="form-control" value="@editingShift.Start" required />
-                    </div>
-                    <div class="col-md-2">
-                        <input type="time" name="End" class="form-control" value="@editingShift.End" required />
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
-                    </div>
-                </form>
             </div>
-        }
+
+            <!-- Add New Shift Form -->
+            <div class="card bg-dark border-success mb-4">
+                <div class="card-header bg-success bg-gradient">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-plus-circle fs-4 me-2"></i>افزودن شیفت جدید
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="CreateShift" asp-controller="School" asp-area="Admin" method="post">
+                        <input type="hidden" name="SchoolRef" value="@Model.School.Id" />
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-tag me-1"></i>نام شیفت
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark text-white border-secondary">
+                                        <i class="bi bi-fonts"></i>
+                                    </span>
+                                    <input type="text" name="Name" class="form-control bg-dark text-white border-secondary"
+                                           placeholder="مثال: شیفت صبح" required />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-clock me-1"></i>نوع شیفت
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark text-white border-secondary">
+                                        <i class="bi bi-list-check"></i>
+                                    </span>
+                                    <select name="ShiftType" class="form-select bg-dark text-white border-secondary" required>
+                                        <option value="0">
+                                            <i class="bi bi-sun me-1"></i>صبح
+                                        </option>
+                                        <option value="1">
+                                            <i class="bi bi-moon me-1"></i>عصر
+                                        </option>
+                                        <option value="2">
+                                            <i class="bi bi-arrow-repeat me-1"></i>چرخشی
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-play-circle me-1"></i>زمان شروع
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark text-white border-secondary">
+                                        <i class="bi bi-clock"></i>
+                                    </span>
+                                    <input type="time" name="Start" class="form-control bg-dark text-white border-secondary" required />
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-stop-circle me-1"></i>زمان پایان
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-dark text-white border-secondary">
+                                        <i class="bi bi-clock"></i>
+                                    </span>
+                                    <input type="time" name="End" class="form-control bg-dark text-white border-secondary" required />
+                                </div>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-success fw-bold w-100">
+                                    <i class="bi bi-plus-circle me-1"></i>افزودن شیفت
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Edit Shift Form (Conditional) -->
+            @if (editingShift != null)
+            {
+                <div class="card bg-dark border-info">
+                    <div class="card-header bg-info bg-gradient">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="bi bi-pencil-square fs-4 me-2"></i>ویرایش شیفت
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="UpdateShift" asp-controller="School" asp-area="Admin" method="post">
+                            <input type="hidden" name="Id" value="@editingShift.Id" />
+                            <input type="hidden" name="SchoolRef" value="@Model.School.Id" />
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-tag me-1"></i>نام شیفت
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark text-white border-secondary">
+                                            <i class="bi bi-fonts"></i>
+                                        </span>
+                                        <input type="text" name="Name" class="form-control bg-dark text-white border-secondary"
+                                               value="@editingShift.Name" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-clock me-1"></i>نوع شیفت
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark text-white border-secondary">
+                                            <i class="bi bi-list-check"></i>
+                                        </span>
+                                        <select name="ShiftType" class="form-select bg-dark text-white border-secondary" required>
+                                            <option value="0" selected="@(Convert.ToInt32(editingShift.ShiftType) == 0)">
+                                                <i class="bi bi-sun me-1"></i>صبح
+                                            </option>
+                                            <option value="1" selected="@(Convert.ToInt32(editingShift.ShiftType) == 1)">
+                                                <i class="bi bi-moon me-1"></i>عصر
+                                            </option>
+                                            <option value="2" selected="@(Convert.ToInt32(editingShift.ShiftType) == 2)">
+                                                <i class="bi bi-arrow-repeat me-1"></i>چرخشی
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-play-circle me-1"></i>زمان شروع
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark text-white border-secondary">
+                                            <i class="bi bi-clock"></i>
+                                        </span>
+                                        <input type="time" name="Start" class="form-control bg-dark text-white border-secondary"
+                                               value="@editingShift.Start" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label fw-bold">
+                                        <i class="bi bi-stop-circle me-1"></i>زمان پایان
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-dark text-white border-secondary">
+                                            <i class="bi bi-clock"></i>
+                                        </span>
+                                        <input type="time" name="End" class="form-control bg-dark text-white border-secondary"
+                                               value="@editingShift.End" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-info fw-bold w-100 me-2">
+                                        <i class="bi bi-check-circle me-1"></i>ذخیره تغییرات
+                                    </button>
+                                    <a asp-action="Shift" asp-route-id="@Model.School.Id" class="btn btn-outline-secondary fw-bold">
+                                        <i class="bi bi-x-circle me-1"></i>انصراف
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 </div>
+
 @section Scripts {
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
     <script>
-        // Get the coordinates from the Razor model
-        var lat = @Model.School.Address.Latitude;
-        var lng = @Model.School.Address.Longitude;
+        $(document).ready(function () {
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
 
-        // Initialize the map
-        var map = L.map('schoolMap').setView([lat, lng], 15);
+            // Add hover effects to table rows
+            $('tbody tr').hover(
+                function() {
+                    $(this).addClass('bg-secondary bg-opacity-25');
+                },
+                function() {
+                    $(this).removeClass('bg-secondary bg-opacity-25');
+                }
+            );
 
-        // Add OpenStreetMap tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+            // Add loading state to buttons
+            $('form').on('submit', function() {
+                const submitBtn = $(this).find('button[type="submit"]');
+                const originalHtml = submitBtn.html();
+                submitBtn.html('<i class="bi bi-hourglass-split me-1"></i>در حال پردازش...');
+                submitBtn.prop('disabled', true);
 
-        // Add a marker at the school location with a popup
-        L.marker([lat, lng]).addTo(map)
-            .bindPopup('📍 موقعیت مدرسه')
-            .openPopup();
+                setTimeout(function() {
+                    submitBtn.html(originalHtml);
+                    submitBtn.prop('disabled', false);
+                }, 3000);
+            });
+
+            // Add hover effects to buttons
+            $('.btn').hover(
+                function() {
+                    $(this).addClass('shadow');
+                },
+                function() {
+                    $(this).removeClass('shadow');
+                }
+            );
+        });
     </script>
 }
 
+<style>
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+    .table th, .table td {
+        vertical-align: middle;
+        text-align: center;
+        padding: 1rem 0.75rem;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.5em 0.8em;
+    }
+
+    .form-control, .form-select {
+        border: 1px solid #495057;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+
+    /* Custom scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #2d3748;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #4a5568;
+        border-radius: 4px;
+    }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.9rem;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .d-flex.gap-2 {
+            gap: 0.25rem !important;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        .row.g-3 {
+            margin: 0 -0.5rem;
+        }
+
+            .row.g-3 > [class*="col-"] {
+                padding: 0 0.5rem;
+            }
+    }
+</style>

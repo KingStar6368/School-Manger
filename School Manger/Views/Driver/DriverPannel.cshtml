@@ -1,7 +1,7 @@
 ﻿@model School_Manger.Models.PageView.DriverDashbord
 
 @{
-    ViewData["Title"] = "<i class=\"bi bi-car-front-fill\"></i> پنل راننده";
+    ViewData["Title"] = "پنل راننده";
     Layout = "_Layout";
 }
 
@@ -10,25 +10,39 @@
 
 <div class="container-fluid bg-dark text-white py-4" dir="rtl">
     <!-- Header Section -->
-    <div class="row bg-black text-center rounded-4 shadow-sm py-4 mb-4">
-        <h3 class="fw-bold"><i class="bi bi-receipt"></i> اطلاعات راننده</h3>
+    <div class="row bg-black text-center rounded-4 shadow-sm py-4 mb-4 border-primary border-2">
+        <h3 class="fw-bold mb-3">
+            <i class="bi bi-steering-wheel me-2"></i> اطلاعات راننده
+        </h3>
         <div class="d-flex justify-content-center flex-wrap gap-4 mt-3">
-            <div>
+            <div class="text-center">
+                <div class="text-primary mb-1">
+                    <i class="bi bi-person fs-5"></i>
+                </div>
                 <span class="fw-semibold">نام:</span>
-                <span class="fs-4 fw-bold">@Model.Driver.Name</span>
+                <span class="fs-5 fw-bold text-warning">@Model.Driver.Name</span>
             </div>
-            <div>
+            <div class="text-center">
+                <div class="text-primary mb-1">
+                    <i class="bi bi-person fs-5"></i>
+                </div>
                 <span class="fw-semibold">نام خانوادگی:</span>
-                <span class="fs-4 fw-bold">@Model.Driver.LastName</span>
+                <span class="fs-5 fw-bold text-warning">@Model.Driver.LastName</span>
             </div>
-            <div>
+            <div class="text-center">
+                <div class="text-primary mb-1">
+                    <i class="bi bi-car-front fs-5"></i>
+                </div>
                 <span class="fw-semibold">خودرو:</span>
-                <span class="fs-4 fw-bold">@Model.Driver.Car.Name</span>
-                <span class="badge bg-secondary">@Model.Driver.Car.PlateNumber</span>
+                <span class="fs-5 fw-bold text-warning">@Model.Driver.Car.Name</span>
+                <span class="badge bg-info ms-1">@Model.Driver.Car.PlateNumber</span>
             </div>
-            <div>
+            <div class="text-center">
+                <div class="text-primary mb-1">
+                    <i class="bi bi-person-seat fs-5"></i>
+                </div>
                 <span class="fw-semibold">صندلی‌های خالی:</span>
-                <span class="fs-4 fw-bold text-success">@Model.Driver.AvailableSeats</span>
+                <span class="fs-5 fw-bold text-success">@Model.Driver.AvailableSeats</span>
             </div>
         </div>
     </div>
@@ -36,35 +50,62 @@
     <!-- Passenger List Section -->
     <div class="row">
         <div class="col-12">
-            <div class="card bg-dark text-white shadow-lg rounded-4 border-primary">
-                <div class="card-header bg-primary d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0"><i class="bi bi-people"></i> لیست مسافران</h4>
+            <div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2">
+                <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center py-3">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="bi bi-people-fill me-2"></i> لیست مسافران
+                    </h4>
+                    <span class="badge bg-light text-primary fs-6">
+                        <i class="bi bi-person-check me-1"></i> @Model.Passanger.Count مسافر
+                    </span>
                 </div>
                 <div class="card-body">
                     @if (Model.Passanger != null && Model.Passanger.Any())
                     {
                         <div class="table-responsive">
-                            <table class="table table-dark table-bordered table-hover align-middle text-center">
+                            <table class="table table-dark table-bordered table-hover align-middle text-center rounded-3 overflow-hidden">
                                 <thead class="table-light text-dark">
                                     <tr>
-                                        <th>🔢 ردیف</th>
-                                        <th><i class="bi bi-person"></i> نام مسافر</th>
-                                        <th>📍 مبدا</th>
-                                        <th>🎯 مقصد</th>
-                                        <th>🕗 زمان رفت</th>
-                                        <th>🕙 زمان بازگشت</th>
+                                        <th><i class="bi bi-hash me-1"></i> ردیف</th>
+                                        <th><i class="bi bi-person me-1"></i> نام مسافر</th>
+                                        <th><i class="bi bi-geo-alt me-1"></i> مبدا</th>
+                                        <th><i class="bi bi-geo-alt-fill me-1"></i> مقصد</th>
+                                        <th><i class="bi bi-clock me-1"></i> زمان رفت</th>
+                                        <th><i class="bi bi-clock-history me-1"></i> زمان بازگشت</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach (var child in Model.Passanger)
                                     {
                                         <tr>
-                                            <td>@(Model.Passanger.IndexOf(child) + 1)</td>
-                                            <td>@child.FirstName @child.LastName</td>
-                                            <td>@child.Path.Location1.Address</td>
-                                            <td>@child.Path.Location2.Address</td>
-                                            <td>@child.Path.PickTime1</td>
-                                            <td>@child.Path.PickTime2</td>
+                                            <td>
+                                                <span class="badge bg-secondary">@(Model.Passanger.IndexOf(child) + 1)</span>
+                                            </td>
+                                            <td>
+                                                <span class="fw-bold">
+                                                    <i class="bi bi-person-badge me-1"></i>@child.FirstName @child.LastName
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="text-info">
+                                                    <i class="bi bi-pin-map me-1"></i>@child.Path.Location1.Address
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="text-warning">
+                                                    <i class="bi bi-pin-map-fill me-1"></i>@child.Path.Location2.Address
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-clock me-1"></i>@child.Path.PickTime1
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">
+                                                    <i class="bi bi-clock-history me-1"></i>@child.Path.PickTime2
+                                                </span>
+                                            </td>
                                         </tr>
                                     }
                                 </tbody>
@@ -73,8 +114,8 @@
                     }
                     else
                     {
-                        <div class="alert alert-warning text-center fw-bold">
-                            🚫 مسافری یافت نشد!
+                        <div class="alert alert-warning text-center fw-bold my-4">
+                            <i class="bi bi-exclamation-triangle me-2"></i> مسافری یافت نشد!
                         </div>
                     }
                 </div>
@@ -83,13 +124,20 @@
     </div>
 
     <!-- Map Section -->
-    <div class="mt-4">
-        <div class="card bg-dark text-white shadow border-success">
-            <div class="card-header bg-success">
-                <h5 class="mb-0"><i class="bi bi-map"></i> 🗺 مسیرهای راننده</h5>
-            </div>
-            <div class="card-body">
-                <div id="driverMap" style="height: 500px; width: 100%; border-radius: 10px;"></div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card bg-dark text-white shadow-lg rounded-4 border-success border-2">
+                <div class="card-header bg-success bg-gradient d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-map me-2"></i> مسیرهای راننده
+                    </h5>
+                    <span class="badge bg-light text-success fs-6">
+                        <i class="bi bi-geo me-1"></i> نقشه مسیرها
+                    </span>
+                </div>
+                <div class="card-body p-0">
+                    <div id="driverMap" style="height: 500px; width: 100%; border-radius: 0 0 12px 12px;"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -108,32 +156,64 @@
             }).addTo(map);
 
             const passengers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-            Model.Passanger.Select(c => new
-            {
-                Name = $"{c.FirstName} {c.LastName}",
-                Pickup = new { Lat = c.Path.Location1.Latitude, Lng = c.Path.Location1.Longitude, Addr = c.Path.Location1.Address },
-                Dest = new { Lat = c.Path.Location2.Latitude, Lng = c.Path.Location2.Longitude, Addr = c.Path.Location2.Address }
-            })
-        ));
+                    Model.Passanger.Select(c => new
+                    {
+                            Name = $"{c.FirstName} {c.LastName}",
+                            Pickup = new { Lat = c.Path.Location1.Latitude, Lng = c.Path.Location1.Longitude, Addr = c.Path.Location1.Address },
+                            Dest = new { Lat = c.Path.Location2.Latitude, Lng = c.Path.Location2.Longitude, Addr = c.Path.Location2.Address }
+                    })
+            ));
 
-            passengers.forEach(p => {
+        // Create custom icons
+        const pickupIcon = L.divIcon({
+            className: 'custom-pickup-icon',
+            html: '<i class="bi bi-geo-alt-fill text-success fs-4"></i>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30]
+        });
+
+            const destinationIcon = L.divIcon({
+                className: 'custom-dest-icon',
+                html: '<i class="bi bi-geo-alt-fill text-danger fs-4"></i>',
+                iconSize: [30, 30],
+                iconAnchor: [15, 30]
+            });
+
+            passengers.forEach((p, index) => {
                 const pickupLatLng = [p.Pickup.Lat, p.Pickup.Lng];
                 const destLatLng = [p.Dest.Lat, p.Dest.Lng];
 
-                L.marker(pickupLatLng, {
-                    icon: L.divIcon({ className: 'text-success fw-bold', html: '📍' })
-                }).addTo(map).bindPopup(`<strong>مبدا:</strong> ${p.Pickup.Addr}<br/><strong>مسافر:</strong> ${p.Name}`);
+                // Pickup marker
+                L.marker(pickupLatLng, { icon: pickupIcon })
+                    .addTo(map)
+                    .bindPopup(`
+                        <div class="text-center">
+                            <i class="bi bi-geo-alt text-success fs-5"></i>
+                            <h6 class="fw-bold mt-1">مبدا مسافر ${index + 1}</h6>
+                            <p class="mb-1"><strong>نام:</strong> ${p.Name}</p>
+                            <p class="mb-0"><strong>آدرس:</strong> ${p.Pickup.Addr}</p>
+                        </div>
+                    `);
 
-                L.marker(destLatLng, {
-                    icon: L.divIcon({ className: 'text-danger fw-bold', html: '🏁' })
-                }).addTo(map).bindPopup(`<strong>مقصد:</strong> ${p.Dest.Addr}<br/><strong>مسافر:</strong> ${p.Name}`);
+                // Destination marker
+                L.marker(destLatLng, { icon: destinationIcon })
+                    .addTo(map)
+                    .bindPopup(`
+                        <div class="text-center">
+                            <i class="bi bi-flag text-danger fs-5"></i>
+                            <h6 class="fw-bold mt-1">مقصد مسافر ${index + 1}</h6>
+                            <p class="mb-1"><strong>نام:</strong> ${p.Name}</p>
+                            <p class="mb-0"><strong>آدرس:</strong> ${p.Dest.Addr}</p>
+                        </div>
+                    `);
 
+                // Route line
                 L.polyline([pickupLatLng, destLatLng], {
-                    color: '#00f',
+                    color: '#0d6efd',
                     weight: 4,
                     opacity: 0.7,
                     dashArray: '5, 5'
-                }).addTo(map);
+                }).addTo(map).bindPopup(`<strong>مسیر مسافر:</strong> ${p.Name}`);
             });
 
             if (passengers.length > 0) {
@@ -148,11 +228,27 @@
     .table th, .table td {
         vertical-align: middle;
         text-align: center;
+        padding: 0.75rem;
     }
 
     .badge {
-        font-size: 0.85rem;
-        padding: 0.35em 0.65em;
+        font-size: 0.8rem;
+        padding: 0.4em 0.7em;
+    }
+
+    .card {
+        margin-bottom: 1.5rem;
+    }
+
+    .custom-pickup-icon, .custom-dest-icon {
+        background: transparent;
+        border: none;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(13, 110, 253, 0.1);
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
     }
 
     @@media (max-width: 768px) {
@@ -160,5 +256,33 @@
             flex-direction: column !important;
             gap: 1rem !important;
         }
+
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+        }
+    }
+
+    /* Animation for table rows */
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .table tbody tr {
+        animation: fadeIn 0.3s ease-out;
     }
 </style>

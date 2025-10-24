@@ -6,12 +6,14 @@
 @{
     var userType = ViewBag.UserType?.ToString() ?? "Parent";
     var allShifts = ShiftService.GetAllShifts();
-    ViewData["Title"] = "ایجاد کاربر " + (userType == "Parent" ? "👨‍👩‍👧 والد" : "🚗 راننده");
+    ViewData["Title"] = "ایجاد کاربر " + (userType == "Parent" ? "والد" : "راننده");
     Layout = "_AdminLayout";
 }
 <div class="card bg-dark text-white shadow-lg rounded-4 mb-4 border-primary border-2">
     <div class="card-header @(userType == "Parent" ? "bg-primary" : "bg-info") d-flex justify-content-center align-items-center">
-        <h4 class="mb-0">@ViewData["Title"]</h4>
+        <h4 class="mb-0 fw-bold">
+            <i class="bi @(userType == "Parent" ? "bi-people-fill" : "bi-steering-wheel") me-2"></i>@ViewData["Title"]
+        </h4>
     </div>
     <div class="card-body">
         <form action="Create" method="post">
@@ -21,105 +23,105 @@
                     @if (userType == "Parent")
                     {
                         <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-person"></i> نام</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person me-1"></i> نام</label><label class="text-danger fs-5">*</label>
                             <input asp-for="User.FirstName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-person"></i> نام خانوادگی</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person me-1"></i> نام خانوادگی</label><label class="text-danger fs-5">*</label>
                             <input asp-for="User.LastName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-person-vcard"></i> کد ملی</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-credit-card me-1"></i> کد ملی</label><label class="text-danger fs-5">*</label>
                             <input asp-for="User.UserName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🏠 آدرس</label>
+                            <label class="form-label"><i class="bi bi-house me-1"></i> آدرس</label>
                             <textarea asp-for="Parent.Address" class="form-control" rows="2"></textarea>
                         </div>
                     }
                     else
                     {
                         <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-person"></i> نام</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person me-1"></i> نام</label><label class="text-danger fs-5">*</label>
                             <input asp-for="User.FirstName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-person"></i> نام خانوادگی</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person me-1"></i> نام خانوادگی</label><label class="text-danger fs-5">*</label>
                             <input asp-for="User.LastName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">👨‍👦 نام پدر</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person-standing me-1"></i> نام پدر</label><label class="text-danger fs-5">*</label>
                             <input asp-for="Driver.FutherName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-cake2-fill"></i> تاریخ تولد</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-calendar-event me-1"></i> تاریخ تولد</label><label class="text-danger fs-5">*</label>
                             <input name="BirthDate" class="persian-date form-control bg-secondary text-white" required />
                             <input type="hidden" class="gregorian-date" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-person-vcard"></i> کد ملی</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-credit-card me-1"></i> کد ملی</label><label class="text-danger fs-5">*</label>
                             <input asp-for="User.UserName" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🎓 مدرک تحصیلی</label>
+                            <label class="form-label"><i class="bi bi-mortarboard me-1"></i> مدرک تحصیلی</label>
                             <input asp-for="Driver.Education" class="form-control form-control-lg" data-val="false" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🎓 شماره گواهینامه</label>
+                            <label class="form-label"><i class="bi bi-file-text me-1"></i> شماره گواهینامه</label>
                             <input asp-for="Driver.CertificateId" class="form-control form-control-lg" data-val="false" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">📝 توضیحات</label>
+                            <label class="form-label"><i class="bi bi-card-text me-1"></i> توضیحات</label>
                             <textarea asp-for="Driver.Descriptions" data-val="false" class="form-control" rows="2"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🏠 آدرس</label>
+                            <label class="form-label"><i class="bi bi-house me-1"></i> آدرس</label><label class="text-danger fs-5">*</label>
                             <textarea asp-for="Driver.Address" data-val="false" class="form-control" rows="2" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label"><i class="bi bi-person-vcard"></i> شماره پرونده</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-folder me-1"></i> شماره پرونده</label><label class="text-danger fs-5">*</label>
                             <textarea asp-for="Driver.Code" data-val="false" class="form-control" rows="2"></textarea>
                         </div>
-                        
                     }
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label class="form-label">🔒 رمز عبور</label><label style="color:red;font-size:20px">*</label>
+                        <label class="form-label"><i class="bi bi-key me-1"></i> رمز عبور</label><label class="text-danger fs-5">*</label>
                         <input asp-for="User.Password" type="password" id="password" class="form-control form-control-lg" minlength="8" required />
+                        <div class="form-text" id="passwordHelp"></div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">📞 شماره تماس</label><label style="color:red;font-size:20px">*</label>
+                        <label class="form-label"><i class="bi bi-telephone me-1"></i> شماره تماس</label><label class="text-danger fs-5">*</label>
                         <input asp-for="User.Mobile" class="form-control form-control-lg" required />
                     </div>
                     @if (userType != "Parent")
                     {
                         <hr />
-                        <h5 class="text-info"><i class="bi bi-car-front-fill"></i> مشخصات ماشین</h5>
+                        <h5 class="text-info"><i class="bi bi-car-front me-2"></i> مشخصات ماشین</h5>
                         <div class="mb-3">
-                            <label class="form-label">🚘 نام ماشین</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-car-front me-1"></i> نام ماشین</label><label class="text-danger fs-5">*</label>
                             <input asp-for="Driver.Car.Name" class="form-control form-control-lg" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🔢 شماره پلاک</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-upc-scan me-1"></i> شماره پلاک</label><label class="text-danger fs-5">*</label>
                             @await Html.PartialAsync("_CarPlateBox")
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🎨 رنگ ماشین</label>
+                            <label class="form-label"><i class="bi bi-palette me-1"></i> رنگ ماشین</label>
                             <input asp-for="Driver.Car.Color" data-val="false" class="form-control form-control-lg" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">💺 تعداد صندلی</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person-seat me-1"></i> تعداد صندلی</label><label class="text-danger fs-5">*</label>
                             <input asp-for="Driver.Car.SeatNumber" type="number" class="form-control form-control-lg" required />
                         </div>
                         <hr />
-                        <h5 class="text-info"><i class="bi bi-bank2"></i> مشخصات حساب بانکی</h5>
+                        <h5 class="text-info"><i class="bi bi-bank me-2"></i> مشخصات حساب بانکی</h5>
                         <div class="mb-3">
-                            <label class="form-label">🏦 شماره حساب</label>
+                            <label class="form-label"><i class="bi bi-credit-card me-1"></i> شماره حساب</label>
                             <input asp-for="Driver.BankAccount" data-val="false" class="form-control form-control-lg" />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🔢 شماره شبا/کارت</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-credit-card-2-front me-1"></i> شماره شبا/کارت</label><label class="text-danger fs-5">*</label>
                             <input asp-for="Driver.BankAccountNumber" class="form-control form-control-lg" />
                         </div>
                     }
@@ -128,46 +130,48 @@
             @if (userType != "Parent")
             {
                 <hr />
-                <h5 class="text-info"><i class="bi bi-clock"></i> انتخاب شیفت‌ها</h5>
+                <h5 class="text-info"><i class="bi bi-clock me-2"></i> انتخاب شیفت‌ها</h5>
                 <div class="mb-3">
-                    <label class="form-label">شیفت‌های قابل انتخاب و تعداد صندلی:</label>
+                    <label class="form-label"><i class="bi bi-search me-1"></i> جستجو شیفت:</label>
                     <input type="text" id="shiftFilter" class="form-control mb-2" placeholder="جستجو شیفت..." onkeyup="filterShifts()" />
-                    <table class="table table-bordered table-dark table-striped" id="shiftTable">
-                        <thead>
-                            <tr>
-                                <th>انتخاب</th>
-                                <th>نام مدرسه</th>
-                                <th>نام شیفت</th>
-                                <th>زمان شروع</th>
-                                <th>زمان پایان</th>
-                                <th>تعداد صندلی</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var shift in allShifts)
-                            {
-                                <tr class="shift-row">
-                                    <td>
-                                        <input class="form-check-input shift-checkbox" type="checkbox" name="SelectedShiftIds" value="@shift.Id" id="shift_@shift.Id"
-                                               onchange="toggleSeatInput(@shift.Id)" />
-                                    </td>
-                                    <td>@SchoolService.GetSchool(shift.SchoolRef).Name</td>
-                                    <td>
-                                        <label class="form-check-label" for="shift_@shift.Id">
-                                            @shift.Name
-                                        </label>
-                                    </td>
-                                    <td>@shift.Start</td>
-                                    <td>@shift.End</td>
-                                    <td>
-                                        <input type="number" name="ShiftSeats_@shift.Id" id="seat_@shift.Id" class="form-control"
-                                               style="width:90px;display:inline-block;" min="1" max="99" placeholder="صندلی"
-                                               disabled required />
-                                    </td>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-dark table-striped" id="shiftTable">
+                            <thead>
+                                <tr>
+                                    <th><i class="bi bi-check-square me-1"></i> انتخاب</th>
+                                    <th><i class="bi bi-building me-1"></i> نام مدرسه</th>
+                                    <th><i class="bi bi-clock me-1"></i> نام شیفت</th>
+                                    <th><i class="bi bi-play-circle me-1"></i> زمان شروع</th>
+                                    <th><i class="bi bi-stop-circle me-1"></i> زمان پایان</th>
+                                    <th><i class="bi bi-person-seat me-1"></i> تعداد صندلی</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var shift in allShifts)
+                                {
+                                    <tr class="shift-row">
+                                        <td>
+                                            <input class="form-check-input shift-checkbox" type="checkbox" name="SelectedShiftIds" value="@shift.Id" id="shift_@shift.Id"
+                                                   onchange="toggleSeatInput(@shift.Id)" />
+                                        </td>
+                                        <td>@SchoolService.GetSchool(shift.SchoolRef).Name</td>
+                                        <td>
+                                            <label class="form-check-label" for="shift_@shift.Id">
+                                                @shift.Name
+                                            </label>
+                                        </td>
+                                        <td>@shift.Start</td>
+                                        <td>@shift.End</td>
+                                        <td>
+                                            <input type="number" name="ShiftSeats_@shift.Id" id="seat_@shift.Id" class="form-control"
+                                                   style="width:90px;display:inline-block;" min="1" max="99" placeholder="صندلی"
+                                                   disabled required />
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <script>
                     function toggleSeatInput(shiftId) {
@@ -193,7 +197,7 @@
             }
             <div class="form-group text-center mt-4 d-flex justify-content-center gap-3">
                 <button type="submit" class="btn btn-success col-md-2">
-                    <i class="bi bi-save2 me-1"></i> ذخیره
+                    <i class="bi bi-check-circle me-1"></i> ذخیره
                 </button>
                 <a href="@Url.Action(userType == "Parent" ? "Parents" : "Drivers")"
                    class="btn btn-secondary col-md-2">

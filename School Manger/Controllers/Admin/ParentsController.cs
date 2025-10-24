@@ -416,6 +416,7 @@ namespace School_Manger.Controllers.Admin
                 NationalCode = child.NationalCode.ConvertPersianToEnglish(),
                 BirthDate = child.BirthDate,
                 Class = (int)child.ClassEnum,
+                ShiftId = child.ShiftId,
                 LocationPairs = new List<LocationPairUpdateDto>()
                 {
                     new()

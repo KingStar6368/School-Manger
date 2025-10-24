@@ -7,32 +7,27 @@
     int num1 = rand.Next(1, 10);
     int num2 = rand.Next(1, 10);
     int captchaAnswer = num1 + num2;
-    switch (oprator % 2)
-    {
-        case 0:
-            opratorSymbol = '+';
-            captchaAnswer = num1 + num2;
-            break;
-        case 1:
-            opratorSymbol = '-';
-            captchaAnswer = num1 - num2;
-            break;
-    }
     string encodedAnswer = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(captchaAnswer.ToString()));
 }
 
 <div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-dark">
-    <div class="card bg-black text-white border-secondary" style="width: 100%; max-width: 400px;border-radius:20px">
+    <div class="card bg-black text-white border-primary shadow-lg" style="width: 100%; max-width: 400px; border-radius: 20px; border-width: 2px;">
         <div class="card-body p-4">
             <div class="text-center mb-4">
+                <i class="bi bi-key-fill text-primary fs-1 mb-3 d-block"></i>
                 <h2 class="fw-bold text-white">بازیابی رمز عبور</h2>
                 <p class="text-white-50">لطفا شماره موبایل خود را وارد کنید</p>
             </div>
 
-            <form asp-action="OTPConfirmation" method="post">
+            <form id="passwordResetForm" asp-action="OTPConfirmation" method="post">
                 <div class="mb-3">
-                    <label for="phoneNumber" class="form-label text-white">شماره موبایل</label>
+                    <label for="phoneNumber" class="form-label text-white fw-semibold">
+                        <i class="bi bi-phone me-1"></i> شماره موبایل
+                    </label>
                     <div class="input-group">
+                        <span class="input-group-text bg-dark text-white border-secondary">
+                            <i class="bi bi-telephone-plus"></i> 98+
+                        </span>
                         <input type="tel"
                                class="form-control bg-dark text-white border-secondary"
                                id="phoneNumber"
@@ -40,29 +35,43 @@
                                placeholder="9123456789"
                                pattern="[0-9]{10}"
                                required>
-                        <span class="input-group-text bg-dark text-white border-secondary">98+</span>
                     </div>
-                    <div class="form-text text-white-50">مثال: 9123456789</div>
+                    <div class="form-text text-white-50">
+                        <i class="bi bi-info-circle me-1"></i> مثال: 9123456789
+                    </div>
                 </div>
+
                 <!-- Simple Captcha -->
                 <div class="mb-3">
-                    <label class="form-label text-white">سوال امنیتی: چند می‌شود؟</label>
+                    <label class="form-label text-white fw-semibold">
+                        <i class="bi bi-shield-check me-1"></i> سوال امنیتی
+                    </label>
                     <div class="input-group">
-                        <input type="number" class="form-control bg-dark text-white border-secondary" name="captchaInput" id="captchaInput" required autocomplete="off" />
-                        <span class="input-group-text bg-dark text-white border-secondary">= @num2 @opratorSymbol @num1 </span>
+                        <input type="number" class="form-control bg-dark text-white border-secondary" name="captchaInput" id="captchaInput" required autocomplete="off" placeholder="پاسخ را وارد کنید" />
+                        <span class="input-group-text bg-dark text-white border-secondary">
+                            <i class="bi bi-calculator me-1"></i> = @num2 @opratorSymbol @num1
+                        </span>
+                    </div>
+                    <div class="form-text text-white-50">
+                        <i class="bi bi-question-circle me-1"></i> لطفا نتیجه عبارت را محاسبه کنید
                     </div>
                 </div>
                 <input type="hidden" name="captchaExpected" id="captchaExpected" value="@encodedAnswer" />
 
-                <button type="submit" class="btn btn-primary w-100 py-2">دریافت کد تایید</button>
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold mt-3">
+                    <i class="bi bi-send-check me-2"></i> دریافت کد تایید
+                </button>
             </form>
 
-            <div class="text-center mt-3">
-                <a asp-action="Login" asp-controller="Home" class="text-decoration-none text-info">بازگشت</a>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <a asp-action="Login" asp-controller="Home" class="text-decoration-none text-info fw-semibold">
+                    <i class="bi bi-arrow-right-circle me-1"></i> بازگشت به صفحه ورود
+                </a>
             </div>
         </div>
     </div>
 </div>
+
 @section Scripts {
     <script>
         function decodeBase64(str) {
@@ -72,13 +81,38 @@
                 return '';
             }
         }
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+
+        document.getElementById('passwordResetForm').addEventListener('submit', function(e) {
             var answer = document.getElementById('captchaInput').value;
             var encoded = document.getElementById('captchaExpected').value;
             var expected = decodeBase64(encoded);
+
             if (answer !== expected) {
-                alert('پاسخ سوال امنیتی اشتباه است.');
+                alert('پاسخ سوال امنیتی اشتباه است. لطفا مجددا محاسبه کنید.');
                 e.preventDefault();
+                // Clear the captcha input and focus on it
+                document.getElementById('captchaInput').value = '';
+                document.getElementById('captchaInput').focus();
+            }
+        });
+
+        // Add input validation styling
+        document.getElementById('phoneNumber').addEventListener('input', function(e) {
+            if (this.validity.valid) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            } else {
+                this.classList.remove('is-valid');
+                this.classList.add('is-invalid');
+            }
+        });
+
+        document.getElementById('captchaInput').addEventListener('input', function(e) {
+            if (this.value.trim() !== '') {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            } else {
+                this.classList.remove('is-valid');
             }
         });
     </script>

@@ -7,13 +7,13 @@
 }
 
 <div class="container mt-4 text-white" dir="rtl">
-    <div class="card bg-dark text-white  shadow-lg rounded-4 border-primary border-2">
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2">
         <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
             <h4 class="mb-0 fw-bold">
-                🏠 لیست رانندگان
+                <i class="bi bi-steering-wheel me-2"></i> لیست رانندگان
             </h4>
             <a asp-action="Create" asp-route-type="Driver" class="btn btn-success btn-sm fw-bold shadow-sm">
-                <i class="bi bi-plus-circle me-1"></i> کاربر جدید
+                <i class="bi bi-person-plus me-1"></i> کاربر جدید
             </a>
         </div>
 
@@ -24,11 +24,11 @@
                     <table class="table table-dark table-bordered table-hover text-center align-middle mb-0">
                         <thead class="table-light text-dark">
                             <tr>
-                                <th>🔢 ردیف</th>
-                                <th><i class="bi bi-person"></i> نام کاربری</th>
-                                <th><i class="bi bi-person"></i> نام کامل</th>
-                                <th>📞 شماره تماس</th>
-                                <th><i class="bi bi-gear"></i> عملیات</th>
+                                <th><i class="bi bi-hash me-1"></i> ردیف</th>
+                                <th><i class="bi bi-person-circle me-1"></i> نام کاربری</th>
+                                <th><i class="bi bi-person-badge me-1"></i> نام کامل</th>
+                                <th><i class="bi bi-telephone me-1"></i> شماره تماس</th>
+                                <th><i class="bi bi-gear me-1"></i> عملیات</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -38,17 +38,25 @@
                                     <td>@user.Index</td>
                                     <td>@user.User.UserName</td>
                                     <td>@user.User.FullName</td>
-                                    <td>@user.User.Mobile</td>
                                     <td>
-                                        <a asp-action="DeleteDriver" asp-route-id="@user.User.Id"
-                                           class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف"
-                                           onclick="return confirm('آیا از حذف این راننده مطمئن هستید؟')">
-                                            <i class="bi bi-trash"></i> ️ حذف
-                                        </a>
-                                        <a asp-action="EditDriver" asp-route-UserId="@user.User.Id" asp-route-NationCode="@user.User.UserName"
-                                           class="btn text-black bg-warning btn-sm btn-outline-light rounded-pill shadow-sm" title="ویرایش">
-                                            <i class="bi bi-pencil"></i> 🖊️ تغییر
-                                        </a>
+                                        <span class="badge bg-info">
+                                            <i class="bi bi-telephone me-1"></i>@user.User.Mobile
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                            <a asp-action="DeleteDriver" asp-route-id="@user.User.Id"
+                                               class="btn btn-danger btn-sm rounded-pill shadow-sm"
+                                               title="حذف راننده"
+                                               onclick="return confirm('آیا از حذف این راننده مطمئن هستید؟')">
+                                                <i class="bi bi-trash me-1"></i> حذف
+                                            </a>
+                                            <a asp-action="EditDriver" asp-route-UserId="@user.User.Id" asp-route-NationCode="@user.User.UserName"
+                                               class="btn btn-warning btn-sm rounded-pill shadow-sm"
+                                               title="ویرایش راننده">
+                                                <i class="bi bi-pencil-square me-1"></i> ویرایش
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             }
@@ -59,7 +67,7 @@
             else
             {
                 <div class="alert alert-warning text-center fw-bold my-3" role="alert">
-                    🚫 کاربری یافت نشد!
+                    <i class="bi bi-exclamation-triangle me-2"></i> کاربری یافت نشد!
                 </div>
             }
         </div>

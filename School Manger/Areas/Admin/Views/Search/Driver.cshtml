@@ -7,127 +7,160 @@
 <div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2">
     <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
         <h4 class="mb-0 fw-bold">
-            <i class="bi bi-people-fill me-2"></i> 🔎 جستجو راننده
+            <i class="bi bi-search me-2"></i> جستجو پیشرفته
         </h4>
     </div>
     <div class="card-body">
         <div class="container">
             @* جستجو راننده *@
-            <form method="post" id="DriverPnl" asp-action="Driver" style="visibility:visible;display:none">
+            <form method="post" id="DriverPnl" asp-action="Driver" style="visibility:visible;display:inline">
                 <div class="row mb-4">
                     <div class="col-sm">
-                        <label class="form-label fw-bold">نام</label>
+                        <label class="form-label fw-bold"><i class="bi bi-person me-1"></i> نام</label>
                         <input name="FirstName" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">نام خانوادگی</label>
+                        <label class="form-label fw-bold"><i class="bi bi-person me-1"></i> نام خانوادگی</label>
                         <input name="LastName" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">کدملی</label>
+                        <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> کدملی</label>
                         <input name="NationalCode" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">موبایل</label>
+                        <label class="form-label fw-bold"><i class="bi bi-phone me-1"></i> موبایل</label>
                         <input name="Mobile" type="text" class="form-control price-separator" />
                     </div>
                 </div>
                 <div class="row justify-content-center container">
-                    <button type="submit" class="col-4 btn btn-warning fw-bold">🔎 جستجو</button>
+                    <button type="submit" class="col-4 btn btn-warning fw-bold">
+                        <i class="bi bi-search me-2"></i> جستجو
+                    </button>
                 </div>
             </form>
             @* جستجو خانواده *@
             <form method="post" id="ParentPnl" asp-action="Parent" style="visibility:visible;display:none">
                 <div class="row mb-4">
                     <div class="col-sm">
-                        <label class="form-label fw-bold">نام</label>
+                        <label class="form-label fw-bold"><i class="bi bi-person me-1"></i> نام</label>
                         <input name="FirstName" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">نام خانوادگی</label>
+                        <label class="form-label fw-bold"><i class="bi bi-person me-1"></i> نام خانوادگی</label>
                         <input name="LastName" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">کدملی</label>
+                        <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> کدملی</label>
                         <input name="NationalCode" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">موبایل</label>
+                        <label class="form-label fw-bold"><i class="bi bi-phone me-1"></i> موبایل</label>
                         <input name="Mobile" type="text" class="form-control price-separator" />
                     </div>
                 </div>
                 <div class="row justify-content-center container">
-                    <button type="submit" class="col-4 btn btn-warning fw-bold">🔎 جستجو</button>
+                    <button type="submit" class="col-4 btn btn-warning fw-bold">
+                        <i class="bi bi-search me-2"></i> جستجو
+                    </button>
                 </div>
             </form>
             @* جستجو دانش آموزان *@
-            <form method="post" id="ChildPnl" asp-action="Child" style="visibility:visible;display:inline">
+            <form method="post" id="ChildPnl" asp-action="Child" style="visibility:visible;display:none">
                 <div class="row mb-4">
                     <div class="col-sm">
-                        <label class="form-label fw-bold">نام</label>
+                        <label class="form-label fw-bold"><i class="bi bi-person me-1"></i> نام</label>
                         <input name="FirstName" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">نام خانوادگی</label>
+                        <label class="form-label fw-bold"><i class="bi bi-person me-1"></i> نام خانوادگی</label>
                         <input name="LastName" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">کدملی</label>
+                        <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> کدملی</label>
                         <input name="NationalCode" type="text" class="form-control price-separator" />
                     </div>
                 </div>
                 <div class="row justify-content-center container">
-                    <button type="submit" class="col-4 btn btn-warning fw-bold">🔎 جستجو</button>
+                    <button type="submit" class="col-4 btn btn-warning fw-bold">
+                        <i class="bi bi-search me-2"></i> جستجو
+                    </button>
                 </div>
             </form>
         </div>
-        <div class="container row col-md-4">
-            <select class="dropdown rounded m-3" id="PDropBox">
-                <option value="Child">دانش آموزان</option>
-                <option value="Parent">خانواده</option>
-                <option value="Driver" selected>راننده</option>
-            </select>
+        <div class="container row col-md-4 mt-4">
+            <div class="input-group">
+                <span class="input-group-text bg-primary text-white">
+                    <i class="bi bi-funnel"></i>
+                </span>
+                <select class="form-select rounded-start" id="PDropBox">
+                    <option value="Child">دانش آموزان</option>
+                    <option value="Parent">خانواده</option>
+                    <option value="Driver" selected>راننده</option>
+                </select>
+            </div>
         </div>
-        <div class="table-responsive">
+        <div class="table-responsive mt-4">
             <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden">
                 <thead class="table-light text-dark">
                     <tr>
-                        <th>#ردیف</th>
-                        <th>نام</th>
-                        <th>نام خانوادگی</th>
-                        <th>کدملی</th>
-                        <th>مدل ماشین</th>
-                        <th>پلاک ماشین</th>
-                        <th>صندلی خالی</th>
-                        <th>اخطار ها</th>
-                        <th>نمایش</th>
+                        <th><i class="bi bi-hash me-1"></i> ردیف</th>
+                        <th><i class="bi bi-person me-1"></i> نام</th>
+                        <th><i class="bi bi-person me-1"></i> نام خانوادگی</th>
+                        <th><i class="bi bi-credit-card me-1"></i> کدملی</th>
+                        <th><i class="bi bi-car-front me-1"></i> مدل ماشین</th>
+                        <th><i class="bi bi-upc-scan me-1"></i> پلاک ماشین</th>
+                        <th><i class="bi bi-person-check me-1"></i> صندلی خالی</th>
+                        <th><i class="bi bi-exclamation-triangle me-1"></i> اخطار ها</th>
+                        <th><i class="bi bi-eye me-1"></i> نمایش</th>
                     </tr>
                 </thead>
                 <tbody>
                     @for (int i = 0; i < Model.Count; i++)
                     {
-                        try{
+                        try
+                        {
                             var SelectedModel = Model[i];
                             <tr>
                                 <td>@(i + 1)</td>
                                 <td>@SelectedModel.Name</td>
                                 <td>@SelectedModel.LastName</td>
                                 <td>@SelectedModel.NationCode</td>
-                                <td>@SelectedModel.Car.Name</td>
+                                <td>
+                                    <span class="badge bg-info">
+                                        <i class="bi bi-car-front me-1"></i>@SelectedModel.Car.Name
+                                    </span>
+                                </td>
                                 <td>@Html.Partial("_CarPlate", SelectedModel.Car.PlateNumber)</td>
-                                <td><i class="badge bg-warning">@SelectedModel.AvailableSeats</i></td>
-                                <td>@SelectedModel.Warnning</td>
+                                <td>
+                                    <span class="badge bg-warning">
+                                        <i class="bi bi-person-check me-1"></i>@SelectedModel.AvailableSeats
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (SelectedModel.Warnning > 0)
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-exclamation-triangle me-1"></i>@SelectedModel.Warnning
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i>بدون اخطار
+                                        </span>
+                                    }
+                                </td>
                                 <td>
                                     <a asp-action="Details" asp-controller="Driver" asp-area="Admin" asp-route-id="@Model[i].Id"
                                        class="btn btn-sm btn-outline-light rounded-pill shadow-sm" title="مشاهده جزئیات">
-                                        <i class="bi bi-eye"></i> جزئیات
+                                        <i class="bi bi-eye me-1"></i> جزئیات
                                     </a>
                                 </td>
                             </tr>
                         }
                         catch
                         {
-                            
+                            <!-- Handle exception case if needed -->
                         }
                     }
                 </tbody>
@@ -137,12 +170,11 @@
 </div>
 @section Scripts {
     <script>
-
-                    const ParentPnl = document.getElementById('ParentPnl');
+        const ParentPnl = document.getElementById('ParentPnl');
         const ChildPnl = document.getElementById('ChildPnl');
         const DriverPnl = document.getElementById('DriverPnl');
-        document.getElementById('PDropBox').addEventListener('change', function()
-        {
+
+        document.getElementById('PDropBox').addEventListener('change', function() {
             const Selectedvalue = this.value;
             if(Selectedvalue == "Driver"){
                 ParentPnl.style.display = "none";
@@ -159,6 +191,14 @@
                 DriverPnl.style.display = "none";
                 ChildPnl.style.display = "inline";
             }
+        });
+
+        // Initialize correct form display on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Since Driver is selected by default, show driver form
+            ParentPnl.style.display = "none";
+            ChildPnl.style.display = "none";
+            DriverPnl.style.display = "inline";
         });
     </script>
 }

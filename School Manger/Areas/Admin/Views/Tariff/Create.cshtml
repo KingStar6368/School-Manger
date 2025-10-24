@@ -4,39 +4,93 @@
     ViewData["Title"] = "افزودن تعرفه جدید";
 }
 
-<div class="card">
-    <div class="card-header bg-success">
-
-        <h2>افزودن تعرفه جدید</h2>
+<div class="card bg-dark text-white shadow-lg rounded-4 border-success border-2">
+    <div class="card-header bg-success bg-gradient d-flex justify-content-between align-items-center">
+        <h4 class="mb-0 fw-bold">
+            <i class="bi bi-plus-circle me-2"></i> افزودن تعرفه جدید
+        </h4>
+        <a asp-action="Index" class="btn btn-secondary btn-sm fw-bold shadow-sm">
+            <i class="bi bi-arrow-left-circle me-1"></i> بازگشت
+        </a>
     </div>
-    <div class="card-body bg-dark">
-
-
+    <div class="card-body">
         <form asp-action="Create" method="post">
-            <div class="mb-3">
-                <label asp-for="FromKilometer" class="form-lable text-white ">از کیلومتر</label>
-                <input asp-for="FromKilometer" class="form-control" type="number" step="0.01" required />
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="FromKilometer" class="form-label fw-bold">
+                            <i class="bi bi-signpost me-1"></i> از کیلومتر
+                        </label>
+                        <input asp-for="FromKilometer" class="form-control form-control-lg" type="number" step="0.01" required />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ToKilometer" class="form-label fw-bold">
+                            <i class="bi bi-signpost-fill me-1"></i> تا کیلومتر
+                        </label>
+                        <input asp-for="ToKilometer" class="form-control form-control-lg" type="number" step="0.01" required />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Price" class="form-label fw-bold">
+                            <i class="bi bi-cash-coin me-1"></i> قیمت (ریال)
+                        </label>
+                        <input asp-for="Price" class="form-control form-control-lg" type="number" required />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="FromDate" class="form-label fw-bold">
+                            <i class="bi bi-calendar-date me-1"></i> از تاریخ
+                        </label>
+                        <input name="StartDate" type="text" class="form-control form-control-lg persian-date bg-secondary text-white" placeholder="انتخاب تاریخ" required />
+                        <input type="hidden" class="gregorian-date" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ToDate" class="form-label fw-bold">
+                            <i class="bi bi-calendar-check me-1"></i> تا تاریخ
+                        </label>
+                        <input name="EndDate" type="text" class="form-control form-control-lg persian-date bg-secondary text-white" placeholder="انتخاب تاریخ" required />
+                        <input type="hidden" class="gregorian-date" />
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label asp-for="ToKilometer" class="form-lable text-white ">تا کیلومتر</label>
-                <input asp-for="ToKilometer" class="form-control" type="number" step="0.01" required />
+            <div class="form-group text-center mt-4 d-flex justify-content-center gap-3">
+                <button type="submit" class="btn btn-success col-md-2">
+                    <i class="bi bi-check-circle me-1"></i> ذخیره تعرفه
+                </button>
+                <a asp-action="Index" class="btn btn-secondary col-md-2">
+                    <i class="bi bi-x-circle me-1"></i> انصراف
+                </a>
             </div>
-            <div class="mb-3">
-                <label asp-for="Price" class="form-lable text-white ">قیمت (ریال)</label>
-                <input asp-for="Price" class="form-control" type="number" required />
-            </div>
-            <div class="mb-3">
-                <label asp-for="FromDate" class="form-lable text-white ">از تاریخ</label>
-                <input name="StartDate" type="text" class="form-control persian-date bg-secondary text-white" placeholder="انتخاب تاریخ" required />
-                <input type="hidden" class="gregorian-date" />
-            </div>
-            <div class="mb-3">
-                <label asp-for="ToDate" class="form-lable text-white ">تا تاریخ</label>
-                <input name="EndDate" type="text" class="form-control persian-date bg-secondary text-white" placeholder="انتخاب تاریخ" required />
-                <input type="hidden" class="gregorian-date" />
-            </div>
-            <button type="submit" class="btn btn-success">ذخیره</button>
-            <a asp-action="Index" class="btn btn-secondary">بازگشت</a>
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Persian date pickers
+            const startDateInput = document.querySelector('input[name="StartDate"]');
+            const endDateInput = document.querySelector('input[name="EndDate"]');
+
+            // Add validation for kilometer ranges
+            const fromKmInput = document.getElementById('FromKilometer');
+            const toKmInput = document.getElementById('ToKilometer');
+
+            function validateKilometerRange() {
+                const fromKm = parseFloat(fromKmInput.value);
+                const toKm = parseFloat(toKmInput.value);
+
+                if (fromKm && toKm && fromKm >= toKm) {
+                    toKmInput.setCustomValidity('کیلومتر پایان باید بزرگتر از کیلومتر شروع باشد');
+                    toKmInput.classList.add('is-invalid');
+                } else {
+                    toKmInput.setCustomValidity('');
+                    toKmInput.classList.remove('is-invalid');
+                }
+            }
+
+            fromKmInput.addEventListener('input', validateKilometerRange);
+            toKmInput.addEventListener('input', validateKilometerRange);
+        });
+    </script>
+}

@@ -6,15 +6,18 @@
     Layout = "_AdminLayout";
     var childId = ViewBag.ChildId;
 }
-<div class="container mt-4 text-white">
+<div class="container-fluid bg-dark text-white py-4" dir="rtl">
     <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
         <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
             <h4 class="mb-0 fw-bold">
-                <i class="bi bi-pen"></i> ویرایش قبض: <span class="text-warning">@Model.Name</span>
+                <i class="bi bi-pencil-square fs-4 me-2"></i>ویرایش قبض: 
+                <span class="text-warning">@Model.Name</span>
             </h4>
-            <form asp-action="CreateBill" method="post">
+            <form asp-action="CreateBill" method="post" class="d-inline">
                 <input hidden name="ChildId" value="@childId" />
-                <input type="submit" class="btn btn-secondary fw-bold shadow-sm" value="🔙 بازگشت" />
+                <button type="submit" class="btn btn-outline-light fw-bold shadow-sm">
+                    <i class="bi bi-arrow-right-circle me-1"></i>بازگشت
+                </button>
             </form>
         </div>
         <div class="card-body">
@@ -23,33 +26,314 @@
                 <input type="hidden" name="childId" value="@childId" />
                 <input type="hidden" name="Id" value="@Model.Id" />
                 <input type="hidden" name="ServiceContractRef" value="@Model.ContractId" />
+                
                 <div class="row g-3">
+                    <!-- Bill Title -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">📝 عنوان قبض</label>
-                        <input type="text" name="Name" class="form-control bg-dark text-white shadow-sm" value="@Model.Name" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-tag me-1"></i>عنوان قبض
+                        </label>
+                        <input type="text" name="Name" class="form-control bg-dark text-white border-secondary" value="@Model.Name" required />
                     </div>
+                    
+                    <!-- Total Amount -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold"><i class="bi bi-cash"></i> مبلغ کل (ریال)</label>
-                        <input type="number" name="Price" class="form-control bg-dark text-white shadow-sm" value="@Model.TotalPrice" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-cash-stack me-1"></i>مبلغ کل (ریال)
+                        </label>
+                        <input type="text" name="Price" class="form-control bg-dark text-white border-secondary price-separator" value="@Model.TotalPrice" required />
                     </div>
+                    
+                    <!-- Payment Deadline -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">📆 مهلت پرداخت</label>
-                        @* <input type="date" name="EstimateTime" class="form-control bg-secondary text-white" value="@Model.BillExpiredTime.ToString("yyyy-MM-dd")" required /> *@
-                        <label class="form-label">@Model.BillExpiredTime.ToPersianString()</label>
-                        <input name="EstimateTime" class="persian-date form-control bg-secondary text-white" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-calendar-event me-1"></i>مهلت پرداخت
+                        </label>
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <span class="text-info">
+                                <i class="bi bi-clock-history me-1"></i>@Model.BillExpiredTime.ToPersianString()
+                            </span>
+                        </div>
+                        <input name="EstimateTime" class="persian-date form-control bg-dark text-white border-secondary" required />
                         <input type="hidden" value="@Model.BillExpiredTime.ToPersianString()" class="gregorian-date" />
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">نوع قبض</label>
-                        <input type="text" name="type" class="form-control bg-dark text-white shadow-sm" value="@(Model.TypeOfBill == "نا مشخص"?"عادی":(Model.TypeOfBill == "عادی"?"عادی": "پیش پرداخت"))" required />
+                    
+                    <!-- Bill Type -->
+                   @*  <div class="col-md-6">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-receipt me-1"></i>نوع قبض
+                        </label>
+                        <select name="type" class="form-select bg-dark text-white border-secondary" required>
+                            <option value="عادی" @(Model.TypeOfBill == "عادی" || Model.TypeOfBill == "نا مشخص" ? "selected" : "")>
+                                <i class="bi bi-file-earmark-text me-1"></i>عادی
+                            </option>
+                            <option value="پیش پرداخت" @(Model.TypeOfBill == "پیش پرداخت" ? "selected" : "")>
+                                <i class="bi bi-file-earmark-plus me-1"></i>پیش پرداخت
+                            </option>
+                        </select>
+                    </div> *@
+                    
+                    <!-- Bill Status Info -->
+                    <div class="col-12">
+                        <div class="alert @(Model.HasPaid ? "alert-success" : "alert-warning") d-flex align-items-center">
+                            <i class="bi @(Model.HasPaid ? "bi-check-circle-fill" : "bi-clock-history") fs-5 me-3"></i>
+                            <div>
+                                <strong>وضعیت فعلی:</strong> 
+                                @if (Model.HasPaid)
+                                {
+                                    <span class="text-success">
+                                        <i class="bi bi-check-circle me-1"></i>پرداخت شده
+                                    </span>
+                                    <br>
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar-check me-1"></i>
+                                        تاریخ پرداخت: @(Model.PaidTime.HasValue ? Model.PaidTime.Value.ToPersianString() : "نامشخص")
+                                    </small>
+                                }
+                                else
+                                {
+                                    <span class="text-warning">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>در انتظار پرداخت
+                                    </span>
+                                    <br>
+                                    <small class="text-muted">
+                                        <i class="bi bi-clock me-1"></i>
+                                        مانده: @(Model.TotalPrice - Model.PaidPrice) ریال
+                                    </small>
+                                }
+                            </div>
+                        </div>
                     </div>
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm">
-                            💾 ذخیره تغییرات
+                    
+                    <!-- Action Buttons -->
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm px-4">
+                            <i class="bi bi-check-circle me-1"></i>ذخیره تغییرات
                         </button>
+                        <button type="button" class="btn btn-outline-warning fw-bold shadow-sm px-4" onclick="resetForm()">
+                            <i class="bi bi-arrow-clockwise me-1"></i>بازنشانی
+                        </button>
+                        <form asp-action="DeleteBill" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <input type="hidden" name="secondId" value="@childId" />
+                            <button type="submit" class="btn btn-outline-danger fw-bold shadow-sm px-4" 
+                                    onclick="return confirm('آیا از حذف این قبض مطمئن هستید؟')">
+                                <i class="bi bi-trash me-1"></i>حذف قبض
+                            </button>
+                        </form>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    
+    <!-- Quick Actions Card -->
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-info">
+        <div class="card-header bg-info bg-gradient">
+            <h5 class="mb-0 fw-bold">
+                <i class="bi bi-lightning-charge fs-4 me-2"></i>عملیات سریع
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="card bg-secondary text-center h-100">
+                        <div class="card-body">
+                            <i class="bi bi-eye fs-1 text-primary d-block mb-2"></i>
+                            <h6 class="card-title">مشاهده فاکتور</h6>
+                            <form asp-action="ShowBillPDF" method="get" class="d-inline">
+                                <input type="hidden" name="BillId" value="@Model.Id" />
+                                <button type="submit" class="btn btn-outline-primary btn-sm mt-2">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i>مشاهده
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-secondary text-center h-100">
+                        <div class="card-body">
+                            <i class="bi bi-printer fs-1 text-success d-block mb-2"></i>
+                            <h6 class="card-title">چاپ قبض</h6>
+                            <button type="button" class="btn btn-outline-success btn-sm mt-2" onclick="window.print()">
+                                <i class="bi bi-printer me-1"></i>چاپ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-secondary text-center h-100">
+                        <div class="card-body">
+                            <i class="bi bi-copy fs-1 text-warning d-block mb-2"></i>
+                            <h6 class="card-title">کپی اطلاعات</h6>
+                            <button type="button" class="btn btn-outline-warning btn-sm mt-2" onclick="copyBillInfo()">
+                                <i class="bi bi-clipboard me-1"></i>کپی
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Price separator functionality
+        function formatNumberWithCommas(x) {
+            if (!x) return '';
+            x = x.toString().replace(/[^\d]/g, '');
+            return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function unformatNumber(x) {
+            return x.replace(/,/g, '');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize price separator
+            document.querySelectorAll('.price-separator').forEach(function(input) {
+                input.addEventListener('input', function(e) {
+                    var cursorPos = input.selectionStart;
+                    var originalLength = input.value.length;
+                    var unformatted = unformatNumber(input.value);
+                    if (unformatted) {
+                        input.value = formatNumberWithCommas(unformatted);
+                    } else {
+                        input.value = '';
+                    }
+                    var newLength = input.value.length;
+                    input.setSelectionRange(cursorPos + (newLength - originalLength), cursorPos + (newLength - originalLength));
+                });
+                
+                // On form submit, unformat the value
+                input.form && input.form.addEventListener('submit', function() {
+                    input.value = unformatNumber(input.value);
+                });
+            });
+
+            // Format initial price value
+            const priceInput = document.querySelector('input[name="Price"]');
+            if (priceInput && priceInput.value) {
+                priceInput.value = formatNumberWithCommas(priceInput.value);
+            }
+        });
+
+        function resetForm() {
+            if (confirm('آیا از بازنشانی فرم مطمئن هستید؟ تمام تغییرات از بین خواهد رفت.')) {
+                document.querySelector('form').reset();
+                
+                // Reset price formatting
+                const priceInput = document.querySelector('input[name="Price"]');
+                if (priceInput && priceInput.defaultValue) {
+                    priceInput.value = formatNumberWithCommas(priceInput.defaultValue);
+                }
+            }
+        }
+
+        function copyBillInfo() {
+            const billInfo = {
+                title: document.querySelector('input[name="Name"]').value,
+                amount: document.querySelector('input[name="Price"]').value,
+                dueDate: document.querySelector('input[name="EstimateTime"]').value,
+                type: document.querySelector('select[name="type"]').value
+            };
+            
+            const textToCopy = `عنوان: ${billInfo.title}\nمبلغ: ${billInfo.amount} ریال\nمهلت پرداخت: ${billInfo.dueDate}\nنوع: ${billInfo.type}`;
+            
+            navigator.clipboard.writeText(textToCopy).then(function() {
+                // Show success message
+                const originalText = event.target.innerHTML;
+                event.target.innerHTML = '<i class="bi bi-check-circle me-1"></i>کپی شد!';
+                event.target.classList.remove('btn-outline-warning');
+                event.target.classList.add('btn-success');
+                
+                setTimeout(function() {
+                    event.target.innerHTML = originalText;
+                    event.target.classList.remove('btn-success');
+                    event.target.classList.add('btn-outline-warning');
+                }, 2000);
+            }).catch(function(err) {
+                alert('خطا در کپی اطلاعات: ' + err);
+            });
+        }
+
+        // Add hover effects
+        $('.btn').hover(
+            function() {
+                $(this).addClass('shadow');
+            },
+            function() {
+                $(this).removeClass('shadow');
+            }
+        );
+
+        // Add loading state to submit button
+        $('form').on('submit', function() {
+            const submitBtn = $(this).find('button[type="submit"]');
+            const originalHtml = submitBtn.html();
+            submitBtn.html('<i class="bi bi-hourglass-split me-1"></i>در حال ذخیره...');
+            submitBtn.prop('disabled', true);
+            
+            setTimeout(function() {
+                submitBtn.html(originalHtml);
+                submitBtn.prop('disabled', false);
+            }, 3000);
+        });
+    </script>
+}
+
+<style>
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .alert {
+        border: none;
+        border-radius: 8px;
+    }
+
+    .form-control, .form-select {
+        border: 1px solid #495057;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+
+    .price-separator {
+        direction: ltr;
+        text-align: left;
+    }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .card-body {
+            padding: 1rem;
+        }
+        
+        .btn {
+            margin-bottom: 0.5rem;
+            width: 100%;
+        }
+        
+        .d-inline {
+            display: block !important;
+        }
+    }
+</style>

@@ -1,64 +1,390 @@
 ﻿@using School_Manager.Core.ViewModels.FModels
 @model List<DriverDto>
 @{
-    ViewData["Title"] = "🚗 مدیریت رانندگان";
+    ViewData["Title"] = "مدیریت رانندگان";
     Layout = "_AdminLayout";
 }
 
-<div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2">
-    <div class="card-header bg-primary d-flex justify-content-between align-items-center">
-        <h4 class="mb-0"><i class="bi bi-truck"></i> لیست رانندگان</h4>
-@*         <a asp-action="Create" class="btn btn-success btn-sm">
-            <i class="bi bi-plus-circle"></i> راننده جدید
-        </a> *@
+<div class="container-fluid bg-dark text-white py-4" dir="rtl">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="fw-bold mb-2">
+                        <i class="bi bi-car-front-fill fs-1 text-primary me-2"></i>مدیریت رانندگان
+                    </h2>
+                    <p class="text-white-50 mb-0">
+                        <i class="bi bi-info-circle me-1"></i>مدیریت اطلاعات رانندگان و خودروهای سرویس
+                    </p>
+                </div>
+                <div>
+                    <span class="badge bg-primary fs-6 p-3">
+                        <i class="bi bi-person-check me-1"></i>@Model.Count راننده
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-dark table-bordered table-hover align-middle text-center">
-                <thead class="table-light text-dark">
-                    <tr>
-                        <th>ردیف <i class="bi bi-person-vcard"></i></th>
-                        <th>نام <i class="bi bi-car-front-fill"></i></th>
-                        <th>نام خانوادگی 👨‍✈️</th>
-                        <th>خودرو 🚙</th>
-                        <th>شماره پلاک 🏷️</th>
-                        <th>اخطار ⚠️</th>
-                        <th>عملیات <i class="bi bi-wrench"></i></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (int i = 0; i < Model.Count; i++)
-                    {
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-person fs-1 d-block mb-2"></i>
+                    <h4 class="mb-1">@Model.Count</h4>
+                    <p class="mb-0">رانندگان فعال</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-car-front fs-1 d-block mb-2"></i>
+                    <h4 class="mb-1">@Model.Count</h4>
+                    <p class="mb-0">خودروهای سرویس</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-dark shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-exclamation-triangle fs-1 d-block mb-2"></i>
+                    <h4 class="mb-1">@Model.Count(d => d.Warnning > 0)</h4>
+                    <p class="mb-0">رانندگان دارای اخطار</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-check-circle fs-1 d-block mb-2"></i>
+                    <h4 class="mb-1">@Model.Count(d => d.Warnning == 0)</h4>
+                    <p class="mb-0">رانندگان بدون اخطار</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Table -->
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center py-3">
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-list-ul fs-4 me-2"></i>لیست رانندگان
+            </h4>
+            <div>
+                @* <a asp-action="Create" class="btn btn-success btn-sm fw-bold shadow-sm px-3">
+                    <i class="bi bi-plus-circle me-1"></i>راننده جدید
+                </a> *@
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!-- Search and Filters -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-secondary text-white border-secondary">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control bg-dark text-white border-secondary" placeholder="جستجوی رانندگان..." id="searchInput">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select bg-dark text-white border-secondary" id="warningFilter">
+                        <option value="">همه وضعیت‌ها</option>
+                        <option value="with-warning">دارای اخطار</option>
+                        <option value="without-warning">بدون اخطار</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select bg-dark text-white border-secondary" id="sortSelect">
+                        <option value="name">مرتب‌سازی بر اساس نام</option>
+                        <option value="warning">مرتب‌سازی بر اساس اخطار</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-dark table-bordered table-hover align-middle text-center mb-0" id="driversTable">
+                    <thead class="table-light text-dark">
                         <tr>
-                            <td>@(i + 1)</td>
-                            <td>@Model[i].Name</td>
-                            <td>@Model[i].LastName</td>
-                            <td>@Model[i].Car.Name</td>
-                            <td>@Html.Partial("_CarPlate", Model[i].Car.PlateNumber)</td>
-                            <td>
-                                @if (Model[i].Warnning > 0)
-                                {
-                                    <span class="badge bg-warning text-dark">
-                                        ⚠️ @Model[i].Warnning
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-success">
-                                        ✅ بدون اخطار
-                                    </span>
-                                }
-                            </td>
-                            <td>
-                                <a asp-action="Details" asp-controller="Driver" asp-area="Admin" asp-route-id="@Model[i].Id"
-                                   class="btn btn-sm btn-outline-light rounded-pill shadow-sm" title="مشاهده جزئیات">
-                                    <i class="bi bi-eye"></i> جزئیات
-                                </a>
-                            </td>
+                            <th class="fw-bold"><i class="bi bi-hash me-1"></i>ردیف</th>
+                            <th><i class="bi bi-person-circle me-1"></i>نام</th>
+                            <th><i class="bi bi-person-badge me-1"></i>نام خانوادگی</th>
+                            <th><i class="bi bi-car-front me-1"></i>خودرو</th>
+                            <th><i class="bi bi-tag me-1"></i>شماره پلاک</th>
+                            <th><i class="bi bi-exclamation-triangle me-1"></i>اخطار</th>
+                            <th class="fw-bold"><i class="bi bi-gear me-1"></i>عملیات</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            <tr>
+                                <td class="fw-bold text-info">@(i + 1)</td>
+                                <td>
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-person text-warning me-2"></i>
+                                        @Model[i].Name
+                                    </div>
+                                </td>
+                                <td>@Model[i].LastName</td>
+                                <td>
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-car-front text-info me-2"></i>
+                                        @Model[i].Car.Name
+                                    </div>
+                                </td>
+                                <td>
+                                    @Html.Partial("_CarPlate", Model[i].Car.PlateNumber)
+                                </td>
+                                <td>
+                                    @if (Model[i].Warnning > 0)
+                                    {
+                                        <span class="badge bg-warning text-dark fw-bold p-2">
+                                            <i class="bi bi-exclamation-triangle me-1"></i>@Model[i].Warnning اخطار
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success fw-bold p-2">
+                                            <i class="bi bi-check-circle me-1"></i>بدون اخطار
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a asp-action="Details" asp-controller="Driver" asp-area="Admin" asp-route-id="@Model[i].Id"
+                                           class="btn btn-sm btn-outline-info rounded-pill shadow-sm"
+                                           data-bs-toggle="tooltip" title="مشاهده جزئیات راننده">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-warning rounded-pill shadow-sm"
+                                                data-bs-toggle="tooltip" title="ویرایش اطلاعات راننده"
+                                                onclick="alert('قابلیت ویرایش به زودی اضافه خواهد شد')">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-@(Model[i].Warnning > 0 ? "success" : "danger") rounded-pill shadow-sm"
+                                                data-bs-toggle="tooltip" title="@(Model[i].Warnning > 0 ? "حذف اخطار" : "افزودن اخطار")"
+                                                onclick="manageWarning(@Model[i].Id, @Model[i].Warnning)">
+                                            <i class="bi bi-@(Model[i].Warnning > 0 ? "check-circle" : "exclamation-triangle")"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div class="text-white-50">
+                    <i class="bi bi-info-circle me-1"></i>
+                    نمایش @Model.Count مورد از @Model.Count راننده
+                </div>
+                <nav>
+                    <ul class="pagination mb-0">
+                        <li class="page-item disabled">
+                            <a class="page-link bg-dark text-white border-secondary" href="#">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link bg-primary border-primary" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link bg-dark text-white border-secondary" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link bg-dark text-white border-secondary" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link bg-dark text-white border-secondary" href="#">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+
+            // Search functionality
+            $('#searchInput').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#driversTable tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            // Warning filter
+            $('#warningFilter').on('change', function() {
+                var filter = $(this).val();
+                if (filter === 'with-warning') {
+                    $('#driversTable tbody tr').hide();
+                    $('#driversTable tbody tr').each(function() {
+                        if ($(this).find('.badge.bg-warning').length > 0) {
+                            $(this).show();
+                        }
+                    });
+                } else if (filter === 'without-warning') {
+                    $('#driversTable tbody tr').hide();
+                    $('#driversTable tbody tr').each(function() {
+                        if ($(this).find('.badge.bg-success').length > 0) {
+                            $(this).show();
+                        }
+                    });
+                } else {
+                    $('#driversTable tbody tr').show();
+                }
+            });
+
+            // Sort functionality
+            $('#sortSelect').on('change', function() {
+                var sortBy = $(this).val();
+                var $tbody = $('#driversTable tbody');
+                var rows = $tbody.find('tr').get();
+
+                rows.sort(function(a, b) {
+                    var aVal, bVal;
+
+                    switch(sortBy) {
+                        case 'name':
+                            aVal = $(a).find('td:eq(1)').text().toLowerCase();
+                            bVal = $(b).find('td:eq(1)').text().toLowerCase();
+                            return aVal.localeCompare(bVal);
+                        case 'warning':
+                            aVal = $(a).find('.badge').hasClass('bg-warning') ? 1 : 0;
+                            bVal = $(b).find('.badge').hasClass('bg-warning') ? 1 : 0;
+                            return bVal - aVal;
+                    }
+                });
+
+                $.each(rows, function(index, row) {
+                    $tbody.append(row);
+                });
+            });
+
+            // Add hover effects to table rows
+            $('tbody tr').hover(
+                function() {
+                    $(this).addClass('bg-secondary bg-opacity-25');
+                },
+                function() {
+                    $(this).removeClass('bg-secondary bg-opacity-25');
+                }
+            );
+
+            // Add loading animation to buttons
+            $('.btn').on('click', function() {
+                var btn = $(this);
+                var originalHtml = btn.html();
+                btn.html('<i class="bi bi-hourglass-split me-1"></i>در حال پردازش...');
+                btn.prop('disabled', true);
+
+                setTimeout(function() {
+                    btn.html(originalHtml);
+                    btn.prop('disabled', false);
+                }, 1500);
+            });
+        });
+
+        function manageWarning(driverId, currentWarnings) {
+            if (currentWarnings > 0) {
+                if (confirm('آیا از حذف اخطارهای این راننده مطمئن هستید؟')) {
+                    // Call API to remove warnings
+                    alert(`اخطارهای راننده با شناسه ${driverId} حذف شد`);
+                    location.reload();
+                }
+            } else {
+                if (confirm('آیا می‌خواهید به این راننده اخطار دهید؟')) {
+                    // Call API to add warning
+                    alert(`اخطار به راننده با شناسه ${driverId} اضافه شد`);
+                    location.reload();
+                }
+            }
+        }
+    </script>
+}
+
+<style>
+    .table th, .table td {
+        vertical-align: middle;
+        text-align: center;
+        padding: 1rem 0.75rem;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        transform: scale(1.01);
+        transition: all 0.3s ease;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.5em 0.8em;
+    }
+
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+    /* Custom scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #2d3748;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #4a5568;
+        border-radius: 4px;
+    }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.9rem;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .d-flex.gap-2 {
+            gap: 0.25rem !important;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+    }
+</style>

@@ -7,34 +7,122 @@
     Layout = "_Layout";
 }
 
-<div class="card">
-    <div class="card-header bg-info"> 
-        عملیات موفق
+<div class="card bg-dark text-white shadow-lg rounded-4 border-success border-2">
+    <div class="card-header bg-success bg-gradient d-flex justify-content-between align-items-center py-3">
+        <h4 class="mb-0 fw-bold">
+            <i class="bi bi-check-circle-fill me-2"></i> عملیات موفق
+        </h4>
+        <span class="badge bg-light text-success fs-6">
+            <i class="bi bi-credit-card me-1"></i> پرداخت موفق
+        </span>
     </div>
-    <div class="card-body bg-dark">
-         <h3 class="text-white">شناسه پرداخت : @Model.Autratory.Replace("0000","")</h3>
-        @if (Model.BillIds != null)
+    <div class="card-body">
+        <div class="text-center mb-4">
+            <i class="bi bi-patch-check text-success fs-1 mb-3 d-block"></i>
+            <h3 class="text-success fw-bold">پرداخت با موفقیت انجام شد</h3>
+        </div>
+
+        <div class="alert alert-success border-success mb-4">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-receipt-cutoff fs-4 me-3"></i>
+                <div>
+                    <h5 class="alert-heading mb-1">شناسه پرداخت</h5>
+                    <p class="mb-0 fw-bold fs-5">@Model.Autratory.Replace("0000", "")</p>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.BillIds != null && Model.BillIds.Any())
         {
-             <table class="table-bordered table">
-                 <thead>
-                     <td>شماره قبض</td>
-                     <td>نام قبض</td>
-                     <td>مبلغ</td>
-                 </thead>
-                 <tbody>
-                     @foreach(long BillId in Model.BillIds){
-                        <tr>
-                            <td>@BillService.GetBill(BillId).Id</td>
-                            <td>@BillService.GetBill(BillId).Name</td>
-                            <td>@BillService.GetBill(BillId).TotalPrice</td>
-                        </tr>
-                     }
-                 </tbody>
-             </table>
+            <div class="border border-success rounded-3 p-3 mb-4">
+                <h5 class="text-success fw-bold mb-3">
+                    <i class="bi bi-list-check me-2"></i> فاکتورهای پرداخت شده
+                </h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-bordered table-hover text-center align-middle">
+                        <thead class="table-success text-dark">
+                            <tr>
+                                <th><i class="bi bi-hash me-1"></i> شماره قبض</th>
+                                <th><i class="bi bi-file-text me-1"></i> نام قبض</th>
+                                <th><i class="bi bi-cash-coin me-1"></i> مبلغ (ریال)</th>
+                                <th><i class="bi bi-check-lg me-1"></i> وضعیت</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (long BillId in Model.BillIds)
+                            {
+                                var bill = BillService.GetBill(BillId);
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-info">@bill.Id</span>
+                                    </td>
+                                    <td>@bill.Name</td>
+                                    <td>
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-currency-dollar me-1"></i>@bill.TotalPrice.ToString("N0")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-lg me-1"></i> پرداخت شده
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        @if (Model.BillIds.Count > 1)
+                        {
+                            <tfoot class="table-secondary text-dark">
+                                <tr>
+                                    <td colspan="2" class="fw-bold">جمع کل:</td>
+                                    <td colspan="2" class="fw-bold text-success">
+                                        <i class="bi bi-calculator me-1"></i>
+                                        @Model.BillIds.Sum(billId => BillService.GetBill(billId).TotalPrice).ToString("N0") ریال
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        }
+                    </table>
+                </div>
+            </div>
         }
         else
         {
-            <h3 class="text-white">عملیات به پایان رسیده</h3>
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>عملیات به پایان رسیده</strong>
+            </div>
         }
+
+        <div class="d-flex justify-content-center gap-3 mt-4">
+            <a href="/" class="btn btn-primary">
+                <i class="bi bi-house me-1"></i> بازگشت به خانه
+            </a>
+            <button onclick="window.print()" class="btn btn-outline-light">
+                <i class="bi bi-printer me-1"></i> چاپ رسید
+            </button>
+        </div>
     </div>
 </div>
+
+<style>
+    .card {
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+
+    @@media print {
+        .btn, .badge.bg-light {
+            display: none !important;
+        }
+
+        .card {
+            border: 2px solid #28a745 !important;
+            box-shadow: none !important;
+        }
+
+        .text-success {
+            color: #28a745 !important;
+        }
+    }
+</style>
