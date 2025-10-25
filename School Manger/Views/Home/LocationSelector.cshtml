@@ -546,6 +546,7 @@
             const originalHtml = confirmBtn.innerHTML;
             confirmBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>در حال ثبت...';
             confirmBtn.disabled = true;
+            document.querySelector('form').submit();
         });
     </script>
 }
