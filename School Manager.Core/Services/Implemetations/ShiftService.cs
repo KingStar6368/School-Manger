@@ -110,14 +110,26 @@ namespace School_Manager.Core.Services.Implemetations
 
         public async Task<List<ChildInfo>> GetChildernOfShift(long ShiftId)
         {
-            var Childern = await _unitOfWork.GetRepository<Child>().Query(x => x.ShiftId == ShiftId).ToListAsync();
+            var Childern = await _unitOfWork.GetRepository<Child>().Query(x => x.ShiftId == ShiftId && !x.DriverChilds.Any(y=>!y.IsEnabled && y.EndDate < DateTime.Now)).ToListAsync();
+            return _mapper.Map<List<ChildInfo>>(Childern);
+        }
+        public async Task<List<ChildInfo>> GetNonDriverChildernOfShift(long ShiftId)
+        {
+            var Childern = await _unitOfWork.GetRepository<Child>().Query(x => x.ShiftId == ShiftId && !x.DriverChilds.Any(y=>y.IsEnabled && y.EndDate >= DateTime.Now)).ToListAsync();
             return _mapper.Map<List<ChildInfo>>(Childern);
         }
 
         public DriverShift GetDriverShift(long ShiftId, long DriverId)
         {
-            var Shift = _unitOfWork.GetRepository<DriverShift>().Query(x => x.ShiftRef == ShiftId && x.DriverRef == DriverId).FirstOrDefault();
+            var Shift = _unitOfWork.GetRepository<DriverShift>()
+                .Query(x => x.ShiftRef == ShiftId && x.DriverRef == DriverId)
+                .AsNoTracking()
+                .Include(x => x.Passenger
+                    .Where(p => p.IsEnabled && p.EndDate >= DateTime.Now))
+                .FirstOrDefault();
+
             return _mapper.Map<DriverShift>(Shift);
         }
+
     }
 }

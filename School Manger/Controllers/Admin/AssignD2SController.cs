@@ -35,7 +35,7 @@ namespace School_Manger.Controllers.Admin
         }
         public async Task<IActionResult> ShiftIndex(long ShiftId)
         {
-            var Children = await _shiftService.GetChildernOfShift(ShiftId);
+            var Children = await _shiftService.GetNonDriverChildernOfShift(ShiftId);
             var DriverShifts = await _shiftService.GetDriversOfShift(ShiftId);
             ControllerExtensions.AddKey(this, "ShiftId", ShiftId);
             var Dashbrod = new AdminNONChildDriver()
@@ -55,6 +55,8 @@ namespace School_Manger.Controllers.Admin
                 ControllerExtensions.ShowSuccess(this, "موفق", "راننده اختصاص داده شد");
             else
                 ControllerExtensions.ShowError(this,"خطا","مشکلی پیش آمده");
+            if (ShiftId != 0)
+                return await ShiftIndex(ShiftId);
             return await Index();
         }
     }

@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace School_Manger.Controllers.Admin
 {
-    [Area("Admin")][Authorize(Roles = "Admin")]
+    [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class DriverController : Controller
     {
         private readonly IDriverService _driverService;
@@ -19,7 +20,7 @@ namespace School_Manger.Controllers.Admin
         private readonly ISMSService _smsservice;
         private readonly IShiftService _shiftService;
         private readonly ISettingService _settingService;
-        public DriverController(IDriverService driverService, IUserService userService, IChildService childService,ISMSService sMSService,IShiftService shiftService, ISettingService settingService)
+        public DriverController(IDriverService driverService, IUserService userService, IChildService childService, ISMSService sMSService, IShiftService shiftService, ISettingService settingService)
         {
             _driverService = driverService;
             _userService = userService;
@@ -31,9 +32,9 @@ namespace School_Manger.Controllers.Admin
         public async Task<IActionResult> Index()
         {
             var Drivers = await _driverService.GetDrivers();
-            return View("Index",Drivers);
+            return View("Index", Drivers);
         }
-        public IActionResult Details(long id,long ShiftId = 0)
+        public IActionResult Details(long id, long ShiftId = 0)
         {
             var driver = _driverService.GetDriver(id);
             if (driver == null) return NotFound();
@@ -96,5 +97,5 @@ namespace School_Manger.Controllers.Admin
             _childService.RemoveDriverFromChild(ChildId, DriverId);
             return Details(DriverId);
         }
-        }
+    }
 }
