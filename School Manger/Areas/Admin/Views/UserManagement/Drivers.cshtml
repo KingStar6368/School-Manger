@@ -77,9 +77,11 @@
                 <i class="bi bi-list-ul me-2"></i>لیست رانندگان
             </h4>
             <div>
-                <button class="btn btn-light btn-sm me-2">
-                    <i class="bi bi-download me-1"></i>خروجی
-                </button>
+                <form asp-controller="Excel" asp-action="ExportDriverUserIndex">
+                    <button class="btn btn-light btn-sm me-2">
+                        <i class="bi bi-download me-1"></i>خروجی
+                    </button>
+                </form>
                 <a asp-action="Create" asp-route-type="Driver" class="btn btn-success btn-sm">
                     <i class="bi bi-plus-circle me-1"></i>راننده جدید
                 </a>
