@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
+using School_Manager.Domain.Entities.Catalog.Operation;
 using School_Manger.Extension;
 using School_Manger.Models;
 using School_Manger.Models.PageView;
@@ -96,6 +98,11 @@ namespace School_Manger.Controllers.Admin
         {
             _childService.RemoveDriverFromChild(ChildId, DriverId);
             return Details(DriverId);
+        }
+
+        public IActionResult DriverPayReport(long DriverId)
+        {
+            return View(DriverId);
         }
     }
 }

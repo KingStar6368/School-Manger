@@ -1,0 +1,217 @@
+﻿@using School_Manager.Core.Services.Interfaces
+@inject IShiftService shiftService
+@model long
+@{
+    ViewData["Title"] = "حساب راننده";
+    Layout = "_AdminLayout";
+
+    var DriverID = Model;
+    var Childern = await shiftService.GetAllPassangerOfDriver(DriverID);
+    var NonPayids = Childern.Where(x => x.Bills.Any(b => !b.HasPaid && b.BillExpiredTime < DateTime.Now)).ToList();
+    var PayIds = Childern.Where(x => !x.Bills.Any(b => !b.HasPaid && b.BillExpiredTime < DateTime.Now)).ToList();
+    var TotalPrice = Childern.Sum(x => x.Bills.Sum(b => b.TotalPrice));
+    var PayIdPrice = Childern.Sum(x => x.Bills.Sum(b => b.PaidPrice));
+}
+
+<div class="container-fluid py-4">
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card bg-primary text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">مبلغ کلی قبوض</h5>
+                            <h3 class="mb-0">@TotalPrice.ToString("N0") تومان</h3>
+                        </div>
+                        <div class="bg-white bg-opacity-25 p-3 rounded-circle">
+                            <i class="bi bi-receipt fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-success text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">مبلغ کلی پرداختی</h5>
+                            <h3 class="mb-0">@PayIdPrice.ToString("N0") تومان</h3>
+                        </div>
+                        <div class="bg-white bg-opacity-25 p-3 rounded-circle">
+                            <i class="bi bi-currency-exchange fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Paid Passengers Table -->
+    <div class="card shadow-lg rounded-3 mb-4">
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center py-3 rounded-top">
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-check-circle-fill fs-4 me-2"></i>مسافران با پرداخت کامل
+            </h4>
+            <div>
+                <form asp-controller="Excel" asp-action="ExportDriverPays" class="d-inline">
+                    <input type="hidden" value="@Model" name="DriverID" />
+                    <button class="btn btn-light btn-sm">
+                        <i class="bi bi-file-earmark-excel me-1"></i>خروجی اکسل
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle text-center mb-0">
+                    <thead class="table-success">
+                        <tr>
+                            <th class="fw-bold">
+                                <i class="bi bi-hash me-1"></i>ردیف
+                            </th>
+                            <th>
+                                <i class="bi bi-person me-1"></i>نام
+                            </th>
+                            <th>
+                                <i class="bi bi-person-badge me-1"></i>نام خانوادگی
+                            </th>
+                            <th>
+                                <i class="bi bi-mortarboard me-1"></i>کلاس
+                            </th>
+                            <th>
+                                <i class="bi bi-clock-history me-1"></i>کد شیفت
+                            </th>
+                            <th>
+                                <i class="bi bi-person-vcard me-1"></i>کدملی
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (PayIds.Any())
+                        {
+                            @foreach (var Payid in PayIds)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-secondary">@Payid.Id</span>
+                                    </td>
+                                    <td>@Payid.FirstName</td>
+                                    <td>@Payid.LastName</td>
+                                    <td>@Payid.Class</td>
+                                    <td>
+                                        <span class="badge bg-info text-dark">@shiftService.GetShiftById(Payid.ShiftId).Name</span>
+                                    </td>
+                                    <td>@Payid.NationalCode</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <i class="bi bi-info-circle fs-1 text-muted d-block mb-2"></i>
+                                    <span class="text-muted">هیچ مسافری با پرداخت کامل یافت نشد</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unpaid Passengers Table -->
+    <div class="card shadow-lg rounded-3">
+        <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center py-3 rounded-top">
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-exclamation-triangle-fill fs-4 me-2"></i>مسافران با پرداخت معوق
+            </h4>
+            <div>
+                <form asp-controller="Excel" asp-action="ExportDriverNonPays" class="d-inline">
+                    <input type="hidden" value="@Model" name="DriverID" />
+                    <button class="btn btn-light btn-sm">
+                        <i class="bi bi-file-earmark-excel me-1"></i>خروجی اکسل
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped align-middle text-center mb-0">
+                    <thead class="table-danger">
+                        <tr>
+                            <th class="fw-bold">
+                                <i class="bi bi-hash me-1"></i>ردیف
+                            </th>
+                            <th>
+                                <i class="bi bi-person me-1"></i>نام
+                            </th>
+                            <th>
+                                <i class="bi bi-person-badge me-1"></i>نام خانوادگی
+                            </th>
+                            <th>
+                                <i class="bi bi-mortarboard me-1"></i>مقطع تحصیلی
+                            </th>
+                            <th>
+                                <i class="bi bi-clock-history me-1"></i>نام شیفت
+                            </th>
+                            <th>
+                                <i class="bi bi-person-vcard me-1"></i>کدملی
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (NonPayids.Any())
+                        {
+                            @foreach (var NonPayid in NonPayids)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-secondary">@NonPayid.Id</span>
+                                    </td>
+                                    <td>@NonPayid.FirstName</td>
+                                    <td>@NonPayid.LastName</td>
+                                    <td>@NonPayid.Class</td>
+                                    <td>
+                                        <span class="badge bg-warning text-dark">@shiftService.GetShiftById(NonPayid.ShiftId).Name</span>
+                                    </td>
+                                    <td>@NonPayid.NationalCode</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <i class="bi bi-check-circle fs-1 text-success d-block mb-2"></i>
+                                    <span class="text-success">همه مسافران پرداخت خود را انجام داده‌اند</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table th {
+        border-top: none;
+        font-weight: 600;
+    }
+
+    .card {
+        border: none;
+    }
+
+    .table > :not(caption) > * > * {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+    }
+</style>
