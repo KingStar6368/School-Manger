@@ -11,42 +11,70 @@
 }
 
 <div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-dark">
-    <div class="card bg-black text-white border-secondary" style="width: 100%; max-width: 400px;border-radius:20px">
+    <div class="card bg-black text-white border-primary shadow-lg" style="width: 100%; max-width: 400px; border-radius: 20px; border-width: 2px;">
         <div class="card-body p-4">
             <div class="text-center mb-4">
+                <i class="bi bi-phone fs-1 text-primary mb-3 d-block"></i>
                 <h2 class="fw-bold text-white">ورود به سیستم</h2>
                 <p class="text-white-50">لطفا شماره موبایل خود را وارد کنید</p>
             </div>
 
             <form asp-action="SignIn" method="post" id="loginForm">
-                <div class="mb-3">
-                    <label for="phoneNumber" class="form-label text-white">شماره موبایل</label>
+                <div class="mb-4">
+                    <label for="phoneNumber" class="form-label text-white fw-semibold">
+                        <i class="bi bi-telephone me-2"></i>شماره موبایل
+                    </label>
                     <div class="input-group">
+                        <span class="input-group-text bg-dark text-white border-primary">
+                            <i class="bi bi-telephone-plus"></i>
+                        </span>
                         <input type="tel"
-                               class="form-control bg-dark text-white border-secondary"
+                               class="form-control form-control-lg bg-dark text-white border-primary"
                                id="phoneNumber"
                                name="phoneNumber"
                                placeholder="9123456789"
                                pattern="[0-9]{10}"
                                required>
-                        <span class="input-group-text bg-dark text-white border-secondary">98+</span>
+                        <span class="input-group-text bg-dark text-white border-primary">98+</span>
                     </div>
-                    <div class="form-text text-white-50">مثال: 9123456789</div>
+                    <div class="form-text text-white-50 mt-2">
+                        <i class="bi bi-info-circle me-1"></i>مثال: 9123456789
+                    </div>
                 </div>
+
                 <!-- Simple Captcha -->
-                <div class="mb-3">
-                    <label class="form-label text-white">سوال امنیتی: چند می‌شود؟</label>
+                <div class="mb-4">
+                    <label class="form-label text-white fw-semibold">
+                        <i class="bi bi-shield-check me-2"></i>سوال امنیتی
+                    </label>
                     <div class="input-group">
-                        <input type="number" class="form-control bg-dark text-white border-secondary" name="captchaInput" id="captchaInput" required autocomplete="off" />
-                        <span class="input-group-text bg-dark text-white border-secondary">= @num2 @opratorSymbol @num1 </span>
+                        <input type="number"
+                               class="form-control form-control-lg bg-dark text-white border-primary"
+                               name="captchaInput"
+                               id="captchaInput"
+                               required
+                               autocomplete="off"
+                               placeholder="پاسخ را وارد کنید" />
+                        <span class="input-group-text bg-dark text-white border-primary">
+                            <i class="bi bi-calculator me-2"></i> = @num2 @opratorSymbol @num1
+                        </span>
+                    </div>
+                    <div class="form-text text-white-50 mt-2">
+                        <i class="bi bi-question-circle me-1"></i>لطفا نتیجه عبارت را محاسبه کنید
                     </div>
                 </div>
+
                 <input type="hidden" name="captchaExpected" id="captchaExpected" value="@encodedAnswer" />
-                <button type="submit" class="btn btn-primary w-100 py-2">دریافت کد تایید</button>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold mt-3">
+                    <i class="bi bi-send-check me-2"></i>دریافت کد تایید
+                </button>
             </form>
 
-            <div class="text-center mt-3">
-                <a asp-action="Login" class="text-decoration-none text-info">ورود با رمز عبور</a>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <a asp-action="Login" class="text-decoration-none text-info fw-semibold">
+                    <i class="bi bi-key me-1"></i>ورود با رمز عبور
+                </a>
             </div>
         </div>
     </div>
@@ -61,14 +89,130 @@
                 return '';
             }
         }
+
         document.getElementById('loginForm').addEventListener('submit', function(e) {
-            var answer = document.getElementById('captchaInput').value;
-            var encoded = document.getElementById('captchaExpected').value;
-            var expected = decodeBase64(encoded);
+            const answer = document.getElementById('captchaInput').value;
+            const encoded = document.getElementById('captchaExpected').value;
+            const expected = decodeBase64(encoded);
+
             if (answer !== expected) {
-                alert('پاسخ سوال امنیتی اشتباه است.');
                 e.preventDefault();
+                showAlert('پاسخ سوال امنیتی اشتباه است. لطفا مجددا محاسبه کنید.', 'danger');
+                document.getElementById('captchaInput').value = '';
+                document.getElementById('captchaInput').focus();
             }
+        });
+
+        // Phone number validation
+        document.getElementById('phoneNumber').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            if (this.validity.valid && this.value.length === 10) {
+                this.classList.remove('border-danger', 'is-invalid');
+                this.classList.add('border-success', 'is-valid');
+            } else if (this.value.length > 0) {
+                this.classList.remove('border-success', 'is-valid');
+                this.classList.add('border-danger', 'is-invalid');
+            } else {
+                this.classList.remove('border-success', 'border-danger', 'is-valid', 'is-invalid');
+            }
+        });
+
+        // Captcha input validation
+        document.getElementById('captchaInput').addEventListener('input', function(e) {
+            if (this.value.trim() !== '') {
+                this.classList.remove('border-danger', 'is-invalid');
+                this.classList.add('border-primary', 'is-valid');
+            } else {
+                this.classList.remove('border-success', 'is-valid');
+            }
+        });
+
+        // Show alert function
+        function showAlert(message, type) {
+            // Remove existing alerts
+            const existingAlert = document.querySelector('.alert-dismissible');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show mt-3`;
+            alert.innerHTML = `
+                <i class="bi bi-${type === 'danger' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+            document.querySelector('form').prepend(alert);
+        }
+
+        // Auto-focus on phone number field
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('phoneNumber').focus();
         });
     </script>
 }
+
+<style>
+    /* Persian font support */
+    body {
+        font-family: 'B Nazanin', 'Nazanin', 'Tahoma', sans-serif;
+    }
+
+    /* Validation states */
+    .is-valid {
+        border-color: #28a745 !important;
+    }
+
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+
+    /* Input focus styling */
+    .form-control:focus {
+        background-color: #222;
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    /* Smooth transitions */
+    .form-control, .btn {
+        transition: all 0.3s ease;
+    }
+
+    /* Card animation */
+    .card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Link hover effects */
+    a.text-info:hover {
+        text-decoration: underline !important;
+        color: #0dcaf0 !important;
+    }
+
+    /* Responsive design */
+    @@media (max-width: 576px) {
+        .card {
+            margin: 1rem;
+            width: calc(100% - 2rem) !important;
+        }
+
+        .input-group-text {
+            font-size: 0.875rem;
+        }
+    }
+</style>

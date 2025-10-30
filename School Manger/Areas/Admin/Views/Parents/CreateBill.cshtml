@@ -7,195 +7,284 @@
     Layout = "_AdminLayout";
 }
 
-<div class="container mt-4 text-white" dir="rtl">
-    <!-- 💳 BillDto Creation Form -->
+<div class="container-fluid bg-dark text-white py-4" dir="rtl">
+    <!-- 💳 Bill Creation Form -->
     <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
         <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
             <h4 class="mb-0 fw-bold">
-                📄 صدور قبض برای: <span class="text-warning">@Model.FirstName @Model.LastName</span>
+                <i class="bi bi-receipt-cutoff fs-4 me-2"></i>صدور قبض برای:
+                <span class="text-warning">@Model.FirstName @Model.LastName</span>
             </h4>
-            @if (Model.Bills != null)
-            {
-                <a asp-action="BillCal" asp-route-Id="@Model.Id" class="btn btn-outline-light mt-3">
-                    <i class="bi bi-arrow-right-circle"></i> ساخت قبض و قرارداد با محاسبه گر
+            <div class="d-flex gap-2">
+                @if (Model.Bills != null)
+                {
+                    <a asp-action="BillCal" asp-route-Id="@Model.Id" class="btn btn-outline-light">
+                        <i class="bi bi-calculator me-1"></i>ساخت قبض با محاسبه‌گر
+                    </a>
+                }
+                <a asp-controller="Parents" asp-action="Index" class="btn btn-outline-light shadow-sm fw-bold">
+                    <i class="bi bi-arrow-right-circle me-1"></i>بازگشت
                 </a>
-            }
-            <a asp-controller="Parents" asp-action="Index" class="btn btn-outline-light shadow-sm fw-bold">
-                <i class="bi bi-arrow-right"></i> بازگشت
-            </a>
+            </div>
         </div>
         <div class="card-body">
-
-            <div class="col-md-5">
-                <label class="form-label fw-bold">❓پرداخت شده</label>
-                <input type="checkbox" id="isPaidCheckbox" name="IsPaid" class="form-check-input bg-dark text-white shadow-sm" onchange="togglePaymentFields()" />
+            <!-- Toggle Switch -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="isPaidCheckbox" name="IsPaid" onchange="togglePaymentFields()">
+                        <label class="form-check-label fw-bold text-warning" for="isPaidCheckbox">
+                            <i class="bi bi-credit-card me-1"></i>پرداخت شده
+                        </label>
+                    </div>
+                </div>
             </div>
+
+            <!-- Create Bill Form -->
             <form asp-action="MakeBill" method="post" id="BillGruop">
                 <input type="hidden" name="ChildId" value="@Model.Id" />
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">📝 عنوان قبض</label>
-                        <input type="text" name="Name" class="form-control bg-dark text-white shadow-sm" placeholder="مثلاً شهریه مهر ماه" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-tag me-1"></i>عنوان قبض
+                        </label>
+                        <input type="text" name="Name" class="form-control bg-dark text-white border-secondary" placeholder="مثلاً شهریه مهر ماه" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">💰 مبلغ کل (ریال)</label>
-                        <input type="text" name="TotalPrice" class="form-control bg-dark text-white shadow-sm price-separator" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-cash-stack me-1"></i>مبلغ کل (ریال)
+                        </label>
+                        <input type="text" name="TotalPrice" class="form-control bg-dark text-white border-secondary price-separator" required />
                     </div>
                     <div class="col-md-6">
-                        <label id="LblEndTime" class="form-label fw-bold">📆 مهلت قبض</label>
-                        <input name="EndTime" class="persian-date form-control bg-secondary text-white" required />
+                        <label id="LblEndTime" class="form-label fw-bold">
+                            <i class="bi bi-calendar-event me-1"></i>مهلت قبض
+                        </label>
+                        <input name="EndTime" class="persian-date form-control bg-dark text-white border-secondary" required />
                         <input type="hidden" class="gregorian-date" />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">📆 مهلت پرداخت</label>
-                        <input name="Estimate" class="persian-date form-control bg-secondary text-white" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-clock-history me-1"></i>مهلت پرداخت
+                        </label>
+                        <input name="Estimate" class="persian-date form-control bg-dark text-white border-secondary" required />
                         <input type="hidden" class="gregorian-date" />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">💵 قبض پیش پرداخت</label>
-                        <input type="checkbox" id="IsPerBill" name="IsPerBill" class="form-check-input bg-dark text-white shadow-sm" onchange="toggleisperbill()" />
+                        <div class="form-check form-switch mt-4">
+                            <input class="form-check-input" type="checkbox" id="IsPerBill" name="IsPerBill" onchange="toggleisperbill()">
+                            <label class="form-check-label fw-bold text-info" for="IsPerBill">
+                                <i class="bi bi-file-earmark-text me-1"></i>قبض پیش پرداخت
+                            </label>
+                        </div>
                     </div>
                     <div id="PreStart" style="display:none" class="col-md-6">
-                        <label class="form-label fw-bold">📆 تاریخ شروع قرارداد</label>
-                        <input name="StartTime" class="persian-date form-control bg-secondary text-white" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-calendar-plus me-1"></i>تاریخ شروع قرارداد
+                        </label>
+                        <input name="StartTime" class="persian-date form-control bg-dark text-white border-secondary" required />
                         <input type="hidden" class="gregorian-date" />
                     </div>
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm">
-                            📤 صدور قبض
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm px-4">
+                            <i class="bi bi-send-check me-1"></i>صدور قبض
                         </button>
-                        <a asp-controller="Parents" asp-action="Index" class="btn btn-secondary fw-bold shadow-sm">
-                            🔙 بازگشت
+                        <a asp-controller="Parents" asp-action="Index" class="btn btn-secondary fw-bold shadow-sm px-4">
+                            <i class="bi bi-arrow-right me-1"></i>بازگشت
                         </a>
                     </div>
                 </div>
             </form>
+
+            <!-- Payment Form -->
             <form asp-action="PayBill" method="post" id="paymentFields" style="display:none;">
                 <input type="hidden" name="ChildId" value="@Model.Id" />
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">🆔 شماره قبض</label>
-                        <input type="number" id="BillId" name="BillId" class="form-control bg-dark text-white shadow-sm" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-receipt me-1"></i>شماره قبض
+                        </label>
+                        <input type="number" id="BillId" name="BillId" class="form-control bg-dark text-white border-secondary" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">🔖 کد رهگیری (اختیاری)</label>
-                        <input type="text" name="TrackCode" class="form-control bg-dark text-white shadow-sm" placeholder="کد رهگیری پرداخت" />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-qr-code me-1"></i>کد رهگیری (اختیاری)
+                        </label>
+                        <input type="text" name="TrackCode" class="form-control bg-dark text-white border-secondary" placeholder="کد رهگیری پرداخت" />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">💳 روش پرداخت</label>
-                        <select name="PaymentType" class="form-select bg-dark text-white shadow-sm" required>
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-credit-card me-1"></i>روش پرداخت
+                        </label>
+                        <select name="PaymentType" class="form-select bg-dark text-white border-secondary" required>
                             <option value="">-- انتخاب کنید --</option>
-                            <option value="Cash">💵 نقدی</option>
-                            <option value="Pos">💳 دستگاه پوز</option>
-                            <option value="Internet">🌐 اینترنتی</option>
+                            <option value="Cash">
+                                <i class="bi bi-cash-coin me-1"></i>نقدی
+                            </option>
+                            <option value="Pos">
+                                <i class="bi bi-card-text me-1"></i>دستگاه پوز
+                            </option>
+                            <option value="Internet">
+                                <i class="bi bi-globe me-1"></i>اینترنتی
+                            </option>
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">💵 مبلغ پرداخت شده</label>
-                        <input type="text" id="PayPrice" name="PaidPrice" class="form-control bg-dark text-white shadow-sm price-separator" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-currency-exchange me-1"></i>مبلغ پرداخت شده
+                        </label>
+                        <input type="text" id="PayPrice" name="PaidPrice" class="form-control bg-dark text-white border-secondary price-separator" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">📆زمان پرداخت</label>
-                        <input name="PiadTime" class="persian-date form-control bg-secondary text-white" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-calendar-check me-1"></i>زمان پرداخت
+                        </label>
+                        <input name="PiadTime" class="persian-date form-control bg-dark text-white border-secondary" required />
                         <input type="hidden" class="gregorian-date" />
                     </div>
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm">
-                            📤 ثبت خرید
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm px-4">
+                            <i class="bi bi-check-circle me-1"></i>ثبت پرداخت
                         </button>
-                        <a asp-controller="Parents" asp-action="Index" class="btn btn-secondary fw-bold shadow-sm">
-                            🔙 بازگشت
+                        <a asp-controller="Parents" asp-action="Index" class="btn btn-secondary fw-bold shadow-sm px-4">
+                            <i class="bi bi-arrow-right me-1"></i>بازگشت
                         </a>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-</div>
 
-<!-- 📜 Bills List -->
-<div class="card bg-dark text-white shadow-lg rounded-4 border-primary">
-    <div class="card-header bg-primary bg-gradient fw-bold">
-        📜 لیست قبوض <span class="text-warning">@Model.FirstName @Model.LastName</span>
-    </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            @if (Model.Bills != null && Model.Bills.Count > 0)
-            {
-                <table class="table table-dark table-bordered table-hover text-center align-middle mb-0">
-                    <thead class="table-light text-dark">
-                        <tr>
-                            <th>🔢 ردیف</th>
-                            <th>🆔 شناسه قبض</th>
-                            <th>🆔 شناسه قرارداد</th>
-                            <th>📄 نام قبض</th>
-                            <th>💵 مبلغ کل</th>
-                            <th>💳 مبلغ پرداخت شده</th>
-                            <th>✅ وضعیت</th>
-                            <th>⏰ زمان پرداخت/مهلت</th>
-                            <th>⚙️ عملیات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < Model.Bills.Count; i++)
-                        {
-                            var bill = Model.Bills[i];
-                            <tr onclick="BillRowId(@bill.Id,@bill.TotalPrice - @bill.PaidPrice)">
-                                <td>@(i + 1)</td>
-                                <td>@bill.Id</td>
-                                <td>@bill.ContractId</td>
-                                <td>@bill.Name</td>
-                                <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.TotalPrice)</td>
-                                <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.PaidPrice)</td>
-                                <td>
-                                    @if (bill.HasPaid)
-                                    {
-                                        <span class="badge bg-success rounded-pill fw-bold shadow-sm">✅ پرداخت شده</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger rounded-pill fw-bold shadow-sm">❌ @bill.Status</span>
-                                    }
-                            </td>
-                            <td>
-                                @(bill.HasPaid
-                                                            ? DateConverter.ToPersianString((DateTime)bill.PaidTime)
-                                                            : DateConverter.ToPersianString(bill.BillExpiredTime))
-                        </td>
-                        <td>
-                            <a asp-action="DeleteBill" asp-route-id="@bill.Id" asp-route-secondId="@Model.Id"
-                               class="btn text-black bg-danger btn-sm btn-outline-light rounded-pill shadow-sm" title="حذف"
-                               onclick="return confirm('آیا از حذف این قبض مطمئن هستید؟')">
-                                <i class="bi bi-trash"></i> 🗑️ حذف
-                            </a>
-                            <a asp-action="EditBill" asp-route-billId="@bill.Id" asp-route-childId="@Model.Id"
-                               class="btn btn-sm btn-outline-info rounded-pill shadow-sm ms-2" title="ویرایش">
-                                <i class="bi bi-pencil-square"></i> ویرایش
-                            </a>
-                        </td>
-                    </tr>
+    <!-- 📜 Bills List -->
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold">
+                <i class="bi bi-list-ul fs-4 me-2"></i>لیست قبوض
+                <span class="text-warning">@Model.FirstName @Model.LastName</span>
+            </h5>
+            <span class="badge bg-light text-dark fs-6">
+                <i class="bi bi-receipt me-1"></i>@(Model.Bills?.Count ?? 0) قبض
+            </span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                @if (Model.Bills != null && Model.Bills.Count > 0)
+                {
+                    <table class="table table-dark table-bordered table-hover text-center align-middle mb-0">
+                        <thead class="table-light text-dark">
+                            <tr>
+                                <th class="fw-bold"><i class="bi bi-hash me-1"></i>ردیف</th>
+                                <th><i class="bi bi-receipt me-1"></i>شناسه قبض</th>
+                                <th><i class="bi bi-file-earmark-text me-1"></i>شناسه قرارداد</th>
+                                <th><i class="bi bi-tag me-1"></i>نام قبض</th>
+                                <th><i class="bi bi-cash-stack me-1"></i>مبلغ کل</th>
+                                <th><i class="bi bi-currency-exchange me-1"></i>مبلغ پرداخت شده</th>
+                                <th><i class="bi bi-clipboard-check me-1"></i>وضعیت</th>
+                                <th><i class="bi bi-clock-history me-1"></i>زمان پرداخت/مهلت</th>
+                                <th class="fw-bold"><i class="bi bi-gear me-1"></i>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Bills.Count; i++)
+                            {
+                                var bill = Model.Bills[i];
+                                <tr onclick="BillRowId(@bill.Id,@bill.TotalPrice - @bill.PaidPrice)" style="cursor: pointer;">
+                                    <td class="fw-bold text-info">@(i + 1)</td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-hash me-1"></i>@bill.Id
+                                        </span>
+                                    </td>
+                                    <td>@bill.ContractId</td>
+                                    <td>@bill.Name</td>
+                                    <td class="fw-bold text-warning">
+                                        <i class="bi bi-arrow-up-circle text-success me-1"></i>
+                                        @School_Manager.Core.Classes.Helper.FormatPrice(bill.TotalPrice)
+                                    </td>
+                                    <td class="fw-bold @(bill.HasPaid ? "text-success" : "text-info")">
+                                        <i class="bi bi-arrow-down-circle @(bill.HasPaid ? "text-success" : "text-info") me-1"></i>
+                                        @School_Manager.Core.Classes.Helper.FormatPrice(bill.PaidPrice)
+                                    </td>
+                                    <td>
+                                        @if (bill.HasPaid)
+                                        {
+                                            <span class="badge bg-success rounded-pill fw-bold p-2">
+                                                <i class="bi bi-check-circle me-1"></i>پرداخت شده
+                                            </span>
                                         }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <div class="alert alert-warning text-center fw-bold">🚫 هیچ قبضی ثبت نشده است.</div>
-            }
+                                        else
+                                        {
+                                            <span class="badge bg-danger rounded-pill fw-bold p-2">
+                                                <i class="bi bi-x-circle me-1"></i>@bill.Status
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (bill.HasPaid)
+                                        {
+                                            <span class="text-success">
+                                                <i class="bi bi-calendar-check me-1"></i>
+                                                @DateConverter.ToPersianString((DateTime)bill.PaidTime)
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-warning">
+                                                <i class="bi bi-clock me-1"></i>
+                                                @DateConverter.ToPersianString(bill.BillExpiredTime)
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a asp-action="DeleteBill" asp-route-id="@bill.Id" asp-route-secondId="@Model.Id"
+                                               class="btn btn-sm btn-outline-danger rounded-pill shadow-sm"
+                                               data-bs-toggle="tooltip" title="حذف قبض"
+                                               onclick="return confirm('آیا از حذف این قبض مطمئن هستید؟')">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                            <a asp-action="EditBill" asp-route-billId="@bill.Id" asp-route-childId="@Model.Id"
+                                               class="btn btn-sm btn-outline-info rounded-pill shadow-sm"
+                                               data-bs-toggle="tooltip" title="ویرایش قبض">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-warning text-center fw-bold py-4 m-4">
+                        <i class="bi bi-receipt fs-1 d-block mb-3"></i>
+                        هیچ قبضی ثبت نشده است.
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
+        // Initialize tooltips
+        $(document).ready(function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+        });
+
         function togglePaymentFields() {
             var checkbox = document.getElementById('isPaidCheckbox');
             var paymentFields = document.getElementById('paymentFields');
             var BillGruop = document.getElementById('BillGruop');
-            if (checkbox.checked) {
-                paymentFields.style.display = 'flex';
-                BillGruop.style.display = 'none';
 
+            if (checkbox.checked) {
+                paymentFields.style.display = 'block';
+                BillGruop.style.display = 'none';
                 paymentFields.querySelectorAll('input[required], select[required]').forEach(function(input) {
                     input.required = true;
                 });
@@ -204,7 +293,7 @@
                 });
             } else {
                 paymentFields.style.display = 'none';
-                BillGruop.style.display = 'flex';
+                BillGruop.style.display = 'block';
                 paymentFields.querySelectorAll('input, select').forEach(function(input) {
                     input.required = false;
                 });
@@ -213,39 +302,51 @@
                 });
             }
         }
+
         function toggleisperbill(){
             var checkbox = document.getElementById('IsPerBill');
             var detial = document.getElementById('PreStart');
             var Lbl = document.getElementById('LblEndTime')
             if(checkbox.checked)
             {
-                detial.style.display = 'flex';
+                detial.style.display = 'block';
                 detial.querySelectorAll('input, select').forEach(function(input) {
                     input.required = true;
                 });
-                Lbl.textContent = "📆 تاریخ اتمام قرارد";
+                Lbl.innerHTML = '<i class="bi bi-calendar-event me-1"></i>تاریخ اتمام قرارداد';
             }
             else{
                 detial.style.display = 'none';
                 detial.querySelectorAll('input, select').forEach(function(input) {
                     input.required = false;
                 });
-                Lbl.textContent = "📆 مهلت قبض";
+                Lbl.innerHTML = '<i class="bi bi-calendar-event me-1"></i>مهلت قبض';
             }
         }
+
         function BillRowId(Id,TotalPrice){
             document.getElementById('BillId').value = Id;
             document.getElementById('PayPrice').value = TotalPrice;
+
+            // Auto-show payment form when bill is selected
+            document.getElementById('isPaidCheckbox').checked = true;
+            togglePaymentFields();
+
+            // Scroll to payment form
+            document.getElementById('paymentFields').scrollIntoView({ behavior: 'smooth' });
         }
+
         // Price input separator logic
         function formatNumberWithCommas(x) {
             if (!x) return '';
             x = x.toString().replace(/[^\d]/g, '');
             return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
+
         function unformatNumber(x) {
             return x.replace(/,/g, '');
         }
+
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.price-separator').forEach(function(input) {
                 input.addEventListener('input', function(e) {
@@ -260,11 +361,107 @@
                     var newLength = input.value.length;
                     input.setSelectionRange(cursorPos + (newLength - originalLength), cursorPos + (newLength - originalLength));
                 });
+
                 // On form submit, unformat the value
                 input.form && input.form.addEventListener('submit', function() {
                     input.value = unformatNumber(input.value);
                 });
             });
+
+            // Add hover effects to table rows
+            $('tbody tr').hover(
+                function() {
+                    $(this).addClass('bg-secondary bg-opacity-25');
+                },
+                function() {
+                    $(this).removeClass('bg-secondary bg-opacity-25');
+                }
+            );
         });
     </script>
 }
+
+<style>
+    .table th, .table td {
+        vertical-align: middle;
+        text-align: center;
+        padding: 1rem 0.75rem;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        transform: scale(1.01);
+        transition: all 0.3s ease;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.5em 0.8em;
+    }
+
+    .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .form-switch .form-check-input {
+        width: 3em;
+        height: 1.5em;
+    }
+
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+    /* Custom scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #2d3748;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #4a5568;
+        border-radius: 4px;
+    }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.9rem;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .d-flex.gap-2 {
+            gap: 0.25rem !important;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+    }
+</style>

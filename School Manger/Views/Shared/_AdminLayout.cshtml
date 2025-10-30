@@ -44,6 +44,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     @RenderSection("Styles", required: false)
 </head>
 <body>
@@ -83,12 +84,12 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Driver" ? "active" : "")" href="/Admin/Driver">
-                        <i class="bi bi-steering me-2"></i> رانندگان
+                        <i class="bi bi-car-front-fill me-2"></i> رانندگان
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Search" ? "active" : "")" href="/Admin/Search">
-                        <i class="bi bi-steering me-2"></i> جستجو
+                        <i class="bi bi-search me-2"></i> جستجو
                     </a>
                 </li>
                 <li class="nav-item">

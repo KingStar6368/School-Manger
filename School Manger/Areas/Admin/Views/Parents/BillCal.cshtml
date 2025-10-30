@@ -8,25 +8,34 @@
     ViewData["Title"] = "📄 صدور قبض";
     Layout = "_AdminLayout";
 }
-<link rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
     #map {
         height: 400px;
         margin-bottom: 20px;
-        border: 2px solid #ccc;
+        border: 2px solid #495057;
         border-radius: 10px;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .table th {
+        border-bottom: 2px solid #495057;
     }
 </style>
 
-<div class="container mt-4" dir="rtl">
+<div class="container-fluid bg-dark text-white py-4" dir="rtl">
+    <!-- 💳 Installment Bill Creation -->
     <div class="card shadow-lg rounded-4 border-primary mb-4">
         <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
             <h4 class="mb-0 fw-bold">
-                📄 صدور قبض اقساطی
+                <i class="bi bi-calculator fs-4 me-2"></i>صدور قبض اقساطی
             </h4>
             <a asp-controller="Parents" asp-action="Index" class="btn btn-outline-light shadow-sm fw-bold">
-                <i class="bi bi-arrow-right"></i> بازگشت
+                <i class="bi bi-arrow-right-circle me-1"></i> بازگشت
             </a>
         </div>
         <div class="card-body">
@@ -38,39 +47,58 @@
                 <input type="hidden" id="Lng2" value="@Model.Location.Location2.Longitude" />
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">تعداد قسط</label>
-                        <input asp-for="@Model.Installment.InstallmentCount" class="form-control" />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-123 me-1"></i>تعداد قسط
+                        </label>
+                        <input asp-for="@Model.Installment.InstallmentCount" class="form-control bg-dark text-white border-secondary" />
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">مبلغ ماهیانه (ریال)</label>
-                        <input type="text" asp-for="@Model.Installment.Price" class="form-control price-separator" />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-cash-stack me-1"></i>مبلغ ماهیانه (ریال)
+                        </label>
+                        <input type="text" asp-for="@Model.Installment.Price" class="form-control bg-dark text-white border-secondary price-separator" />
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">مهلت پرداخت (روز)</label>
-                        <input asp-for="@Model.Installment.DeadLine" class="form-control" />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-clock-history me-1"></i>مهلت پرداخت (روز)
+                        </label>
+                        <input asp-for="@Model.Installment.DeadLine" class="form-control bg-dark text-white border-secondary" />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">📅 تاریخ اولین قبض</label>
-                        <input name="PreStartDate" type="text" class="form-control persian-date bg-secondary text-white" placeholder="انتخاب تاریخ" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-calendar-plus me-1"></i>تاریخ اولین قبض
+                        </label>
+                        <input name="PreStartDate" type="text" class="form-control persian-date bg-dark text-white border-secondary" placeholder="انتخاب تاریخ" required />
                         <input type="hidden" class="gregorian-date" />
                     </div>
-
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">📅 تاریخ آخرین قبض</label>
-                        <input name="PreEndDate" type="text" class="form-control persian-date bg-secondary text-white" placeholder="انتخاب تاریخ" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-calendar-event me-1"></i>تاریخ آخرین قبض
+                        </label>
+                        <input name="PreEndDate" type="text" class="form-control persian-date bg-dark text-white border-secondary" placeholder="انتخاب تاریخ" required />
                         <input type="hidden" class="gregorian-date" />
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">رند مبالغ</label>
-                        <input type="checkbox" checked="@(Model.Installment.RoundePerInstallment != 10 ? "on" : "off")" name="Round" />
+                        <div class="form-check form-switch mt-4">
+                            <input class="form-check-input" type="checkbox" checked="@(Model.Installment.RoundePerInstallment != 10 ? "on" : "off")" name="Round" id="roundSwitch">
+                            <label class="form-check-label fw-bold text-info" for="roundSwitch">
+                                <i class="bi bi-arrow-repeat me-1"></i>رند مبالغ
+                            </label>
+                        </div>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">ریز مبلغ ها در قبض اول</label>
-                        <input type="checkbox" checked="@(Model.Installment.AddRoundedToFirst == true ? "on" : "off")" name="RoundFirst" />
+                        <div class="form-check form-switch mt-4">
+                            <input class="form-check-input" type="checkbox" checked="@(Model.Installment.AddRoundedToFirst == true ? "on" : "off")" name="RoundFirst" id="roundFirstSwitch">
+                            <label class="form-check-label fw-bold text-warning" for="roundFirstSwitch">
+                                <i class="bi bi-file-earmark-plus me-1"></i>ریز مبلغ ها در قبض اول
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="mt-4">
-                    <button type="submit" class="btn btn-warning fw-bold">پیش نمایش قبض ها</button>
+                    <button type="submit" class="btn btn-warning fw-bold px-4">
+                        <i class="bi bi-eye me-1"></i>پیش نمایش قبض ها
+                    </button>
                 </div>
             </form>
         </div>
@@ -78,16 +106,25 @@
 
     @if (Model?.Bills != null && Model.Bills.Any())
     {
+        <!-- 📊 Bills Preview -->
         <div class="card shadow-lg rounded-4 border-success mb-4">
-            <div class="card-header bg-success bg-gradient text-white fw-bold">
-                پیش نمایش قبض های صادر شده
-                <form method="post" action="ShowContractPDF">
-                    <input name="Stringdata" hidden value="@Model.Installment.EnCript()" />
-                    <button type="submit">ساخت تعهدات خانواده</button>
-                </form>
-                <form method="post" action="ShowContract2PDF">
-                    <button type="submit">ساخت قرارداد خانواده</button>
-                </form>
+            <div class="card-header bg-success bg-gradient text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-list-ul fs-4 me-2"></i>پیش نمایش قبض های صادر شده
+                </h5>
+                <div class="d-flex gap-2">
+                    <form method="post" action="ShowContractPDF" class="d-inline">
+                        <input name="Stringdata" hidden value="@Model.Installment.EnCript()" />
+                        <button type="submit" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-file-earmark-text me-1"></i>ساخت تعهدات خانواده
+                        </button>
+                    </form>
+                    <form method="post" action="ShowContract2PDF" class="d-inline">
+                        <button type="submit" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>ساخت قرارداد خانواده
+                        </button>
+                    </form>
+                </div>
             </div>
             <div class="card-body">
                 <form method="post" asp-action="BillCal">
@@ -99,70 +136,114 @@
                     <input type="hidden" name="DeadLine" value="@Model.Installment.DeadLine" />
                     <input type="hidden" name="StartDate" value="@Model.Installment.StartDate.ToString("yyyy-MM-dd")" />
                     <input type="hidden" name="EndDate" value="@Model.Installment.EndDate.ToString("yyyy-MM-dd")" />
-                    <table class="table table-bordered table-striped text-center">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>عنوان قبض</th>
-                                <th>مبلغ کل</th>
-                                <th>تاریخ سررسید</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var bill in Model.Bills)
-                            {
+
+                    <div class="table-responsive">
+                        <table class="table table-dark table-bordered table-striped text-center align-middle">
+                            <thead class="table-light text-dark">
                                 <tr>
-                                    <td>@bill.Name</td>
-                                    <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.TotalPrice)</td>
-                                    <td>@bill.BillExpiredTimePer</td>
+                                    <th class="fw-bold"><i class="bi bi-tag me-1"></i>عنوان قبض</th>
+                                    <th class="fw-bold"><i class="bi bi-cash-stack me-1"></i>مبلغ کل</th>
+                                    <th class="fw-bold"><i class="bi bi-calendar-event me-1"></i>تاریخ سررسید</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
-                    <button type="submit" class="btn btn-success fw-bold">صدور نهایی قبض ها</button>
+                            </thead>
+                            <tbody>
+                                @foreach (var bill in Model.Bills)
+                                {
+                                    <tr>
+                                        <td>@bill.Name</td>
+                                        <td class="fw-bold text-warning">
+                                            <i class="bi bi-currency-dollar me-1"></i>
+                                            @School_Manager.Core.Classes.Helper.FormatPrice(bill.TotalPrice)
+                                        </td>
+                                        <td>
+                                            <i class="bi bi-clock-history me-1 text-info"></i>
+                                            @bill.BillExpiredTimePer
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <button type="submit" class="btn btn-success fw-bold px-4">
+                            <i class="bi bi-send-check me-1"></i>صدور نهایی قبض ها
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     }
-</div>
 
-<div class="card">
-    <div class="card-header bg-info">
-        <h3>محاسبه قیمت بر اساس کیلو متر</h3>
-    </div>
-    <div class="card-body bg-dark row g-3">
-        <div class="col-md-4">
-            <label class="form-label fw-bold text-white">کیلومتر</label>
-            <input class="form-control" type="number" id="Km" placeholder="کیلومتر" />
-            <input hidden class="form-control" type="number" id="Km1" placeholder="کیلومتر" />
-            <input hidden class="form-control" type="number" id="Km2" placeholder="کیلومتر" />
+    <!-- 🗺️ Distance Calculator -->
+    <div class="card shadow-lg rounded-4 border-info">
+        <div class="card-header bg-info bg-gradient text-white">
+            <h5 class="mb-0 fw-bold">
+                <i class="bi bi-geo-alt fs-4 me-2"></i>محاسبه قیمت بر اساس کیلومتر
+            </h5>
         </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold text-white">مبلغ محاسبه شده</label>
-            <input class="form-control price-separator" type="number" id="PriceLbl" placeholder="مبلغ محاسبه شده" />
+        <div class="card-body bg-dark">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold text-white">
+                        <i class="bi bi-signpost me-1"></i>کیلومتر
+                    </label>
+                    <input class="form-control bg-dark text-white border-secondary" type="number" id="Km" placeholder="کیلومتر" readonly />
+                    <input hidden class="form-control" type="number" id="Km1" />
+                    <input hidden class="form-control" type="number" id="Km2" />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold text-white">
+                        <i class="bi bi-calculator me-1"></i>مبلغ محاسبه شده
+                    </label>
+                    <input class="form-control bg-dark text-white border-secondary price-separator" type="text" id="PriceLbl" placeholder="مبلغ محاسبه شده" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold text-white">
+                        <i class="bi bi-calculator-fill me-1"></i>مبلغ محاسبه شده با درصد
+                    </label>
+                    <input class="form-control bg-dark text-white border-secondary price-separator" type="text" id="PriceWithPercentLbl" placeholder="مبلغ محاسبه شده" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold text-white">
+                        <i class="bi bi-graph-up me-1"></i>درصد ترافیک
+                    </label>
+                    <input class="form-control bg-dark text-white border-secondary" type="number" value="0" id="Trafic" min="0" max="10" />
+                </div>
+                <div class="col-md-4">
+                    <div class="form-check form-switch mt-4">
+                        <input class="form-check-input" type="checkbox" id="Special">
+                        <label class="form-check-label fw-bold text-warning" for="Special">
+                            <i class="bi bi-star me-1"></i>20% موارد خاص
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold text-white">
+                        <i class="bi bi-car-front me-1"></i>نوع ماشین
+                    </label>
+                    <select id="CarType" name="CarType" class="form-select bg-dark text-white border-secondary">
+                        <option value="Car" selected>
+                            <i class="bi bi-car-front me-1"></i>سواری
+                        </option>
+                        <option value="Van">
+                            <i class="bi bi-truck me-1"></i>ون
+                        </option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-info fw-bold px-4" onclick="Calculator()">
+                        <i class="bi bi-calculator me-1"></i>محاسبه
+                    </button>
+                </div>
+                <div class="col-12">
+                    <div id="info" class="text-success fw-bold mb-2"></div>
+                    <div id="info2" class="text-warning fw-bold"></div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div id="map"></div>
+            </div>
         </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold text-white">مبلغ محاسبه شده با درصد</label>
-            <input class="form-control price-separator" type="number" id="PriceWithPercentLbl" placeholder="مبلغ محاسبه شده" />
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold text-white">درصد ترافیک</label>
-            <input class="form-control price-separator" type="number" value="0" id="Trafic" min="0" max="10" />
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold text-white">20% موارد خاص</label>
-            <input type="checkbox" id="Special" />
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold text-white">نوع ماشین</label>
-            <select id="CarType" name="CarType">
-                <option value="Car" selected>سواری</option>
-                <option value="Van">ون</option>
-            </select>
-        </div>
-        <button class="form-control bg-info col-md-4" onclick="Calculator()">محاسبه</button>
-        <label id="info" class="text-white"></label>
-        <label id="info2" class="text-white"></label>
-        <div id="map" />
     </div>
 </div>
 
@@ -172,7 +253,8 @@
         var Km1 = parseFloat(document.getElementById('Km1').value);
         var Km2 = parseFloat(document.getElementById('Km2').value);
         var totalkm = ((Km1 + Km2)/2);
-        document.getElementById('Km').value = totalkm;
+        document.getElementById('Km').value = totalkm.toFixed(2);
+
         // Call backend to get price by km
         fetch('/Admin/Parents/GetPriceByKm', {
             method: 'POST',
@@ -184,14 +266,14 @@
         })
         .then(response => response.json())
         .then(data => {
-            // document.getElementById('PriceLbl').value = data.price;
             var TarficPercent = parseFloat(document.getElementById('Trafic').value) || 0;
             var SpecialPercent = document.getElementById('Special').checked ? 20 : 0;
             var CarType = document.getElementById('CarType').value;
             var CarPercent = CarType === 'Van' ? -10 : 0;
             var TotalPercent = TarficPercent + SpecialPercent + CarPercent;
             var PriceWithPercent = parseFloat(data.price) + ((parseFloat(data.price) * TotalPercent) / 100);
-            // Call backend to get price by km
+
+            // Call backend to get price for next km
             fetch('/Admin/Parents/GetPriceByKm', {
                 method: 'POST',
                 headers: {
@@ -202,25 +284,30 @@
             }).then(response=>response.json())
             .then(data2 => {
                 var KmPrice = (data2.price-data.price)/4;
-                document.getElementById('PriceWithPercentLbl').value = (PriceWithPercent + KmPrice).toFixed(0);
-                document.getElementById('PriceLbl').value = data.price + KmPrice;
+                document.getElementById('PriceWithPercentLbl').value = formatNumberWithCommas((PriceWithPercent + KmPrice).toFixed(0));
+                document.getElementById('PriceLbl').value = formatNumberWithCommas((data.price + KmPrice).toFixed(0));
             });
         })
         .catch(err => {
+            console.error('Error calculating price:', err);
             document.getElementById('PriceLbl').value = '';
+            document.getElementById('PriceWithPercentLbl').value = '';
         });
     }
+
     function formatNumberWithCommas(x) {
         if (!x) return '';
         x = x.toString().replace(/[^\d]/g, '');
         return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
+
     function unformatNumber(x) {
         return x.replace(/,/g, '');
     }
-    document.addEventListener('DOMContentLoaded', async function () {
-        const map = L.map("map").setView([34.09, 49.678], 16);
 
+    document.addEventListener('DOMContentLoaded', async function () {
+        // Initialize map
+        const map = L.map("map").setView([34.09, 49.678], 16);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             maxZoom: 19,
         }).addTo(map);
@@ -234,16 +321,30 @@
             Lng: parseFloat(document.getElementById('Lng2').value)
         };
 
+        // Add markers
+        L.marker([from.Lat, from.Lng], {
+            icon: L.divIcon({
+                className: 'home-marker',
+                html: '<div style="background:#28a745;color:white;padding:4px 8px;border-radius:6px;border:2px solid white;"><i class="bi bi-house-fill me-1"></i>خانه</div>',
+                iconSize: [50, 30]
+            })
+        }).addTo(map).bindPopup('<div class="bg-success"><i class="bi bi-house-fill me-1"></i>موقعیت خانه</div>').openPopup();
+
+        L.marker([to.Lat, to.Lng], {
+            icon: L.divIcon({
+                className: 'school-marker',
+                html: '<div style="background:#dc3545;color:white;padding:4px 8px;border-radius:6px;border:2px solid white;"><i class="bi bi-building-fill me-1"></i>مدرسه</div>',
+                iconSize: [60, 30]
+            })
+        }).addTo(map).bindPopup('<div class="bg-danger"><i class="bi bi-building-fill me-1"></i>موقعیت مدرسه</div>').openPopup();
+
+        // Calculate route to school
         let url = `/Admin/Parents/GetKm?fromLat=${from.Lat}&fromLon=${from.Lng}&toLat=${to.Lat}&toLon=${to.Lng}`;
-        L.marker({lat:from.Lat,lng:from.Lng}).addTo(map).bindPopup('<div class="bg-success">موقعیت خانه</div>').openPopup();
-        L.marker({lat:to.Lat,lng:to.Lng}).addTo(map).bindPopup('<div class="bg-danger">موقعیت مدرسه</div>').openPopup();
         try {
             const res = await fetch(url);
             if (!res.ok) throw new Error(`API error: ${res.status}`);
-
             let data = await res.json();
 
-            // If backend sent a JSON string, parse it again
             if (typeof data === "string") {
                 try {
                     data = JSON.parse(data);
@@ -254,28 +355,24 @@
 
             // Draw polyline
             const latlngs = data.route.map(coord => [coord[0], coord[1]]);
-            const polyline = L.polyline(latlngs, { color: 'blue' }).addTo(map);
+            const polyline = L.polyline(latlngs, { color: 'blue', weight: 4 }).addTo(map);
             map.fitBounds(polyline.getBounds());
 
-            // Show distance and time
-            document.getElementById('info').textContent =
-                `مسافت رفت: ${data.distance_km.toFixed(2)} کیلومتر، زمان تقریبی: ${data.estimated_time_min.toFixed(2)} دقیقه`;
+            document.getElementById('info').innerHTML =
+                `<i class="bi bi-signpost me-1"></i>مسافت رفت: ${data.distance_km.toFixed(2)} کیلومتر، <i class="bi bi-clock me-1"></i>زمان تقریبی: ${data.estimated_time_min.toFixed(2)} دقیقه`;
             document.getElementById('Km1').value = parseFloat(data.distance_km).toFixed(2);
 
         } catch (err) {
-            document.getElementById('info').textContent = 'خطا در دریافت مسیر: ' + err.message;
+            document.getElementById('info').innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>خطا در دریافت مسیر: ' + err.message;
         }
-        // مسیر برگشت
+
+        // Calculate route back home
         url = `/Admin/Parents/GetKm?fromLat=${to.Lat}&fromLon=${to.Lng}&toLat=${from.Lat}&toLon=${from.Lng}`;
-        L.marker({lat:from.Lat,lng:from.Lng}).addTo(map).bindPopup('<div class="bg-success">موقعیت خانه</div>').openPopup();
-        L.marker({lat:to.Lat,lng:to.Lng}).addTo(map).bindPopup('<div class="bg-danger">موقعیت مدرسه</div>').openPopup();
         try {
             const res = await fetch(url);
             if (!res.ok) throw new Error(`API error: ${res.status}`);
-
             let data = await res.json();
 
-            // If backend sent a JSON string, parse it again
             if (typeof data === "string") {
                 try {
                     data = JSON.parse(data);
@@ -286,17 +383,18 @@
 
             // Draw polyline
             const latlngs = data.route.map(coord => [coord[0], coord[1]]);
-            const polyline = L.polyline(latlngs, { color: 'red' }).addTo(map);
+            const polyline = L.polyline(latlngs, { color: 'red', weight: 4 }).addTo(map);
             map.fitBounds(polyline.getBounds());
 
-            // Show distance and time
-            document.getElementById('info2').textContent =
-                `مسافت بازگشت: ${data.distance_km.toFixed(2)} کیلومتر، زمان تقریبی: ${data.estimated_time_min.toFixed(2)} دقیقه`;
+            document.getElementById('info2').innerHTML =
+                `<i class="bi bi-signpost me-1"></i>مسافت بازگشت: ${data.distance_km.toFixed(2)} کیلومتر، <i class="bi bi-clock me-1"></i>زمان تقریبی: ${data.estimated_time_min.toFixed(2)} دقیقه`;
             document.getElementById('Km2').value = parseFloat(data.distance_km).toFixed(2);
 
         } catch (err) {
-            document.getElementById('info2').textContent = 'خطا در دریافت مسیر: ' + err.message;
+            document.getElementById('info2').innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>خطا در دریافت مسیر: ' + err.message;
         }
+
+        // Price separator functionality
         document.querySelectorAll('.price-separator').forEach(function(input) {
             input.addEventListener('input', function(e) {
                 var cursorPos = input.selectionStart;
@@ -310,10 +408,20 @@
                 var newLength = input.value.length;
                 input.setSelectionRange(cursorPos + (newLength - originalLength), cursorPos + (newLength - originalLength));
             });
-            // On form submit, unformat the value
+
             input.form && input.form.addEventListener('submit', function() {
                 input.value = unformatNumber(input.value);
             });
         });
+
+        // Add hover effects
+        $('.btn').hover(
+            function() {
+                $(this).addClass('shadow');
+            },
+            function() {
+                $(this).removeClass('shadow');
+            }
+        );
     });
 </script>

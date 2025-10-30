@@ -10,14 +10,14 @@
     var parentId = ViewBag.ParentId;
     var schools = ViewBag.Schools as List<SchoolDto>;
 }
-<div class="container mt-4 text-white">
+<div class="container-fluid bg-dark text-white py-4" dir="rtl">
     <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
         <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
             <h4 class="mb-0 fw-bold">
-                ✏️ ویرایش فرزند
+                <i class="bi bi-pencil-square fs-4 me-2"></i>ویرایش فرزند
             </h4>
-            <a asp-action="Details" asp-route-id="@parentId" class="btn btn-secondary fw-bold shadow-sm">
-                <i class="bi bi-arrow-right"></i> بازگشت
+            <a asp-action="Details" asp-route-id="@parentId" class="btn btn-outline-light fw-bold shadow-sm">
+                <i class="bi bi-arrow-right-circle me-1"></i> بازگشت
             </a>
         </div>
         <div class="card-body">
@@ -40,175 +40,259 @@
                 <input type="hidden" value="End" name="LocationPairs[0].Locations[1].LocationType" />
                 <input type="hidden" id="PreSchool" value="@Model.SchoolRef" />
                 <input id="ShiftId" name="ShiftId" type="hidden" />
+
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">🧑‍🦱 نام</label>
-                        <input type="text" name="FirstName" class="form-control bg-dark text-white shadow-sm" value="@Model.FirstName" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-person-circle me-1"></i>نام
+                        </label>
+                        <input type="text" name="FirstName" class="form-control bg-dark text-white border-secondary" value="@Model.FirstName" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">👩 نام خانوادگی</label>
-                        <input type="text" name="LastName" class="form-control bg-dark text-white shadow-sm" value="@Model.LastName" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-person-badge me-1"></i>نام خانوادگی
+                        </label>
+                        <input type="text" name="LastName" class="form-control bg-dark text-white border-secondary" value="@Model.LastName" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">🆔 کد ملی</label>
-                        <input type="text" name="NationalCode" class="form-control bg-dark text-white shadow-sm" value="@Model.NationalCode" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-credit-card me-1"></i>کد ملی
+                        </label>
+                        <input type="text" name="NationalCode" class="form-control bg-dark text-white border-secondary" value="@Model.NationalCode" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">🎂 تاریخ تولد</label>
-                        <label class="form-label">@Model.BirthDate.ToPersianString()</label>
-                        <input name="BirthDate" class="persian-date form-control bg-secondary text-white" required />
-                        <input type="hidden" value="@Model.BirthDate.ToPersianString()" class="gregorian-date" />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-balloon me-1"></i>تاریخ تولد
+                        </label>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="text-info">
+                                <i class="bi bi-calendar-event me-1"></i>@Model.BirthDate.ToPersianString()
+                            </span>
+                            <input name="BirthDate" class="persian-date form-control bg-dark text-white border-secondary" required />
+                            <input type="hidden" value="@Model.BirthDate.ToPersianString()" class="gregorian-date" />
+                        </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">🏫 پایه</label>
-                        <input type="number" name="Class" class="form-control bg-dark text-white shadow-sm" value="@Model.Class" required />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-book me-1"></i>پایه
+                        </label>
+                        <input type="number" name="Class" class="form-control bg-dark text-white border-secondary" value="@Model.Class" required />
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">🏫 مدرسه (اختیاری)</label>
-                        <input type="number" name="SchoolRef" class="form-control bg-dark text-white shadow-sm" value="@Model.SchoolRef" />
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-building me-1"></i>مدرسه (اختیاری)
+                        </label>
+                        <input type="number" name="SchoolRef" class="form-control bg-dark text-white border-secondary" value="@Model.SchoolRef" />
                     </div>
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm">
-                            💾 ذخیره تغییرات
+
+                    <!-- Location Summary -->
+                    <div class="col-12">
+                        <div class="alert alert-info d-flex align-items-center">
+                            <i class="bi bi-info-circle fs-5 me-3"></i>
+                            <div>
+                                <strong>مسیر فعلی:</strong>
+                                <div id="locationSummary" class="mt-1">
+                                    <span class="text-success">
+                                        <i class="bi bi-house-fill me-1"></i>@Model.LocationPairs[0].Locations[0].Address
+                                    </span>
+                                    <i class="bi bi-arrow-right mx-2 text-warning"></i>
+                                    <span class="text-danger">
+                                        <i class="bi bi-building-fill me-1"></i>@Model.LocationPairs[0].Locations[1].Address
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm px-4">
+                            <i class="bi bi-check-circle me-1"></i>ذخیره تغییرات
                         </button>
-                        <a asp-action="Details" asp-route-id="@parentId" class="btn btn-secondary fw-bold shadow-sm">
-                            🔙 بازگشت
+                        <a asp-action="Details" asp-route-id="@parentId" class="btn btn-secondary fw-bold shadow-sm px-4">
+                            <i class="bi bi-arrow-right me-1"></i>بازگشت
                         </a>
+                        <button type="button" class="btn btn-outline-info fw-bold shadow-sm px-4" data-bs-toggle="modal" data-bs-target="#locationModal">
+                            <i class="bi bi-geo-alt me-1"></i>ویرایش مسیر
+                        </button>
                     </div>
                 </div>
             </form>
-            <button type="button" class="btn btn-outline-info mb-3" data-bs-toggle="modal" data-bs-target="#locationModal">
-                🗺️ ویرایش مسیر خانه تا مدرسه
-            </button>
-            <div id="locationSummary" class="text-info"></div>
         </div>
     </div>
 </div>
+
+<!-- Location Modal -->
 <div class="modal fade" id="locationModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content bg-dark text-white">
-            <div class="modal-header">
-                <h5 class="modal-title">🗺️ انتخاب مسیر خانه تا مدرسه</h5>
+        <div class="modal-content bg-dark text-white border-primary">
+            <div class="modal-header border-bottom border-secondary">
+                <h5 class="modal-title">
+                    <i class="bi bi-map text-primary me-2"></i>انتخاب مسیر خانه تا مدرسه
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="locationSearch" class="form-label">جستجوی آدرس</label>
+                    <label for="locationSearch" class="form-label">
+                        <i class="bi bi-search me-1"></i>جستجوی آدرس
+                    </label>
                     <div class="input-group">
+                        <span class="input-group-text bg-dark text-white border-secondary">
+                            <i class="bi bi-geo"></i>
+                        </span>
                         <input type="text" class="form-control bg-dark text-white border-secondary" id="locationSearch" placeholder="آدرس یا نام مکان">
                         <button class="btn btn-outline-secondary" type="button" id="searchButton">
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
                 </div>
+
                 <div id="map" style="height: 400px; width: 100%; border-radius: 8px;"></div>
+
                 <div class="row mt-3">
                     <input type="hidden" class="form-control bg-dark text-white border-secondary" id="PickTime1" name="LocationPairs[0].PickTime1" value="@Model.LocationPairs[0].PickTime1" />
                     <input type="hidden" class="form-control bg-dark text-white border-secondary" id="PickTime2" name="LocationPairs[0].PickTime2" value="@Model.LocationPairs[0].PickTime2" />
+
                     <div class="col-md-6">
-                        <div id="location1Info" class="p-3 bg-success rounded mb-2 text-dark" style="min-height: 100px;">
-                            <p class="text-muted mb-1">موقعیت اول انتخاب نشده است</p>
+                        <div id="location1Info" class="p-3 bg-dark border border-success rounded mb-2" style="min-height: 120px;">
+                            <div class="text-center text-muted">
+                                <i class="bi bi-house fs-4 d-block mb-2"></i>
+                                <p class="mb-1">موقعیت اول انتخاب نشده است</p>
+                                <small>روی نقشه کلیک کنید</small>
+                            </div>
                         </div>
-                        <div>
-                            <label for="ShiftOption" class="form-label">انتخاب شیفت</label>
-                            <select id="ShiftOption" name="SelectedChild.ShiftId" class="form-select bg-dark text-white border-secondary">
-                                <option value="">-- ابتدا مدرسه را انتخاب کنید --</option>
-                            </select>
-                           
+
+                        <div class="mb-3">
+                            <label for="ShiftOption" class="form-label">
+                                <i class="bi bi-clock me-1"></i>انتخاب شیفت
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark text-white border-secondary">
+                                    <i class="bi bi-calendar-event"></i>
+                                </span>
+                                <select id="ShiftOption" name="SelectedChild.ShiftId" class="form-select bg-dark text-white border-secondary">
+                                    <option value="">-- ابتدا مدرسه را انتخاب کنید --</option>
+                                </select>
+                            </div>
                         </div>
-                       @*  <div class="mb-3">
-                            <label class="form-label">⏰ زمان رفت (PickTime1):</label>
-                            <input type="time" class="form-control bg-dark text-white border-secondary" id="PickTime1" name="LocationPairs[0].PickTime1" value="@Model.LocationPairs[0].PickTime1" />
-                        </div> *@
                     </div>
+
                     <div class="col-md-6">
-                        <label class="form-label">موقعیت دوم (مقصد):</label>
-                        <select class="form-select bg-dark text-white border-secondary mb-3" id="location2Select">
-                            <option value="" selected>-- انتخاب مقصد --</option>
-                            @foreach (var school in schools)
-                            {
-                                @*                    if (ShiftService.GetAllShifts().FirstOrDefault(x=>x.SchoolRef == school.Id) != null)
+                        <label class="form-label">
+                            <i class="bi bi-building me-1"></i>موقعیت دوم (مقصد):
+                        </label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text bg-dark text-white border-secondary">
+                                <i class="bi bi-building"></i>
+                            </span>
+                            <select class="form-select bg-dark text-white border-secondary" id="location2Select">
+                                <option value="" selected>-- انتخاب مقصد --</option>
+                                @foreach (var school in schools)
                                 {
-                                    foreach (var shift in ShiftService.GetAllShifts().Where(x => x.SchoolRef == school.Id))
-                                    {
-                                        <option value="@school.Id|@school.Address.Latitude,@school.Address.Longitude|@school.Name - @shift.Name">
-                                            @school.Name - @shift.Name (@shift.Start - @shift.End)
-                                        </option>
-                                    }
+                                    <option value="@school.Id|@school.Address.Latitude,@school.Address.Longitude|@school.Name">
+                                        @school.Name
+                                    </option>
                                 }
-                                else
-                                { *@
-                                <option value="@school.Id|@school.Address.Latitude,@school.Address.Longitude|@school.Name">
-                                    @school.Name
-                                </option>
-                                @* } *@
-                            }
-                            @if (schools == null || schools.Count == 0)
-                            {
-                                <option value="0|34.0918,49.6892|مدرسه نمونه اراک">نمونه تستی</option>
-                                <option value="0|34.0918,49.6892|مدرسه نمونه اراک">مدرسه نمونه اراک</option>
-                                <option value="0|34.0854,49.7003|مدرسه شهید بهشتی اراک">مدرسه شهید بهشتی اراک</option>
-                                <option value="0|34.0789,49.6956|مدرسه علامه حلی اراک">مدرسه علامه حلی اراک</option>
-                                <option value="0|34.0723,49.6887|مدرسه فرزانگان اراک">مدرسه فرزانگان اراک</option>
-                                <option value="0|34.0801,49.6815|مدرسه انرژی اتمی اراک">مدرسه انرژی اتمی اراک</option>
-                            }
-                        </select>
+                                @if (schools == null || schools.Count == 0)
+                                {
+                                    <option value="0|34.0918,49.6892|مدرسه نمونه اراک">مدرسه نمونه اراک</option>
+                                    <option value="0|34.0854,49.7003|مدرسه شهید بهشتی اراک">مدرسه شهید بهشتی اراک</option>
+                                    <option value="0|34.0789,49.6956|مدرسه علامه حلی اراک">مدرسه علامه حلی اراک</option>
+                                    <option value="0|34.0723,49.6887|مدرسه فرزانگان اراک">مدرسه فرزانگان اراک</option>
+                                    <option value="0|34.0801,49.6815|مدرسه انرژی اتمی اراک">مدرسه انرژی اتمی اراک</option>
+                                }
+                            </select>
+                        </div>
                         <input type="hidden" id="SchoolRef" name="SchoolRef" />
-                        <div id="location2Info" class="p-3 bg-danger rounded mb-2 text-dark" style="min-height: 100px; display: none;"></div>
-                        @* <div class="mb-3">
-                            <label class="form-label">⏰ زمان برگشت (PickTime2):</label>
-                            <input type="time" class="form-control bg-dark text-white border-secondary" id="PickTime2" name="LocationPairs[0].PickTime2" value="@Model.LocationPairs[0].PickTime2" />
-                        </div> *@
+                        <div id="location2Info" class="p-3 bg-dark border border-danger rounded mb-2" style="min-height: 120px; display: none;">
+                            <!-- اطلاعات موقعیت دوم اینجا نمایش داده می شود -->
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer d-flex justify-content-between">
+            <div class="modal-footer border-top border-secondary d-flex justify-content-between">
                 <div>
                     <button type="button" class="btn btn-outline-danger" id="clearLocations">
-                        <i class="bi bi-x-circle"></i> پاک کردن انتخاب‌ها
+                        <i class="bi bi-x-circle me-1"></i> پاک کردن انتخاب‌ها
                     </button>
                 </div>
                 <div>
                     <button type="button" class="btn btn-primary" id="saveLocations" disabled data-bs-dismiss="modal">
-                        <i class="bi bi-check-circle"></i> تایید موقعیت‌ها
+                        <i class="bi bi-check-circle me-1"></i> تایید موقعیت‌ها
                     </button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x me-1"></i> بستن
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 @section Styles {
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         .leaflet-container {
             background-color: #121212 !important;
+            font-family: inherit;
         }
 
         .location1-marker {
-            background-color: #4CAF50;
-            border: 2px solid #fff;
+            background-color: #28a745;
+            border: 3px solid #fff;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
         .location2-marker {
-            background-color: #FF5722;
-            border: 2px solid #fff;
+            background-color: #dc3545;
+            border: 3px solid #fff;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
         .leaflet-popup-content {
             color: #fff;
             background-color: #222;
             padding: 1rem;
-            border-radius: 5px;
+            border-radius: 8px;
         }
+
+        .card {
+            transition: transform 0.3s ease;
+        }
+
+            .card:hover {
+                transform: translateY(-2px);
+            }
+
+        .btn {
+            transition: all 0.3s ease;
+        }
+
+            .btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            }
     </style>
 }
+
 @section Scripts {
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
@@ -226,16 +310,25 @@
             const location1Div = document.getElementById('location1Info');
             if (location1) {
                 location1Div.innerHTML = `
-                    <p><strong>موقعیت اول:</strong></p>
-                    <p><small>عرض: ${location1.lat.toFixed(6)}</small></p>
-                    <p><small>طول: ${location1.lng.toFixed(6)}</small></p>
-                    <p><small>آدرس: ${location1.address}</small></p>
+                    <div class="text-center">
+                        <i class="bi bi-house-fill text-success fs-4 d-block mb-2"></i>
+                        <p class="mb-1"><strong>موقعیت اول:</strong></p>
+                        <p class="mb-1"><small><i class="bi bi-geo me-1"></i>${location1.address}</small></p>
+                        <p class="mb-0"><small><i class="bi bi-geo-alt me-1"></i>عرض: ${location1.lat.toFixed(6)}</small></p>
+                        <p class="mb-0"><small><i class="bi bi-geo-alt me-1"></i>طول: ${location1.lng.toFixed(6)}</small></p>
+                    </div>
                 `;
                 document.getElementById('location1Lat').value = location1.lat;
                 document.getElementById('location1Lng').value = location1.lng;
                 document.getElementById('location1Address').value = location1.address;
             } else {
-                location1Div.innerHTML = '<p class="text-muted mb-1">موقعیت اول انتخاب نشده است</p>';
+                location1Div.innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="bi bi-house fs-4 d-block mb-2"></i>
+                        <p class="mb-1">موقعیت اول انتخاب نشده است</p>
+                        <small>روی نقشه کلیک کنید</small>
+                    </div>
+                `;
                 document.getElementById('location1Lat').value = '';
                 document.getElementById('location1Lng').value = '';
                 document.getElementById('location1Address').value = '';
@@ -246,15 +339,19 @@
                 document.getElementById('saveLocations').disabled = true;
             }
         }
+
         function updateLocation2Display() {
             const location2Div = document.getElementById('location2Info');
             if (location2) {
                 location2Div.style.display = 'block';
                 location2Div.innerHTML = `
-                    <p><strong>موقعیت دوم:</strong></p>
-                    <p><small>عرض: ${location2.lat.toFixed(6)}</small></p>
-                    <p><small>طول: ${location2.lng.toFixed(6)}</small></p>
-                    <p><small>آدرس: ${location2.address}</small></p>
+                    <div class="text-center">
+                        <i class="bi bi-building-fill text-danger fs-4 d-block mb-2"></i>
+                        <p class="mb-1"><strong>موقعیت دوم:</strong></p>
+                        <p class="mb-1"><small><i class="bi bi-geo me-1"></i>${location2.address}</small></p>
+                        <p class="mb-0"><small><i class="bi bi-geo-alt me-1"></i>عرض: ${location2.lat.toFixed(6)}</small></p>
+                        <p class="mb-0"><small><i class="bi bi-geo-alt me-1"></i>طول: ${location2.lng.toFixed(6)}</small></p>
+                    </div>
                 `;
                 document.getElementById('location2Lat').value = location2.lat;
                 document.getElementById('location2Lng').value = location2.lng;
@@ -271,6 +368,7 @@
                 document.getElementById('saveLocations').disabled = true;
             }
         }
+
         function getAddressFromCoordinates(lat, lng, locationNumber) {
             const apiKey = '7902de30b04b42558af4300bad6c27a0';
             fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lng}&key=${apiKey}&language=fa`)
@@ -288,13 +386,21 @@
                     }
                 });
         }
+
         document.addEventListener('DOMContentLoaded', function() {
-                prelocation1 = {lat:parseFloat(document.getElementById('location1Lat').value),
-                    lng:parseFloat(document.getElementById('location1Lng').value),address:''};
-                prelocation2 = {lat:parseFloat(document.getElementById('location2Lat').value),
-                    lng:parseFloat(document.getElementById('location2Lng').value),address:''};
-                preAdd1 = document.getElementById('location1Address').value;
-                preAdd2 = document.getElementById('location2Address').value;
+            // Initialize with current values
+            prelocation1 = {
+                lat: parseFloat(document.getElementById('location1Lat').value),
+                lng: parseFloat(document.getElementById('location1Lng').value),
+                address: ''
+            };
+            prelocation2 = {
+                lat: parseFloat(document.getElementById('location2Lat').value),
+                lng: parseFloat(document.getElementById('location2Lng').value),
+                address: ''
+            };
+            preAdd1 = document.getElementById('location1Address').value;
+            preAdd2 = document.getElementById('location2Address').value;
 
             var modal = document.getElementById('locationModal');
             modal.addEventListener('shown.bs.modal', function () {
@@ -303,6 +409,7 @@
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         attribution: '&copy; OpenStreetMap contributors'
                     }).addTo(map);
+
                     map.on('click', function(e) {
                         if (!location1) {
                             if (location1Marker) map.removeLayer(location1Marker);
@@ -310,48 +417,61 @@
                             location1Marker = L.marker(e.latlng, {
                                 icon: L.divIcon({
                                     className: 'location1-marker',
-                                    html: '1',
+                                    html: '<i class="bi bi-house-fill" style="font-size: 10px;"></i>',
                                     iconSize: [24, 24]
                                 })
-                            }).addTo(map).bindPopup('<div class="bg-success">موقعیت اول (مبدا)</div>').openPopup();
+                            }).addTo(map).bindPopup('<div class="text-center"><i class="bi bi-house-fill text-success me-1"></i><strong>موقعیت اول (مبدا)</strong></div>').openPopup();
                             getAddressFromCoordinates(e.latlng.lat, e.latlng.lng, 1);
                             updateLocationDisplay();
                         }
                     });
                 }
+
+                // Set initial locations
                 location1 = prelocation1;
                 location2 = prelocation2;
 
-                location1Marker = L.marker([location1.lat,location1.lng], {
-                    icon: L.divIcon({
-                    className: 'location1-marker',
-                    html: '1',
-                    iconSize: [24, 24]
-                })}).addTo(map).bindPopup('<div class="bg-success">موقعیت اول (مبدا)</div>').openPopup();
-                location2Marker = L.marker([prelocation2.lat,prelocation2.lng], {
-                    icon: L.divIcon({
-                    className: 'location2-marker',
-                    html: '2',
-                    iconSize: [24, 24]
-                })}).addTo(map).bindPopup('<div class="bg-danger">موقعیت دوم (مقصد)</div>').openPopup();
+                // Add markers for existing locations
+                if (location1.lat && location1.lng) {
+                    location1Marker = L.marker([location1.lat, location1.lng], {
+                        icon: L.divIcon({
+                            className: 'location1-marker',
+                            html: '<i class="bi bi-house-fill" style="font-size: 10px;"></i>',
+                            iconSize: [24, 24]
+                        })
+                    }).addTo(map).bindPopup('<div class="text-center"><i class="bi bi-house-fill text-success me-1"></i><strong>موقعیت اول (مبدا)</strong></div>').openPopup();
+                }
 
-                        document.getElementById('location2Select').value = document.getElementById('PreSchool').value
-                        + "|" + prelocation2.lat + "|" + prelocation2.lng;
-                        document.getElementById('PickTime1').value = document.getElementById('Time1').value;
-                        document.getElementById('PickTime2').value = document.getElementById('Time2').value;
+                if (location2.lat && location2.lng) {
+                    location2Marker = L.marker([location2.lat, location2.lng], {
+                        icon: L.divIcon({
+                            className: 'location2-marker',
+                            html: '<i class="bi bi-building-fill" style="font-size: 10px;"></i>',
+                            iconSize: [24, 24]
+                        })
+                    }).addTo(map).bindPopup('<div class="text-center"><i class="bi bi-building-fill text-danger me-1"></i><strong>موقعیت دوم (مقصد)</strong></div>').openPopup();
+                }
+
+                // Set school selection
+                document.getElementById('location2Select').value = document.getElementById('PreSchool').value + "|" + prelocation2.lat + "," + prelocation2.lng + "|" + preAdd2;
+                document.getElementById('PickTime1').value = document.getElementById('Time1').value;
+                document.getElementById('PickTime2').value = document.getElementById('Time2').value;
 
                 updateLocationDisplay();
                 updateLocation2Display();
-                    document.getElementById('location1Lat').value = prelocation1.lat;
-                    document.getElementById('location2Lat').value = prelocation2.lat;
-                    document.getElementById('location1lng').value = prelocation1.lng;
-                    document.getElementById('location2lng').value = prelocation2.lng;
-                    document.getElementById('location1Address').value = preAdd1;
-                    document.getElementById('location2Address').value = preAdd2;
             });
+
+            // Search functionality
             document.getElementById('searchButton').addEventListener('click', function() {
                 const query = document.getElementById('locationSearch').value;
                 if (query.trim() === '') return;
+
+                // Show loading state
+                const searchBtn = this;
+                const originalHtml = searchBtn.innerHTML;
+                searchBtn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+                searchBtn.disabled = true;
+
                 fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&accept-language=fa`)
                     .then(response => response.json())
                     .then(data => {
@@ -365,35 +485,40 @@
                     .catch(error => {
                         console.error('Error searching location:', error);
                         alert('خطا در جستجوی مکان');
+                    })
+                    .finally(() => {
+                        searchBtn.innerHTML = originalHtml;
+                        searchBtn.disabled = false;
                     });
             });
+
+            // School selection change
             document.getElementById('location2Select').addEventListener('change', function() {
                 const selectedValue = this.value;
                 if (selectedValue) {
-                    const [Id,coords, address] = selectedValue.split('|');
+                    const [Id, coords, address] = selectedValue.split('|');
                     const [lat, lng] = coords.split(',');
                     location2 = {
                         lat: parseFloat(lat),
                         lng: parseFloat(lng),
                         address: address
                     };
+
                     if (location2Marker) {
                         map.removeLayer(location2Marker);
                     }
+
                     location2Marker = L.marker([lat, lng], {
                         icon: L.divIcon({
                             className: 'location2-marker',
-                            html: '2',
+                            html: '<i class="bi bi-building-fill" style="font-size: 10px;"></i>',
                             iconSize: [24, 24]
                         })
-                    }).addTo(map).bindPopup('<div class="bg-danger">موقعیت دوم (مقصد)</div>').openPopup();
+                    }).addTo(map).bindPopup('<div class="text-center"><i class="bi bi-building-fill text-danger me-1"></i><strong>موقعیت دوم (مقصد)</strong></div>').openPopup();
+
                     document.getElementById('SchoolRef').value = Id;
-                    // Fetch shifts for selected school
                     GetShifts(parseInt(Id));
                     updateLocation2Display();
-                    if (location1 && location2) {
-                        document.getElementById('saveLocations').disabled = false;
-                    }
                 } else {
                     if (location2Marker) {
                         map.removeLayer(location2Marker);
@@ -401,9 +526,10 @@
                     }
                     location2 = null;
                     updateLocation2Display();
-                  
                 }
             });
+
+            // Clear locations
             document.getElementById('clearLocations').addEventListener('click', function(e) {
                 e.preventDefault();
                 if (location1Marker) {
@@ -416,9 +542,12 @@
                 }
                 location1 = null;
                 location2 = null;
+                document.getElementById('location2Select').value = '';
                 updateLocationDisplay();
                 updateLocation2Display();
             });
+
+            // Save locations
             document.getElementById('saveLocations').onclick = function() {
                 if(location1 && location2) {
                     document.getElementById('location1Lat').value = location1.lat;
@@ -429,17 +558,28 @@
                     document.getElementById('location2Address').value = location2.address;
                     document.getElementById('Time1').value = document.getElementById('PickTime1').value;
                     document.getElementById('Time2').value = document.getElementById('PickTime2').value;
-                    document.getElementById('locationSummary').innerHTML = `مبدا: ${location1.address} <br/>مقصد: ${location2.address}`;
+
+                    // Update location summary
+                    document.getElementById('locationSummary').innerHTML = `
+                        <span class="text-success">
+                            <i class="bi bi-house-fill me-1"></i>${location1.address}
+                        </span>
+                        <i class="bi bi-arrow-right mx-2 text-warning"></i>
+                        <span class="text-danger">
+                            <i class="bi bi-building-fill me-1"></i>${location2.address}
+                        </span>
+                    `;
                 }
             };
-            updateLocationDisplay();
-            updateLocation2Display();
+
+            // Shift selection change
             document.getElementById('ShiftOption').addEventListener('change', function() {
                 const [Id, Start, End] = document.getElementById('ShiftOption').value.split('|');
                 document.getElementById('ShiftId').value = Id;
                 document.getElementById('Time1').value = Start;
                 document.getElementById('Time2').value = End;
             });
+
             function GetShifts(schoolId) {
                 const shiftSelect = document.getElementById('ShiftOption');
                 shiftSelect.innerHTML = '<option value="">در حال دریافت شیفت‌ها...</option>';
@@ -447,25 +587,28 @@
                 fetch(`/Home/GetSchoolShifts?SchoolId=${schoolId}`)
                     .then(response => response.json())
                     .then(data => {
-                        console.log('Received shifts data:', data);
                         shiftSelect.innerHTML = '<option value="">-- شیفت را انتخاب کنید --</option>';
 
                         if (data && data.length > 0) {
                             data.forEach(shift => {
                                 const option = document.createElement('option');
-                                option.value = shift.id+"|"+shift.start+"|"+shift.end;
+                                option.value = shift.id + "|" + shift.start + "|" + shift.end;
                                 option.textContent = `${shift.name} (${shift.start} - ${shift.end})`;
                                 shiftSelect.appendChild(option);
                             });
                         } else {
-                            shiftSelect.innerHTML = '<option value="">شیفتی برای این مدرسه یافت نشد</option>';
+                            shiftSelect.innerHTML = '<option value=""><i class="bi bi-exclamation-triangle me-1"></i>شیفتی برای این مدرسه یافت نشد</option>';
                         }
                     })
                     .catch(error => {
                         console.error('Error fetching shifts:', error);
-                        shiftSelect.innerHTML = '<option value="">خطا در دریافت شیفت‌ها</option>';
+                        shiftSelect.innerHTML = '<option value=""><i class="bi bi-x-circle me-1"></i>خطا در دریافت شیفت‌ها</option>';
                     });
             }
+
+            // Initial display updates
+            updateLocationDisplay();
+            updateLocation2Display();
         });
     </script>
 }

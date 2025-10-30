@@ -3,6 +3,7 @@
 @inject ISchoolService SchoolService
 @inject IBillService BillService
 @inject IDriverService DriverService
+@inject IParentService ParentService
 @model List<ChildInfo>
 @{
     Layout = "_AdminLayout";
@@ -11,7 +12,7 @@
 <div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2">
     <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
         <h4 class="mb-0 fw-bold">
-            <i class="bi bi-people-fill me-2"></i> 🔎 جستجو راننده
+            <i class="bi bi-search me-2"></i> جستجو پیشرفته
         </h4>
     </div>
     <div class="card-body">
@@ -20,145 +21,171 @@
             <form method="post" id="DriverPnl" asp-action="Driver" style="visibility:visible;display:none">
                 <div class="row mb-4">
                     <div class="col-sm">
-                        <label class="form-label fw-bold">نام</label>
+                        <label class="form-label fw-bold"><i class="bi bi-person me-1"></i> نام</label>
                         <input name="FirstName" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">نام خانوادگی</label>
+                        <label class="form-label fw-bold"><i class="bi bi-person me-1"></i> نام خانوادگی</label>
                         <input name="LastName" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">کدملی</label>
+                        <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> کدملی</label>
                         <input name="NationalCode" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">موبایل</label>
+                        <label class="form-label fw-bold"><i class="bi bi-phone me-1"></i> موبایل</label>
                         <input name="Mobile" type="text" class="form-control price-separator" />
                     </div>
                 </div>
                 <div class="row justify-content-center container">
-                    <button type="submit" class="col-4 btn btn-warning fw-bold">🔎 جستجو</button>
+                    <button type="submit" class="col-4 btn btn-warning fw-bold">
+                        <i class="bi bi-search me-2"></i> جستجو
+                    </button>
                 </div>
             </form>
             @* جستجو خانواده *@
             <form method="post" id="ParentPnl" asp-action="Parent" style="visibility:visible;display:none">
                 <div class="row mb-4">
                     <div class="col-sm">
-                        <label class="form-label fw-bold">نام</label>
+                        <label class="form-label fw-bold"><i class="bi bi-person me-1"></i> نام</label>
                         <input name="FirstName" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">نام خانوادگی</label>
+                        <label class="form-label fw-bold"><i class="bi bi-person me-1"></i> نام خانوادگی</label>
                         <input name="LastName" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">کدملی</label>
+                        <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> کدملی</label>
                         <input name="NationalCode" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">موبایل</label>
+                        <label class="form-label fw-bold"><i class="bi bi-phone me-1"></i> موبایل</label>
                         <input name="Mobile" type="text" class="form-control price-separator" />
                     </div>
                 </div>
                 <div class="row justify-content-center container">
-                    <button type="submit" class="col-4 btn btn-warning fw-bold">🔎 جستجو</button>
+                    <button type="submit" class="col-4 btn btn-warning fw-bold">
+                        <i class="bi bi-search me-2"></i> جستجو
+                    </button>
                 </div>
             </form>
             @* جستجو دانش آموزان *@
             <form method="post" id="ChildPnl" asp-action="Child" style="visibility:visible;display:inline">
                 <div class="row mb-4">
                     <div class="col-sm">
-                        <label class="form-label fw-bold">نام</label>
+                        <label class="form-label fw-bold"><i class="bi bi-person me-1"></i> نام</label>
                         <input name="FirstName" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">نام خانوادگی</label>
+                        <label class="form-label fw-bold"><i class="bi bi-person me-1"></i> نام خانوادگی</label>
                         <input name="LastName" type="text" class="form-control price-separator" />
                     </div>
                     <div class="col-sm">
-                        <label class="form-label fw-bold">کدملی</label>
+                        <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> کدملی</label>
                         <input name="NationalCode" type="text" class="form-control price-separator" />
                     </div>
                 </div>
                 <div class="row justify-content-center container">
-                    <button type="submit" class="col-4 btn btn-warning fw-bold">🔎 جستجو</button>
+                    <button type="submit" class="col-4 btn btn-warning fw-bold">
+                        <i class="bi bi-search me-2"></i> جستجو
+                    </button>
                 </div>
             </form>
         </div>
-        <select id="PDropBox">
-            <option value="Child" selected>دانش آموزان</option>
-            <option value="Parent">خانواده</option>
-            <option value="Driver">راننده</option>
-        </select>
-        <div class="table-responsive">
+        <div class="container row col-md-4 mt-4">
+            <div class="input-group">
+                <span class="input-group-text bg-primary text-white">
+                    <i class="bi bi-funnel"></i>
+                </span>
+                <select class="form-select rounded-start" id="PDropBox">
+                    <option value="Child" selected><i class="bi bi-person"></i> دانش آموزان</option>
+                    <option value="Parent"><i class="bi bi-people"></i> خانواده</option>
+                    <option value="Driver"><i class="bi bi-steering-wheel"></i> راننده</option>
+                </select>
+            </div>
+        </div>
+        <div class="table-responsive mt-4">
             <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden">
                 <thead class="table-light text-dark">
                     <tr>
-                        <th>#ردیف</th>
-                        <th>نام</th>
-                        <th>نام خانوادگی</th>
-                        <th>کدملی</th>
-                        <th>وضعیت پرداختی</th>
-                        <th>تعداد قبض</th>
-                        <th>راننده</th>
-                        <th>مدرسه</th>
-                        <th>عملیات</th>
+                        <th><i class="bi bi-hash me-1"></i> ردیف</th>
+                        <th><i class="bi bi-person-badge me-1"></i> نام کامل والد</th>
+                        <th><i class="bi bi-person me-1"></i> نام</th>
+                        <th><i class="bi bi-person me-1"></i> نام خانوادگی</th>
+                        <th><i class="bi bi-credit-card me-1"></i> کدملی</th>
+                        <th><i class="bi bi-cash-coin me-1"></i> وضعیت پرداختی</th>
+                        <th><i class="bi bi-receipt me-1"></i> تعداد قبض</th>
+                        <th><i class="bi bi-steering-wheel me-1"></i> راننده</th>
+                        <th><i class="bi bi-building me-1"></i> مدرسه</th>
+                        <th><i class="bi bi-gear me-1"></i> عملیات</th>
                     </tr>
                 </thead>
                 <tbody>
                     @for (int i = 0; i < Model.Count; i++)
                     {
                         var SelectedModel = Model[i];
+                        var Parent = ParentService.GetParentWithChild(SelectedModel.Id);
+                        string PFullName = $"{Parent.ParentFirstName} {Parent.ParentLastName}";
                         <tr>
                             <td>@(i + 1)</td>
+                            <td>@PFullName</td>
                             <td>@SelectedModel.FirstName</td>
                             <td>@SelectedModel.LastName</td>
                             <td>@SelectedModel.NationalCode</td>
                             <td>
-                                @if(!BillService.GetChildBills(SelectedModel.Id).Result.Any(x=>!x.HasPaid))
+                                @if (!BillService.GetChildBills(SelectedModel.Id).Result.Any(x => !x.HasPaid))
                                 {
-                                    <i class="badge bg-success">پرداخت شده</i>
+                                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>پرداخت شده</span>
                                 }
                                 else
                                 {
-                                    <i class="badge bg-danger">پرداخت نشده</i>
+                                    <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>پرداخت نشده</span>
                                 }
                             </td>
                             <td>
                                 @{
                                     int BillCount = BillService.GetChildBills(SelectedModel.Id).Result.Count;
-                                    if(BillCount > 0){
-                                        <i class="badge bg-info">@BillCount</i>
+                                    if (BillCount > 0)
+                                    {
+                                        <span class="badge bg-info"><i class="bi bi-receipt me-1"></i>@BillCount</span>
                                     }
-                                    else{
-                                        <i class="badge bg-danger">قبضی صادر نشده</i>
+                                    else
+                                    {
+                                        <span class="badge bg-danger"><i class="bi bi-exclamation-triangle me-1"></i>قبضی صادر نشده</span>
                                     }
                                 }
                             </td>
-                            <td>@(SelectedModel.DriverId>0?DriverService.GetDriver((long)SelectedModel.DriverId):"راننده ندارد")</td>
-                            <td>@(SelectedModel.SchoolId.HasValue?SchoolService.GetSchool((long)SelectedModel.SchoolId).Name:"ندارد")</td>
-                            <td class="row container">
-                                @if (SelectedModel.DriverId > 0)
-                                {
-                                    <form asp-controller="Driver" asp-action="Details">
-                                        <input type="hidden" name="id" value="@SelectedModel.DriverId" />
-                                        <button class="btn btn-sm btn-outline-info" type="submit">
-                                            <i class="bi bi-file-earmark-text"></i> نمایش راننده
+                            <td>
+                                <span class='text-white'><i class='bi bi-dash-circle'></i>@(SelectedModel.DriverId > 0 ? DriverService.GetDriver((long)SelectedModel.DriverId).Name : "راننده ندارد")</span>
+                            </td>
+                            <td>@(SelectedModel.SchoolId.HasValue? SchoolService.GetSchool((long)SelectedModel.SchoolId).Name:"<span class='text-muted'><i class='bi bi-dash-circle'></i> ندارد</span>")</td>
+                            <td>
+                                <div class="d-flex flex-wrap gap-1 justify-content-center">
+                                    @if (SelectedModel.DriverId > 0)
+                                    {
+                                        <form asp-controller="Driver" asp-action="Details" class="d-inline">
+                                            <input type="hidden" name="id" value="@SelectedModel.DriverId" />
+                                            <button class="btn btn-sm btn-outline-info" type="submit" title="نمایش راننده">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                    @if (SelectedModel.SchoolId.HasValue)
+                                    {
+                                        <form asp-controller="School" asp-action="Details" class="d-inline">
+                                            <input type="hidden" name="id" value="@SelectedModel.SchoolId" />
+                                            <button class="btn btn-sm btn-outline-primary" type="submit" title="نمایش مدرسه">
+                                                <i class="bi bi-building"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                    <form asp-controller="Parents" asp-action="CreateBill" method="post" class="d-inline">
+                                        <input name="ChildId" type="hidden" value="@SelectedModel.Id" />
+                                        <button class="btn btn-sm btn-outline-warning" type="submit" title="صدور قبض">
+                                            <i class="bi bi-file-earmark-plus"></i>
                                         </button>
                                     </form>
-                                }
-                                <form asp-controller="School" asp-action="Details">
-                                    <input type="hidden" name="id" value="@SelectedModel.SchoolId"/>
-                                    <button class="btn btn-sm btn-outline-info" type="submit">
-                                        <i class="bi bi-file-earmark-text"></i> نمایش مدرسه
-                                    </button>
-                                </form>
-                                <form asp-controller="Parents" asp-action="CreateBill" method="post" class="d-inline">
-                                    <input name="ChildId" type="hidden" value="@SelectedModel.Id" />
-                                    <button class="btn btn-sm btn-outline-warning" type="submit">
-                                        <i class="bi bi-file-earmark-text"></i> صدور
-                                    </button>
-                                </form>
+                                </div>
                             </td>
                         </tr>
                     }
@@ -169,12 +196,11 @@
 </div>
 @section Scripts {
     <script>
-
         const ParentPnl = document.getElementById('ParentPnl');
         const ChildPnl = document.getElementById('ChildPnl');
         const DriverPnl = document.getElementById('DriverPnl');
-        document.getElementById('PDropBox').addEventListener('change', function()
-        {
+
+        document.getElementById('PDropBox').addEventListener('change', function() {
             const Selectedvalue = this.value;
             if(Selectedvalue == "Driver"){
                 ParentPnl.style.display = "none";

@@ -69,6 +69,7 @@ namespace School_Manager.Core.Mapper
                 .ForMember(dest => dest.DriverId,opt => opt.MapFrom<ActiveDriverIdResolver>())
                 .ForMember(dest => dest.SchoolId,opt => opt.MapFrom(src => src.SchoolRef))
                 .ForMember(dest => dest.Class,opt => opt.MapFrom(src => src.Class.GetDisplayName()))
+                .ForMember(dest => dest.ClassEnum,opt => opt.MapFrom(src => src.Class))
                 .ForMember(dest => dest.Path,opt => opt.MapFrom(src => src.LocationPairs.FirstOrDefault(i => i.IsActive)))
                 .ForMember(dest => dest.Bills, opt => opt.MapFrom(src => src.ServiceContracts.Where(sc => sc.IsActive).SelectMany(sc => sc.Bills)))
                 .ForMember(dest => dest.HasPaid, opt => opt.MapFrom(src => src.ServiceContracts
@@ -87,10 +88,19 @@ namespace School_Manager.Core.Mapper
             CreateMap<Driver, DriverDto>()
                 .ForMember(dest => dest.Car, opt => opt.MapFrom(src => src.Cars.FirstOrDefault(i => i.IsActive)))
                 .ForMember(dest => dest.FutherName, opt => opt.MapFrom(src => src.FatherName))
-                .ForMember(dest=>dest.Passanger, opt => opt.MapFrom(src => src.Passanger.Where(x=>x.IsEnabled && x.EndDate >= DateTime.Now).Select(p => p.ChildRef)))
+                //.ForMember(dest => dest.Passanger, opt => opt.MapFrom(src =>
+                //    src.DriverShifts
+                //       .SelectMany(ds => ds.Passenger)
+                //       .Where(p => p != null && p.IsEnabled && p.EndDate >= DateTime.Now)
+                //       .Select(p => p.ChildNavigation) // Map to ChildNavigation
+                //       .Where(c => c != null)
+                //       .ToList()))
+                .ForMember(dest=> dest.Passanger, opt => opt.MapFrom(src =>
+                    src.DriverShifts.SelectMany(ds=>ds.Passenger
+                    .Where(p=>p.IsEnabled && p.EndDate >= DateTime.Now))
+                    .Select(p => p.ChildRef).ToList()))
                 .ForMember(dest => dest.AvailableSeats, opt => opt.MapFrom<AvailableSeatsResolver>())
-                .ForMember(dest => dest.BankAccount,opt => opt.MapFrom<BankAccountResolver>());
-                
+                .ForMember(dest => dest.BankAccount, opt => opt.MapFrom<BankAccountResolver>());
             CreateMap<DriverCreateDto, Driver>()
                 .ForMember(dest => dest.Cars, opt => opt.MapFrom(src => new List<CarCreateDto> { src.CarCreateDto }));
             CreateMap<DriverUpdateDto, Driver>();

@@ -12,11 +12,13 @@
 
 <div class="container-fluid bg-dark text-white min-vh-100" dir="rtl">
     <!-- Header -->
-    <div class="row py-4 bg-black">
+    <div class="row py-4 bg-black rounded-bottom-4">
         <div class="col-12 text-center">
-            <h3>📄 مدیریت صورتحساب‌ها</h3>
-            <a asp-action="ParentMenu" class="btn btn-outline-light mt-3">
-                <i class="bi bi-arrow-right-circle"></i> بازگشت به منوی والدین
+            <h3 class="fw-bold mb-3">
+                <i class="bi bi-receipt-cutoff fs-1 text-primary me-2"></i>مدیریت صورتحساب‌ها
+            </h3>
+            <a asp-action="ParentMenu" class="btn btn-outline-light mt-3 px-4">
+                <i class="bi bi-arrow-right-circle me-2"></i> بازگشت به منوی والدین
             </a>
         </div>
     </div>
@@ -25,23 +27,32 @@
     <div class="row mt-5">
         <div class="col-12">
             <div class="card bg-secondary text-white shadow-lg rounded-4 border-primary">
-                <div class="card-header bg-primary text-center rounded-top-4">
-                    <h4 class="mb-0">💰 لیست صورتحساب‌ها</h4>
+                <div class="card-header bg-primary text-center rounded-top-4 py-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-currency-dollar fs-4 me-2"></i>لیست صورتحساب‌ها
+                    </h4>
                 </div>
                 <div class="card-body">
+                    <!-- Info Alert -->
+                    <div class="alert alert-info d-flex align-items-center mb-4">
+                        <i class="bi bi-info-circle-fill fs-5 me-3"></i>
+                        <div>
+                            <strong>توجه:</strong> 0.5 درصد مالیات از سوی پرداخت کننده پرداخت می‌شود
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
-                        <p>توجه : 0.5 درصد مالیت از سوی پرداخت کننده پرداخت میشود</p>
                         <table class="table table-dark table-hover rounded-3 overflow-hidden">
                             <thead class="table-primary text-dark">
                                 <tr>
-                                    <th>ردیف</th>
-                                    <th>📎 شناسه قرارداد</th>
-                                    <th>📝 نام قبض</th>
-                                    <th>💵 مبلغ کل</th>
-                                    <th>💳 مبلغ پرداختی</th>
-                                    <th>📌 وضعیت</th>
-                                    <th>🕒 زمان پرداخت</th>
-                                    <th>⚙️ عملیات</th>
+                                    <th><i class="bi bi-hash me-1"></i>ردیف</th>
+                                    <th><i class="bi bi-file-earmark-text me-1"></i>شناسه قرارداد</th>
+                                    <th><i class="bi bi-tag me-1"></i>نام قبض</th>
+                                    <th><i class="bi bi-cash-stack me-1"></i>مبلغ کل</th>
+                                    <th><i class="bi bi-currency-exchange me-1"></i>مبلغ پرداختی</th>
+                                    <th><i class="bi bi-clipboard-check me-1"></i>وضعیت</th>
+                                    <th><i class="bi bi-clock-history me-1"></i>زمان پرداخت</th>
+                                    <th><i class="bi bi-gear me-1"></i>عملیات</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -49,68 +60,179 @@
                                 {
                                     var bill = Model.bills[i];
                                     <tr>
-                                        <td>@(i + 1)</td>
-                                        <td>@bill.ContractId</td>
+                                        <td class="fw-bold">@(i + 1)</td>
+                                        <td>
+                                            <i class="bi bi-file-earmark-text text-info me-1"></i>
+                                            @bill.ContractId
+                                        </td>
                                         <td>@bill.Name</td>
-                                        <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.TotalPrice) ریال</td>
-                                        <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.PaidPrice) ریال</td>
+                                        <td class="fw-bold text-warning">
+                                            <i class="bi bi-arrow-up-circle text-success me-1"></i>
+                                            @School_Manager.Core.Classes.Helper.FormatPrice(bill.TotalPrice) ریال
+                                        </td>
+                                        <td class="fw-bold @(bill.HasPaid ? "text-success" : "text-info")">
+                                            <i class="bi bi-arrow-down-circle @(bill.HasPaid ? "text-success" : "text-info") me-1"></i>
+                                            @School_Manager.Core.Classes.Helper.FormatPrice(bill.PaidPrice) ریال
+                                        </td>
                                         <td>
                                             @if (bill.HasPaid)
                                             {
-                                                <span class="badge bg-success">✅ پرداخت شده</span>
+                                                <span class="badge bg-success p-2">
+                                                    <i class="bi bi-check-circle-fill me-1"></i>پرداخت شده
+                                                </span>
                                             }
                                             else
                                             {
-                                                <span class="badge bg-danger">❌ @bill.Status</span>
+                                                <span class="badge bg-danger p-2">
+                                                    <i class="bi bi-x-circle-fill me-1"></i>@bill.Status
+                                                </span>
                                             }
                                         </td>
                                         <td>
-                                            @(bill.HasPaid
-                                                ? DateConverter.ToPersianString((DateTime)bill.PaidTime)
-                                                : DateConverter.ToPersianString(bill.BillExpiredTime))
-                                        </td>
-                                        <td>
-                                            @if (!bill.HasPaid)
+                                            @if (bill.HasPaid)
                                             {
-                                                <form action="PayBill" method="post">
-                                                    <input hidden value="@bill.Id" name="BillId"/>
-                                                    <button type="submit">💳 پرداخت</button>
-                                                </form>
-                                             @*    <a href="@setting.Get("PayUrl")" class="btn btn-sm btn-outline-success w-100 my-1">
-                                                    💳 پرداخت
-                                                </a>
-                                                <label>درهنگام پرداخت مبلغ را به درستی وارد کرد و سپس از پرداختی عکس گرفته و تحویل شرکت دهید</label> *@
-                                             @*    <button class="btn btn-sm btn-outline-success w-100 my-1" onclick="payBill('@bill.Id')">
-                                                    💳 پرداخت
-                                                </button> *@
+                                                <span class="text-success">
+                                                    <i class="bi bi-check2-circle me-1"></i>
+                                                    @DateConverter.ToPersianString((DateTime)bill.PaidTime)
+                                                </span>
                                             }
                                             else
                                             {
-                                                <form asp-action="ShowBillPDF">
-                                                    <button class="btn btn-sm btn-outline-info w-100 my-1">
-                                                        🧾 مشاهده
-                                                    </button>
-                                                    <input style="display:none" name="BillId" value="@Model.bills[i].Id" />
-                                                </form>
+                                                <span class="text-warning">
+                                                    <i class="bi bi-clock me-1"></i>
+                                                    @DateConverter.ToPersianString(bill.BillExpiredTime)
+                                                </span>
                                             }
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-column gap-2">
+                                                @if (!bill.HasPaid)
+                                                {
+                                                    <form action="PayBill" method="post" class="w-100">
+                                                        <input type="hidden" value="@bill.Id" name="BillId" />
+                                                        <button type="submit" class="btn btn-success btn-sm w-100">
+                                                            <i class="bi bi-credit-card me-1"></i>پرداخت
+                                                        </button>
+                                                    </form>
+                                                    @* Optional payment instructions *@
+                                                    @* <div class="text-center">
+                                                        <small class="text-warning">
+                                                            <i class="bi bi-info-circle me-1"></i>
+                                                            پس از پرداخت، تصویر رسید را ارسال کنید
+                                                        </small>
+                                                    </div> *@
+                                                }
+                                                else
+                                                {
+                                                    <form asp-action="ShowBillPDF" method="get" class="w-100">
+                                                        <input type="hidden" name="BillId" value="@bill.Id" />
+                                                        <button type="submit" class="btn btn-info btn-sm w-100">
+                                                            <i class="bi bi-eye me-1"></i>مشاهده فاکتور
+                                                        </button>
+                                                    </form>
+                                                    @* Additional actions for paid bills *@
+                                                    @* <form asp-action="DownloadBill" method="get" class="w-100">
+                                                        <input type="hidden" name="BillId" value="@bill.Id" />
+                                                        <button type="submit" class="btn btn-outline-warning btn-sm w-100">
+                                                            <i class="bi bi-download me-1"></i>دانلود
+                                                        </button>
+                                                    </form> *@
+                                                }
+                                            </div>
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Summary Section -->
+                    @if (Model.bills.Any())
+                    {
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="card bg-dark border-success">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title text-success">
+                                            <i class="bi bi-check-circle me-2"></i>جمع پرداخت‌شده
+                                        </h6>
+                                        <p class="card-text fs-4 fw-bold text-success">
+                                            @School_Manager.Core.Classes.Helper.FormatPrice(Model.bills.Where(b => b.HasPaid).Sum(b => b.PaidPrice)) ریال
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-dark border-warning">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title text-warning">
+                                            <i class="bi bi-clock me-2"></i>جمع مانده
+                                        </h6>
+                                        <p class="card-text fs-4 fw-bold text-warning">
+                                            @School_Manager.Core.Classes.Helper.FormatPrice(Model.bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice)) ریال
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- No Bills Message -->
+    @if (!Model.bills.Any())
+    {
+        <div class="row mt-5">
+            <div class="col-12 text-center">
+                <div class="alert alert-warning py-4">
+                    <i class="bi bi-receipt fs-1 d-block mb-3"></i>
+                    <h5>هیچ صورتحسابی یافت نشد</h5>
+                    <p class="mb-0">در حال حاضر هیچ صورتحساب فعالی برای شما وجود ندارد.</p>
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
 @section Scripts {
     <script>
         function payBill(billId) {
-            alert("💸 پرداخت صورتحساب با شناسه: " + billId);
-            // TODO: Redirect or open modal
+            if (confirm('آیا از پرداخت این صورتحساب اطمینان دارید؟')) {
+                // Show loading state
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>در حال پرداخت...';
+                btn.disabled = true;
+
+                // Simulate payment process
+                setTimeout(() => {
+                    // Submit the form
+                    document.querySelector(`form[action="PayBill"] input[value="${billId}"]`).closest('form').submit();
+                }, 2000);
+            }
         }
+
+        // Add hover effects
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+
+            // Add animation to table rows
+            const tableRows = document.querySelectorAll('tbody tr');
+            tableRows.forEach((row, index) => {
+                row.style.animationDelay = `${index * 0.1}s`;
+                row.classList.add('fade-in');
+            });
+        });
     </script>
 }
 
@@ -118,33 +240,101 @@
     .table th, .table td {
         text-align: center;
         vertical-align: middle;
+        padding: 1rem 0.75rem;
     }
 
     .badge {
         font-size: 0.85rem;
-        padding: 0.4em 0.7em;
+        padding: 0.5em 0.8em;
     }
 
     .card {
         border: none;
         box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.25);
+        transition: transform 0.3s ease;
     }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
 
     .table-hover tbody tr:hover {
-        background-color: #2d2d2d;
+        background-color: rgba(255, 255, 255, 0.1);
+        transform: scale(1.01);
+        transition: all 0.3s ease;
     }
 
-    .btn-outline-success:hover,
-    .btn-outline-info:hover {
-        color: #fff !important;
+    .btn {
+        transition: all 0.3s ease;
     }
 
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+    /* Animation for table rows */
+    .fade-in {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Custom scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #2d3748;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #4a5568;
+        border-radius: 4px;
+    }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+
+    /* Responsive design */
     @@media (max-width: 768px) {
-        .table-responsive
+        .table-responsive {
+            font-size: 0.9rem;
+        }
 
-    {
-        overflow-x: auto;
+        .btn-sm {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        .alert {
+            font-size: 0.9rem;
+        }
     }
 
+    /* Status badge enhancements */
+    .badge.bg-success {
+        box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+    }
+
+    .badge.bg-danger {
+        box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
     }
 </style>

@@ -11,36 +11,54 @@
 
     <!-- Parent Info -->
     <div class="row bg-black rounded-4 shadow-sm py-4 mb-4 text-center">
-        <h3 class="fw-bold">🧾 اطلاعات والدین</h3>
-        <div class="d-flex justify-content-center flex-wrap gap-4 mt-3">
-            <div>
-                <span class="fw-semibold">نام:</span>
-                <span class="fs-4 fw-bold">@Model.Parent.ParentFirstName</span>
-            </div>
-            <div>
-                <span class="fw-semibold">نام خانوادگی:</span>
-                <span class="fs-4 fw-bold">@Model.Parent.ParentLastName</span>
-            </div>
-            <div>
-                <span class="fw-semibold">کد ملی:</span>
-                <span class="fs-4 fw-bold">@Model.Parent.ParentNationalCode</span>
-            </div>
-            <div>
-                @if (Model.Parent.Children.All(x => x.HasPaid))
-                {
-                    <span class="badge bg-success fs-5 mt-2">✅ حساب شما تسویه است</span>
-                }
-                else
-                {
-                    <span class="fw-semibold">💰 مبالغ پرداخت‌نشده:</span>
-                    <span class="badge bg-danger fs-5 mt-2">
-                        @Model.Parent.Children.Where(x=>x.Bills != null).Sum(x =>x.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice)) 
-                        ریال
-                    </span>
-                }
-            </div>
-            <div>
-                <a asp-action="" class="bg-warning form-control">ویرایش اطلاعات</a>
+        <div class="col-12">
+            <h3 class="fw-bold mb-4">
+                <i class="bi bi-person-badge fs-2 text-primary me-2"></i>اطلاعات والدین
+            </h3>
+            <div class="d-flex justify-content-center flex-wrap gap-4 mt-3">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-person-circle text-warning me-2 fs-5"></i>
+                    <div>
+                        <span class="fw-semibold d-block">نام:</span>
+                        <span class="fs-5 fw-bold text-info">@Model.Parent.ParentFirstName</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-person-vcard text-warning me-2 fs-5"></i>
+                    <div>
+                        <span class="fw-semibold d-block">نام خانوادگی:</span>
+                        <span class="fs-5 fw-bold text-info">@Model.Parent.ParentLastName</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-credit-card text-warning me-2 fs-5"></i>
+                    <div>
+                        <span class="fw-semibold d-block">کد ملی:</span>
+                        <span class="fs-5 fw-bold text-info">@Model.Parent.ParentNationalCode</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    @if (Model.Parent.Children.All(x => x.HasPaid))
+                    {
+                        <span class="badge bg-success fs-6 p-3">
+                            <i class="bi bi-check-circle-fill me-2"></i>حساب شما تسویه است
+                        </span>
+                    }
+                    else
+                    {
+                        <div class="text-center">
+                            <i class="bi bi-cash-coin text-warning me-2 fs-5"></i>
+                            <div>
+                                <span class="fw-semibold d-block">مبالغ پرداخت‌نشده:</span>
+                                <span class="badge bg-danger fs-6 p-2 mt-1">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    @Model.Parent.Children.Where(x => x.Bills != null).Sum(x => x.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice))
+                                    ریال
+                                </span>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     </div>
@@ -48,8 +66,8 @@
     <!-- Add Child Button -->
     <div class="row mb-4">
         <div class="col-12 text-center">
-            <button type="button" class="btn btn-success px-4 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#addChildModal">
-                <i class="bi bi-plus-circle"></i> افزودن فرزند
+            <button type="button" class="btn btn-success px-4 py-2 rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#addChildModal">
+                <i class="bi bi-person-plus fs-5 me-2"></i> افزودن فرزند
             </button>
         </div>
     </div>
@@ -58,8 +76,13 @@
     <div class="row">
         <div class="col-12">
             <div class="card bg-dark text-white shadow-lg rounded-4 border-primary">
-                <div class="card-header bg-primary">
-                    <h5 class="mb-0">👶 لیست فرزندان</h5>
+                <div class="card-header bg-primary d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-people-fill me-2"></i>لیست فرزندان
+                    </h5>
+                    <span class="badge bg-light text-dark fs-6">
+                        <i class="bi bi-person-check me-1"></i>@Model.Parent.Children.Count فرزند
+                    </span>
                 </div>
                 <div class="card-body">
                     @if (Model.Parent.Children != null && Model.Parent.Children.Any())
@@ -68,14 +91,14 @@
                             <table class="table table-dark table-bordered table-hover align-middle text-center">
                                 <thead class="table-light text-dark">
                                     <tr>
-                                        <th>ردیف</th>
-                                        <th>نام</th>
-                                        <th>نام خانوادگی</th>
-                                        <th>مقطع</th>
-                                        <th>کد ملی</th>
-                                        <th>تاریخ تولد</th>
-                                        <th>وضعیت پرداخت</th>
-                                        <th>عملیات</th>
+                                        <th><i class="bi bi-hash me-1"></i>ردیف</th>
+                                        <th><i class="bi bi-person me-1"></i>نام</th>
+                                        <th><i class="bi bi-person-badge me-1"></i>نام خانوادگی</th>
+                                        <th><i class="bi bi-book me-1"></i>مقطع</th>
+                                        <th><i class="bi bi-credit-card me-1"></i>کد ملی</th>
+                                        <th><i class="bi bi-calendar-event me-1"></i>تاریخ تولد</th>
+                                        <th><i class="bi bi-currency-dollar me-1"></i>وضعیت پرداخت</th>
+                                        <th><i class="bi bi-gear me-1"></i>عملیات</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -83,52 +106,74 @@
                                     {
                                         var child = Model.Parent.Children[i];
                                         <tr>
-                                            <td>@(i + 1)</td>
-                                            <td>@child.FirstName</td>
-                                            <td>@child.LastName</td>
-                                            <td>@child.Class</td>
-                                            <td>@child.NationalCode</td>
-                                            <td>@child.BirthDate.ToPersianString()</td>
+                                            <td class="fw-bold">@(i + 1)</td>
                                             <td>
-                                                @if (child.HasPaid && child.Bills.Count>0)
+                                                <i class="bi bi-person-circle text-info me-1"></i>
+                                                @child.FirstName
+                                            </td>
+                                            <td>@child.LastName</td>
+                                            <td>
+                                                <span class="badge bg-secondary">
+                                                    <i class="bi bi-bookmark me-1"></i>@child.Class
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <i class="bi bi-123 text-warning me-1"></i>
+                                                @child.NationalCode
+                                            </td>
+                                            <td>
+                                                <i class="bi bi-balloon text-success me-1"></i>
+                                                @child.BirthDate.ToPersianString()
+                                            </td>
+                                            <td>
+                                                @if (child.HasPaid && child.Bills.Count > 0)
                                                 {
-                                                    <span class="badge bg-success">پرداخت شده</span>
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-check-circle me-1"></i>پرداخت شده
+                                                    </span>
                                                 }
-                                                else if(child.Bills != null && child.Bills.Count > 0)
+                                                else if (child.Bills != null && child.Bills.Count > 0)
                                                 {
                                                     <span class="badge bg-danger">
+                                                        <i class="bi bi-exclamation-triangle me-1"></i>
                                                         @child.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice) ریال
                                                     </span>
                                                 }
                                                 else
                                                 {
-                                                    <span class="badge bg-danger">قبضی صادر نشده</span>
+                                                    <span class="badge bg-warning text-dark">
+                                                        <i class="bi bi-info-circle me-1"></i>قبضی صادر نشده
+                                                    </span>
                                                 }
                                             </td>
                                             <td>
-                                                <div class="d-flex flex-wrap justify-content-center gap-1">
-                                                    @*       <button class="btn btn-sm btn-outline-warning" onclick="editChild('@child.Id')">
-                                                        <i class="bi bi-pencil"></i> ویرایش
-                                                    </button>
-                                                    <form asp-action="RemoveChild" method="post">
+                                                <div class="d-flex flex-wrap justify-content-center gap-2">
+                                                    <form asp-action="Bills" method="post" class="d-inline">
                                                         <input type="hidden" name="Id" value="@child.Id" />
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                            <i class="bi bi-trash"></i> حذف
-                                                        </button>
-                                                    </form> *@
-                                                    <form asp-action="Bills" method="post">
-                                                        <input type="hidden" name="Id" value="@child.Id" />
-                                                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                        <button type="submit" class="btn btn-sm @(child.HasPaid ? "btn-outline-info" : "btn-outline-warning")">
                                                             @if (child.HasPaid)
                                                             {
-                                                                <span>مشاهده قبض‌ها</span>
-                                                            }
+                                                                <i class="bi bi-receipt me-1"></i>
+                                                                <p>مشاهده قبض‌ها</p>
+                                                                                                                }
                                                             else
                                                             {
-                                                                <span>پرداخت</span>
-                                                            }
+                                                                <i class="bi bi-credit-card me-1"></i>
+                                                                <p>پرداخت</p>
+
+                                                                                                        }
                                                         </button>
                                                     </form>
+                                                    @* Optional Edit and Delete buttons *@
+                                                    @* <button class="btn btn-sm btn-outline-primary" onclick="editChild('@child.Id')">
+                                                        <i class="bi bi-pencil-square me-1"></i>ویرایش
+                                                    </button>
+                                                    <form asp-action="RemoveChild" method="post" class="d-inline">
+                                                        <input type="hidden" name="Id" value="@child.Id" />
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('آیا از حذف این فرزند مطمئن هستید؟')">
+                                                            <i class="bi bi-trash me-1"></i>حذف
+                                                        </button>
+                                                    </form> *@
                                                 </div>
                                             </td>
                                         </tr>
@@ -139,7 +184,10 @@
                     }
                     else
                     {
-                        <div class="alert alert-warning text-center fw-bold">🚫 هیچ فرزندی ثبت نشده است.</div>
+                        <div class="alert alert-warning text-center fw-bold py-4">
+                            <i class="bi bi-people fs-1 d-block mb-2"></i>
+                            هیچ فرزندی ثبت نشده است.
+                        </div>
                     }
                 </div>
             </div>
@@ -151,57 +199,68 @@
 <div class="modal fade" id="addChildModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-dark text-white border-primary rounded-4 shadow">
-            <div class="modal-header border-bottom">
-                <h5 class="modal-title">➕ افزودن فرزند جدید</h5>
+            <div class="modal-header border-bottom border-secondary">
+                <h5 class="modal-title">
+                    <i class="bi bi-person-plus text-success me-2"></i>افزودن فرزند جدید
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form asp-action="LocationSelector" method="post">
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">نام</label>
+                            <label class="form-label">
+                                <i class="bi bi-person me-1"></i>نام
+                            </label>
                             <input asp-for="SelectedChild.FirstName" class="form-control bg-secondary text-white" required />
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">نام خانوادگی</label>
+                            <label class="form-label">
+                                <i class="bi bi-person-badge me-1"></i>نام خانوادگی
+                            </label>
                             <input asp-for="SelectedChild.LastName" class="form-control bg-secondary text-white" required />
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">کد ملی</label>
+                            <label class="form-label">
+                                <i class="bi bi-credit-card me-1"></i>کد ملی
+                            </label>
                             <input asp-for="SelectedChild.NationalCode" class="form-control bg-secondary text-white" pattern="\d{10}" maxlength="10" required />
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">مقطع تحصیلی</label>
-                            @* <input asp-for="SelectedChild.Class" class="form-control bg-secondary text-white" required /> *@
-                            <select asp-for="SelectedChild.Class" class="form-select form-control bg-secondary text-white required">
+                            <label class="form-label">
+                                <i class="bi bi-book me-1"></i>مقطع تحصیلی
+                            </label>
+                            <select asp-for="SelectedChild.Class" class="form-select form-control bg-secondary text-white" required>
+                                <option value="">انتخاب مقطع</option>
                                 @for (int i = 1; i <= 12; i++)
                                 {
-                                    <option value="@i">مقطع تحصیلی @i</option>
+                                    <option value="@i">پایه @i</option>
                                 }
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label for="PersianDate" class="form-label">تاریخ تولد</label>
+                            <label for="PersianDate" class="form-label">
+                                <i class="bi bi-calendar-event me-1"></i>تاریخ تولد
+                            </label>
                             <input name="Date" class="persian-date form-control bg-secondary text-white" required />
                             <input type="hidden" class="gregorian-date" />
                         </div>
-          @*               <div class="col-md-6">
-                            <label class="form-label">توضیحه به راننده (اختیاری)</label>
-                            <input asp-for="SelectedChild." class="form-control bg-secondary text-white" required />
-                        </div> *@
-                      @*   <div class="col-md-6">
-                            <label class="form-label">زمان رفت (AM صبح)(PM ظهر)</label>
-                            <input asp-for="SelectedChild.Path.PickTime1" type="time" class="form-control bg-secondary text-white" required />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">زمان بازگشت (AM صبح)(PM ظهر)</label>
-                            <input asp-for="SelectedChild.Path.PickTime2" type="time" class="form-control bg-secondary text-white" required />
+                        @* Additional optional fields *@
+                        @* <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="bi bi-chat-left-text me-1"></i>توضیح به راننده (اختیاری)
+                            </label>
+                            <input asp-for="SelectedChild.DriverNote" class="form-control bg-secondary text-white" />
                         </div> *@
                     </div>
                 </div>
-                <div class="modal-footer border-top">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
-                    <button type="submit" class="btn btn-success">ذخیره</button>
+                <div class="modal-footer border-top border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>انصراف
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle me-1"></i>ذخیره فرزند
+                    </button>
                 </div>
             </form>
         </div>
@@ -212,7 +271,25 @@
     <script>
         $(document).ready(function () {
             // Add Persian datepicker initialization if needed
+            console.log("Parent dashboard loaded successfully");
+
+            // Add some interactive effects
+            $('.btn').hover(
+                function() {
+                    $(this).addClass('shadow');
+                },
+                function() {
+                    $(this).removeClass('shadow');
+                }
+            );
         });
+
+        // Optional: Edit child function
+        function editChild(childId) {
+            // Implement edit functionality
+            alert('ویرایش فرزند با شناسه: ' + childId);
+            // You can implement modal popup for editing here
+        }
     </script>
 }
 
@@ -223,25 +300,66 @@
     }
 
     .badge {
-        font-size: 0.9rem;
-        padding: 0.4em 0.6em;
+        font-size: 0.85rem;
+        padding: 0.5em 0.7em;
     }
 
     .btn-close-white {
         filter: invert(1);
     }
 
+    .card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    /* Responsive design */
     @@media (max-width: 768px) {
-        .d-flex.justify-content-center
+        .d-flex.justify-content-center {
+            flex-direction: column !important;
+            gap: 1rem !important;
+        }
 
-    {
-        flex-direction: column !important;
-        gap: 1rem !important;
+        .table-responsive {
+            font-size: 0.9rem;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .modal-body .row {
+            margin: 0 -0.5rem;
+        }
+
+        .modal-body .col-md-6 {
+            padding: 0 0.5rem;
+        }
     }
 
-    .table-responsive {
-        overflow-x: auto;
+    /* Custom scrollbar for table */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
     }
 
+    .table-responsive::-webkit-scrollbar-track {
+        background: #2d3748;
     }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #4a5568;
+        border-radius: 4px;
+    }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
 </style>

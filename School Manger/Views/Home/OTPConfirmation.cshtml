@@ -4,41 +4,67 @@
 }
 
 <div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-dark" dir="rtl">
-    <div class="card bg-black text-white border-secondary" style="width: 100%; max-width: 500px;border-radius:20px">
-        <div class="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
-            <a asp-action="Index" class="btn btn-outline-light">
-                <i class="bi bi-arrow-right"></i> بازگشت
+    <div class="card bg-black text-white border-primary shadow-lg" style="width: 100%; max-width: 500px; border-radius: 20px; border-width: 2px;">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center py-3 rounded-top-4">
+            <a asp-action="Index" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-arrow-left-circle me-1"></i> بازگشت
             </a>
-            <h5 class="m-0">تایید شماره موبایل</h5>
+            <h5 class="m-0 fw-bold">
+                <i class="bi bi-shield-check me-2"></i>تایید شماره موبایل
+            </h5>
         </div>
 
         <div class="card-body p-4">
             <div class="text-center mb-4">
-                <p class="text-white-50">کد یکبار مصرف ارسال شده به شماره *******0912 را وارد کنید</p>
-                <p class="text-white-50">(اگر پیامی ارسال نشد. پیام های تبلیغاتی را چک کنید)</p>
+                <!-- Phone icon with verification message -->
+                <div class="mb-3">
+                    <i class="bi bi-phone-vibrate text-primary fs-1"></i>
+                </div>
+                <p class="text-white-50">
+                    <i class="bi bi-chat-square-text me-2"></i>کد یکبار مصرف ارسال شده به شماره *******0912 را وارد کنید
+                </p>
+                <p class="text-white-50 small mt-2">
+                    <i class="bi bi-info-circle me-1"></i>اگر پیامی ارسال نشد، پیام‌های تبلیغاتی را چک کنید
+                </p>
             </div>
 
-            <form asp-action="VerifyOtp" method="post" id="otpForm" onsubmit="updateFullOtp()">
+            <!-- Error message (hidden by default) -->
+            <div id="otpError" class="alert alert-danger border-danger d-none rounded-3" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>لطفاً تمامی ارقام کد را وارد کنید
+            </div>
+
+            <form asp-action="VerifyOtp" method="post" id="otpForm">
                 <div class="d-flex justify-content-center mb-4 gap-2 flex-row-reverse">
                     @for (int i = 0; i <= 5; i++)
                     {
                         <input type="text"
-                               class="form-control bg-dark text-white text-center border-secondary otp-input"
-                               style="width: 45px; height: 60px; font-size: 24px;"
+                               class="form-control bg-dark text-white text-center border-primary otp-input"
+                               style="width: 50px; height: 60px; font-size: 24px;"
                                maxlength="1"
                                data-index="@i"
                                oninput="moveToNext(this)"
-                               onkeydown="moveToPrevious(event, this)">
+                               onkeydown="moveToPrevious(event, this)"
+                               onfocus="this.select()">
                     }
                     <input type="hidden" id="fullOtp" name="otpCode">
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 py-2">تایید کد</button>
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                    <i class="bi bi-check-circle me-2"></i>تایید کد
+                </button>
             </form>
 
-            @* <div class="text-center mt-3">
-                <a href="#" class="text-decoration-none text-info">ارسال مجدد کد (60 ثانیه)</a>
-            </div> *@
+            <!-- Resend code section -->
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <div class="mb-3">
+                    <i class="bi bi-clock-history me-2 text-warning"></i>
+                    <span class="text-white-50">کد منقضی می‌شود در:</span>
+                    <span id="countdown" class="text-warning fw-bold fs-5">02:00</span>
+                </div>
+                <a href="#" class="text-decoration-none text-info fw-semibold" id="resendLink">
+                    <i class="bi bi-arrow-clockwise me-1"></i>ارسال مجدد کد
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -48,12 +74,13 @@
         // Auto-focus first input (right-most box) on page load
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('.otp-input[data-index="0"]').focus();
+            startCountdown();
         });
 
         // Move to next input (left direction) when current is filled
         function moveToNext(input) {
             const index = parseInt(input.dataset.index);
-            if (input.value.length === 1 && index < 7) {
+            if (input.value.length === 1 && index < 5) {
                 document.querySelector(`.otp-input[data-index="${index + 1}"]`).focus();
             }
             updateFullOtp();
@@ -84,12 +111,30 @@
                 this.value = this.value.replace(/[^0-9]/g, '');
             });
         });
+
+        // Paste functionality for OTP
+        document.addEventListener('paste', function(e) {
+            const pasteData = e.clipboardData.getData('text');
+            if (/^\d+$/.test(pasteData)) {
+                e.preventDefault();
+                const inputs = Array.from(document.querySelectorAll('.otp-input')).reverse();
+                const digits = pasteData.split('').slice(0, 6);
+
+                inputs.forEach((input, index) => {
+                    input.value = digits[index] || '';
+                });
+
+                updateFullOtp();
+                inputs[0].focus();
+            }
+        });
+
+        // Form validation
         document.getElementById('otpForm').addEventListener('submit', function (e) {
             const inputs = document.querySelectorAll('.otp-input');
             let allFilled = true;
 
             inputs.forEach(input => {
-                // Check if input is empty
                 if (input.value.trim() === '') {
                     allFilled = false;
                     input.classList.add('is-invalid');
@@ -101,10 +146,18 @@
             const errorDiv = document.getElementById('otpError');
 
             if (!allFilled) {
-                e.preventDefault(); // Stop form submission
-                errorDiv.style.display = 'block'; // Show error message
+                e.preventDefault();
+                errorDiv.classList.remove('d-none');
+                errorDiv.classList.add('d-block');
+
+                // Focus on first empty input
+                const emptyInput = document.querySelector('.otp-input:invalid, .otp-input.is-invalid');
+                if (emptyInput) {
+                    emptyInput.focus();
+                }
             } else {
-                errorDiv.style.display = 'none'; // Hide error message
+                errorDiv.classList.remove('d-block');
+                errorDiv.classList.add('d-none');
             }
         });
 
@@ -113,9 +166,93 @@
             input.addEventListener('input', function () {
                 if (this.value.trim() !== '') {
                     this.classList.remove('is-invalid');
+                    document.getElementById('otpError').classList.add('d-none');
                 }
             });
         });
+
+        // Countdown timer
+        function startCountdown() {
+            let timeLeft = 120; // 2 minutes in seconds
+            const countdownElement = document.getElementById('countdown');
+            const resendLink = document.getElementById('resendLink');
+
+            const countdown = setInterval(function() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+
+                countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    countdownElement.textContent = '00:00';
+                    resendLink.classList.remove('text-info');
+                    resendLink.classList.add('text-success', 'fw-bold');
+                    resendLink.innerHTML = '<i class="bi bi-send-check me-1"></i>ارسال مجدد کد (فعال)';
+                    resendLink.onclick = function(e) {
+                        e.preventDefault();
+                        handleResendCode();
+                    };
+                }
+
+                timeLeft--;
+            }, 1000);
+        }
+
+        // Resend code functionality
+        function handleResendCode() {
+            // Add your actual resend logic here
+            showAlert('کد جدید برای شما ارسال شد!', 'success');
+            startCountdown();
+
+            const resendLink = document.getElementById('resendLink');
+            resendLink.classList.remove('text-success', 'fw-bold');
+            resendLink.classList.add('text-info');
+            resendLink.innerHTML = '<i class="bi bi-arrow-clockwise me-1"></i>ارسال مجدد کد';
+
+            // Clear all OTP inputs
+            document.querySelectorAll('.otp-input').forEach(input => {
+                input.value = '';
+            });
+            updateFullOtp();
+            document.querySelector('.otp-input[data-index="0"]').focus();
+        }
+
+        document.getElementById('resendLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            const countdownText = document.getElementById('countdown').textContent;
+            if (countdownText === '00:00') {
+                handleResendCode();
+            } else {
+                showAlert(`لطفا ${countdownText} دیگر برای ارسال مجدد اقدام کنید`, 'warning');
+            }
+        });
+
+        // Show alert function
+        function showAlert(message, type) {
+            // Remove existing alerts
+            const existingAlert = document.querySelector('.alert-dismissible');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show mt-3`;
+            alert.innerHTML = `
+                <i class="bi bi-${type === 'danger' ? 'exclamation-triangle' : type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+            document.querySelector('form').prepend(alert);
+
+            // Auto remove alert after 5 seconds
+            setTimeout(() => {
+                if (alert.parentElement) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
     </script>
 }
 
@@ -128,29 +265,75 @@
     /* OTP input styling */
     .otp-input {
         caret-color: transparent;
+        transition: all 0.3s ease;
     }
 
         .otp-input:focus {
             border-color: #0d6efd !important;
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+            transform: translateY(-2px);
+            background-color: #1a1a1a !important;
         }
 
-    /* Dark theme enhancements */
-    .bg-black {
-        background-color: #000000;
+        .otp-input.is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+        }
+
+    /* Card animation */
+    .card {
+        animation: fadeInUp 0.6s ease-out;
     }
 
-    .border-secondary {
-        border-color: #444 !important;
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
-    /* Back button icon flip for RTL */
-    .bi-arrow-right {
-        transform: scaleX(-1);
+    /* Countdown animation */
+    #countdown {
+        font-family: 'Courier New', monospace;
+        direction: ltr;
+        display: inline-block;
     }
 
-    .otp-input.is-invalid {
-        border-color: #dc3545 !important;
-        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+    /* Resend link hover effect */
+    #resendLink {
+        transition: all 0.3s ease;
+    }
+
+        #resendLink:hover {
+            transform: translateY(-1px);
+            text-decoration: underline !important;
+        }
+
+    /* Smooth transitions */
+    .btn, .otp-input {
+        transition: all 0.3s ease;
+    }
+
+    /* Responsive design */
+    @@media (max-width: 576px) {
+        .otp-input {
+            width: 40px !important;
+            height: 50px !important;
+            font-size: 20px !important;
+        }
+
+        .gap-2 {
+            gap: 0.5rem !important;
+        }
+    }
+
+    /* Input animation */
+    .otp-input:valid {
+        border-color: #28a745 !important;
     }
 </style>

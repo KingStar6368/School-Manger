@@ -4,16 +4,19 @@
 }
 
 <div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-dark" dir="rtl">
-    <div class="card bg-black text-white border-secondary" style="width: 100%; max-width: 500px;border-radius:20px">
-        <div class="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
-            <a asp-action="Index" class="btn btn-outline-light">
-                <i class="bi bi-arrow-right"></i> بازگشت
+    <div class="card bg-black text-white border-primary shadow-lg" style="width: 100%; max-width: 500px; border-radius: 20px; border-width: 2px;">
+        <div class="card-header bg-dark border-primary d-flex justify-content-between align-items-center py-3">
+            <a asp-action="Index" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-arrow-left-circle me-1"></i> بازگشت
             </a>
-            <h5 class="m-0">تایید شماره موبایل</h5>
+            <h5 class="m-0 fw-bold">
+                <i class="bi bi-shield-check me-2"></i> تایید شماره موبایل
+            </h5>
         </div>
 
         <div class="card-body p-4">
             <div class="text-center mb-4">
+                <i class="bi bi-phone-vibrate text-primary fs-1 mb-3 d-block"></i>
                 <p class="text-white-50">کد یکبار مصرف ارسال شده به شماره *******0912 را وارد کنید</p>
             </div>
 
@@ -22,21 +25,31 @@
                     @for (int i = 0; i <= 5; i++)
                     {
                         <input type="text"
-                               class="form-control bg-dark text-white text-center border-secondary otp-input"
-                               style="width: 45px; height: 60px; font-size: 24px;"
+                               class="form-control bg-dark text-white text-center border-primary otp-input"
+                               style="width: 50px; height: 60px; font-size: 24px;"
                                maxlength="1"
                                data-index="@i"
                                oninput="moveToNext(this)"
-                               onkeydown="moveToPrevious(event, this)">
+                               onkeydown="moveToPrevious(event, this)"
+                               onfocus="this.select()">
                     }
                     <input type="hidden" id="fullOtp" name="otpCode">
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 py-2">تایید کد</button>
+                <!-- Error Message -->
+                <div id="otpError" class="alert alert-danger text-center d-none" role="alert">
+                    <i class="bi bi-exclamation-triangle me-1"></i> لطفا تمامی ارقام کد را وارد کنید
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                    <i class="bi bi-check-circle me-2"></i> تایید کد
+                </button>
             </form>
 
-            <div class="text-center mt-3">
-                <a href="#" class="text-decoration-none text-info">ارسال مجدد کد (60 ثانیه)</a>
+            <div class="text-center mt-4 pt-3 border-top border-secondary">
+                <a href="#" class="text-decoration-none text-info fw-semibold">
+                    <i class="bi bi-arrow-clockwise me-1"></i> ارسال مجدد کد (<span id="countdown">60</span> ثانیه)
+                </a>
             </div>
         </div>
     </div>
@@ -47,12 +60,13 @@
         // Auto-focus first input (right-most box) on page load
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelector('.otp-input[data-index="0"]').focus();
+            startCountdown();
         });
 
         // Move to next input (left direction) when current is filled
         function moveToNext(input) {
             const index = parseInt(input.dataset.index);
-            if (input.value.length === 1 && index < 7) {
+            if (input.value.length === 1 && index < 5) {
                 document.querySelector(`.otp-input[data-index="${index + 1}"]`).focus();
             }
             updateFullOtp();
@@ -83,38 +97,79 @@
                 this.value = this.value.replace(/[^0-9]/g, '');
             });
         });
+
+        // Form validation
         document.getElementById('otpForm').addEventListener('submit', function (e) {
-             const inputs = document.querySelectorAll('.otp-input');
-             let allFilled = true;
+            const inputs = document.querySelectorAll('.otp-input');
+            let allFilled = true;
 
-             inputs.forEach(input => {
-                 // Check if input is empty
-                 if (input.value.trim() === '') {
-                     allFilled = false;
-                     input.classList.add('is-invalid');
-                 } else {
-                     input.classList.remove('is-invalid');
-                 }
-             });
+            inputs.forEach(input => {
+                if (input.value.trim() === '') {
+                    allFilled = false;
+                    input.classList.add('is-invalid');
+                } else {
+                    input.classList.remove('is-invalid');
+                }
+            });
 
-             const errorDiv = document.getElementById('otpError');
+            const errorDiv = document.getElementById('otpError');
 
-             if (!allFilled) {
-                 e.preventDefault(); // Stop form submission
-                 errorDiv.style.display = 'block'; // Show error message
-             } else {
-                 errorDiv.style.display = 'none'; // Hide error message
-             }
-         });
+            if (!allFilled) {
+                e.preventDefault();
+                errorDiv.classList.remove('d-none');
+                errorDiv.classList.add('d-block');
+            } else {
+                errorDiv.classList.remove('d-block');
+                errorDiv.classList.add('d-none');
+            }
+        });
 
-         // Remove error state when user types
-         document.querySelectorAll('.otp-input').forEach(input => {
-             input.addEventListener('input', function () {
-                 if (this.value.trim() !== '') {
-                     this.classList.remove('is-invalid');
-                 }
-             });
-         });
+        // Remove error state when user types
+        document.querySelectorAll('.otp-input').forEach(input => {
+            input.addEventListener('input', function () {
+                if (this.value.trim() !== '') {
+                    this.classList.remove('is-invalid');
+                    document.getElementById('otpError').classList.add('d-none');
+                }
+            });
+        });
+
+        // Countdown timer for resend code
+        function startCountdown() {
+            let timeLeft = 60;
+            const countdownElement = document.getElementById('countdown');
+            const resendLink = document.querySelector('a[href="#"]');
+
+            const timer = setInterval(function() {
+                timeLeft--;
+                countdownElement.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    resendLink.innerHTML = '<i class="bi bi-arrow-clockwise me-1"></i> ارسال مجدد کد';
+                    resendLink.classList.remove('text-info');
+                    resendLink.classList.add('text-success');
+                    resendLink.href = '#'; // Add actual resend functionality here
+                }
+            }, 1000);
+        }
+
+        // Paste functionality for OTP
+        document.addEventListener('paste', function(e) {
+            const pasteData = e.clipboardData.getData('text');
+            if (/^\d+$/.test(pasteData)) {
+                e.preventDefault();
+                const inputs = Array.from(document.querySelectorAll('.otp-input')).reverse();
+                const digits = pasteData.split('').slice(0, 6);
+
+                inputs.forEach((input, index) => {
+                    input.value = digits[index] || '';
+                });
+
+                updateFullOtp();
+                inputs[0].focus();
+            }
+        });
     </script>
 }
 
@@ -127,11 +182,18 @@
     /* OTP input styling */
     .otp-input {
         caret-color: transparent;
+        transition: all 0.2s ease;
     }
 
         .otp-input:focus {
             border-color: #0d6efd !important;
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25) !important;
+            transform: translateY(-2px);
+        }
+
+        .otp-input.is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
         }
 
     /* Dark theme enhancements */
@@ -139,17 +201,14 @@
         background-color: #000000;
     }
 
-    .border-secondary {
-        border-color: #444 !important;
+    /* Smooth transitions */
+    .btn, .otp-input {
+        transition: all 0.3s ease;
     }
 
-    /* Back button icon flip for RTL */
-    .bi-arrow-right {
-        transform: scaleX(-1);
-    }
-
-    .otp-input.is-invalid {
-        border-color: #dc3545 !important;
-        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+    /* Resend link styling */
+    a.text-success:hover {
+        color: #198754 !important;
+        text-decoration: underline !important;
     }
 </style>

@@ -14,23 +14,25 @@
     <!-- Bills Table -->
     <div class="row mt-5">
         <div class="col-12">
-            <div class="card bg-secondary text-white shadow-lg rounded-4 border-primary">
-                <div class="card-header bg-primary text-center rounded-top-4">
-                    <h4 class="mb-0">💰 لیست صورتحساب‌ها</h4>
+            <div class="card bg-secondary text-white shadow-lg rounded-4 border-primary border-2">
+                <div class="card-header bg-primary bg-gradient text-center rounded-top-4 py-3">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="bi bi-receipt me-2"></i> لیست صورتحساب‌ها
+                    </h4>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-dark table-hover rounded-3 overflow-hidden">
-                            <thead class="table-primary text-dark">
+                        <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden">
+                            <thead class="table-light text-dark">
                                 <tr>
-                                    <th>ردیف</th>
-                                    <th>📎 شناسه قرارداد</th>
-                                    <th>📝 نام قبض</th>
-                                    <th>💵 مبلغ کل</th>
-                                    <th>💳 مبلغ پرداختی</th>
-                                    <th>📌 وضعیت</th>
-                                    <th>🕒 زمان پرداخت</th>
-                                    <th>⚙️ عملیات</th>
+                                    <th><i class="bi bi-hash me-1"></i> ردیف</th>
+                                    <th><i class="bi bi-file-earmark-text me-1"></i> شناسه قرارداد</th>
+                                    <th><i class="bi bi-file-text me-1"></i> نام قبض</th>
+                                    <th><i class="bi bi-cash-stack me-1"></i> مبلغ کل</th>
+                                    <th><i class="bi bi-cash-coin me-1"></i> مبلغ پرداختی</th>
+                                    <th><i class="bi bi-info-circle me-1"></i> وضعیت</th>
+                                    <th><i class="bi bi-clock me-1"></i> زمان پرداخت</th>
+                                    <th><i class="bi bi-gear me-1"></i> عملیات</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -39,55 +41,86 @@
                                     var bill = Model.bills[i];
                                     <tr>
                                         <td>@(i + 1)</td>
-                                        <td>@bill.ContractId</td>
+                                        <td>
+                                            <span class="badge bg-info">@bill.ContractId</span>
+                                        </td>
                                         <td>@bill.Name</td>
-                                        <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.TotalPrice) ریال</td>
-                                        <td>@School_Manager.Core.Classes.Helper.FormatPrice(bill.PaidPrice) ریال</td>
+                                        <td>
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-currency-dollar me-1"></i>@School_Manager.Core.Classes.Helper.FormatPrice(bill.TotalPrice)
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-currency-dollar me-1"></i>@School_Manager.Core.Classes.Helper.FormatPrice(bill.PaidPrice)
+                                            </span>
+                                        </td>
                                         <td>
                                             @if (bill.HasPaid)
                                             {
-                                                <span class="badge bg-success">✅ پرداخت شده</span>
+                                                <span class="badge bg-success">
+                                                    <i class="bi bi-check-circle me-1"></i> پرداخت شده
+                                                </span>
                                             }
                                             else
                                             {
-                                                <span class="badge bg-danger">❌ @bill.Status</span>
+                                                <span class="badge bg-danger">
+                                                    <i class="bi bi-x-circle me-1"></i> @bill.Status
+                                                </span>
                                             }
                                         </td>
                                         <td>
-                                            @(bill.HasPaid
-                                                ? DateConverter.ToPersianString((DateTime)bill.PaidTime)
-                                                : DateConverter.ToPersianString(bill.BillExpiredTime))
-                                        </td>
-                                        <td>
-                                            @if (!bill.HasPaid)
+                                            @if (bill.HasPaid)
                                             {
-                                                <form action="PayBill" method="post">
-                                                    <input hidden value="@bill.Id" name="BillId"/>
-                                                    <button type="submit">💳 پرداخت</button>
-                                                </form>
-                                             @*    <a href="@setting.Get("PayUrl")" class="btn btn-sm btn-outline-success w-100 my-1">
-                                                    💳 پرداخت
-                                                </a>
-                                                <label>درهنگام پرداخت مبلغ را به درستی وارد کرد و سپس از پرداختی عکس گرفته و تحویل شرکت دهید</label> *@
-                                             @*    <button class="btn btn-sm btn-outline-success w-100 my-1" onclick="payBill('@bill.Id')">
-                                                    💳 پرداخت
-                                                </button> *@
+                                                <span class="text-success">
+                                                    <i class="bi bi-check-lg me-1"></i>@DateConverter.ToPersianString((DateTime)bill.PaidTime)
+                                                </span>
                                             }
                                             else
                                             {
-                                                <form asp-action="ShowBillPDF">
-                                                    <button class="btn btn-sm btn-outline-info w-100 my-1">
-                                                        🧾 مشاهده
-                                                    </button>
-                                                    <input style="display:none" name="BillId" value="@Model.bills[i].Id" />
-                                                </form>
+                                                <span class="text-warning">
+                                                    <i class="bi bi-clock-history me-1"></i>@DateConverter.ToPersianString(bill.BillExpiredTime)
+                                                </span>
                                             }
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-column gap-2">
+                                                @if (!bill.HasPaid)
+                                                {
+                                                    <form action="PayBill" method="post" class="d-inline">
+                                                        <input type="hidden" value="@bill.Id" name="BillId" />
+                                                        <button type="submit" class="btn btn-success btn-sm rounded-pill shadow-sm w-100">
+                                                            <i class="bi bi-credit-card me-1"></i> پرداخت
+                                                        </button>
+                                                    </form>
+                                                    @* <div class="alert alert-info mt-2 p-2 small">
+                                                        <i class="bi bi-info-circle me-1"></i>
+                                                        در هنگام پرداخت مبلغ را به درستی وارد کرده و از رسید پرداخت عکس بگیرید
+                                                    </div> *@
+                                                }
+                                                else
+                                                {
+                                                    <form asp-action="ShowBillPDF" method="post" class="d-inline">
+                                                        <input type="hidden" name="BillId" value="@bill.Id" />
+                                                        <button type="submit" class="btn btn-info btn-sm rounded-pill shadow-sm w-100">
+                                                            <i class="bi bi-eye me-1"></i> مشاهده فاکتور
+                                                        </button>
+                                                    </form>
+                                                }
+                                            </div>
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
+
+                    @if (!Model.bills.Any())
+                    {
+                        <div class="alert alert-warning text-center my-4" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i> صورتحسابی برای نمایش وجود ندارد
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -97,9 +130,25 @@
 @section Scripts {
     <script>
         function payBill(billId) {
-            alert("💸 پرداخت صورتحساب با شناسه: " + billId);
-            // TODO: Redirect or open modal
+            // Optional: Add confirmation dialog
+            if (confirm('آیا از پرداخت این صورتحساب اطمینان دارید؟')) {
+                // Submit the form programmatically
+                document.querySelector(`form[action="PayBill"] input[value="${billId}"]`).closest('form').submit();
+            }
         }
+
+        // Add hover effects and animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
     </script>
 }
 
@@ -107,33 +156,79 @@
     .table th, .table td {
         text-align: center;
         vertical-align: middle;
+        padding: 0.75rem;
     }
 
     .badge {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         padding: 0.4em 0.7em;
     }
 
     .card {
-        border: none;
-        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.25);
+        border: 2px solid #0d6efd;
+        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.3);
     }
 
     .table-hover tbody tr:hover {
-        background-color: #2d2d2d;
+        background-color: rgba(13, 110, 253, 0.1);
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
     }
 
-    .btn-outline-success:hover,
-    .btn-outline-info:hover {
-        color: #fff !important;
+    .btn {
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #198754, #20c997);
+    }
+
+    .btn-info {
+        background: linear-gradient(135deg, #0dcaf0, #0d6efd);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 
     @@media (max-width: 768px) {
-        .table-responsive
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+
+        .btn {
+            font-size: 0.8rem;
+            padding: 0.375rem 0.75rem;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+        }
+    }
+
+    /* Animation for table rows */
+    @@keyframes fadeIn {
+        from
 
     {
-        overflow-x: auto;
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 
     }
+
+    .table tbody tr {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+        .table tbody tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
 </style>

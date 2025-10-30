@@ -6,65 +6,114 @@
     Layout = "_Layout";
 }
 <div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-dark" dir="rtl">
-    <div class="card bg-black text-white border-secondary" style="width: 100%; max-width: 500px;border-radius:20px">
-        <div class="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
-            <a asp-action="Index" class="btn btn-outline-light">
-                <i class="bi bi-arrow-right"></i> بازگشت
+    <div class="card bg-black text-white border-primary shadow-lg" style="width: 100%; max-width: 500px; border-radius: 20px; border-width: 2px;">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center py-3 rounded-top-4">
+            <a asp-action="Index" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-arrow-left-circle me-1"></i> بازگشت
             </a>
-            <h5 class="m-0">تکمیل اطلاعات کاربری</h5>
+            <h4 class="m-0 fw-bold">
+                <i class="bi bi-person-gear me-2"></i>تکمیل اطلاعات کاربری <strong class="text-warning">خانواده</strong>
+            </h4>
         </div>
 
         <div class="card-body p-4">
+            <!-- Warning Alert -->
+            <div class="alert alert-warning border-warning d-flex align-items-center mb-4 rounded-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                <div class="fw-bold">لطفا اطلاعات خانواده را وارد نمایید</div>
+            </div>
+
             <form asp-action="CompleteProfile" method="post" id="profileForm">
-                <div class="mb-3">
-                    <label for="nationalCode" class="form-label">کد ملی</label>
-                    <input type="text"
-                           class="form-control bg-dark text-white border-secondary"
-                           id="nationalCode"
-                           name="nationalCode"
-                           placeholder="۰۱۲۳۴۵۶۷۸۹"
-                           maxlength="10"
-                           required
-                           onkeypress="return isNumberKey(event)"
-                           asp-for="NationCode">
-                    <div id="nationalCodeFeedback" class="form-text"></div>
+                <!-- National Code Field -->
+                <div class="mb-4">
+                    <label for="nationalCode" class="form-label fw-semibold">
+                        <i class="bi bi-credit-card me-2"></i>کد ملی والدین
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark text-white border-primary">
+                            <i class="bi bi-123"></i>
+                        </span>
+                        <input type="text"
+                               class="form-control form-control-lg bg-dark text-white border-primary"
+                               id="nationalCode"
+                               name="nationalCode"
+                               placeholder="۰۱۲۳۴۵۶۷۸۹"
+                               maxlength="10"
+                               required
+                               onkeypress="return isNumberKey(event)"
+                               asp-for="NationCode">
+                    </div>
+                    <div id="nationalCodeFeedback" class="form-text mt-2"></div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="firstName" class="form-label">نام</label>
-                    <input type="text"
-                           class="form-control bg-dark text-white border-secondary"
-                           id="firstName"
-                           name="firstName"
-                           placeholder="محمد"
-                           required
-                           asp-for="Name">
+                <!-- First Name Field -->
+                <div class="mb-4">
+                    <label for="firstName" class="form-label fw-semibold">
+                        <i class="bi bi-person me-2"></i>نام والدین
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark text-white border-primary">
+                            <i class="bi bi-fonts"></i>
+                        </span>
+                        <input type="text"
+                               class="form-control form-control-lg bg-dark text-white border-primary"
+                               id="firstName"
+                               name="firstName"
+                               placeholder="محمد"
+                               required
+                               asp-for="Name">
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="lastName" class="form-label">نام خانوادگی</label>
-                    <input type="text"
-                           class="form-control bg-dark text-white border-secondary"
-                           id="lastName"
-                           name="lastName"
-                           placeholder="محمدی"
-                           required
-                           asp-for="LastName">
+                <!-- Last Name Field -->
+                <div class="mb-4">
+                    <label for="lastName" class="form-label fw-semibold">
+                        <i class="bi bi-person-badge me-2"></i>نام خانوادگی والدین
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark text-white border-primary">
+                            <i class="bi bi-text-paragraph"></i>
+                        </span>
+                        <input type="text"
+                               class="form-control form-control-lg bg-dark text-white border-primary"
+                               id="lastName"
+                               name="lastName"
+                               placeholder="محمدی"
+                               required
+                               asp-for="LastName">
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="password" class="form-label">رمز عبور</label>
-                    <input type="password"
-                           class="form-control bg-dark text-white border-secondary"
-                           id="password"
-                           name="password"
-                           placeholder="رمز عبور خود را وارد کنید"
-                           required
-                           minlength="8"
-                           asp-for="Password">
-                    <div id="passwordHelp" class="form-text">رمز عبور باید حداقل ۸ کاراکتر داشته باشد</div>
+                <!-- Password Field -->
+                <div class="mb-4">
+                    <label for="password" class="form-label fw-semibold">
+                        <i class="bi bi-key me-2"></i>رمز عبور
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark text-white border-primary">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        <input type="password"
+                               class="form-control form-control-lg bg-dark text-white border-primary"
+                               id="password"
+                               name="password"
+                               placeholder="رمز عبور خود را وارد کنید"
+                               required
+                               minlength="8"
+                               asp-for="Password">
+                        <button type="button" class="btn btn-outline-secondary border-primary" id="passwordToggle">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                    <div id="passwordHelp" class="form-text mt-2">
+                        <i class="bi bi-info-circle me-1"></i>رمز عبور باید حداقل ۸ کاراکتر داشته باشد
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary w-100 py-2">تایید و ادامه</button>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold mt-3">
+                    <i class="bi bi-check-circle me-2"></i>تایید و ادامه
+                </button>
             </form>
         </div>
     </div>
@@ -106,6 +155,24 @@
                    (remainder >= 2 && controlDigit === (11 - remainder));
         }
 
+        // Password toggle functionality
+        document.getElementById('passwordToggle').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('bi-eye');
+                eyeIcon.classList.add('bi-eye-slash');
+                this.classList.add('btn-warning');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('bi-eye-slash');
+                eyeIcon.classList.add('bi-eye');
+                this.classList.remove('btn-warning');
+            }
+        });
+
         // Validate national code on input
         document.getElementById('nationalCode').addEventListener('input', function(e) {
             // Convert Persian numbers to English
@@ -120,18 +187,18 @@
                 if (isValid) {
                     this.classList.remove('border-danger', 'is-invalid');
                     this.classList.add('border-success', 'is-valid');
-                    feedbackEl.textContent = 'کد ملی معتبر است';
-                    feedbackEl.className = 'form-text text-success';
+                    feedbackEl.innerHTML = '<i class="bi bi-check-circle me-1"></i>کد ملی معتبر است';
+                    feedbackEl.className = 'form-text text-success mt-2';
                 } else {
                     this.classList.remove('border-success', 'is-valid');
                     this.classList.add('border-danger', 'is-invalid');
-                    feedbackEl.textContent = 'کد ملی نامعتبر است';
-                    feedbackEl.className = 'form-text text-danger';
+                    feedbackEl.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>کد ملی نامعتبر است';
+                    feedbackEl.className = 'form-text text-danger mt-2';
                 }
             } else {
                 this.classList.remove('border-success', 'border-danger', 'is-valid', 'is-invalid');
-                feedbackEl.textContent = 'کد ملی ۱۰ رقمی خود را وارد کنید';
-                feedbackEl.className = 'form-text text-white-50';
+                feedbackEl.innerHTML = '<i class="bi bi-info-circle me-1"></i>کد ملی ۱۰ رقمی خود را وارد کنید';
+                feedbackEl.className = 'form-text text-white-50 mt-2';
             }
         });
 
@@ -142,49 +209,112 @@
             if (this.value.length < 8) {
                 this.classList.remove('border-success', 'is-valid');
                 this.classList.add('border-danger', 'is-invalid');
-                passwordHelp.textContent = 'رمز عبور باید حداقل ۸ کاراکتر داشته باشد';
-                passwordHelp.className = 'form-text text-danger';
+                passwordHelp.innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>رمز عبور باید حداقل ۸ کاراکتر داشته باشد';
+                passwordHelp.className = 'form-text text-danger mt-2';
             } else {
                 this.classList.remove('border-danger', 'is-invalid');
                 this.classList.add('border-success', 'is-valid');
-                passwordHelp.textContent = 'رمز عبور معتبر است';
-                passwordHelp.className = 'form-text text-success';
+                passwordHelp.innerHTML = '<i class="bi bi-check-circle me-1"></i>رمز عبور معتبر است';
+                passwordHelp.className = 'form-text text-success mt-2';
             }
         });
+
+        // Name field validation (Persian characters only)
+        document.getElementById('firstName').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^آ-ی ء-ي ]/g, '');
+            if (this.value.length > 0) {
+                this.classList.remove('border-danger', 'is-invalid');
+                this.classList.add('border-success', 'is-valid');
+            } else {
+                this.classList.remove('border-success', 'is-valid');
+            }
+        });
+
+        document.getElementById('lastName').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^آ-ی ء-ي ]/g, '');
+            if (this.value.length > 0) {
+                this.classList.remove('border-danger', 'is-invalid');
+                this.classList.add('border-success', 'is-valid');
+            } else {
+                this.classList.remove('border-success', 'is-valid');
+            }
+        });
+
+        // Show alert function
+        function showAlert(message, type) {
+            // Remove existing alerts
+            const existingAlert = document.querySelector('.alert-dismissible');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show mt-3`;
+            alert.innerHTML = `
+                <i class="bi bi-${type === 'danger' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+            document.querySelector('form').prepend(alert);
+        }
 
         // Prevent form submission if validation fails
         document.getElementById('profileForm').addEventListener('submit', function(e) {
             let isValid = true;
+            let errorMessage = '';
 
             // National code validation
             const nationalCodeInput = document.getElementById('nationalCode');
             const englishCode = convertToEnglish(nationalCodeInput.value);
             if (englishCode.length !== 10 || !checkCodeMeli(englishCode)) {
                 nationalCodeInput.classList.add('border-danger', 'is-invalid');
-                document.getElementById('nationalCodeFeedback').textContent = 'لطفاً کد ملی معتبر وارد کنید';
-                document.getElementById('nationalCodeFeedback').className = 'form-text text-danger';
+                document.getElementById('nationalCodeFeedback').innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>لطفاً کد ملی معتبر وارد کنید';
+                document.getElementById('nationalCodeFeedback').className = 'form-text text-danger mt-2';
                 isValid = false;
+                errorMessage = 'کد ملی وارد شده معتبر نیست';
             }
 
             // Password validation
             const passwordInput = document.getElementById('password');
             if (passwordInput.value.length < 8) {
                 passwordInput.classList.add('border-danger', 'is-invalid');
-                document.getElementById('passwordHelp').textContent = 'رمز عبور باید حداقل ۸ کاراکتر داشته باشد';
-                document.getElementById('passwordHelp').className = 'form-text text-danger';
+                document.getElementById('passwordHelp').innerHTML = '<i class="bi bi-exclamation-triangle me-1"></i>رمز عبور باید حداقل ۸ کاراکتر داشته باشد';
+                document.getElementById('passwordHelp').className = 'form-text text-danger mt-2';
                 isValid = false;
+                errorMessage = errorMessage || 'رمز عبور باید حداقل ۸ کاراکتر داشته باشد';
+            }
+
+            // Name validation
+            const firstNameInput = document.getElementById('firstName');
+            if (firstNameInput.value.trim().length === 0) {
+                firstNameInput.classList.add('border-danger', 'is-invalid');
+                isValid = false;
+                errorMessage = errorMessage || 'لطفا نام خود را وارد کنید';
+            }
+
+            const lastNameInput = document.getElementById('lastName');
+            if (lastNameInput.value.trim().length === 0) {
+                lastNameInput.classList.add('border-danger', 'is-invalid');
+                isValid = false;
+                errorMessage = errorMessage || 'لطفا نام خانوادگی خود را وارد کنید';
             }
 
             if (!isValid) {
                 e.preventDefault();
-                if (!isValid) {
-                    // Focus on the first invalid field
-                    const invalidField = document.querySelector('.is-invalid');
-                    if (invalidField) {
-                        invalidField.focus();
-                    }
+                showAlert(errorMessage || 'لطفا اطلاعات فرم را به درستی تکمیل کنید', 'danger');
+
+                // Focus on the first invalid field
+                const invalidField = document.querySelector('.is-invalid');
+                if (invalidField) {
+                    invalidField.focus();
                 }
             }
+        });
+
+        // Auto-focus on national code field
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('nationalCode').focus();
         });
     </script>
 }
@@ -204,23 +334,60 @@
         border-color: #dc3545 !important;
     }
 
-    .text-success {
-        color: #28a745 !important;
-    }
-
-    .text-danger {
-        color: #dc3545 !important;
-    }
-
     /* Input focus styling */
     .form-control:focus {
         background-color: #222;
         color: white;
-        box-shadow: 0 0 0 0.25rem rgba(100, 100, 100, 0.25);
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
     }
 
-    /* Back button icon flip for RTL */
-    .bi-arrow-right {
-        transform: scaleX(-1);
+    /* Password toggle button */
+    .btn-outline-secondary {
+        border-color: #0d6efd;
+        color: #6c757d;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #000;
+    }
+
+    /* Smooth transitions */
+    .form-control, .btn {
+        transition: all 0.3s ease;
+    }
+
+    /* Card animation */
+    .card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Alert styling */
+    .alert-warning {
+        background-color: rgba(255, 193, 7, 0.1);
+        border: 1px solid #ffc107;
+    }
+
+    /* Form text icon alignment */
+    .form-text i {
+        font-size: 0.9em;
     }
 </style>

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using School_Manager.Core.Events;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
@@ -93,6 +94,58 @@ namespace School_Manager.Core.Services.Implemetations
         {
             var sshifts = _unitOfWork.GetRepository<Shift>().Query(x=>x.SchoolRef == SchoolId).ToList();
             return _mapper.Map<List<ShiftDto>>(sshifts);
+        }
+
+        public async Task<List<DriverDto>> GetDriversOfShift(long shiftId)
+        {
+            var drivers = await _unitOfWork.GetRepository<Driver>()
+                .Query(d => d.DriverShifts.Any(ds => ds.ShiftRef == shiftId))
+                .Include(d => d.DriverShifts.Where(ds => ds.ShiftRef == shiftId))
+                .ThenInclude(d=>d.Passenger)
+                .ThenInclude(d=>d.ChildNavigation)
+                .ToListAsync();
+
+            return _mapper.Map<List<DriverDto>>(drivers);
+        }
+
+        public async Task<List<ChildInfo>> GetChildernOfShift(long ShiftId)
+        {
+            var Childern = await _unitOfWork.GetRepository<Child>()
+                .Query(x => x.ShiftId == ShiftId && x.DriverChilds.Any(y=>y.IsEnabled && y.EndDate >= DateTime.Now))
+                .Include(x=>x.ServiceContracts)
+                .ThenInclude(x=>x.Bills)
+                .ThenInclude(x=>x.PayBills)
+                .ThenInclude(x=>x.PayNavigation).ToListAsync();
+            return _mapper.Map<List<ChildInfo>>(Childern);
+        }
+        public async Task<List<ChildInfo>> GetNonDriverChildernOfShift(long ShiftId)
+        {
+            var Childern = await _unitOfWork.GetRepository<Child>().Query(x => x.ShiftId == ShiftId && !x.DriverChilds.Any(y=>y.IsEnabled && y.EndDate >= DateTime.Now)).ToListAsync();
+            return _mapper.Map<List<ChildInfo>>(Childern);
+        }
+
+        public DriverShift GetDriverShift(long ShiftId, long DriverId)
+        {
+            var Shift = _unitOfWork.GetRepository<DriverShift>()
+                .Query(x => x.ShiftRef == ShiftId && x.DriverRef == DriverId)
+                .AsNoTracking()
+                .Include(x => x.Passenger
+                    .Where(p => p.IsEnabled && p.EndDate >= DateTime.Now))
+                .FirstOrDefault();
+
+            return _mapper.Map<DriverShift>(Shift);
+        }
+
+        public async Task<List<ChildInfo>> GetAllPassangerOfDriver(long DriverId)
+        {
+            var Childern = await _unitOfWork.GetRepository<Child>()
+                .Query(x=>x.DriverChilds.Any(d=>d.DriverShiftNavigation.DriverNavigation.Id ==  DriverId))
+                .Include(x=>x.ServiceContracts)
+                .ThenInclude(x=>x.Bills)
+                .ThenInclude(x=>x.PayBills)
+                .ThenInclude(x=>x.PayNavigation)
+                .ToListAsync();
+            return _mapper.Map<List<ChildInfo>>(Childern);
         }
     }
 }

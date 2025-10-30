@@ -38,7 +38,7 @@ namespace School_Manger.Controllers.Admin
         public async Task<IActionResult> Drivers()
         {
             var drivers = await _userService.GetAllAsyncDrivers();
-            return View("_UsersTable", drivers);
+            return View("Drivers", drivers);
         }
 
         public IActionResult Create(UserType type)

@@ -1,29 +1,393 @@
-﻿@using School_Manager.Core.ViewModels.FModels
+﻿@using School_Manager.Core.Services.Interfaces
+@using School_Manager.Core.ViewModels.FModels
+@* @inject IDriverService driverService; *@
 @model List<UserDTO>
+
 @{
-    ViewData["Title"] = "🚦 مدیریت کاربران رانندگان";
+    ViewData["Title"] = "🚦 مدیریت رانندگان";
     Layout = "_AdminLayout";
 }
 
-<div class="container mt-4 text-white" dir="rtl">
-    <div class="card bg-dark text-white  shadow-lg rounded-4 border-primary border-2">
-        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">🚗 لیست رانندگان</h4>
-            <a asp-action="Create" asp-route-type="Driver" class="btn btn-success">
-                <i class="bi bi-plus-circle me-1"></i> کاربر جدید
-            </a>
+<div class="container-fluid bg-dark text-white py-4" dir="rtl">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="fw-bold mb-2">
+                        <i class="bi bi-steering-wheel text-primary me-2"></i>مدیریت رانندگان
+                    </h2>
+                    <p class="text-white-50 mb-0">
+                        <i class="bi bi-info-circle me-1"></i>مدیریت اطلاعات رانندگان و سرویس‌های آنها
+                    </p>
+                </div>
+                <div>
+                    <span class="badge bg-primary fs-6 p-3">
+                        <i class="bi bi-person-check me-1"></i>@Model.Count راننده
+                    </span>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-steering-wheel fs-1 d-block mb-2"></i>
+                    <h4 class="mb-1">@Model.Count</h4>
+                    <p class="mb-0">رانندگان ثبت‌شده</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-check fs-1 d-block mb-2"></i>
+                    <h4 class="mb-1">@Model.Count(p => p.IsActive)</h4>
+                    <p class="mb-0">رانندگان فعال</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-dark shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-x fs-1 d-block mb-2"></i>
+                    <h4 class="mb-1">@Model.Count(p => !p.IsActive)</h4>
+                    <p class="mb-0">رانندگان غیرفعال</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-bus-front fs-1 d-block mb-2"></i>
+                    <h4 class="mb-1">@* @Model.Sum(p => p.Services.Count) *@0</h4>
+                    <p class="mb-0">کل سرویس‌ها</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Table -->
+    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2">
+        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center py-3">
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-list-ul me-2"></i>لیست رانندگان
+            </h4>
+            <div>
+                <form asp-controller="Excel" asp-action="ExportDriverUserIndex">
+                    <button class="btn btn-light btn-sm me-2">
+                        <i class="bi bi-download me-1"></i>خروجی
+                    </button>
+                </form>
+                <a asp-action="Create" asp-route-type="Driver" class="btn btn-success btn-sm">
+                    <i class="bi bi-plus-circle me-1"></i>راننده جدید
+                </a>
+            </div>
+        </div>
+
         <div class="card-body">
+            <!-- Search and Filters -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-secondary text-white border-secondary">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control bg-dark text-white border-secondary" placeholder="جستجوی رانندگان...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select bg-dark text-white border-secondary">
+                        <option value="">همه وضعیت‌ها</option>
+                        <option value="active">فعال</option>
+                        <option value="inactive">غیرفعال</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select bg-dark text-white border-secondary">
+                        <option value="">همه سرویس‌ها</option>
+                        <option value="with-service">دارای سرویس</option>
+                        <option value="without-service">بدون سرویس</option>
+                    </select>
+                </div>
+            </div>
+
             @if (Model != null && Model.Any())
             {
-                @await Html.PartialAsync("_UsersTable", Model)
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden">
+                        <thead class="table-light text-dark">
+                            <tr>
+                                <th class="fw-bold">
+                                    <i class="bi bi-hash me-1"></i>ردیف
+                                </th>
+                                <th>
+                                    <i class="bi bi-person-circle me-1"></i>نام کاربری
+                                </th>
+                                <th>
+                                    <i class="bi bi-person-badge me-1"></i>نام کامل
+                                </th>
+                                <th>
+                                    <i class="bi bi-credit-card me-1"></i>کد ملی
+                                </th>
+                                <th>
+                                    <i class="bi bi-telephone me-1"></i>شماره تماس
+                                </th>
+                                <th>
+                                    <i class="bi bi-bus-front me-1"></i>تعداد سرویس‌ها
+                                </th>
+                                <th>
+                                    <i class="bi bi-activity me-1"></i>وضعیت
+                                </th>
+                                @* <th><i class="bi bi-person-vcard"></i> تعداد سفرها</th> *@
+                                @* <th><i class="bi bi-cash"></i> وضعیت مالی</th> *@
+                                <th class="fw-bold">
+                                    <i class="bi bi-gear me-1"></i>عملیات
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Count; i++)
+                            {
+                                var driver = Model[i];
+                                @* var servicesCount = driverService.GetDriverServices(driver.Id).Count(); *@
+                                @* var debt = driver.Services.Where(x=>x.Bills != null).Sum(s => s.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice)); *@
+                                var isActive = driver.IsActive;
+
+                                <tr class="align-middle">
+                                    <td class="fw-bold text-info">@(i + 1)</td>
+                                    <td>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-person-circle text-warning me-2"></i>
+                                            @driver.UserName
+                                        </div>
+                                    </td>
+                                    <td>@driver.FullName</td>
+                                    <td>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-123 text-info me-2"></i>
+                                            @driver.UserName @* Using UserName as National Code *@
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-telephone text-info me-2"></i>
+                                            @driver.Mobile
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info text-dark fw-bold p-2">
+                                            <i class="bi bi-bus-front me-1"></i>0 سرویس
+                                            @* <i class="bi bi-bus-front me-1"></i>@servicesCount سرویس *@
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge fw-bold p-2 @(isActive ? "bg-success" : "bg-secondary")">
+                                            <i class="bi @(isActive ? "bi-check-circle" : "bi-x-circle") me-1"></i>
+                                            @(isActive ? "فعال" : "غیرفعال")
+                                        </span>
+                                    </td>
+                                    @* <td>
+                                        <span class="badge bg-info">@driver.Services.Sum(x=>x.Trips.Count)</span>
+                                    </td> *@
+                                    @* <td>
+                                        <span class="badge fw-bold @(debt > 0 ? "bg-danger" : "bg-success")">
+                                            @(debt > 0 ? $"{debt:N0} ریال 💸" : "تسویه شده 🟢")
+                                        </span>
+                                    </td> *@
+                                    <td>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            @* <a asp-action="Details" asp-controller="Drivers" asp-route-id="@driver.Id"
+                                               class="btn btn-sm btn-outline-info rounded-pill shadow-sm"
+                                               data-bs-toggle="tooltip" title="مشاهده جزئیات">
+                                                <i class="bi bi-eye me-1"></i>مشاهده
+                                            </a> *@
+                                            <a asp-action="EditDriver" asp-route-UserId="@driver.Id" asp-route-NationCode="@driver.UserName"
+                                               class="btn btn-sm btn-outline-warning rounded-pill shadow-sm"
+                                               data-bs-toggle="tooltip" title="ویرایش اطلاعات">
+                                                <i class="bi bi-pencil-square me-1"></i>ویرایش
+                                            </a>
+                       @*                      <button class="btn btn-sm btn-outline-@(isActive ? "danger" : "success") rounded-pill shadow-sm"
+                                                    data-bs-toggle="tooltip" title="@(isActive ? "غیرفعال کردن" : "فعال کردن")">
+                                                <i class="bi bi-@(isActive ? "person-x" : "person-check") me-1"></i>
+                                            </button> *@
+                                            <a asp-action="DeleteDriver" asp-route-id="@driver.Id"
+                                               class="btn btn-sm btn-outline-danger rounded-pill shadow-sm"
+                                               data-bs-toggle="tooltip" title="حذف راننده"
+                                               onclick="return confirm('آیا از حذف این راننده مطمئن هستید؟')">
+                                                <i class="bi bi-trash me-1"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div class="text-white-50">
+                        <i class="bi bi-info-circle me-1"></i>
+                        نمایش @Model.Count مورد از @Model.Count راننده
+                    </div>
+                    <nav>
+                        <ul class="pagination mb-0">
+                            <li class="page-item disabled">
+                                <a class="page-link bg-dark text-white border-secondary" href="#">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item active"><a class="page-link bg-primary border-primary" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link bg-dark text-white border-secondary" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link bg-dark text-white border-secondary" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link bg-dark text-white border-secondary" href="#">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             }
             else
             {
-                <div class="alert alert-warning text-center" role="alert">
-                    🚫 کاربری یافت نشد!
+                <div class="alert alert-warning text-center fw-bold my-4" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i> راننده‌ای یافت نشد!
                 </div>
             }
         </div>
     </div>
 </div>
+
+@section PageScripts {
+    <script>
+        $(document).ready(function () {
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+
+            // Add hover effects to table rows
+            $('tbody tr').hover(
+                function() {
+                    $(this).addClass('bg-secondary bg-opacity-25');
+                },
+                function() {
+                    $(this).removeClass('bg-secondary bg-opacity-25');
+                }
+            );
+
+            // Search functionality
+            $('input[type="text"]').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            // Status filter
+            $('select').on('change', function() {
+                // Implement filter logic here
+                console.log('Filter changed:', $(this).val());
+            });
+
+            // Add loading animation
+            $('.btn').on('click', function() {
+                var btn = $(this);
+                var originalHtml = btn.html();
+                btn.html('<i class="bi bi-hourglass-split me-1"></i>در حال پردازش...');
+                btn.prop('disabled', true);
+
+                setTimeout(function() {
+                    btn.html(originalHtml);
+                    btn.prop('disabled', false);
+                }, 1500);
+            });
+        });
+    </script>
+}
+
+<style>
+    .table th, .table td {
+        vertical-align: middle;
+        text-align: center;
+        padding: 1rem 0.75rem;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        transform: scale(1.01);
+        transition: all 0.3s ease;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.5em 0.8em;
+    }
+
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+    /* Custom scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #2d3748;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #4a5568;
+        border-radius: 4px;
+    }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.9rem;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .d-flex.gap-2 {
+            gap: 0.25rem !important;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+
+        .row.mb-4 .col-md-6,
+        .row.mb-4 .col-md-3 {
+            margin-bottom: 1rem;
+        }
+    }
+</style>

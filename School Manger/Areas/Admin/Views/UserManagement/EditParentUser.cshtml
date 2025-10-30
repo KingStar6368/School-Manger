@@ -7,10 +7,12 @@
     <div class="card bg-dark text-white shadow-lg rounded-4 border-primary mb-4">
         <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
             <h4 class="mb-0 fw-bold">
-                ✏️ ویرایش والد: <span class="text-warning">@Model.ParentUpdateDto.FirstName</span>
+                <i class="bi bi-pencil-square me-2"></i> ویرایش والد: <span class="text-warning">@Model.ParentUpdateDto.FirstName</span>
             </h4>
             <form asp-action="Parents" method="post">
-                <input type="submit" class="btn btn-secondary fw-bold shadow-sm" value="🔙 بازگشت" />
+                <button type="submit" class="btn btn-secondary fw-bold shadow-sm">
+                    <i class="bi bi-arrow-left-circle me-1"></i> بازگشت
+                </button>
             </form>
         </div>
         <div class="card-body">
@@ -22,38 +24,39 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">👤 نام</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person me-1"></i> نام</label><label class="text-danger fs-5">*</label>
                             <input asp-for="@Model.ParentUpdateDto.FirstName" id="PName" value="@Model.ParentUpdateDto.FirstName" class="form-control form-control-lg" required />
                             <input asp-for="@Model.UserUpdateDto.FirstName" id="UName" hidden value="@Model.ParentUpdateDto.FirstName" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">👥 نام خانوادگی</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-person me-1"></i> نام خانوادگی</label><label class="text-danger fs-5">*</label>
                             <input asp-for="@Model.ParentUpdateDto.LastName" id="PLastName" value="@Model.ParentUpdateDto.LastName" class="form-control form-control-lg" required />
                             <input asp-for="@Model.UserUpdateDto.LastName" id="ULastName" hidden value="@Model.ParentUpdateDto.LastName" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🆔 کد ملی</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-credit-card me-1"></i> کد ملی</label><label class="text-danger fs-5">*</label>
                             <input asp-for="@Model.ParentUpdateDto.NationalCode" id="PerName" value="@Model.ParentUpdateDto.NationalCode" class="form-control form-control-lg" required />
                             <input asp-for="@Model.UserUpdateDto.UserName" id="UserName" hidden value="@Model.ParentUpdateDto.NationalCode" required />
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">🏠 آدرس</label>
+                            <label class="form-label"><i class="bi bi-house me-1"></i> آدرس</label>
                             <textarea asp-for="@Model.ParentUpdateDto.Address" value="@Model.ParentUpdateDto.Address" class="form-control" rows="2"></textarea>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">🔒 رمز عبور</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-key me-1"></i> رمز عبور</label><label class="text-danger fs-5">*</label>
                             <input asp-for="@Model.UserUpdateDto.PasswordHash" value="@Model.UserUpdateDto.PasswordHash" type="password" id="password" class="form-control form-control-lg" minlength="8" required />
+                            <span id="passwordHelp" class="form-text"></span>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">📞 شماره تماس</label><label style="color:red;font-size:20px">*</label>
+                            <label class="form-label"><i class="bi bi-telephone me-1"></i> شماره تماس</label><label class="text-danger fs-5">*</label>
                             <input asp-for="@Model.UserUpdateDto.Mobile" class="form-control form-control-lg" required />
                         </div>
                     </div>
-                    <div class="mt-4">
-                        <button type="submit" class="btn btn-success fw-bold me-2 shadow-sm">
-                            💾 ذخیره تغییرات
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-success fw-bold shadow-sm">
+                            <i class="bi bi-check-circle me-1"></i> ذخیره تغییرات
                         </button>
                     </div>
                 </div>
@@ -68,7 +71,8 @@
             document.getElementById('ULastName').value = document.getElementById('PLastName').value;
             document.getElementById('UserName').value = document.getElementById('PerName').value;
         }
-                 // Password validation
+
+        // Password validation
         document.getElementById('password').addEventListener('input', function(e) {
             const passwordHelp = document.getElementById('passwordHelp');
 

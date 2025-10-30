@@ -1,129 +1,358 @@
 ﻿@using School_Manger.Models.PageView
 @model AdminNONChildDriver
 @{
-    ViewData["Title"] = "اختصاص دادن راننده به دانش آموز";
+    ViewData["Title"] = "🚌 اختصاص راننده به دانش‌آموز";
     Layout = "_AdminLayout";
 }
 
-<div class="container-fluid px-2">
-    <div class="row mb-4">
-        <div class="col-12 text-center">
-            <h2 class="fw-bold text-primary mb-2 fs-2">
-                <i class="bi bi-person-badge"></i> 🚍 اختصاص دادن راننده به دانش آموز
-            </h2>
-            <p class="lead text-secondary fs-5">برای اختصاص راننده به دانش‌آموز، روی ردیف مورد نظر کلیک کنید یا شناسه را به صورت دستی وارد نمایید.</p>
-        </div>
-    </div>
-    <!-- راننده‌ها -->
+<div class="container-fluid bg-dark text-white py-4" dir="rtl">
+    <!-- Header Section -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="border rounded-4 p-2 bg-white shadow-sm">
-                <h5 class="text-primary text-center mb-3 fw-bold fs-4">
-                    🚗 لیست راننده‌ها
-                </h5>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped text-center align-middle table-hover w-100 fs-5">
-                        <thead class="table-primary sticky-top">
-                            <tr>
-                                <th>شناسه</th>
-                                <th>نام</th>
-                                <th>نام خانوادگی</th>
-                                <th>کد ملی</th>
-                                <th>صندلی خالی</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var Driver in Model.AvailableDrivers)
-                            {
-                                <tr onclick="DriverRowClick(@Driver.Id)" style="cursor:pointer;">
-                                    <td>@Driver.Id</td>
-                                    <td>@Driver.Name</td>
-                                    <td>@Driver.LastName</td>
-                                    <td>@Driver.NationCode</td>
-                                    <td><span class="badge bg-success fs-5">@Driver.AvailableSeats 🎟️</span></td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="fw-bold mb-2">
+                        <i class="bi bi-link-45deg text-primary me-2"></i>اختصاص راننده به دانش‌آموز
+                    </h2>
+                    <p class="text-white-50 mb-0">
+                        <i class="bi bi-info-circle me-1"></i>برای اختصاص راننده به دانش‌آموز، روی ردیف مورد نظر کلیک کنید یا شناسه را به صورت دستی وارد نمایید
+                    </p>
+                </div>
+                <div>
+                    <span class="badge bg-primary fs-6 p-3">
+                        <i class="bi bi-arrow-left-right me-1"></i>@Model.NonDivers.Count() دانش‌آموز
+                    </span>
                 </div>
             </div>
         </div>
     </div>
-    <!-- دانش‌آموزان -->
+
+    <!-- Statistics Cards -->
     <div class="row mb-4">
-        <div class="col-12">
-            <div class="border rounded-4 p-2 bg-white shadow-sm">
-                <h5 class="text-primary text-center mb-3 fw-bold fs-4">
-                    🎓 لیست دانش‌آموزان
-                </h5>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped text-center align-middle table-hover w-100 fs-5">
-                        <thead class="table-primary sticky-top">
-                            <tr>
-                                <th>شناسه</th>
-                                <th>نام</th>
-                                <th>نام خانوادگی</th>
-                                <th>کدملی</th>
-                                <th>مدرسه</th>
-                                <th>مقطع</th>
-                                <th>آدرس</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var Child in Model.NonDivers)
-                            {
-                                <tr onclick="ChildRowClick(@Child.Id)" style="cursor:pointer;">
-                                    <td>@Child.Id</td>
-                                    <td>@Child.FirstName</td>
-                                    <td>@Child.LastName</td>
-                                    <td>@Child.NationalCode</td>
-                                    <td>@Child.SchoolId</td>
-                                    <td>@Child.Class</td>
-                                    <td>@Child.Path.Location1.Address</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-primary text-white shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-steering-wheel fs-1 d-block mb-2"></i>
+                    <h4 class="mb-1">@Model.AvailableDrivers.Count()</h4>
+                    <p class="mb-0">رانندگان موجود</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-success text-white shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-people fs-1 d-block mb-2"></i>
+                    <h4 class="mb-1">@Model.NonDivers.Count()</h4>
+                    <p class="mb-0">دانش‌آموزان بدون راننده</p>
                 </div>
             </div>
         </div>
     </div>
-    <!-- فرم مرکزی پایین -->
+
+    <!-- Drivers Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2">
+                <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center py-3">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="bi bi-steering-wheel me-2"></i>لیست راننده‌ها
+                    </h4>
+                    <span class="badge bg-light text-dark fs-6">
+                        <i class="bi bi-list-check me-1"></i>@Model.AvailableDrivers.Count() راننده
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden">
+                            <thead class="table-light text-dark">
+                                <tr>
+                                    <th class="fw-bold">
+                                        <i class="bi bi-hash me-1"></i>شناسه
+                                    </th>
+                                    <th>
+                                        <i class="bi bi-person me-1"></i>نام
+                                    </th>
+                                    <th>
+                                        <i class="bi bi-person me-1"></i>نام خانوادگی
+                                    </th>
+                                    <th>
+                                        <i class="bi bi-credit-card me-1"></i>کد ملی
+                                    </th>
+                                    <th>
+                                        <i class="bi bi-person-seat me-1"></i>صندلی خالی
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var Driver in Model.AvailableDrivers)
+                                {
+                                    <tr onclick="DriverRowClick(@Driver.Id)" style="cursor:pointer;" class="driver-row align-middle">
+                                        <td class="fw-bold text-info">@Driver.Id</td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-person-circle text-warning me-2"></i>
+                                                @Driver.Name
+                                            </div>
+                                        </td>
+                                        <td>@Driver.LastName</td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-123 text-info me-2"></i>
+                                                @Driver.NationCode
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge fw-bold p-2 @(Driver.AvailableSeats > 0 ? "bg-success" : "bg-warning text-dark")">
+                                                <i class="bi bi-person-check me-1"></i>@Driver.AvailableSeats
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Students Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-dark text-white shadow-lg rounded-4 border-success border-2">
+                <div class="card-header bg-success bg-gradient d-flex justify-content-between align-items-center py-3">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="bi bi-people me-2"></i>لیست دانش‌آموزان
+                    </h4>
+                    <span class="badge bg-light text-dark fs-6">
+                        <i class="bi bi-list-check me-1"></i>@Model.NonDivers.Count() دانش‌آموز
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden">
+                            <thead class="table-light text-dark">
+                                <tr>
+                                    <th class="fw-bold">
+                                        <i class="bi bi-hash me-1"></i>شناسه
+                                    </th>
+                                    <th>
+                                        <i class="bi bi-person me-1"></i>نام
+                                    </th>
+                                    <th>
+                                        <i class="bi bi-person me-1"></i>نام خانوادگی
+                                    </th>
+                                    <th>
+                                        <i class="bi bi-credit-card me-1"></i>کدملی
+                                    </th>
+                                    <th>
+                                        <i class="bi bi-building me-1"></i>مدرسه
+                                    </th>
+                                    <th>
+                                        <i class="bi bi-book me-1"></i>مقطع
+                                    </th>
+                                    <th>
+                                        <i class="bi bi-geo-alt me-1"></i>آدرس
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var Child in Model.NonDivers)
+                                {
+                                    <tr onclick="ChildRowClick(@Child.Id)" style="cursor:pointer;" class="student-row align-middle">
+                                        <td class="fw-bold text-info">@Child.Id</td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-person-circle text-warning me-2"></i>
+                                                @Child.FirstName
+                                            </div>
+                                        </td>
+                                        <td>@Child.LastName</td>
+                                        <td>
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-123 text-info me-2"></i>
+                                                @Child.NationalCode
+                                            </div>
+                                        </td>
+                                        <td>@Child.SchoolId</td>
+                                        <td>
+                                            <span class="badge bg-info fw-bold p-2">@Child.Class</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary fw-bold p-2">
+                                                <i class="bi bi-geo-alt me-1"></i>آدرس
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assignment Form -->
     <div class="row mb-4">
         <div class="col-12 d-flex align-items-center justify-content-center">
-            <div class="border rounded-4 p-4 bg-white shadow-lg w-100" style="max-width:600px;">
-                <h5 class="text-center mb-4 text-success fw-bold fs-4">
-                    <i class="bi bi-arrow-left-right"></i> 🔗 ارتباط راننده و دانش‌آموز
-                </h5>
-                <form method="post" asp-action="AssignDriver">
-                    <div class="mb-3">
-                        <label for="DriverId" class="form-label fw-semibold fs-5">شناسه راننده 🚘</label>
-                        <input id="DriverId" name="DriverId" type="number" class="form-control form-control-lg text-center fs-5" placeholder="شناسه راننده را وارد کنید" required />
-                    </div>
-                    <div class="mb-4">
-                        <label for="StudentId" class="form-label fw-semibold fs-5">شناسه دانش آموز 🎒</label>
-                        <input id="StudentId" name="StudentId" type="number" class="form-control form-control-lg text-center fs-5" placeholder="شناسه دانش‌آموز را وارد کنید" required />
-                    </div>
-                    <div class="d-grid gap-2 mb-3">
-                        <button type="submit" class="btn btn-success btn-lg fw-bold fs-5">
-                            <i class="bi bi-check-circle"></i> ثبت
-                        </button>
-                        <a asp-action="Index" class="btn btn-outline-secondary fw-bold fs-5">
-                            <i class="bi bi-arrow-return-left"></i> بازگشت
-                        </a>
-                    </div>
-                </form>
+            <div class="card bg-dark text-white shadow-lg rounded-4 border-warning border-2 w-100" style="max-width:600px;">
+                <div class="card-header bg-warning bg-gradient text-center py-3">
+                    <h4 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-arrow-left-right me-2"></i>ارتباط راننده و دانش‌آموز
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" asp-action="AssignDriver">
+                        <div class="mb-3">
+                            <label for="DriverId" class="form-label fw-semibold fs-5">
+                                <i class="bi bi-steering-wheel me-1"></i> شناسه راننده
+                            </label>
+                            <input id="DriverId" name="DriverId" type="number" class="form-control form-control-lg text-center fs-5 bg-dark text-white border-secondary" placeholder="شناسه راننده را وارد کنید" required />
+                        </div>
+                        <div class="mb-4">
+                            <label for="StudentId" class="form-label fw-semibold fs-5">
+                                <i class="bi bi-backpack me-1"></i> شناسه دانش آموز
+                            </label>
+                            <input id="StudentId" name="StudentId" type="number" class="form-control form-control-lg text-center fs-5 bg-dark text-white border-secondary" placeholder="شناسه دانش‌آموز را وارد کنید" required />
+                        </div>
+                        <div class="d-grid gap-2 mb-3">
+                            <button type="submit" class="btn btn-success btn-lg fw-bold fs-5 shadow-sm">
+                                <i class="bi bi-check-circle me-1"></i> ثبت ارتباط
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg fw-bold fs-5">
+                                <i class="bi bi-arrow-left-circle me-1"></i> بازگشت
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
-@section Scripts {
+
+@section PageScripts {
     <script>
+        $(document).ready(function () {
+            // Add hover effects to table rows
+            $('tbody tr').hover(
+                function() {
+                    $(this).addClass('bg-secondary bg-opacity-25');
+                },
+                function() {
+                    $(this).removeClass('bg-secondary bg-opacity-25');
+                }
+            );
+
+            // Add loading animation to submit button
+            $('form').on('submit', function() {
+                var btn = $(this).find('button[type="submit"]');
+                var originalHtml = btn.html();
+                btn.html('<i class="bi bi-hourglass-split me-1"></i>در حال پردازش...');
+                btn.prop('disabled', true);
+            });
+        });
+
         function ChildRowClick(Id){
             document.getElementById('StudentId').value = Id;
+            highlightRow('student', Id);
         }
+
         function DriverRowClick(Id){
-            document.getElementById('DriverId').value = Id
+            document.getElementById('DriverId').value = Id;
+            highlightRow('driver', Id);
+        }
+
+        function highlightRow(type, id) {
+            // Remove previous highlights
+            $('.table-success').removeClass('table-success');
+
+            // Add highlight to selected row
+            $(`.${type}-row`).each(function() {
+                if ($(this).find('td:first').text().trim() == id.toString()) {
+                    $(this).addClass('table-success');
+                    // Smooth scroll to form
+                    $('html, body').animate({
+                        scrollTop: $('.card.border-warning').offset().top - 100
+                    }, 500);
+                }
+            });
         }
     </script>
 }
+
+<style>
+    .table th, .table td {
+        vertical-align: middle;
+        text-align: center;
+        padding: 1rem 0.75rem;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        transform: scale(1.01);
+        transition: all 0.3s ease;
+    }
+
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.5em 0.8em;
+    }
+
+    .card {
+        transition: transform 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+    /* Custom scrollbar */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #2d3748;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #4a5568;
+        border-radius: 4px;
+    }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+
+    /* Responsive design */
+    @@media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.9rem;
+        }
+
+        .btn-lg {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+
+        .card-body {
+            padding: 1rem;
+        }
+    }
+
+    .table-success {
+        background-color: rgba(25, 135, 84, 0.2) !important;
+        border-left: 4px solid #198754 !important;
+    }
+</style>

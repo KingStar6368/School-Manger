@@ -17,10 +17,11 @@ namespace School_Manager.Core.Mapper
             ?.OrderByDescending(s => s.CreatedOn) 
             .FirstOrDefault();
             int seatNumber = activeShift?.Seats ?? source.AvailableSeats;
-            int passangerCount =  source.DriverShifts?
-            .SelectMany(ds => ds.Passenger)
-            .Count(p => p.IsEnabled && p.EndDate > DateTime.Now)
-            ?? 0;
+            int passangerCount = source.DriverShifts ?
+              .Where(ds => ds.Passenger != null) // Filter out null Passenger collections
+              .SelectMany(ds => ds.Passenger)
+              .Count(p => p != null && p.IsEnabled && p.EndDate > DateTime.Now)
+              ?? 0;
 
             return seatNumber - passangerCount;
         }
