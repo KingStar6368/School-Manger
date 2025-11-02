@@ -49,6 +49,12 @@ namespace School_Manager.Core.Services.Implemetations
             return ds;
         }
 
+        public SMSLogDto GetLastWarning(long UserId)
+        {
+            var ds = _unitOfWork.GetRepository<SMSLog>().Query(x => x.UserId == UserId).OrderBy(x=>x.SMSTime).LastOrDefault();
+            return _mapper.Map<SMSLogDto>(ds);
+        }
+
         public async Task<List<SMSLogDto>> GetSMSLog()
         {
             var ds = await _unitOfWork.GetRepository<SMSLog>().GetAllAsync();

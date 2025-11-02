@@ -91,14 +91,14 @@ namespace School_Manager.Core.Services.Implemetations
             return _mapper.Map<List<ChildInfo>>(ds);
         }
 
-        public SchoolDto GetChildSchool(long ChildId)
+        public long GetChildSchool(long ChildId)
         {
             var ds = _unitOfWork.GetRepository<Child>()
                 .Query()
                 .Include(x=>x.SchoolNavigation)
                 .Include(x => x.DriverChilds).ThenInclude(x => x.DriverShiftNavigation).ThenInclude(x => x.DriverNavigation)
                 .FirstOrDefault(x=>x.Id == ChildId);
-            return _mapper.Map<SchoolDto>(ds.SchoolNavigation);
+            return _mapper.Map<long>(ds.SchoolRef);
         }
 
         public async Task<List<ChildInfo>> GetChildWithoutDriver(long DriverId = 0,long SchoolId = 0, double radiusInMeters = 500)

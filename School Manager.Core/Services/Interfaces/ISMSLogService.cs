@@ -11,6 +11,7 @@ namespace School_Manager.Core.Services.Interfaces
     {
         public Task<List<SMSLogDto>> GetSMSLog();
         public SMSLogDto GetDto(int id);
+        public SMSLogDto GetLastWarning(long UserId);
         public int GetWarningCount(long UserId);
         public int GetBillCount(long UserId);
         public int GetInfoCount(long UserId);

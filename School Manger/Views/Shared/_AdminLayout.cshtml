@@ -93,6 +93,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Debtor" ? "active" : "")" href="/Admin/Debtor">
+                        <i class="bi bi-cash-stack me-2"></i> بدهکاران
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a style="pointer-events:none;cursor:not-allowed;" class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "DriverContract" ? "active" : "")" href="/Admin/DriverContract">
                         <i class="bi bi-file-earmark-text me-2"></i> قرارداد رانندگان
                     </a>

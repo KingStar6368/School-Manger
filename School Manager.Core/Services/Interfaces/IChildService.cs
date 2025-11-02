@@ -54,7 +54,7 @@ namespace School_Manager.Core.Services.Interfaces
         /// </summary>
         /// <param name="ChildId">کد دانش آموز</param>
         /// <returns></returns>
-        public SchoolDto GetChildSchool(long ChildId);
+        public long GetChildSchool(long ChildId);
         /// <summary>
         /// مشخص کردن رانند با کد رانند
         /// در راننده باید فیلد passanger اضافه شود

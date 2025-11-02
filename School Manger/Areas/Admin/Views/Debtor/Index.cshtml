@@ -1,0 +1,487 @@
+﻿@using School_Manager.Core.Services.Interfaces
+@using School_Manager.Core.ViewModels.FModels
+@using School_Manger.Extension;
+@inject IParentService _parentService
+@inject IChildService _childService
+@inject ISchoolService _schoolService
+@inject IDriverService _driverService
+@inject IBillService _billService
+@inject IContractService _contractService
+@inject ISMSLogService _SMSLogService
+@inject IUserService _UserService
+@{
+    ViewData["Title"] = "لیست بدهکاران";
+    Layout = "_AdminLayout";
+
+    // Get debtors data
+    var debtors = await _childService.GetNonPaidChildren();
+
+    // Group children by parent and calculate totals
+    var parentsDict = new Dictionary<long, ParentDto>();
+    var childrenByParent = new Dictionary<long, List<ChildInfo>>();
+
+    decimal totalDebt = 0;
+    foreach (var child in debtors)
+    {
+        var parent = _parentService.GetParentWithChild(child.Id);
+        if (parent != null)
+        {
+            if (!parentsDict.ContainsKey(parent.Id))
+            {
+                parentsDict[parent.Id] = _parentService.GetParent(parent.Id);
+                childrenByParent[parent.Id] = new List<ChildInfo>();
+            }
+            childrenByParent[parent.Id].Add(child);
+
+            // Calculate total debt for this child
+            var childBills = (await _billService.GetChildBills(child.Id))
+                .Where(b => b.BillExpiredTime < DateTime.Now &&
+                           !b.HasPaid);
+
+            if (childBills != null)
+            {
+                totalDebt += childBills.Sum(b => b.TotalPrice - b.PaidPrice);
+            }
+        }
+    }
+
+    var totalDebtors = parentsDict.Count;
+}
+
+<div class="container-fluid py-4">
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card bg-danger text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">مجموع بدهی‌ها</h5>
+                            <h3 class="mb-0">@totalDebt.ToString("N0") تومان</h3>
+                        </div>
+                        <div class="bg-white bg-opacity-25 p-3 rounded-circle">
+                            <i class="bi bi-currency-dollar fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-warning text-dark shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">تعداد بدهکاران</h5>
+                            <h3 class="mb-0">@totalDebtors.ToString("N0") خانواده</h3>
+                        </div>
+                        <div class="bg-white bg-opacity-25 p-3 rounded-circle">
+                            <i class="bi bi-people fs-2"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Debtors Table -->
+    <div class="card shadow-lg rounded-3">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3 rounded-top">
+            <h4 class="mb-0 fw-bold">
+                <i class="bi bi-list-ul fs-4 me-2"></i>لیست بدهکاران
+            </h4>
+            <div>
+                <form asp-controller="Excel" asp-action="ExportDebtors" class="d-inline">
+                    <button class="btn btn-light btn-sm">
+                        <i class="bi bi-file-earmark-excel me-1"></i>خروجی اکسل
+                    </button>
+                </form>
+                <form id="sendWarningForm" asp-controller="Debtor" asp-action="SendWarningSms" method="post" class="d-inline">
+                    <input type="hidden" id="selectedParentIds" name="selectedParentIds" value="" />
+                    <button type="submit" class="btn btn-warning btn-sm" id="sendWarningBtn" disabled>
+                        <i class="bi bi-send me-1"></i>ارسال پیام اخطار برای انتخاب شده ها
+                        <span id="selectedCount" class="badge bg-dark ms-1">0</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center mb-0" id="debtorsTable">
+                    <thead class="table-primary">
+                        <tr>
+                            <th width="50">
+                                <div class="form-check d-inline-block">
+                                    <input class="form-check-input" type="checkbox" id="checkBoxAll" />
+                                </div>
+                            </th>
+                            <th class="fw-bold">
+                                <i class="bi bi-hash me-1"></i>ردیف
+                            </th>
+                            <th>
+                                <i class="bi bi-person me-1"></i>نام خانواده
+                            </th>
+                            <th>
+                                <i class="bi bi-currency-dollar me-1"></i>مبلغ بدهی
+                            </th>
+                            <th>
+                                <i class="bi bi-people me-1"></i>تعداد فرزندان
+                            </th>
+                            <th>
+                                <i class="bi bi-exclamation-triangle me-1"></i>تعداد اخطار ها
+                            </th>
+                            <th>
+                                <i class="bi bi-calendar me-1"></i>تاریخ آخرین اخطار
+                            </th>
+                            <th>
+                                <i class="bi bi-gear me-1"></i>عملیات
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (parentsDict.Any())
+                        {
+                            var rowNumber = 1;
+                            @foreach (var parentEntry in parentsDict)
+                            {
+                                var parent = parentEntry.Value;
+                                var children = childrenByParent[parent.Id];
+                                var parentTotalDebt = 0m;
+                                var User = _UserService.GetUserByParent(parent.Id).Id;
+
+                                foreach (var child in children)
+                                {
+                                    var childBills = (await _billService.GetChildBills(child.Id))
+                                    .Where(b => b.BillExpiredTime < DateTime.Now &&
+                                    !b.HasPaid);
+
+                                    if (childBills != null)
+                                    {
+                                        parentTotalDebt += childBills.Sum(b => b.TotalPrice - b.PaidPrice);
+                                    }
+                                }
+
+                                <tr class="parent-row" data-bs-toggle="collapse" data-bs-target="#children-@parent.Id" aria-expanded="false" aria-controls="children-@parent.Id">
+                                    <td>
+                                        <div class="form-check d-inline-block">
+                                            <input class="form-check-input parent-checkbox" type="checkbox" value="@parent.Id" data-parent-id="@parent.Id" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">@rowNumber</span>
+                                    </td>
+                                    <td class="fw-bold">@parent.ParentFirstName @parent.ParentLastName</td>
+                                    <td>
+                                        <span class="badge bg-danger fs-6">@parentTotalDebt.ToString("N0") تومان</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">@children.Count فرزند</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning">@_SMSLogService.GetWarningCount(User) </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning">@_SMSLogService.GetLastWarning(User)?.SMSTime.ToPersianString() </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-chevron-down collapse-icon"></i>
+                                            مشاهده جزئیات
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="collapse-row">
+                                    <td colspan="8" class="p-0 border-0">
+                                        <div class="collapse" id="children-@parent.Id">
+                                            <div class="card card-body border-0 bg-light">
+                                                <!-- Children Table -->
+                                                <table class="table table-sm table-hover align-middle text-center child-table">
+                                                    <thead class="table-secondary">
+                                                        <tr>
+                                                            <th class="fw-bold">
+                                                                <i class="bi bi-hash me-1"></i>ردیف
+                                                            </th>
+                                                            <th>
+                                                                <i class="bi bi-person me-1"></i>نام
+                                                            </th>
+                                                            <th>
+                                                                <i class="bi bi-person-badge me-1"></i>نام خانوادگی
+                                                            </th>
+                                                            <th>
+                                                                <i class="bi bi-person-badge me-1"></i>راننده
+                                                            </th>
+                                                            <th>
+                                                                <i class="bi bi-mortarboard me-1"></i>مدرسه
+                                                            </th>
+                                                            <th>
+                                                                <i class="bi bi-gear me-1"></i>عملیات
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var child in children)
+                                                        {
+                                                            var driver = _childService.GetChildDriver(child.Id);
+                                                            var childBills = (await _billService.GetChildBills(child.Id))
+                                                            .Where(b => b.BillExpiredTime < DateTime.Now &&
+                                                            !b.HasPaid);
+
+                                                            <tr class="child-row" data-bs-toggle="collapse" data-bs-target="#bills-@child.Id" aria-expanded="false" aria-controls="bills-@child.Id">
+                                                                <td>
+                                                                    <span class="badge bg-dark">@child.Id</span>
+                                                                </td>
+                                                                <td>@child.FirstName</td>
+                                                                <td>@child.LastName</td>
+                                                                <td>
+                                                                    @if (driver != null)
+                                                                    {
+                                                                        <span class="badge bg-warning text-dark">@driver.Name @driver.LastName</span>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <span class="badge bg-secondary">ندارد</span>
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    @if (child.SchoolId != 0)
+                                                                    {
+                                                                        @_schoolService.GetSchool((long)child.SchoolId).Name
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <span class="text-muted">ندارد</span>
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    <button class="btn btn-sm btn-outline-secondary">
+                                                                        <i class="bi bi-chevron-down collapse-icon"></i>
+                                                                        مشاهده قبوض
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            <tr class="collapse-row">
+                                                                <td colspan="6" class="p-0 border-0">
+                                                                    <div class="collapse" id="bills-@child.Id">
+                                                                        <div class="card card-body border-0 bg-white">
+                                                                            <!-- Bills Table -->
+                                                                            <table class="table table-sm align-middle text-center grandchild-table">
+                                                                                <thead class="table-warning">
+                                                                                    <tr>
+                                                                                        <th class="fw-bold">
+                                                                                            <i class="bi bi-hash me-1"></i>شناسه قبض
+                                                                                        </th>
+                                                                                        <th>
+                                                                                            <i class="bi bi-receipt me-1"></i>نام قبض
+                                                                                        </th>
+                                                                                        <th>
+                                                                                            <i class="bi bi-currency-dollar me-1"></i>مبلغ
+                                                                                        </th>
+                                                                                        <th>
+                                                                                            <i class="bi bi-calendar me-1"></i>تاریخ سررسید
+                                                                                        </th>
+                                                                                        <th>
+                                                                                            <i class="bi bi-info-circle me-1"></i>وضعیت
+                                                                                        </th>
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    @if (childBills != null && childBills.Any())
+                                                                                    {
+                                                                                        @foreach (var bill in childBills)
+                                                                                        {
+                                                                                            var paidAmount = bill.PaidPrice;
+                                                                                            var remainingAmount = bill.TotalPrice - paidAmount;
+                                                                                            var isOverdue = bill.BillExpiredTime < DateTime.Now;
+
+                                                                                            <tr>
+                                                                                                <td>
+                                                                                                    <span class="badge bg-secondary">@bill.Id</span>
+                                                                                                </td>
+                                                                                                <td>@bill.Name</td>
+                                                                                                <td>
+                                                                                                    <span class="fw-bold">@remainingAmount.ToString("N0") تومان</span>
+                                                                                                    <small class="text-muted d-block">از @bill.TotalPrice.ToString("N0")</small>
+                                                                                                </td>
+                                                                                                <td>@bill.BillExpiredTimePer</td>
+                                                                                                <td>
+                                                                                                    @if (paidAmount >= bill.TotalPrice)
+                                                                                                    {
+                                                                                                        <span class="badge bg-success">
+                                                                                                            <i class="bi bi-check-circle me-1"></i>پرداخت شده
+                                                                                                        </span>
+                                                                                                    }
+                                                                                                    else if (isOverdue)
+                                                                                                    {
+                                                                                                        <span class="badge bg-danger">
+                                                                                                            <i class="bi bi-exclamation-triangle me-1"></i>معوقه
+                                                                                                        </span>
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        <span class="badge bg-warning text-dark">
+                                                                                                            <i class="bi bi-clock me-1"></i>در انتظار پرداخت
+                                                                                                        </span>
+                                                                                                    }
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <tr>
+                                                                                            <td colspan="5" class="text-center py-3">
+                                                                                                <i class="bi bi-check-circle text-success fs-4 d-block mb-2"></i>
+                                                                                                <span class="text-success">هیچ قبض معوقه‌ای وجود ندارد</span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    }
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                rowNumber++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <i class="bi bi-check-circle fs-1 text-success d-block mb-2"></i>
+                                    <span class="text-success">هیچ بدهکاری یافت نشد</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table th {
+        border-top: none;
+        font-weight: 600;
+    }
+
+    .card {
+        border: none;
+    }
+
+    .table > :not(caption) > * > * {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+    }
+
+    .parent-row, .child-row {
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .parent-row:hover, .child-row:hover {
+            background-color: rgba(13, 110, 253, 0.05);
+        }
+
+    .collapse-row {
+        background-color: transparent;
+    }
+
+    .child-table, .grandchild-table {
+        margin: 0;
+    }
+
+        .child-table .table, .grandchild-table .table {
+            margin-bottom: 0;
+        }
+
+    .collapse-icon {
+        transition: transform 0.3s ease;
+    }
+
+    .collapsed .collapse-icon {
+        transform: rotate(-90deg);
+    }
+
+    .form-check-input {
+        cursor: pointer;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Handle collapse icon rotation
+            $('.parent-row, .child-row').on('click', function() {
+                $(this).find('.collapse-icon').toggleClass('collapsed');
+            });
+
+            // Prevent child row click from triggering parent row collapse
+            $('.child-row').on('click', function(e) {
+                e.stopPropagation();
+            });
+
+            // Select All functionality
+            $('#checkBoxAll').on('change', function() {
+                const isChecked = $(this).is(':checked');
+                $('.parent-checkbox').prop('checked', isChecked);
+                updateSelectedParents();
+            });
+
+            // Individual checkbox change
+            $('.parent-checkbox').on('change', function() {
+                updateSelectedParents();
+                updateSelectAllCheckbox();
+            });
+
+            // Update selected parents and hidden input
+            function updateSelectedParents() {
+                const selectedIds = [];
+                $('.parent-checkbox:checked').each(function() {
+                    selectedIds.push($(this).val());
+                });
+
+                $('#selectedParentIds').val(selectedIds.join(','));
+                $('#selectedCount').text(selectedIds.length);
+
+                // Enable/disable send button
+                $('#sendWarningBtn').prop('disabled', selectedIds.length === 0);
+            }
+
+            // Update select all checkbox state
+            function updateSelectAllCheckbox() {
+                const totalCheckboxes = $('.parent-checkbox').length;
+                const checkedCheckboxes = $('.parent-checkbox:checked').length;
+
+                $('#checkBoxAll').prop('checked', totalCheckboxes > 0 && checkedCheckboxes === totalCheckboxes);
+            }
+
+            // Form submission confirmation
+            $('#sendWarningForm').on('submit', function(e) {
+                const selectedCount = $('.parent-checkbox:checked').length;
+                if (selectedCount === 0) {
+                    e.preventDefault();
+                    alert('لطفاً حداقل یک خانواده را انتخاب کنید.');
+                    return;
+                }
+
+                if (!confirm(`آیا از ارسال پیام اخطار به ${selectedCount} خانواده انتخاب شده اطمینان دارید؟`)) {
+                    e.preventDefault();
+                }
+            });
+
+            // Initialize
+            updateSelectedParents();
+        });
+    </script>
+}
