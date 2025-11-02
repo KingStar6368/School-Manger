@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,18 +44,31 @@ namespace School_Manager.Core.Classes
     }
     public static class EnumExtensions
     {
+        //public static string GetDisplayName(this Enum enumValue)
+        //{
+        //    var displayAttribute = enumValue
+        //        .GetType()
+        //        .GetMember(enumValue.ToString())
+        //        .First()
+        //        .GetCustomAttributes(false)
+        //        .OfType<DisplayAttribute>()
+        //        .FirstOrDefault();
+
+        //    return displayAttribute?.Name ?? enumValue.ToString();
+        //}
         public static string GetDisplayName(this Enum enumValue)
         {
-            var displayAttribute = enumValue
-                .GetType()
-                .GetMember(enumValue.ToString())
-                .First()
-                .GetCustomAttributes(false)
-                .OfType<DisplayAttribute>()
-                .FirstOrDefault();
+            if (enumValue == null)
+                return string.Empty;
 
+            var memberInfo = enumValue.GetType().GetMember(enumValue.ToString());
+            if (memberInfo == null || memberInfo.Length == 0)
+                return enumValue.ToString(); // یا مثلاً "نامشخص"
+
+            var displayAttribute = memberInfo[0].GetCustomAttribute<DisplayAttribute>();
             return displayAttribute?.Name ?? enumValue.ToString();
         }
+
     }
 
     public static class PersianDateHelper
