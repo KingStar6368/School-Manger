@@ -80,7 +80,7 @@ namespace School_Manager.Core.Services.Implemetations
                         .ThenInclude(d => d.DriverNavigation)
                             .ThenInclude(d => d.Cars)
                     .FirstOrDefault(c => c.Id == ChildId);
-            var driverResult = (ds?.DriverChilds?.FirstOrDefault(x => x.IsEnabled && x.EndDate > DateTime.Now)?.DriverShiftNavigation.DriverNavigation)?? new Driver();
+            var driverResult = (ds?.DriverChilds?.FirstOrDefault(x => x.IsEnabled && x.EndDate > DateTime.Now)?.DriverShiftNavigation?.DriverNavigation)?? new Driver();
             return _mapper.Map<DriverDto>(driverResult);
         }
 
