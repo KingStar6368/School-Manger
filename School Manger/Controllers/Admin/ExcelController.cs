@@ -7,6 +7,7 @@ using School_Manager.Domain.Entities.Catalog.Enums;
 using School_Manager.Domain.Entities.Catalog.Operation;
 using System.Drawing;
 using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace School_Manger.Controllers.Admin
@@ -221,10 +222,30 @@ namespace School_Manger.Controllers.Admin
             }
         }
         #endregion
-        public async Task<IActionResult> ExportAllDriverPays()
+        public async Task<IActionResult> ExportAllDriverPays([FromForm] string DriverPrcents)
         {
+            // Parse the JSON data containing driver percentages
+            Dictionary<long, int> driverPercentages = new Dictionary<long, int>();
+
+            if (!string.IsNullOrEmpty(DriverPrcents))
+            {
+                try
+                {
+                    var percentageData = JsonSerializer.Deserialize<List<DriverPercentageDto>>(DriverPrcents);
+                    foreach (var item in percentageData)
+                    {
+                        driverPercentages[item.driverId] = item.percent;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log error and use default percentage
+                }
+            }
+
             var Drivers = await _driverService.GetDrivers();
             Dictionary<long, long> DriverShifts = new Dictionary<long, long>();
+
             foreach (var Driver in Drivers)
             {
                 var Shifts = _shiftService.GetDriverShifts(Driver.Id);
@@ -238,12 +259,13 @@ namespace School_Manger.Controllers.Admin
                         DriverShifts.Add(Shift.Id, Driver.Id);
                 }
             }
+
             using (var package = new ExcelPackage())
             {
                 var worksheet = package.Workbook.Worksheets.Add("پرداخت شده ها");
 
                 // Add title - FIXED: Set value in single cell before merging
-                ApplyTitleStyle(worksheet, "لیست پرداختی رانندگان به تفکیک شیفت", 7);
+                ApplyTitleStyle(worksheet, "لیست پرداختی رانندگان به تفکیک شیفت", 8);
 
                 // Headers
                 worksheet.Cells[2, 1].Value = "ردیف";
@@ -253,8 +275,9 @@ namespace School_Manger.Controllers.Admin
                 worksheet.Cells[2, 5].Value = "نام شیفت";
                 worksheet.Cells[2, 6].Value = "شماره حساب / کارت";
                 worksheet.Cells[2, 7].Value = "مبلغ پرداختی ريال";
+                worksheet.Cells[2, 8].Value = "درصد کسر شده";
 
-                ApplyHeaderStyle(worksheet, 2, 7, Color.FromArgb(0, 176, 80)); // Green for paid
+                ApplyHeaderStyle(worksheet, 2, 8, Color.FromArgb(0, 176, 80)); // Green for paid
 
                 int i = 3;
                 foreach (var DriverShift in DriverShifts)
@@ -262,7 +285,8 @@ namespace School_Manger.Controllers.Admin
                     var driver = Drivers.FirstOrDefault(x => x.Id == DriverShift.Value);
                     var Childern = await _shiftService.GetChildernOfShift(DriverShift.Key);
                     long TotalPrice = 0;
-                    foreach(var Child in Childern)
+
+                    foreach (var Child in Childern)
                     {
                         var TotalPriceOfBill = Child.Bills.Sum(x => x.TotalPrice);
                         if (Child.ClassEnum == ClassNumber.Twelfth)
@@ -271,16 +295,26 @@ namespace School_Manger.Controllers.Admin
                             TotalPriceOfBill = TotalPriceOfBill / 8;
                         TotalPrice += TotalPriceOfBill;
                     }
-                    worksheet.Cells[i, 1].Value = i;
+
+                    // Get percentage for this driver, default to 10 if not specified
+                    int driverPercentage = driverPercentages.ContainsKey(driver.Id) ? driverPercentages[driver.Id] : 10;
+
+                    // Calculate final amount after applying percentage
+                    long finalAmount = TotalPrice - (TotalPrice * driverPercentage / 100);
+
+                    worksheet.Cells[i, 1].Value = i - 2; // Start from 1 for row numbers
                     worksheet.Cells[i, 2].Value = driver.Name;
                     worksheet.Cells[i, 3].Value = driver.LastName;
                     worksheet.Cells[i, 4].Value = driver.NationCode;
                     worksheet.Cells[i, 5].Value = _shiftService.GetShiftById(DriverShift.Key).Name;
                     worksheet.Cells[i, 6].Value = driver.BankAccountNumber;
-                    worksheet.Cells[i, 7].Value = TotalPrice - (TotalPrice / 10);
+                    worksheet.Cells[i, 7].Value = finalAmount;
+                    worksheet.Cells[i, 8].Value = $"{driverPercentage}%";
+
                     i++;
                 }
-                ApplyDataStyle(worksheet, 3, i - 1, 7, Color.White);
+
+                ApplyDataStyle(worksheet, 3, i - 1, 8, Color.White);
                 worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
 
                 var stream = new MemoryStream();
@@ -291,6 +325,13 @@ namespace School_Manger.Controllers.Admin
                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                            $"BankPay_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
             }
+        }
+
+        // DTO class for deserializing the percentage data
+        public class DriverPercentageDto
+        {
+            public long driverId { get; set; }
+            public int percent { get; set; }
         }
 
         public async Task<IActionResult> ExportDriverPays(long DriverID)

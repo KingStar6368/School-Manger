@@ -96,18 +96,18 @@
                         <span class="input-group-text bg-secondary text-white border-secondary">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control bg-dark text-white border-secondary" placeholder="جستجوی والدین...">
+                        <input type="text" class="form-control bg-dark text-white border-secondary" placeholder="جستجوی والدین..." id="searchInput">
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <select class="form-select bg-dark text-white border-secondary">
+                    <select class="form-select bg-dark text-white border-secondary" id="statusFilter">
                         <option value="">همه وضعیت‌ها</option>
                         <option value="active">فعال</option>
                         <option value="inactive">غیرفعال</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <select class="form-select bg-dark text-white border-secondary">
+                    <select class="form-select bg-dark text-white border-secondary" id="childrenFilter">
                         <option value="">همه فرزندان</option>
                         <option value="with-children">دارای فرزند</option>
                         <option value="without-children">بدون فرزند</option>
@@ -116,7 +116,7 @@
             </div>
 
             <div class="table-responsive">
-                <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden">
+                <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden" id="parentsTable">
                     <thead class="table-light text-dark">
                         <tr>
                             <th class="fw-bold">
@@ -151,7 +151,7 @@
                             @* var debt = parent.Children.Where(x=>x.Bills != null).Sum(c => c.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice)); *@
                             var isActive = parent.Active;
 
-                            <tr class="align-middle">
+                            <tr class="align-middle" data-status="@(isActive ? "active" : "inactive")" data-children="@(parent.Children.Count > 0 ? "with-children" : "without-children")">
                                 <td class="fw-bold text-info">@(i + 1)</td>
                                 <td>
                                     <div class="d-flex align-items-center justify-content-center">
@@ -212,7 +212,7 @@
             <div class="d-flex justify-content-between align-items-center mt-4">
                 <div class="text-white-50">
                     <i class="bi bi-info-circle me-1"></i>
-                    نمایش @Model.Count مورد از @Model.Count والدین
+                    نمایش <span id="visibleCount">@Model.Count</span> مورد از @Model.Count والدین
                 </div>
                 <nav>
                     <ul class="pagination mb-0">
@@ -245,6 +245,63 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             });
 
+            // Update visible count
+            function updateVisibleCount() {
+                var visibleRows = $('#parentsTable tbody tr:visible').length;
+                $('#visibleCount').text(visibleRows);
+            }
+
+            // Search functionality
+            $('#searchInput').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#parentsTable tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+                updateVisibleCount();
+            });
+
+            // Status filter
+            $('#statusFilter').on('change', function() {
+                applyFilters();
+            });
+
+            // Children filter
+            $('#childrenFilter').on('change', function() {
+                applyFilters();
+            });
+
+            // Apply all filters
+            function applyFilters() {
+                var statusFilter = $('#statusFilter').val();
+                var childrenFilter = $('#childrenFilter').val();
+                var searchValue = $('#searchInput').val().toLowerCase();
+
+                $('#parentsTable tbody tr').each(function() {
+                    var row = $(this);
+                    var status = row.data('status');
+                    var children = row.data('children');
+                    var rowText = row.text().toLowerCase();
+
+                    // Check search filter
+                    var searchMatch = searchValue === '' || rowText.indexOf(searchValue) > -1;
+
+                    // Check status filter
+                    var statusMatch = statusFilter === '' || status === statusFilter;
+
+                    // Check children filter
+                    var childrenMatch = childrenFilter === '' || children === childrenFilter;
+
+                    // Show/hide based on all filters
+                    if (searchMatch && statusMatch && childrenMatch) {
+                        row.show();
+                    } else {
+                        row.hide();
+                    }
+                });
+
+                updateVisibleCount();
+            }
+
             // Add hover effects to table rows
             $('tbody tr').hover(
                 function() {
@@ -254,20 +311,6 @@
                     $(this).removeClass('bg-secondary bg-opacity-25');
                 }
             );
-
-            // Search functionality
-            $('input[type="text"]').on('keyup', function() {
-                var value = $(this).val().toLowerCase();
-                $('tbody tr').filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
-
-            // Status filter
-            $('select').on('change', function() {
-                // Implement filter logic here
-                console.log('Filter changed:', $(this).val());
-            });
 
             // Only apply to buttons that are NOT inside forms
             $('.btn').not('form .btn').on('click', function() {
@@ -281,6 +324,9 @@
                     btn.prop('disabled', false);
                 }, 1500);
             });
+
+            // Initialize visible count
+            updateVisibleCount();
         });
     </script>
 }

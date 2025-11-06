@@ -82,21 +82,22 @@
                         <span class="input-group-text bg-secondary text-white border-secondary">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control bg-dark text-white border-secondary" placeholder="جستجوی در تعرفه‌ها...">
+                        <input type="text" class="form-control bg-dark text-white border-secondary" placeholder="جستجوی در تعرفه‌ها..." id="searchInput">
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <select class="form-select bg-dark text-white border-secondary">
+                    <select class="form-select bg-dark text-white border-secondary" id="statusFilter">
                         <option value="">همه وضعیت‌ها</option>
                         <option value="active">فعال</option>
                         <option value="expired">منقضی شده</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <select class="form-select bg-dark text-white border-secondary">
+                    <select class="form-select bg-dark text-white border-secondary" id="sortSelect">
                         <option value="">مرتب‌سازی بر اساس</option>
                         <option value="price">قیمت</option>
-                        <option value="date">تاریخ</option>
+                        <option value="fromDate">از تاریخ</option>
+                        <option value="toDate">تا تاریخ</option>
                         <option value="distance">مسافت</option>
                     </select>
                 </div>
@@ -105,7 +106,7 @@
             @if (Model != null && Model.Any())
             {
                 <div class="table-responsive">
-                    <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden">
+                    <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden" id="tariffsTable">
                         <thead class="table-light text-dark">
                             <tr>
                                 <th class="fw-bold">
@@ -138,7 +139,7 @@
                             @foreach (var item in Model.Select((t, i) => new { Tariff = t, Index = i + 1 }))
                             {
                                 var isActive = item.Tariff.ToDate >= DateTime.Now;
-                                <tr class="align-middle">
+                                <tr class="align-middle" data-status="@(isActive ? "active" : "expired")" data-price="@item.Tariff.Price" data-from-kilometer="@item.Tariff.FromKilometer" data-to-kilometer="@item.Tariff.ToKilometer">
                                     <td class="fw-bold text-info">@item.Index</td>
                                     <td>
                                         <span class="badge bg-primary fw-bold p-2">
@@ -199,7 +200,7 @@
                 <div class="d-flex justify-content-between align-items-center mt-4">
                     <div class="text-white-50">
                         <i class="bi bi-info-circle me-1"></i>
-                        نمایش @Model.Count() مورد از @Model.Count() تعرفه
+                        نمایش <span id="visibleCount">@Model.Count()</span> مورد از @Model.Count() تعرفه
                     </div>
                     <nav>
                         <ul class="pagination mb-0">
@@ -239,6 +240,86 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             });
 
+            // Update visible count
+            function updateVisibleCount() {
+                var visibleRows = $('#tariffsTable tbody tr:visible').length;
+                $('#visibleCount').text(visibleRows);
+            }
+
+            // Search functionality
+            $('#searchInput').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#tariffsTable tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+                updateVisibleCount();
+            });
+
+            // Status filter
+            $('#statusFilter').on('change', function() {
+                applyFilters();
+            });
+
+            // Sort functionality
+            $('#sortSelect').on('change', function() {
+                var sortBy = $(this).val();
+                var $tbody = $('#tariffsTable tbody');
+                var rows = $tbody.find('tr').get();
+
+                rows.sort(function(a, b) {
+                    var aVal, bVal;
+
+                    switch(sortBy) {
+                        case 'price':
+                            aVal = parseInt($(a).data('price'));
+                            bVal = parseInt($(b).data('price'));
+                            return bVal - aVal; // Descending order (highest price first)
+                        case 'fromDate':
+                            // You can implement date sorting if you have date values in data attributes
+                            return 0;
+                        case 'toDate':
+                            // You can implement date sorting if you have date values in data attributes
+                            return 0;
+                        case 'distance':
+                            aVal = parseInt($(a).data('from-kilometer'));
+                            bVal = parseInt($(b).data('from-kilometer'));
+                            return bVal - aVal; // Descending order (longest distance first)
+                    }
+                });
+
+                $.each(rows, function(index, row) {
+                    $tbody.append(row);
+                });
+                updateVisibleCount();
+            });
+
+            // Apply all filters
+            function applyFilters() {
+                var statusFilter = $('#statusFilter').val();
+                var searchValue = $('#searchInput').val().toLowerCase();
+
+                $('#tariffsTable tbody tr').each(function() {
+                    var row = $(this);
+                    var status = row.data('status');
+                    var rowText = row.text().toLowerCase();
+
+                    // Check search filter
+                    var searchMatch = searchValue === '' || rowText.indexOf(searchValue) > -1;
+
+                    // Check status filter
+                    var statusMatch = statusFilter === '' || status === statusFilter;
+
+                    // Show/hide based on all filters
+                    if (searchMatch && statusMatch) {
+                        row.show();
+                    } else {
+                        row.hide();
+                    }
+                });
+
+                updateVisibleCount();
+            }
+
             // Add hover effects to table rows
             $('tbody tr').hover(
                 function() {
@@ -249,22 +330,8 @@
                 }
             );
 
-            // Search functionality
-            $('input[type="text"]').on('keyup', function() {
-                var value = $(this).val().toLowerCase();
-                $('tbody tr').filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
-
-            // Status filter
-            $('select').on('change', function() {
-                // Implement filter logic here
-                console.log('Filter changed:', $(this).val());
-            });
-
-            // Add loading animation
-            $('.btn').on('click', function() {
+            // Add loading animation (excluding form buttons to prevent double submission)
+            $('.btn').not('form .btn').on('click', function() {
                 var btn = $(this);
                 var originalHtml = btn.html();
                 btn.html('<i class="bi bi-hourglass-split me-1"></i>در حال پردازش...');
@@ -275,6 +342,9 @@
                     btn.prop('disabled', false);
                 }, 1500);
             });
+
+            // Initialize visible count
+            updateVisibleCount();
         });
     </script>
 }

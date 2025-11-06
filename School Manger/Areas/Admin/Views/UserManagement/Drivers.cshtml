@@ -96,18 +96,18 @@
                         <span class="input-group-text bg-secondary text-white border-secondary">
                             <i class="bi bi-search"></i>
                         </span>
-                        <input type="text" class="form-control bg-dark text-white border-secondary" placeholder="جستجوی رانندگان...">
+                        <input type="text" class="form-control bg-dark text-white border-secondary" placeholder="جستجوی رانندگان..." id="searchInput">
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <select class="form-select bg-dark text-white border-secondary">
+                    <select class="form-select bg-dark text-white border-secondary" id="statusFilter">
                         <option value="">همه وضعیت‌ها</option>
                         <option value="active">فعال</option>
                         <option value="inactive">غیرفعال</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <select class="form-select bg-dark text-white border-secondary">
+                    <select class="form-select bg-dark text-white border-secondary" id="serviceFilter">
                         <option value="">همه سرویس‌ها</option>
                         <option value="with-service">دارای سرویس</option>
                         <option value="without-service">بدون سرویس</option>
@@ -118,7 +118,7 @@
             @if (Model != null && Model.Any())
             {
                 <div class="table-responsive">
-                    <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden">
+                    <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden" id="driversTable">
                         <thead class="table-light text-dark">
                             <tr>
                                 <th class="fw-bold">
@@ -154,10 +154,11 @@
                             {
                                 var driver = Model[i];
                                 @* var servicesCount = driverService.GetDriverServices(driver.Id).Count(); *@
-                                @* var debt = driver.Services.Where(x=>x.Bills != null).Sum(s => s.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice)); *@
+                                var servicesCount = 0; // Temporary until service is implemented
+                                                       @* var debt = driver.Services.Where(x=>x.Bills != null).Sum(s => s.Bills.Where(b => !b.HasPaid).Sum(b => b.TotalPrice - b.PaidPrice)); *@
                                 var isActive = driver.IsActive;
 
-                                <tr class="align-middle">
+                                <tr class="align-middle" data-status="@(isActive ? "active" : "inactive")" data-service="@(servicesCount > 0 ? "with-service" : "without-service")">
                                     <td class="fw-bold text-info">@(i + 1)</td>
                                     <td>
                                         <div class="d-flex align-items-center justify-content-center">
@@ -180,8 +181,7 @@
                                     </td>
                                     <td>
                                         <span class="badge bg-info text-dark fw-bold p-2">
-                                            <i class="bi bi-bus-front me-1"></i>0 سرویس
-                                            @* <i class="bi bi-bus-front me-1"></i>@servicesCount سرویس *@
+                                            <i class="bi bi-bus-front me-1"></i>@servicesCount سرویس
                                         </span>
                                     </td>
                                     <td>
@@ -210,7 +210,7 @@
                                                data-bs-toggle="tooltip" title="ویرایش اطلاعات">
                                                 <i class="bi bi-pencil-square me-1"></i>ویرایش
                                             </a>
-                       @*                      <button class="btn btn-sm btn-outline-@(isActive ? "danger" : "success") rounded-pill shadow-sm"
+                                            @*                      <button class="btn btn-sm btn-outline-@(isActive ? "danger" : "success") rounded-pill shadow-sm"
                                                     data-bs-toggle="tooltip" title="@(isActive ? "غیرفعال کردن" : "فعال کردن")">
                                                 <i class="bi bi-@(isActive ? "person-x" : "person-check") me-1"></i>
                                             </button> *@
@@ -232,7 +232,7 @@
                 <div class="d-flex justify-content-between align-items-center mt-4">
                     <div class="text-white-50">
                         <i class="bi bi-info-circle me-1"></i>
-                        نمایش @Model.Count مورد از @Model.Count راننده
+                        نمایش <span id="visibleCount">@Model.Count</span> مورد از @Model.Count راننده
                     </div>
                     <nav>
                         <ul class="pagination mb-0">
@@ -272,6 +272,63 @@
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             });
 
+            // Update visible count
+            function updateVisibleCount() {
+                var visibleRows = $('#driversTable tbody tr:visible').length;
+                $('#visibleCount').text(visibleRows);
+            }
+
+            // Search functionality
+            $('#searchInput').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                $('#driversTable tbody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+                updateVisibleCount();
+            });
+
+            // Status filter
+            $('#statusFilter').on('change', function() {
+                applyFilters();
+            });
+
+            // Service filter
+            $('#serviceFilter').on('change', function() {
+                applyFilters();
+            });
+
+            // Apply all filters
+            function applyFilters() {
+                var statusFilter = $('#statusFilter').val();
+                var serviceFilter = $('#serviceFilter').val();
+                var searchValue = $('#searchInput').val().toLowerCase();
+
+                $('#driversTable tbody tr').each(function() {
+                    var row = $(this);
+                    var status = row.data('status');
+                    var service = row.data('service');
+                    var rowText = row.text().toLowerCase();
+
+                    // Check search filter
+                    var searchMatch = searchValue === '' || rowText.indexOf(searchValue) > -1;
+
+                    // Check status filter
+                    var statusMatch = statusFilter === '' || status === statusFilter;
+
+                    // Check service filter
+                    var serviceMatch = serviceFilter === '' || service === serviceFilter;
+
+                    // Show/hide based on all filters
+                    if (searchMatch && statusMatch && serviceMatch) {
+                        row.show();
+                    } else {
+                        row.hide();
+                    }
+                });
+
+                updateVisibleCount();
+            }
+
             // Add hover effects to table rows
             $('tbody tr').hover(
                 function() {
@@ -282,22 +339,8 @@
                 }
             );
 
-            // Search functionality
-            $('input[type="text"]').on('keyup', function() {
-                var value = $(this).val().toLowerCase();
-                $('tbody tr').filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
-            });
-
-            // Status filter
-            $('select').on('change', function() {
-                // Implement filter logic here
-                console.log('Filter changed:', $(this).val());
-            });
-
-            // Add loading animation
-            $('.btn').on('click', function() {
+            // Add loading animation (excluding form buttons to prevent double submission)
+            $('.btn').not('form .btn').on('click', function() {
                 var btn = $(this);
                 var originalHtml = btn.html();
                 btn.html('<i class="bi bi-hourglass-split me-1"></i>در حال پردازش...');
@@ -308,6 +351,9 @@
                     btn.prop('disabled', false);
                 }, 1500);
             });
+
+            // Initialize visible count
+            updateVisibleCount();
         });
     </script>
 }
