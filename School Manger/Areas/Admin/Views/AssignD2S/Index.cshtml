@@ -226,7 +226,7 @@
                             <select id="schoolFilter" class="form-select bg-dark text-white border-secondary">
                                 <option value="all">همه مدارس</option>
                                 @{
-                                    var uniqueSchools = Model.NonDivers.Select(s => s.SchoolId.ToString()).Distinct().OrderBy(s => s);
+                                    var uniqueSchools = Model.NonDivers.Select(s => SchoolService.GetSchool((long)s.SchoolId).Name.ToString()).Distinct().OrderBy(s => s);
                                 }
                                 @foreach (var school in uniqueSchools)
                                 {
