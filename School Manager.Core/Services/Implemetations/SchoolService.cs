@@ -47,9 +47,11 @@ namespace School_Manager.Core.Services.Implemetations
         }
         public async Task<List<DriverDto>> GetDrivers(long id)
         {
-            var ds = await _unitOfWork.GetRepository<Driver>().Query()
-                .Include(x=>x.Passanger).ThenInclude(x=>x.ChildNavigation).ThenInclude(x=>x.SchoolNavigation)
-                .Where(x=>x.Passanger.Any(y=>y.ChildNavigation.SchoolRef == id)).ToListAsync();
+            var ds = await _unitOfWork.GetRepository<Driver>().Query(x => x.DriverShifts.Any(s => s.ShiftNavigation.SchoolRef == id))
+                .Include(x=>x.Passanger).ThenInclude(x=>x.ChildNavigation).ThenInclude(x=>x.SchoolNavigation).Include(x=>x.Cars)
+                .ToListAsync();
+                //.Include(x=>x.Passanger).ThenInclude(x=>x.ChildNavigation).ThenInclude(x=>x.SchoolNavigation)
+                //.Where(x=>x.Passanger.Any(y=>y.ChildNavigation.SchoolRef == id)).ToListAsync();
             return _mapper.Map<List<DriverDto>>(ds);
         }
 

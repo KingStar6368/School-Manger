@@ -1,4 +1,6 @@
-﻿@using School_Manger.Models.PageView
+﻿@using School_Manager.Core.Services.Interfaces
+@using School_Manger.Models.PageView
+@inject ISchoolService SchoolService
 @model AdminNONChildDriver
 @{
     ViewData["Title"] = "🚌 اختصاص راننده به دانش‌آموز";
@@ -20,7 +22,7 @@
                 </div>
                 <div>
                     <span class="badge bg-primary fs-6 p-3">
-                        <i class="bi bi-arrow-left-right me-1"></i>@Model.NonDivers.Count() دانش‌آموز
+                        <i class="bi bi-arrow-left-right me-1"></i><span id="totalStudentsCount">@Model.NonDivers.Count()</span> دانش‌آموز
                     </span>
                 </div>
             </div>
@@ -33,7 +35,7 @@
             <div class="card bg-primary text-white shadow-sm border-0">
                 <div class="card-body text-center">
                     <i class="bi bi-steering-wheel fs-1 d-block mb-2"></i>
-                    <h4 class="mb-1">@Model.AvailableDrivers.Count()</h4>
+                    <h4 class="mb-1"><span id="availableDriversCount">@Model.AvailableDrivers.Count()</span></h4>
                     <p class="mb-0">رانندگان موجود</p>
                 </div>
             </div>
@@ -42,8 +44,17 @@
             <div class="card bg-success text-white shadow-sm border-0">
                 <div class="card-body text-center">
                     <i class="bi bi-people fs-1 d-block mb-2"></i>
-                    <h4 class="mb-1">@Model.NonDivers.Count()</h4>
+                    <h4 class="mb-1"><span id="nonDriverStudentsCount">@Model.NonDivers.Count()</span></h4>
                     <p class="mb-0">دانش‌آموزان بدون راننده</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card bg-info text-white shadow-sm border-0">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-check fs-1 d-block mb-2"></i>
+                    <h4 class="mb-1"><span id="availableSeatsCount">@Model.AvailableDrivers.Sum(d => d.AvailableSeats)</span></h4>
+                    <p class="mb-0">صندلی خالی</p>
                 </div>
             </div>
         </div>
@@ -58,9 +69,65 @@
                         <i class="bi bi-steering-wheel me-2"></i>لیست راننده‌ها
                     </h4>
                     <span class="badge bg-light text-dark fs-6">
-                        <i class="bi bi-list-check me-1"></i>@Model.AvailableDrivers.Count() راننده
+                        <i class="bi bi-list-check me-1"></i><span id="driversCount">@Model.AvailableDrivers.Count()</span> راننده
                     </span>
                 </div>
+
+                <!-- Drivers Filters -->
+                <div class="card-body border-bottom border-secondary">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label text-white-50 mb-2">
+                                <i class="bi bi-funnel me-1"></i>فیلتر صندلی خالی:
+                            </label>
+                            <select id="seatsFilter" class="form-select bg-dark text-white border-secondary">
+                                <option value="all">همه</option>
+                                <option value="has-seats">دارای صندلی خالی</option>
+                                <option value="no-seats">بدون صندلی خالی</option>
+                                <option value="1">۱ صندلی</option>
+                                <option value="2">۲ صندلی</option>
+                                <option value="3">۳ صندلی یا بیشتر</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-white-50 mb-2">
+                                <i class="bi bi-search me-1"></i>جستجوی راننده:
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark text-white border-secondary">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input type="text" id="driverSearch" class="form-control bg-dark text-white border-secondary" placeholder="نام، نام خانوادگی یا کد ملی...">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-white-50 mb-2">
+                                <i class="bi bi-sort-alpha-down me-1"></i>مرتب‌سازی:
+                            </label>
+                            <select id="driverSort" class="form-select bg-dark text-white border-secondary">
+                                <option value="name-asc">نام (صعودی)</option>
+                                <option value="name-desc">نام (نزولی)</option>
+                                <option value="seats-asc">صندلی (کم به زیاد)</option>
+                                <option value="seats-desc">صندلی (زیاد به کم)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button id="clearDriverFilters" class="btn btn-outline-warning w-100">
+                                <i class="bi bi-arrow-clockwise me-1"></i>پاک کردن فیلترها
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Active Driver Filters -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div id="activeDriverFilters" class="d-flex flex-wrap gap-2" style="display: none !important;">
+                                <!-- Active driver filters will be shown here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden">
@@ -83,10 +150,15 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="driversTableBody">
                                 @foreach (var Driver in Model.AvailableDrivers)
                                 {
-                                    <tr onclick="DriverRowClick(@Driver.Id)" style="cursor:pointer;" class="driver-row align-middle">
+                                    <tr onclick="DriverRowClick(@Driver.Id)" style="cursor:pointer;"
+                                        class="driver-row align-middle"
+                                        data-name="@($"{Driver.Name} {Driver.LastName}")"
+                                        data-nationcode="@Driver.NationCode"
+                                        data-seats="@Driver.AvailableSeats"
+                                        data-has-seats="@(Driver.AvailableSeats > 0 ? "true" : "false")">
                                         <td class="fw-bold text-info">@Driver.Id</td>
                                         <td>
                                             <div class="d-flex align-items-center justify-content-center">
@@ -102,7 +174,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge fw-bold p-2 @(Driver.AvailableSeats > 0 ? "bg-success" : "bg-warning text-dark")">
+                                            <span class="badge fw-bold p-2 @(Driver.AvailableSeats > 0 ? "bg-success" : "bg-warning text-dark") seats-badge">
                                                 <i class="bi bi-person-check me-1"></i>@Driver.AvailableSeats
                                             </span>
                                         </td>
@@ -125,9 +197,71 @@
                         <i class="bi bi-people me-2"></i>لیست دانش‌آموزان
                     </h4>
                     <span class="badge bg-light text-dark fs-6">
-                        <i class="bi bi-list-check me-1"></i>@Model.NonDivers.Count() دانش‌آموز
+                        <i class="bi bi-list-check me-1"></i><span id="studentsCount">@Model.NonDivers.Count()</span> دانش‌آموز
                     </span>
                 </div>
+
+                <!-- Students Filters -->
+                <div class="card-body border-bottom border-secondary">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label text-white-50 mb-2">
+                                <i class="bi bi-funnel me-1"></i>فیلتر مقطع:
+                            </label>
+                            <select id="classFilter" class="form-select bg-dark text-white border-secondary">
+                                <option value="all">همه مقاطع</option>
+                                @{
+                                    var uniqueClasses = Model.NonDivers.Select(s => s.Class).Distinct().OrderBy(c => c);
+                                }
+                                @foreach (var classLevel in uniqueClasses)
+                                {
+                                    <option value="@classLevel">@classLevel</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-white-50 mb-2">
+                                <i class="bi bi-building me-1"></i>فیلتر مدرسه:
+                            </label>
+                            <select id="schoolFilter" class="form-select bg-dark text-white border-secondary">
+                                <option value="all">همه مدارس</option>
+                                @{
+                                    var uniqueSchools = Model.NonDivers.Select(s => s.SchoolId.ToString()).Distinct().OrderBy(s => s);
+                                }
+                                @foreach (var school in uniqueSchools)
+                                {
+                                    <option value="@school">مدرسه @school</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-white-50 mb-2">
+                                <i class="bi bi-search me-1"></i>جستجوی دانش‌آموز:
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark text-white border-secondary">
+                                    <i class="bi bi-search"></i>
+                                </span>
+                                <input type="text" id="studentSearch" class="form-control bg-dark text-white border-secondary" placeholder="نام، نام خانوادگی یا کد ملی...">
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button id="clearStudentFilters" class="btn btn-outline-warning w-100">
+                                <i class="bi bi-arrow-clockwise me-1"></i>پاک کردن فیلترها
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Active Student Filters -->
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div id="activeStudentFilters" class="d-flex flex-wrap gap-2" style="display: none !important;">
+                                <!-- Active student filters will be shown here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden">
@@ -156,10 +290,15 @@
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="studentsTableBody">
                                 @foreach (var Child in Model.NonDivers)
                                 {
-                                    <tr onclick="ChildRowClick(@Child.Id)" style="cursor:pointer;" class="student-row align-middle">
+                                    <tr onclick="ChildRowClick(@Child.Id)" style="cursor:pointer;"
+                                        class="student-row align-middle"
+                                        data-name="@($"{Child.FirstName} {Child.LastName}")"
+                                        data-nationalcode="@Child.NationalCode"
+                                        data-school="@SchoolService.GetSchool((long)Child.SchoolId).Name"
+                                        data-class="@Child.Class">
                                         <td class="fw-bold text-info">@Child.Id</td>
                                         <td>
                                             <div class="d-flex align-items-center justify-content-center">
@@ -174,9 +313,11 @@
                                                 @Child.NationalCode
                                             </div>
                                         </td>
-                                        <td>@Child.SchoolId</td>
                                         <td>
-                                            <span class="badge bg-info fw-bold p-2">@Child.Class</span>
+                                            <span class="school-badge">@SchoolService.GetSchool((long)Child.SchBusoolId).Name</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info fw-bold p-2 class-badge">@Child.Class</span>
                                         </td>
                                         <td>
                                             <span class="badge bg-secondary fw-bold p-2">
@@ -234,6 +375,281 @@
 @section PageScripts {
     <script>
         $(document).ready(function () {
+            // Initialize counts
+            const totalDrivers = @Model.AvailableDrivers.Count();
+            const totalStudents = @Model.NonDivers.Count();
+            const totalSeats = @Model.AvailableDrivers.Sum(d => d.AvailableSeats);
+
+            // Driver filtering functionality
+            const driverRows = $('.driver-row');
+            const studentRows = $('.student-row');
+
+            // Driver filters
+            const seatsFilter = $('#seatsFilter');
+            const driverSearch = $('#driverSearch');
+            const driverSort = $('#driverSort');
+            const clearDriverFilters = $('#clearDriverFilters');
+            const activeDriverFilters = $('#activeDriverFilters');
+
+            // Student filters
+            const classFilter = $('#classFilter');
+            const schoolFilter = $('#schoolFilter');
+            const studentSearch = $('#studentSearch');
+            const clearStudentFilters = $('#clearStudentFilters');
+            const activeStudentFilters = $('#activeStudentFilters');
+
+            // Apply driver filters
+            function applyDriverFilters() {
+                const seatsValue = seatsFilter.val();
+                const searchTerm = driverSearch.val().toLowerCase().trim();
+                const sortValue = driverSort.val();
+
+                let visibleCount = 0;
+                let availableSeats = 0;
+                let activeFilters = [];
+
+                driverRows.each(function() {
+                    const $row = $(this);
+                    const seats = parseInt($row.data('seats'));
+                    const hasSeats = $row.data('has-seats') === 'true';
+                    const name = $row.data('name').toLowerCase();
+                    const nationCode = $row.data('nationcode');
+
+                    let isVisible = true;
+
+                    // Apply seats filter
+                    if (seatsValue !== 'all') {
+                        if (seatsValue === 'has-seats' && !hasSeats) {
+                            isVisible = false;
+                        } else if (seatsValue === 'no-seats' && hasSeats) {
+                            isVisible = false;
+                        } else if (seatsValue === '1' && seats !== 1) {
+                            isVisible = false;
+                        } else if (seatsValue === '2' && seats !== 2) {
+                            isVisible = false;
+                        } else if (seatsValue === '3' && seats < 3) {
+                            isVisible = false;
+                        }
+
+                        if (isVisible && seatsValue !== 'all') {
+                            activeFilters.push(`صندلی: ${getSeatsFilterText(seatsValue)}`);
+                        }
+                    }
+
+                    // Apply search filter
+                    if (searchTerm && isVisible) {
+                        if (!name.includes(searchTerm) && !nationCode.includes(searchTerm)) {
+                            isVisible = false;
+                        } else {
+                            activeFilters.push(`جستجو: "${searchTerm}"`);
+                        }
+                    }
+
+                    if (isVisible) {
+                        $row.show();
+                        visibleCount++;
+                        availableSeats += seats;
+
+                        // Apply sorting
+                        applyDriverSorting($row, sortValue);
+                    } else {
+                        $row.hide();
+                    }
+                });
+
+                // Update counts
+                $('#driversCount').text(visibleCount);
+                $('#availableDriversCount').text(visibleCount);
+                $('#availableSeatsCount').text(availableSeats);
+
+                // Update active filters display
+                updateActiveFiltersDisplay(activeDriverFilters, activeFilters);
+
+                // Re-sort the table
+                sortDriverTable(sortValue);
+            }
+
+            // Apply student filters
+            function applyStudentFilters() {
+                const classValue = classFilter.val();
+                const schoolValue = schoolFilter.val();
+                const searchTerm = studentSearch.val().toLowerCase().trim();
+
+                let visibleCount = 0;
+                let activeFilters = [];
+
+                studentRows.each(function() {
+                    const $row = $(this);
+                    const studentClass = $row.data('class');
+                    const school = $row.data('school').toString();
+                    const name = $row.data('name').toLowerCase();
+                    const nationalCode = $row.data('nationalcode');
+
+                    let isVisible = true;
+
+                    // Apply class filter
+                    if (classValue !== 'all') {
+                        if (studentClass !== classValue) {
+                            isVisible = false;
+                        } else {
+                            activeFilters.push(`مقطع: ${classValue}`);
+                        }
+                    }
+
+                    // Apply school filter
+                    if (schoolValue !== 'all' && isVisible) {
+                        if (school !== schoolValue) {
+                            isVisible = false;
+                        } else {
+                            activeFilters.push(`مدرسه: ${schoolValue}`);
+                        }
+                    }
+
+                    // Apply search filter
+                    if (searchTerm && isVisible) {
+                        if (!name.includes(searchTerm) && !nationalCode.includes(searchTerm)) {
+                            isVisible = false;
+                        } else {
+                            activeFilters.push(`جستجو: "${searchTerm}"`);
+                        }
+                    }
+
+                    if (isVisible) {
+                        $row.show();
+                        visibleCount++;
+                    } else {
+                        $row.hide();
+                    }
+                });
+
+                // Update counts
+                $('#studentsCount').text(visibleCount);
+                $('#nonDriverStudentsCount').text(visibleCount);
+                $('#totalStudentsCount').text(visibleCount);
+
+                // Update active filters display
+                updateActiveFiltersDisplay(activeStudentFilters, activeFilters);
+            }
+
+            function updateActiveFiltersDisplay(container, filters) {
+                container.empty();
+
+                const uniqueFilters = [...new Set(filters)];
+
+                if (uniqueFilters.length > 0) {
+                    container.show();
+
+                    uniqueFilters.forEach(filter => {
+                        const filterBadge = $(`
+                            <span class="badge bg-primary d-flex align-items-center">
+                                ${filter}
+                                <button type="button" class="btn-close btn-close-white ms-2" style="font-size: 0.6rem;" data-filter="${filter}"></button>
+                            </span>
+                        `);
+                        container.append(filterBadge);
+                    });
+                } else {
+                    container.hide();
+                }
+            }
+
+            function getSeatsFilterText(value) {
+                const texts = {
+                    'has-seats': 'دارای صندلی خالی',
+                    'no-seats': 'بدون صندلی خالی',
+                    '1': '۱ صندلی',
+                    '2': '۲ صندلی',
+                    '3': '۳ صندلی یا بیشتر'
+                };
+                return texts[value] || value;
+            }
+
+            function applyDriverSorting($row, sortValue) {
+                // This function prepares data for sorting
+                // Actual sorting happens in sortDriverTable
+            }
+
+            function sortDriverTable(sortValue) {
+                const $tbody = $('#driversTableBody');
+                const $rows = $tbody.find('.driver-row:visible').get();
+
+                $rows.sort(function(a, b) {
+                    const $a = $(a);
+                    const $b = $(b);
+
+                    switch(sortValue) {
+                        case 'name-asc':
+                            return $a.data('name').localeCompare($b.data('name'));
+                        case 'name-desc':
+                            return $b.data('name').localeCompare($a.data('name'));
+                        case 'seats-asc':
+                            return $a.data('seats') - $b.data('seats');
+                        case 'seats-desc':
+                            return $b.data('seats') - $a.data('seats');
+                        default:
+                            return 0;
+                    }
+                });
+
+                $.each($rows, function(index, row) {
+                    $tbody.append(row);
+                });
+            }
+
+            // Clear driver filters
+            function clearDriverFiltersFunc() {
+                seatsFilter.val('all');
+                driverSearch.val('');
+                driverSort.val('name-asc');
+                applyDriverFilters();
+            }
+
+            // Clear student filters
+            function clearStudentFiltersFunc() {
+                classFilter.val('all');
+                schoolFilter.val('all');
+                studentSearch.val('');
+                applyStudentFilters();
+            }
+
+            // Event listeners for drivers
+            seatsFilter.on('change', applyDriverFilters);
+            driverSearch.on('input', applyDriverFilters);
+            driverSort.on('change', applyDriverFilters);
+            clearDriverFilters.on('click', clearDriverFiltersFunc);
+
+            // Event listeners for students
+            classFilter.on('change', applyStudentFilters);
+            schoolFilter.on('change', applyStudentFilters);
+            studentSearch.on('input', applyStudentFilters);
+            clearStudentFilters.on('click', clearStudentFiltersFunc);
+
+            // Remove individual filter
+            $(document).on('click', '.btn-close', function() {
+                const filterText = $(this).data('filter');
+                const container = $(this).closest('#activeDriverFilters, #activeStudentFilters');
+
+                if (filterText.includes('صندلی:')) {
+                    seatsFilter.val('all');
+                } else if (filterText.includes('مقطع:')) {
+                    classFilter.val('all');
+                } else if (filterText.includes('مدرسه:')) {
+                    schoolFilter.val('all');
+                } else if (filterText.includes('جستجو:')) {
+                    if (container.attr('id') === 'activeDriverFilters') {
+                        driverSearch.val('');
+                    } else {
+                        studentSearch.val('');
+                    }
+                }
+
+                if (container.attr('id') === 'activeDriverFilters') {
+                    applyDriverFilters();
+                } else {
+                    applyStudentFilters();
+                }
+            });
+
             // Add hover effects to table rows
             $('tbody tr').hover(
                 function() {
@@ -251,6 +667,10 @@
                 btn.html('<i class="bi bi-hourglass-split me-1"></i>در حال پردازش...');
                 btn.prop('disabled', true);
             });
+
+            // Initialize filters
+            applyDriverFilters();
+            applyStudentFilters();
         });
 
         function ChildRowClick(Id){
@@ -349,10 +769,43 @@
         .card-body {
             padding: 1rem;
         }
+
+        .filter-section .col-md-3 {
+            margin-bottom: 1rem;
+        }
     }
 
     .table-success {
         background-color: rgba(25, 135, 84, 0.2) !important;
         border-left: 4px solid #198754 !important;
+    }
+
+    #activeDriverFilters .badge,
+    #activeStudentFilters .badge {
+        font-size: 0.75rem;
+        padding: 0.4em 0.7em;
+    }
+
+    .btn-close {
+        opacity: 0.8;
+    }
+
+        .btn-close:hover {
+            opacity: 1;
+        }
+
+    /* Smooth animations */
+    .driver-row, .student-row {
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
     }
 </style>

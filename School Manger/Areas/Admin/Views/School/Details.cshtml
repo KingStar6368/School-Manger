@@ -234,7 +234,7 @@
                                     <form asp-controller="Driver" asp-action="Details" class="d-inline">
                                         <input type="hidden" name="id" value="@driver.Id" />
                                         <button class="btn btn-sm btn-outline-info rounded-pill shadow-sm" type="submit">
-                                            <i class="bi bi-eye me-1"></i>نمایش
+                                            <i class="bi bi-eye me-1"></i>
                                         </button>
                                     </form>
                                 </td>
@@ -261,9 +261,81 @@
                 <i class="bi bi-people fs-4 me-2"></i>دانش‌آموزان
             </h5>
             <span class="badge bg-light text-dark">
-                <i class="bi bi-person-check me-1"></i>@Model.Students.Count دانش‌آموز
+                <i class="bi bi-person-check me-1"></i><span id="studentCount">@Model.Students.Count</span> دانش‌آموز
             </span>
         </div>
+
+        <!-- Filters Section -->
+        <div class="card-body border-bottom border-secondary">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label text-white-50 mb-2">
+                        <i class="bi bi-funnel me-1"></i>فیلتر بر اساس شیفت:
+                    </label>
+                    <select id="shiftFilter" class="form-select bg-dark text-white border-secondary">
+                        <option value="all">همه شیفت‌ها</option>
+                        @{
+                            var uniqueShifts = Model.Students
+                            .Select(s => ShiftService.GetShiftById(s.ShiftId)?.Name ?? "انتخاب نشده")
+                            .Distinct()
+                            .OrderBy(s => s);
+                        }
+                        @foreach (var shift in uniqueShifts)
+                        {
+                            <option value="@shift">@shift</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label text-white-50 mb-2">
+                        <i class="bi bi-funnel me-1"></i>فیلتر بر اساس وضعیت پرداخت:
+                    </label>
+                    <select id="paymentFilter" class="form-select bg-dark text-white border-secondary">
+                        <option value="all">همه وضعیت‌ها</option>
+                        <option value="paid">پرداخت شده</option>
+                        <option value="unpaid">پرداخت نشده</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label text-white-50 mb-2">
+                        <i class="bi bi-search me-1"></i>جستجو:
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-dark text-white border-secondary">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" id="searchInput" class="form-control bg-dark text-white border-secondary" placeholder="جستجو در نام، نام خانوادگی یا کد ملی...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Filters Display -->
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div id="activeFilters" class="d-flex flex-wrap gap-2" style="display: none !important;">
+                        <!-- Active filters will be shown here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Actions -->
+            <div class="row mt-3">
+                <div class="col-12 d-flex justify-content-between">
+                    <div>
+                        <button id="clearFilters" class="btn btn-outline-warning btn-sm">
+                            <i class="bi bi-arrow-clockwise me-1"></i>پاک کردن فیلترها
+                        </button>
+                    </div>
+                    <div class="text-white-50">
+                        <small>
+                            <i class="bi bi-info-circle me-1"></i>
+                            <span id="filterResultsText">همه دانش‌آموزان نمایش داده می‌شوند</span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="card-body table-responsive">
             @if (Model.Students.Any())
             {
@@ -279,10 +351,13 @@
                             <th class="fw-bold"><i class="bi bi-gear me-1"></i>عملیات</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="studentsTableBody">
                         @foreach (var student in Model.Students)
                         {
-                            <tr>
+                            <tr class="student-row"
+                                data-shift="@(ShiftService.GetShiftById(student.ShiftId)?.Name ?? "انتخاب نشده")"
+                                data-payment="@(student.HasPaid ? "paid" : "unpaid")"
+                                data-search="@($"{student.FirstName} {student.LastName} {student.NationalCode}")">
                                 <td>@student.FirstName</td>
                                 <td>@student.LastName</td>
                                 <td>
@@ -298,19 +373,19 @@
                                 <td>
                                     @if (student.HasPaid)
                                     {
-                                        <span class="badge bg-success">
+                                        <span class="badge bg-success payment-badge">
                                             <i class="bi bi-check-circle me-1"></i>پرداخت شده
                                         </span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-danger">
+                                        <span class="badge bg-danger payment-badge">
                                             <i class="bi bi-x-circle me-1"></i>پرداخت نشده
                                         </span>
                                     }
                                 </td>
                                 <td>
-                                    <span class="badge bg-info">
+                                    <span class="badge bg-info shift-badge">
                                         <i class="bi bi-clock me-1"></i>@(ShiftService.GetShiftById(student.ShiftId)?.Name ?? "انتخاب نشده")
                                     </span>
                                 </td>
@@ -318,7 +393,7 @@
                                     <form asp-controller="Parents" asp-action="CreateBill" method="post" class="d-inline">
                                         <input name="ChildId" type="hidden" value="@student.Id" />
                                         <button class="btn btn-sm btn-outline-warning rounded-pill shadow-sm" type="submit">
-                                            <i class="bi bi-receipt me-1"></i>صدور قبض
+                                            <i class="bi bi-receipt me-1"></i>
                                         </button>
                                     </form>
                                 </td>
@@ -337,133 +412,193 @@
             }
         </div>
     </div>
-</div>
 
 @section Scripts {
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script>
+            $(document).ready(function() {
+                // Filter elements
+                const shiftFilter = $('#shiftFilter');
+                const paymentFilter = $('#paymentFilter');
+                const searchInput = $('#searchInput');
+                const clearFiltersBtn = $('#clearFilters');
+                const activeFiltersContainer = $('#activeFilters');
+                const studentCount = $('#studentCount');
+                const filterResultsText = $('#filterResultsText');
+                const studentRows = $('.student-row');
 
-    <script>
-        // Get the coordinates from the Razor model
-        var lat = @Model.School.Address.Latitude;
-        var lng = @Model.School.Address.Longitude;
+                // Initial count
+                let totalStudents = studentRows.length;
 
-        // Initialize the map
-        var map = L.map('schoolMap').setView([lat, lng], 15);
+                function applyFilters() {
+                    const selectedShift = shiftFilter.val();
+                    const selectedPayment = paymentFilter.val();
+                    const searchTerm = searchInput.val().toLowerCase().trim();
 
-        // Add OpenStreetMap tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+                    let visibleCount = 0;
+                    let activeFilters = [];
 
-        // Add a marker at the school location with a custom icon
-        L.marker([lat, lng], {
-            icon: L.divIcon({
-                className: 'school-marker',
-                html: '<div style="background:#dc3545;color:white;padding:4px 8px;border-radius:6px;border:2px solid white;"><i class="bi bi-building-fill me-1"></i>مدرسه</div>',
-                iconSize: [60, 30]
-            })
-        }).addTo(map)
-        .bindPopup('<div class="text-center"><i class="bi bi-building-fill text-danger me-1"></i><strong>موقعیت مدرسه</strong><br>@Model.School.Name</div>')
-        .openPopup();
+                    studentRows.each(function() {
+                        const $row = $(this);
+                        const shift = $row.data('shift');
+                        const payment = $row.data('payment');
+                        const searchData = $row.data('search').toLowerCase();
 
-        // Update hidden shift field when shift selection changes
-        document.getElementById('ShiftOption').addEventListener('change', function() {
-            document.getElementById('ShiftId').value = this.value;
-        });
+                        let isVisible = true;
 
-        // Add hover effects
-        $(document).ready(function() {
-            $('tbody tr').hover(
-                function() {
-                    $(this).addClass('bg-secondary bg-opacity-25');
-                },
-                function() {
-                    $(this).removeClass('bg-secondary bg-opacity-25');
+                        // Apply shift filter
+                        if (selectedShift !== 'all') {
+                            if (shift !== selectedShift) {
+                                isVisible = false;
+                            } else {
+                                activeFilters.push(`شیفت: ${selectedShift}`);
+                            }
+                        }
+
+                        // Apply payment filter
+                        if (selectedPayment !== 'all' && isVisible) {
+                            if (payment !== selectedPayment) {
+                                isVisible = false;
+                            } else {
+                                activeFilters.push(`پرداخت: ${selectedPayment === 'paid' ? 'پرداخت شده' : 'پرداخت نشده'}`);
+                            }
+                        }
+
+                        // Apply search filter
+                        if (searchTerm && isVisible) {
+                            if (!searchData.includes(searchTerm)) {
+                                isVisible = false;
+                            } else {
+                                activeFilters.push(`جستجو: "${searchTerm}"`);
+                            }
+                        }
+
+                        if (isVisible) {
+                            $row.show();
+                            visibleCount++;
+                        } else {
+                            $row.hide();
+                        }
+                    });
+
+                    // Update student count
+                    studentCount.text(visibleCount);
+
+                    // Update active filters display
+                    updateActiveFiltersDisplay(activeFilters);
+
+                    // Update results text
+                    updateResultsText(visibleCount, selectedShift, selectedPayment, searchTerm);
                 }
-            );
 
-            $('.btn').hover(
-                function() {
-                    $(this).addClass('shadow');
-                },
-                function() {
-                    $(this).removeClass('shadow');
+                function updateActiveFiltersDisplay(filters) {
+                    activeFiltersContainer.empty();
+
+                    const uniqueFilters = [...new Set(filters)];
+
+                    if (uniqueFilters.length > 0) {
+                        activeFiltersContainer.show();
+
+                        uniqueFilters.forEach(filter => {
+                            const filterBadge = $(`
+                                <span class="badge bg-primary d-flex align-items-center">
+                                    ${filter}
+                                    <button type="button" class="btn-close btn-close-white ms-2" style="font-size: 0.6rem;" data-filter="${filter}"></button>
+                                </span>
+                            `);
+                            activeFiltersContainer.append(filterBadge);
+                        });
+                    } else {
+                        activeFiltersContainer.hide();
+                    }
                 }
-            );
-        });
-    </script>
+
+                function updateResultsText(visibleCount, shift, payment, search) {
+                    if (visibleCount === totalStudents) {
+                        filterResultsText.text('همه دانش‌آموزان نمایش داده می‌شوند');
+                    } else {
+                        let text = `${visibleCount} از ${totalStudents} دانش‌آموز`;
+
+                        if (shift !== 'all') {
+                            text += ` در شیفت ${shift}`;
+                        }
+
+                        if (payment !== 'all') {
+                            text += ` با وضعیت ${payment === 'paid' ? 'پرداخت شده' : 'پرداخت نشده'}`;
+                        }
+
+                        if (search) {
+                            text += ` با جستجوی "${search}"`;
+                        }
+
+                        filterResultsText.text(text);
+                    }
+                }
+
+                function clearFilters() {
+                    shiftFilter.val('all');
+                    paymentFilter.val('all');
+                    searchInput.val('');
+                    applyFilters();
+                }
+
+                // Event listeners
+                shiftFilter.on('change', applyFilters);
+                paymentFilter.on('change', applyFilters);
+                searchInput.on('input', applyFilters);
+
+                clearFiltersBtn.on('click', clearFilters);
+
+                // Remove individual filter
+                activeFiltersContainer.on('click', '.btn-close', function() {
+                    const filterText = $(this).data('filter');
+
+                    if (filterText.includes('شیفت:')) {
+                        shiftFilter.val('all');
+                    } else if (filterText.includes('پرداخت:')) {
+                        paymentFilter.val('all');
+                    } else if (filterText.includes('جستجو:')) {
+                        searchInput.val('');
+                    }
+
+                    applyFilters();
+                });
+
+                // Initialize
+                applyFilters();
+            });
+        </script>
+
+        <style>
+            .student-row {
+                transition: all 0.3s ease;
+            }
+
+            #activeFilters .badge {
+                font-size: 0.75rem;
+                padding: 0.4em 0.7em;
+            }
+
+            .btn-close {
+                opacity: 0.8;
+            }
+
+                .btn-close:hover {
+                    opacity: 1;
+                }
+
+            /* Smooth animations */
+            .student-row {
+                animation: fadeIn 0.5s ease-in;
+            }
+
+            @@keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+        </style>
 }
-
-<style>
-    .rating {
-        direction: ltr;
-        unicode-bidi: bidi-override;
-    }
-
-    .card {
-        transition: transform 0.3s ease;
-    }
-
-        .card:hover {
-            transform: translateY(-2px);
-        }
-
-    .btn {
-        transition: all 0.3s ease;
-    }
-
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-    .table th, .table td {
-        vertical-align: middle;
-        text-align: center;
-    }
-
-    .table-hover tbody tr:hover {
-        background-color: rgba(255, 255, 255, 0.1) !important;
-    }
-
-    .badge {
-        font-size: 0.85rem;
-        padding: 0.5em 0.8em;
-    }
-
-    /* Custom scrollbar */
-    .table-responsive::-webkit-scrollbar {
-        height: 8px;
-    }
-
-    .table-responsive::-webkit-scrollbar-track {
-        background: #2d3748;
-        border-radius: 4px;
-    }
-
-    .table-responsive::-webkit-scrollbar-thumb {
-        background: #4a5568;
-        border-radius: 4px;
-    }
-
-        .table-responsive::-webkit-scrollbar-thumb:hover {
-            background: #718096;
-        }
-
-    /* Responsive design */
-    @@media (max-width: 768px) {
-        .table-responsive {
-            font-size: 0.9rem;
-        }
-
-        .btn-sm {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.8rem;
-        }
-
-        .card-body {
-            padding: 1rem;
-        }
-    }
-</style>

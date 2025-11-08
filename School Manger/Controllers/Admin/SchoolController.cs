@@ -55,7 +55,7 @@ namespace School_Manger.Controllers.Admin
             var School = _schoolService.GetSchool(id);
             if (School == null)
                 return await Index();
-            var Drivers = await _driverService.GetDrivers(id);
+            var Drivers = await _schoolService.GetDrivers(id);
             var Childern = await _schoolService.GetChildren(id);
             AdminSchool dashbord = new AdminSchool()
             {
