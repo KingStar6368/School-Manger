@@ -39,9 +39,13 @@ namespace School_Manger.Controllers.Admin
         public IActionResult Details(long id, long ShiftId = 0)
         {
             var driver = _driverService.GetDriver(id);
+            List<ChildInfo> passanger = new List<ChildInfo>();
             if (driver == null) return NotFound();
-            var Sid = ShiftId == 0 ? _shiftService.GetDriverShifts(driver.Id).FirstOrDefault().Id : ShiftId;
-            var passanger = _driverService.GetPassngers(Sid);
+            if (_shiftService.GetDriverShifts(driver.Id).FirstOrDefault() != null)
+            {
+                var Sid = ShiftId == 0 ? _shiftService.GetDriverShifts(driver.Id).FirstOrDefault().Id : _shiftService.GetDriverShift(ShiftId, driver.Id).Id;
+                passanger = _driverService.GetPassngers(Sid);
+            }
             AdminDriver admindashbord = new AdminDriver()
             {
                 Driver = driver,
