@@ -314,7 +314,7 @@ namespace School_Manager.Core.Services.Implemetations
 
         public async Task<List<ChildInfo>> SearchChild(SearchDto filter)
         {
-            var query = _unitOfWork.GetRepository<Child>().FindAll(); // IQueryable<Parent>
+            var query = _unitOfWork.GetRepository<Child>().FindAll();
 
             if (!string.IsNullOrEmpty(filter.FirstName))
                 query = query.Where(p => p.FirstName.Contains(filter.FirstName));
@@ -328,7 +328,13 @@ namespace School_Manager.Core.Services.Implemetations
             if (!string.IsNullOrEmpty(filter.Mobile))
                 query = query.Where(p => p.ParentNavigation.UserNavigation.Mobile.Contains(filter.Mobile));
 
-            var result = await query.ToListAsync();
+            var result = await query
+                .Include(x => x.DriverChilds)
+                    .ThenInclude(dc => dc.DriverShiftNavigation)
+                        .ThenInclude(ds => ds.DriverNavigation)
+                .Include(x=>x.ServiceContracts)
+                    .ThenInclude(x=>x.Bills)
+                .ToListAsync();
 
             return _mapper.Map<List<ChildInfo>>(result);
         }

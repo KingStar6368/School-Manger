@@ -8,7 +8,50 @@
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "🔎 جستجو پیشرفته راننده";
+
+    long NonBillChild = Model.Where(x => x.Bills == null || x.Bills.Count <= 0).Count();
+    long NonDriverChild = Model.Where(x => x.DriverId == null || x.DriverId <= 0).Count();
+    long AssingedDriverChild = Model.Where(x =>x.DriverId != null && x.DriverId > 0).Count();
 }
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white shadow-sm border-0">
+            <div class="card-body text-center">
+                <i class="bi bi-people fs-1 d-block mb-2"></i>
+                <h4 class="mb-1">@Model.Count</h4>
+                <p class="mb-0">تعداد دانش آموزان</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-success text-white shadow-sm border-0">
+            <div class="card-body text-center">
+                <i class="bi bi-person-check fs-1 d-block mb-2"></i>
+                <h4 class="mb-1">@AssingedDriverChild</h4>
+                <p class="mb-0">اختصاص داده شده ها</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-warning text-dark shadow-sm border-0">
+            <div class="card-body text-center">
+                <i class="bi bi-person-x fs-1 d-block mb-2"></i>
+                <h4 class="mb-1">@NonDriverChild</h4>
+                <p class="mb-0">اختصاص داده نشده ها</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card bg-danger text-white shadow-sm border-0">
+            <div class="card-body text-center">
+                <i class="bi bi-person-x fs-1 d-block mb-2"></i>
+                <h4 class="mb-1">@NonBillChild</h4>
+                <p class="mb-0">دانش آموزان بدون قبض</p>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2">
     <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
         <h4 class="mb-0 fw-bold">
@@ -125,6 +168,8 @@
                     {
                         var SelectedModel = Model[i];
                         var Parent = ParentService.GetParentWithChild(SelectedModel.Id);
+                        var driver = SelectedModel.DriverId > 0 ? DriverService.GetDriver((long)SelectedModel.DriverId) : null;
+                        var bills = Model[i].Bills;
                         string PFullName = $"{Parent.ParentFirstName} {Parent.ParentLastName}";
                         <tr>
                             <td>@(i + 1)</td>
@@ -133,7 +178,7 @@
                             <td>@SelectedModel.LastName</td>
                             <td>@SelectedModel.NationalCode</td>
                             <td>
-                                @if (!BillService.GetChildBills(SelectedModel.Id).Result.Any(x => !x.HasPaid))
+                                @if (!bills.Any(x => !x.HasPaid))
                                 {
                                     <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>پرداخت شده</span>
                                 }
@@ -144,7 +189,7 @@
                             </td>
                             <td>
                                 @{
-                                    int BillCount = BillService.GetChildBills(SelectedModel.Id).Result.Count;
+                                    int BillCount = bills.Count;
                                     if (BillCount > 0)
                                     {
                                         <span class="badge bg-info"><i class="bi bi-receipt me-1"></i>@BillCount</span>
@@ -156,7 +201,20 @@
                                 }
                             </td>
                             <td>
-                                <span class='text-white'><i class='bi bi-dash-circle'></i>@(SelectedModel.DriverId > 0 ? DriverService.GetDriver((long)SelectedModel.DriverId).Name : "راننده ندارد")</span>
+                                @if (SelectedModel.DriverId > 0)
+                                {
+                                    <span class='text-white badge bg-info'>
+
+                                        <i class='bi bi-dash-circle'></i>@(driver.Name + " " + driver.LastName)
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class='text-white badge bg-warning'>
+
+                                        <i class='bi bi-dash-circle'></i>راننده ندارد
+                                    </span>
+                                }
                             </td>
                             <td>@(SelectedModel.SchoolId.HasValue? SchoolService.GetSchool((long)SelectedModel.SchoolId).Name:"<span class='text-muted'><i class='bi bi-dash-circle'></i> ندارد</span>")</td>
                             <td>
