@@ -4,14 +4,14 @@
 @inject IBillService BillService
 @inject IDriverService DriverService
 @inject IParentService ParentService
-@model List<ChildInfo>
+@model SearchChildDto
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "🔎 جستجو پیشرفته راننده";
 
-    long NonBillChild = Model.Where(x => x.Bills == null || x.Bills.Count <= 0).Count();
-    long NonDriverChild = Model.Where(x => x.DriverId == null || x.DriverId <= 0).Count();
-    long AssingedDriverChild = Model.Where(x =>x.DriverId != null && x.DriverId > 0).Count();
+    long NonBillChild = Model.ChildInfos.Where(x => x.Bills == null || x.Bills.Count <= 0).Count();
+    long NonDriverChild = Model.ChildInfos.Where(x => x.DriverId == null || x.DriverId <= 0).Count();
+    long AssingedDriverChild = Model.ChildInfos.Where(x => x.DriverId != null && x.DriverId > 0).Count();
 }
 <!-- Statistics Cards -->
 <div class="row mb-4">
@@ -19,7 +19,7 @@
         <div class="card bg-primary text-white shadow-sm border-0">
             <div class="card-body text-center">
                 <i class="bi bi-people fs-1 d-block mb-2"></i>
-                <h4 class="mb-1">@Model.Count</h4>
+                <h4 class="mb-1">@Model.ChildInfos.Count</h4>
                 <p class="mb-0">تعداد دانش آموزان</p>
             </div>
         </div>
@@ -147,8 +147,50 @@
                 </select>
             </div>
         </div>
+
+        <!-- Filter Controls -->
+        <div class="row mt-4 mb-3">
+            <div class="col-md-3 mb-2">
+                <div class="input-group">
+                    <span class="input-group-text bg-info text-white">
+                        <i class="bi bi-funnel"></i>
+                    </span>
+                    <input type="text" class="form-control" id="globalSearch" placeholder="جستجوی کلی...">
+                </div>
+            </div>
+            <div class="col-md-2 mb-2">
+                <select class="form-select" id="paymentStatusFilter">
+                    <option value="">وضعیت پرداختی</option>
+                    <option value="paid">پرداخت شده</option>
+                    <option value="unpaid">پرداخت نشده</option>
+                </select>
+            </div>
+            <div class="col-md-2 mb-2">
+                <select class="form-select" id="driverStatusFilter">
+                    <option value="">وضعیت راننده</option>
+                    <option value="assigned">دارای راننده</option>
+                    <option value="unassigned">بدون راننده</option>
+                </select>
+            </div>
+            <div class="col-md-2 mb-2">
+                <select class="form-select" id="billStatusFilter">
+                    <option value="">وضعیت قبض</option>
+                    <option value="hasBills">دارای قبض</option>
+                    <option value="noBills">بدون قبض</option>
+                </select>
+            </div>
+            <div class="col-md-3 mb-2 d-flex gap-2">
+                <button class="btn btn-outline-warning flex-fill" id="resetFilters">
+                    <i class="bi bi-arrow-clockwise me-1"></i>بازنشانی
+                </button>
+                <button class="btn btn-outline-info flex-fill" id="exportResults">
+                    <i class="bi bi-download me-1"></i>خروجی
+                </button>
+            </div>
+        </div>
+
         <div class="table-responsive mt-4">
-            <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden">
+            <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden" id="studentsTable">
                 <thead class="table-light text-dark">
                     <tr>
                         <th><i class="bi bi-hash me-1"></i> ردیف</th>
@@ -164,14 +206,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 0; i < Model.Count; i++)
+                    @for (int i = 0; i < Model.ChildInfos.Count; i++)
                     {
-                        var SelectedModel = Model[i];
-                        var Parent = ParentService.GetParentWithChild(SelectedModel.Id);
-                        var driver = SelectedModel.DriverId > 0 ? DriverService.GetDriver((long)SelectedModel.DriverId) : null;
-                        var bills = Model[i].Bills;
+                        var SelectedModel = Model.ChildInfos[i];
+                        var Parent = Model.Parents.Where(x => x.Children.Any(c => c.Id == SelectedModel.Id)).FirstOrDefault();
+                        var driver = SelectedModel.DriverId > 0 ? Model.Drivers.FirstOrDefault(x => x.Id == SelectedModel.DriverId) : null;
+                        var bills = Model.ChildInfos[i].Bills;
                         string PFullName = $"{Parent.ParentFirstName} {Parent.ParentLastName}";
-                        <tr>
+                        <tr data-payment="@(!bills.Any(x => !x.HasPaid) ? "paid" : "unpaid")"
+                            data-driver="@(SelectedModel.DriverId > 0 ? "assigned" : "unassigned")"
+                            data-bills="@(bills.Count > 0 ? "hasBills" : "noBills")">
                             <td>@(i + 1)</td>
                             <td>@PFullName</td>
                             <td>@SelectedModel.FirstName</td>
@@ -204,19 +248,17 @@
                                 @if (SelectedModel.DriverId > 0)
                                 {
                                     <span class='text-white badge bg-info'>
-
                                         <i class='bi bi-dash-circle'></i>@(driver.Name + " " + driver.LastName)
                                     </span>
                                 }
                                 else
                                 {
                                     <span class='text-white badge bg-warning'>
-
                                         <i class='bi bi-dash-circle'></i>راننده ندارد
                                     </span>
                                 }
                             </td>
-                            <td>@(SelectedModel.SchoolId.HasValue? SchoolService.GetSchool((long)SelectedModel.SchoolId).Name:"<span class='text-muted'><i class='bi bi-dash-circle'></i> ندارد</span>")</td>
+                            <td>@(SelectedModel.SchoolId.HasValue? Model.Schools.FirstOrDefault(x => x.Id == SelectedModel.SchoolId).Name:"<span class='text-muted'><i class='bi bi-dash-circle'></i> ندارد</span>")</td>
                             <td>
                                 <div class="d-flex flex-wrap gap-1 justify-content-center">
                                     @if (SelectedModel.DriverId > 0)
@@ -250,10 +292,22 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Results Counter -->
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="alert alert-info d-flex justify-content-between align-items-center">
+                    <span id="resultsCount">نمایش @Model.ChildInfos.Count مورد از @Model.ChildInfos.Count نتیجه</span>
+                    <span id="selectedCount" class="badge bg-primary">0 مورد انتخاب شده</span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
 @section Scripts {
     <script>
+        // Panel switcher
         const ParentPnl = document.getElementById('ParentPnl');
         const ChildPnl = document.getElementById('ChildPnl');
         const DriverPnl = document.getElementById('DriverPnl');
@@ -276,5 +330,178 @@
                 ChildPnl.style.display = "inline";
             }
         });
+
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const table = document.getElementById('studentsTable');
+            const tbody = table.querySelector('tbody');
+            const rows = tbody.querySelectorAll('tr');
+            const globalSearch = document.getElementById('globalSearch');
+            const paymentFilter = document.getElementById('paymentStatusFilter');
+            const driverFilter = document.getElementById('driverStatusFilter');
+            const billFilter = document.getElementById('billStatusFilter');
+            const resetBtn = document.getElementById('resetFilters');
+            const exportBtn = document.getElementById('exportResults');
+            const resultsCount = document.getElementById('resultsCount');
+            const selectedCount = document.getElementById('selectedCount');
+
+            let selectedRows = new Set();
+
+            // Add row selection functionality
+            rows.forEach(row => {
+                row.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'I' || e.target.tagName === 'INPUT') {
+                        return;
+                    }
+
+                    this.classList.toggle('table-active');
+                    const rowId = this.querySelector('td:first-child').textContent;
+
+                    if (this.classList.contains('table-active')) {
+                        selectedRows.add(rowId);
+                    } else {
+                        selectedRows.delete(rowId);
+                    }
+
+                    updateSelectedCount();
+                });
+            });
+
+            function updateSelectedCount() {
+                selectedCount.textContent = `${selectedRows.size} مورد انتخاب شده`;
+            }
+
+            function filterRows() {
+                const globalSearchTerm = globalSearch.value.toLowerCase();
+                const paymentValue = paymentFilter.value;
+                const driverValue = driverFilter.value;
+                const billValue = billFilter.value;
+
+                let visibleCount = 0;
+
+                rows.forEach(row => {
+                    let showRow = true;
+
+                    // Global search
+                    if (globalSearchTerm) {
+                        const rowText = row.textContent.toLowerCase();
+                        if (!rowText.includes(globalSearchTerm)) {
+                            showRow = false;
+                        }
+                    }
+
+                    // Payment filter
+                    if (paymentValue && row.dataset.payment !== paymentValue) {
+                        showRow = false;
+                    }
+
+                    // Driver filter
+                    if (driverValue && row.dataset.driver !== driverValue) {
+                        showRow = false;
+                    }
+
+                    // Bill filter
+                    if (billValue && row.dataset.bills !== billValue) {
+                        showRow = false;
+                    }
+
+                    if (showRow) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                updateResultsCount(visibleCount);
+            }
+
+            function updateResultsCount(visibleCount) {
+                resultsCount.textContent = `نمایش ${visibleCount} مورد از ${rows.length} نتیجه`;
+            }
+
+            function resetFilters() {
+                globalSearch.value = '';
+                paymentFilter.value = '';
+                driverFilter.value = '';
+                billFilter.value = '';
+                selectedRows.clear();
+
+                rows.forEach(row => {
+                    row.style.display = '';
+                    row.classList.remove('table-active');
+                });
+
+                updateResultsCount(rows.length);
+                updateSelectedCount();
+            }
+
+            function exportResults() {
+                const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
+                const exportData = visibleRows.map(row => {
+                    const cells = row.querySelectorAll('td');
+                    return {
+                        rowNumber: cells[0].textContent,
+                        parentName: cells[1].textContent,
+                        firstName: cells[2].textContent,
+                        lastName: cells[3].textContent,
+                        nationalCode: cells[4].textContent,
+                        paymentStatus: cells[5].textContent.trim(),
+                        billCount: cells[6].textContent.trim(),
+                        driver: cells[7].textContent.trim(),
+                        school: cells[8].textContent.trim()
+                    };
+                });
+
+                // Create CSV content
+                let csvContent = "ردیف,نام والد,نام,نام خانوادگی,کدملی,وضعیت پرداختی,تعداد قبض,راننده,مدرسه\n";
+
+                exportData.forEach(row => {
+                    csvContent += `"${row.rowNumber}","${row.parentName}","${row.firstName}","${row.lastName}","${row.nationalCode}","${row.paymentStatus}","${row.billCount}","${row.driver}","${row.school}"\n`;
+                });
+
+                // Create and download file
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `نتایج_جستجو_${new Date().toLocaleDateString('fa-IR')}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            // Event listeners
+            globalSearch.addEventListener('input', filterRows);
+            paymentFilter.addEventListener('change', filterRows);
+            driverFilter.addEventListener('change', filterRows);
+            billFilter.addEventListener('change', filterRows);
+            resetBtn.addEventListener('click', resetFilters);
+            exportBtn.addEventListener('click', exportResults);
+
+            // Initialize results count
+            updateResultsCount(rows.length);
+        });
     </script>
+
+    <style>
+        .table-active {
+            background-color: rgba(13, 110, 253, 0.2) !important;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #0dcaf0;
+            box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
+        }
+
+        #globalSearch {
+            direction: rtl;
+        }
+    </style>
 }

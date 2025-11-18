@@ -37,7 +37,7 @@ namespace School_Manager.Core.Services.Interfaces
         /// </summary>
         /// <param name="id">کد راننده</param>
         /// <returns>کلاس دانش آموزانی که در لیست کد مسافر راننده وجود دارد</returns>
-        List<ChildInfo> GetPassngers(long id);
+        List<ChildInfo> GetPassngers(long ShiftId);
         /// <summary>
         /// گرفتن راننده های فعال در مدرسه
         /// </summary>

@@ -85,7 +85,9 @@ namespace School_Manager.Core.Services.Implemetations
 
         public List<ChildInfo> GetPassngers(long DriverShiftId)
         {
-            var child = _unitOfWork.GetRepository<Child>().Query(x => x.DriverChilds.Any(y=>y.DriverShiftRef == DriverShiftId && y.IsEnabled && y.EndDate >= DateTime.Now)).ToList();
+            var child = _unitOfWork.GetRepository<Child>().Query(x => x.DriverChilds.Any(y=>y.DriverShiftRef == DriverShiftId && y.IsEnabled && y.EndDate >= DateTime.Now))
+                .Include(x=>x.LocationPairs)
+                .ThenInclude(x=>x.Locations).ToList();
             return _mapper.Map<List<ChildInfo>>(child);
         }
 

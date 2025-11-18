@@ -162,4 +162,11 @@ namespace School_Manager.Core.ViewModels.FModels
         public long ShiftId { get; set; }
         public List<LocationPairUpdateDto> LocationPairs { get; set; } = new();
     }
+    public class SearchChildDto
+    {
+        public List<ChildInfo> ChildInfos { get; set; } = new();
+        public List<DriverDto> Drivers { get; set; } = new();
+        public List<ParentDto> Parents { get; set; } = new();
+        public List<SchoolDto> Schools { get; set; } = new();
+    }
 }

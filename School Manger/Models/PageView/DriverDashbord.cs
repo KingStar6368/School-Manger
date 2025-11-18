@@ -6,5 +6,6 @@ namespace School_Manger.Models.PageView
     {
         public DriverDto Driver { get; set; }
         public List<ChildInfo> Passanger { get; set; }
+        public List<ShiftDto> Shifts { get; set; } // List of available shifts for the driver
     }
 }

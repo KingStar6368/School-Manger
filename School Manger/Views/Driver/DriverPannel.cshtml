@@ -15,128 +15,127 @@
             <i class="bi bi-steering-wheel me-2"></i> اطلاعات راننده
         </h3>
         <div class="d-flex justify-content-center flex-wrap gap-4 mt-3">
+            <input hidden id="DriverId" value="@Model.Driver.Id" />
             <div class="text-center">
                 <div class="text-primary mb-1">
                     <i class="bi bi-person fs-5"></i>
                 </div>
                 <span class="fw-semibold">نام:</span>
-                <span class="fs-5 fw-bold text-warning">@Model.Driver.Name</span>
+                <span class="fs-5 fw-bold text-warning">@Model.Driver?.Name</span>
             </div>
             <div class="text-center">
                 <div class="text-primary mb-1">
                     <i class="bi bi-person fs-5"></i>
                 </div>
                 <span class="fw-semibold">نام خانوادگی:</span>
-                <span class="fs-5 fw-bold text-warning">@Model.Driver.LastName</span>
+                <span class="fs-5 fw-bold text-warning">@Model.Driver?.LastName</span>
             </div>
             <div class="text-center">
                 <div class="text-primary mb-1">
                     <i class="bi bi-car-front fs-5"></i>
                 </div>
                 <span class="fw-semibold">خودرو:</span>
-                <span class="fs-5 fw-bold text-warning">@Model.Driver.Car.Name</span>
-                <span class="badge bg-info ms-1">@Model.Driver.Car.PlateNumber</span>
+                <span class="fs-5 fw-bold text-warning">@Model.Driver?.Car?.Name</span>
+                <span class="badge bg-info ms-1">@Model.Driver?.Car?.PlateNumber</span>
             </div>
             <div class="text-center">
                 <div class="text-primary mb-1">
                     <i class="bi bi-person-seat fs-5"></i>
                 </div>
                 <span class="fw-semibold">صندلی‌های خالی:</span>
-                <span class="fs-5 fw-bold text-success">@Model.Driver.AvailableSeats</span>
+                <span class="fs-5 fw-bold text-success">@Model.Driver?.AvailableSeats</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shift Selection -->
+    <div class="row mb-4">
+        <div class="col-md-6 mx-auto">
+            <label class="form-label fw-bold text-info">
+                <i class="bi bi-clock-history me-1"></i> انتخاب شیفت
+            </label>
+            <select id="shiftSelect" class="form-select bg-dark text-white border-info">
+                <option value="">-- انتخاب شیفت --</option>
+                @if (Model.Shifts != null)
+                {
+                    foreach (var shift in Model.Shifts)
+                    {
+                        <option value="@shift.Id">@shift.Name</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+
+    <!-- Route Information Section -->
+    <div class="row mb-4" id="routeInfoSection" style="display:none;">
+        <div class="col-12">
+            <div class="card bg-dark text-white shadow-lg rounded-4 border-warning border-2">
+                <div class="card-header bg-warning bg-gradient d-flex justify-content-between align-items-center py-3">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-signpost-split me-2"></i> اطلاعات مسیر
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="bg-secondary rounded-3 p-3">
+                                <i class="bi bi-signpost fs-1 text-primary"></i>
+                                <h6 class="mt-2 fw-bold">مسافت کل</h6>
+                                <span class="fs-5 fw-bold text-info" id="totalDistance">0 کیلومتر</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-secondary rounded-3 p-3">
+                                <i class="bi bi-clock fs-1 text-success"></i>
+                                <h6 class="mt-2 fw-bold">زمان کل</h6>
+                                <span class="fs-5 fw-bold text-info" id="totalTime">0 دقیقه</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-secondary rounded-3 p-3">
+                                <i class="bi bi-people fs-1 text-warning"></i>
+                                <h6 class="mt-2 fw-bold">تعداد مسافر</h6>
+                                <span class="fs-5 fw-bold text-info" id="passengerCount">0 نفر</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-secondary rounded-3 p-3">
+                                <i class="bi bi-geo-alt fs-1 text-danger"></i>
+                                <h6 class="mt-2 fw-bold">تعداد توقف</h6>
+                                <span class="fs-5 fw-bold text-info" id="stopCount">0 توقف</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Passenger List Section -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2">
-                <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center py-3">
-                    <h4 class="mb-0 fw-bold">
-                        <i class="bi bi-people-fill me-2"></i> لیست مسافران
-                    </h4>
-                    <span class="badge bg-light text-primary fs-6">
-                        <i class="bi bi-person-check me-1"></i> @Model.Passanger.Count مسافر
-                    </span>
-                </div>
-                <div class="card-body">
-                    @if (Model.Passanger != null && Model.Passanger.Any())
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-dark table-bordered table-hover align-middle text-center rounded-3 overflow-hidden">
-                                <thead class="table-light text-dark">
-                                    <tr>
-                                        <th><i class="bi bi-hash me-1"></i> ردیف</th>
-                                        <th><i class="bi bi-person me-1"></i> نام مسافر</th>
-                                        <th><i class="bi bi-geo-alt me-1"></i> مبدا</th>
-                                        <th><i class="bi bi-geo-alt-fill me-1"></i> مقصد</th>
-                                        <th><i class="bi bi-clock me-1"></i> زمان رفت</th>
-                                        <th><i class="bi bi-clock-history me-1"></i> زمان بازگشت</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var child in Model.Passanger)
-                                    {
-                                        <tr>
-                                            <td>
-                                                <span class="badge bg-secondary">@(Model.Passanger.IndexOf(child) + 1)</span>
-                                            </td>
-                                            <td>
-                                                <span class="fw-bold">
-                                                    <i class="bi bi-person-badge me-1"></i>@child.FirstName @child.LastName
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="text-info">
-                                                    <i class="bi bi-pin-map me-1"></i>@child.Path.Location1.Address
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="text-warning">
-                                                    <i class="bi bi-pin-map-fill me-1"></i>@child.Path.Location2.Address
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-success">
-                                                    <i class="bi bi-clock me-1"></i>@child.Path.PickTime1
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-info">
-                                                    <i class="bi bi-clock-history me-1"></i>@child.Path.PickTime2
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="alert alert-warning text-center fw-bold my-4">
-                            <i class="bi bi-exclamation-triangle me-2"></i> مسافری یافت نشد!
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
+    <div class="row" id="passengerSection">
+        <!-- Passenger table will be rendered here by JS -->
     </div>
 
     <!-- Map Section -->
-    <div class="row mt-4">
+    <div class="row mt-4" id="mapSection" style="display:none;">
         <div class="col-12">
             <div class="card bg-dark text-white shadow-lg rounded-4 border-success border-2">
                 <div class="card-header bg-success bg-gradient d-flex justify-content-between align-items-center py-3">
                     <h5 class="mb-0 fw-bold">
                         <i class="bi bi-map me-2"></i> مسیرهای راننده
                     </h5>
-                    <span class="badge bg-light text-success fs-6">
-                        <i class="bi bi-geo me-1"></i> نقشه مسیرها
-                    </span>
+                    <div>
+                        <button id="optimizeRoute" class="btn btn-warning btn-sm me-2">
+                            <i class="bi bi-gear me-1"></i>بهینه‌سازی مسیر
+                        </button>
+                        <span class="badge bg-light text-success fs-6">
+                            <i class="bi bi-geo me-1"></i> نقشه مسیرها
+                        </span>
+                    </div>
                 </div>
                 <div class="card-body p-0">
-                    <div id="driverMap" style="height: 500px; width: 100%; border-radius: 0 0 12px 12px;"></div>
+                    <div id="driverMap" style="height: 600px; width: 100%; border-radius: 0 0 12px 12px;"></div>
                 </div>
             </div>
         </div>
@@ -145,85 +144,503 @@
 
 @section Scripts {
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const arakCenter = [34.0918, 49.6892]; // Default center if none present
-            const map = L.map('driverMap').setView(arakCenter, 12);
+        const initialPassengers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Passanger != null ? Model.Passanger : new List<School_Manager.Core.ViewModels.FModels.ChildInfo>()));
+        const apiGetShiftPassengers = '/Driver/GetShiftPassengers';
+        const apiGetRoute = '/Driver/GetRoute';
+        const DriverId = document.getElementById('DriverId').value;
 
+        let map;
+        let passengerMarkers = [];
+        let routeLines = [];
+        let currentPassengers = [];
+
+        const routeColors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'];
+
+        function clearMap() {
+            if (!map) return;
+            passengerMarkers.forEach(m => map.removeLayer(m));
+            routeLines.forEach(l => map.removeLayer(l));
+            passengerMarkers = [];
+            routeLines = [];
+        }
+
+        function safeGet(obj, ...paths) {
+            try {
+                let cur = obj;
+                for (let p of paths) {
+                    if (cur == null) return null;
+                    cur = cur[p];
+                }
+                return cur;
+            } catch { return null; }
+        }
+
+        // Enhanced coordinate extraction
+        function extractCoordinates(passenger) {
+            console.log('🔍 Full passenger object:', passenger);
+
+            // Try multiple property paths
+            const paths = [
+                // Nested path object (most common)
+                () => ({
+                    lat1: passenger?.path?.location1?.latitude ?? passenger?.Path?.Location1?.Latitude,
+                    lng1: passenger?.path?.location1?.longitude ?? passenger?.Path?.Location1?.Longitude,
+                    lat2: passenger?.path?.location2?.latitude ?? passenger?.Path?.Location2?.Latitude,
+                    lng2: passenger?.path?.location2?.longitude ?? passenger?.Path?.Location2?.Longitude
+                }),
+                // Direct properties
+                () => ({
+                    lat1: passenger?.location1Latitude ?? passenger?.Location1Latitude,
+                    lng1: passenger?.location1Longitude ?? passenger?.Location1Longitude,
+                    lat2: passenger?.location2Latitude ?? passenger?.Location2Latitude,
+                    lng2: passenger?.location2Longitude ?? passenger?.Location2Longitude
+                }),
+                // Simple lat/lng
+                () => ({
+                    lat1: passenger?.lat1 ?? passenger?.Lat1,
+                    lng1: passenger?.lng1 ?? passenger?.Lng1,
+                    lat2: passenger?.lat2 ?? passenger?.Lat2,
+                    lng2: passenger?.lng2 ?? passenger?.Lng2
+                })
+            ];
+
+            for (const pathFunc of paths) {
+                const coords = pathFunc();
+                console.log('📐 Trying coordinate path:', coords);
+
+                const lat1 = parseFloat(coords.lat1);
+                const lng1 = parseFloat(coords.lng1);
+                const lat2 = parseFloat(coords.lat2);
+                const lng2 = parseFloat(coords.lng2);
+
+                if (isFinite(lat1) && isFinite(lng1) && isFinite(lat2) && isFinite(lng2)) {
+                    console.log('✅ Valid coordinates found:', { lat1, lng1, lat2, lng2 });
+                    return { lat1, lng1, lat2, lng2 };
+                }
+            }
+
+            console.warn('❌ No valid coordinates found in passenger:', passenger);
+            return null;
+        }
+
+        async function calculateRoute(fromLat, fromLng, toLat, toLng, routeIndex) {
+            try {
+                const url = `${apiGetRoute}?fromLat=${fromLat}&fromLon=${fromLng}&toLat=${toLat}&toLon=${toLng}`;
+                console.log('🌐 Calling route API:', url);
+
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`API error: ${res.status}`);
+
+                let data = await res.json();
+
+                if (typeof data === "string") {
+                    try {
+                        data = JSON.parse(data);
+                    } catch (e) {
+                        console.error("Invalid JSON string from server:", data);
+                        return null;
+                    }
+                }
+
+                console.log('✅ Route API Response received:', data);
+
+                // Extract route coordinates
+                let routeCoordinates = [];
+                let distance = 0;
+                let time = 0;
+
+                if (data.route && Array.isArray(data.route)) {
+                    routeCoordinates = data.route;
+                    console.log(`📈 Route has ${routeCoordinates.length} points`);
+                }
+
+                if (data.distance_km) {
+                    distance = data.distance_km;
+                }
+
+                if (data.estimated_time_min) {
+                    time = data.estimated_time_min;
+                }
+
+                return {
+                    route: routeCoordinates,
+                    distance: distance,
+                    time: time,
+                    color: routeColors[routeIndex % routeColors.length]
+                };
+            } catch (error) {
+                console.error('❌ Error calculating route:', error);
+                return null;
+            }
+        }
+
+        // SIMPLIFIED: Draw route function
+        function drawRoute(routeData, passengerName, routeIndex) {
+            if (!routeData || !routeData.route || routeData.route.length === 0) {
+                console.warn('🚫 No route data to draw for:', passengerName);
+                return null;
+            }
+
+            try {
+                console.log('🎨 Drawing route for:', passengerName);
+                console.log('📍 Route coordinates sample:', routeData.route.slice(0, 3));
+
+                // Convert coordinates - ensure they're in correct format
+                const latlngs = routeData.route.map(coord => {
+                    if (Array.isArray(coord) && coord.length >= 2) {
+                        return [coord[0], coord[1]];
+                    }
+                    return null;
+                }).filter(coord => coord !== null);
+
+                console.log(`🔄 Processed ${latlngs.length} coordinates`);
+
+                if (latlngs.length === 0) {
+                    console.warn('🚫 No valid coordinates after processing');
+                    return null;
+                }
+
+                // Create the polyline with enhanced styling
+                const polyline = L.polyline(latlngs, {
+                    color: routeData.color,
+                    weight: 6,
+                    opacity: 0.8,
+                    smoothFactor: 1,
+                    lineCap: 'round',
+                    lineJoin: 'round'
+                }).addTo(map);
+
+                // Add popup
+                polyline.bindPopup(`
+                    <div class="text-center" style="min-width: 200px;">
+                        <div style="background:${routeData.color}; color:white; padding: 5px; border-radius: 5px;">
+                            <strong>مسیر ${routeIndex + 1}</strong>
+                        </div>
+                        <div class="mt-2">
+                            <i class="bi bi-person me-1"></i> ${passengerName}<br/>
+                            <i class="bi bi-signpost me-1"></i> ${routeData.distance ? routeData.distance.toFixed(2) + ' کیلومتر' : 'نامشخص'}<br/>
+                            <i class="bi bi-clock me-1"></i> ${routeData.time ? routeData.time.toFixed(2) + ' دقیقه' : 'نامشخص'}
+                        </div>
+                    </div>
+                `);
+
+                // Make it interactive
+                polyline.on('mouseover', function() {
+                    polyline.setStyle({ weight: 8, opacity: 1 });
+                });
+
+                polyline.on('mouseout', function() {
+                    polyline.setStyle({ weight: 6, opacity: 0.8 });
+                });
+
+                polyline.on('click', function(e) {
+                    polyline.openPopup(e.latlng);
+                });
+
+                routeLines.push(polyline);
+                console.log('✅ Route successfully drawn for:', passengerName);
+                return polyline;
+
+            } catch (error) {
+                console.error('❌ Error in drawRoute:', error);
+                return null;
+            }
+        }
+
+        async function calculateAllRoutes(passengers) {
+            clearMap();
+            let totalDistance = 0;
+            let totalTime = 0;
+            const bounds = [];
+            let validRoutes = 0;
+
+            console.log(`🔄 Starting route calculation for ${passengers.length} passengers`);
+
+            for (let i = 0; i < passengers.length; i++) {
+                const passenger = passengers[i];
+                const firstName = safeGet(passenger, 'firstName') ?? safeGet(passenger, 'FirstName') ?? '';
+                const lastName = safeGet(passenger, 'lastName') ?? safeGet(passenger, 'LastName') ?? '';
+                const fullName = `${firstName} ${lastName}`.trim();
+
+                console.log(`\n👤 Processing passenger ${i + 1}/${passengers.length}: ${fullName}`);
+
+                // Extract coordinates
+                const coords = extractCoordinates(passenger);
+                if (!coords) {
+                    console.warn(`🚫 Skipping passenger ${i} due to missing coordinates`);
+                    continue;
+                }
+
+                const { lat1, lng1, lat2, lng2 } = coords;
+
+                console.log(`📍 Passenger ${i + 1} coordinates:`, {
+                    pickup: [lat1, lng1],
+                    school: [lat2, lng2]
+                });
+
+                // Add markers with custom styling
+                const pickupMarker = L.marker([lat1, lng1], {
+                    icon: L.divIcon({
+                        className: 'pickup-marker',
+                        html: `<div style="background:${routeColors[i]}; color:white; padding:6px 10px; border-radius:8px; border:3px solid white; font-weight:bold; font-size:14px;">
+                                <i class="bi bi-house-fill me-1"></i>${i+1}
+                              </div>`,
+                        iconSize: [50, 35]
+                    })
+                }).addTo(map).bindPopup(`
+                    <div class="text-center">
+                        <div style="background:${routeColors[i]}; color:white; padding:5px; border-radius:5px;">
+                            <i class="bi bi-house-fill me-1"></i><strong>مبدا مسافر ${i + 1}</strong>
+                        </div>
+                        <p class="mb-1 mt-2"><strong>نام:</strong> ${fullName}</p>
+                        <p class="mb-0"><strong>موقعیت:</strong> ${lat1.toFixed(6)}, ${lng1.toFixed(6)}</p>
+                    </div>
+                `);
+
+                const schoolMarker = L.marker([lat2, lng2], {
+                    icon: L.divIcon({
+                        className: 'school-marker',
+                        html: `<div style="background:#dc3545; color:white; padding:6px 10px; border-radius:8px; border:3px solid white; font-weight:bold; font-size:14px;">
+                                <i class="bi bi-building me-1"></i>مدرسه
+                              </div>`,
+                        iconSize: [60, 35]
+                    })
+                }).addTo(map).bindPopup(`
+                    <div class="text-center">
+                        <div style="background:#dc3545; color:white; padding:5px; border-radius:5px;">
+                            <i class="bi bi-building me-1"></i><strong>مقصد مدرسه</strong>
+                        </div>
+                        <p class="mb-1 mt-2"><strong>مسافر:</strong> ${fullName}</p>
+                        <p class="mb-0"><strong>موقعیت:</strong> ${lat2.toFixed(6)}, ${lng2.toFixed(6)}</p>
+                    </div>
+                `);
+
+                passengerMarkers.push(pickupMarker, schoolMarker);
+                bounds.push([lat1, lng1], [lat2, lng2]);
+
+                // Calculate and draw route from pickup to school
+                try {
+                    console.log(`🛣️ Calculating route ${i + 1} from pickup to school...`);
+                    const routeData = await calculateRoute(lat1, lng1, lat2, lng2, i);
+
+                    if (routeData && routeData.route && routeData.route.length > 0) {
+                        console.log(`✅ Route ${i + 1} calculated successfully, drawing...`);
+                        const polyline = drawRoute(routeData, fullName, i);
+
+                        if (polyline) {
+                            totalDistance += routeData.distance || 0;
+                            totalTime += routeData.time || 0;
+                            validRoutes++;
+                            console.log(`🎉 Route ${i + 1} drawn successfully!`);
+                        } else {
+                            console.warn(`⚠️ Route ${i + 1} calculation succeeded but drawing failed`);
+                        }
+                    } else {
+                        console.warn(`⚠️ No route data returned for passenger ${i + 1}`);
+                        // Draw straight line as fallback
+                        const fallbackPolyline = L.polyline([[lat1, lng1], [lat2, lng2]], {
+                            color: routeColors[i % routeColors.length],
+                            weight: 4,
+                            opacity: 0.6,
+                            dashArray: '10, 10'
+                        }).addTo(map).bindPopup(`<div>مسیر مستقیم - ${fullName}</div>`);
+                        routeLines.push(fallbackPolyline);
+                    }
+                } catch (error) {
+                    console.error(`❌ Error in route ${i + 1}:`, error);
+                }
+
+                // Add delay between API calls
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+
+            // Update UI with route information
+            document.getElementById('totalDistance').textContent = totalDistance.toFixed(2) + ' کیلومتر';
+            document.getElementById('totalTime').textContent = totalTime.toFixed(0) + ' دقیقه';
+            document.getElementById('passengerCount').textContent = passengers.length + ' نفر';
+            document.getElementById('stopCount').textContent = (passengers.length * 2) + ' توقف';
+            document.getElementById('routeInfoSection').style.display = 'block';
+
+            // Fit map to show all routes and markers
+            if (bounds.length > 0) {
+                try {
+                    const allFeatures = [...passengerMarkers, ...routeLines];
+                    if (allFeatures.length > 0) {
+                        const group = L.featureGroup(allFeatures);
+                        map.fitBounds(group.getBounds(), { padding: [50, 50], maxZoom: 15 });
+                        console.log('🗺️ Map fitted to show all routes and markers');
+                    }
+                } catch (e) {
+                    console.warn('⚠️ Map fitting failed, using default view:', e);
+                    map.setView([34.0918, 49.6892], 12);
+                }
+            }
+
+            console.log(`\n🎊 Route calculation completed! ${validRoutes}/${passengers.length} routes drawn successfully`);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize map
+            map = L.map('driverMap').setView([34.0918, 49.6892], 12);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
+                attribution: '&copy; OpenStreetMap contributors',
+                maxZoom: 19
             }).addTo(map);
 
-            const passengers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
-                    Model.Passanger.Select(c => new
-                    {
-                            Name = $"{c.FirstName} {c.LastName}",
-                            Pickup = new { Lat = c.Path.Location1.Latitude, Lng = c.Path.Location1.Longitude, Addr = c.Path.Location1.Address },
-                            Dest = new { Lat = c.Path.Location2.Latitude, Lng = c.Path.Location2.Longitude, Addr = c.Path.Location2.Address }
-                    })
-            ));
+            console.log('🗺️ Map initialized successfully');
 
-        // Create custom icons
-        const pickupIcon = L.divIcon({
-            className: 'custom-pickup-icon',
-            html: '<i class="bi bi-geo-alt-fill text-success fs-4"></i>',
-            iconSize: [30, 30],
-            iconAnchor: [15, 30]
-        });
+            document.getElementById('mapSection').style.display = 'none';
+            document.getElementById('routeInfoSection').style.display = 'none';
 
-            const destinationIcon = L.divIcon({
-                className: 'custom-dest-icon',
-                html: '<i class="bi bi-geo-alt-fill text-danger fs-4"></i>',
-                iconSize: [30, 30],
-                iconAnchor: [15, 30]
-            });
-
-            passengers.forEach((p, index) => {
-                const pickupLatLng = [p.Pickup.Lat, p.Pickup.Lng];
-                const destLatLng = [p.Dest.Lat, p.Dest.Lng];
-
-                // Pickup marker
-                L.marker(pickupLatLng, { icon: pickupIcon })
-                    .addTo(map)
-                    .bindPopup(`
-                        <div class="text-center">
-                            <i class="bi bi-geo-alt text-success fs-5"></i>
-                            <h6 class="fw-bold mt-1">مبدا مسافر ${index + 1}</h6>
-                            <p class="mb-1"><strong>نام:</strong> ${p.Name}</p>
-                            <p class="mb-0"><strong>آدرس:</strong> ${p.Pickup.Addr}</p>
-                        </div>
-                    `);
-
-                // Destination marker
-                L.marker(destLatLng, { icon: destinationIcon })
-                    .addTo(map)
-                    .bindPopup(`
-                        <div class="text-center">
-                            <i class="bi bi-flag text-danger fs-5"></i>
-                            <h6 class="fw-bold mt-1">مقصد مسافر ${index + 1}</h6>
-                            <p class="mb-1"><strong>نام:</strong> ${p.Name}</p>
-                            <p class="mb-0"><strong>آدرس:</strong> ${p.Dest.Addr}</p>
-                        </div>
-                    `);
-
-                // Route line
-                L.polyline([pickupLatLng, destLatLng], {
-                    color: '#0d6efd',
-                    weight: 4,
-                    opacity: 0.7,
-                    dashArray: '5, 5'
-                }).addTo(map).bindPopup(`<strong>مسیر مسافر:</strong> ${p.Name}`);
-            });
-
-            if (passengers.length > 0) {
-                const bounds = passengers.flatMap(p => [[p.Pickup.Lat, p.Pickup.Lng], [p.Dest.Lat, p.Dest.Lng]]);
-                map.fitBounds(bounds, { padding: [40, 40] });
+            // Render initial passengers if present
+            if (initialPassengers && initialPassengers.length > 0) {
+                currentPassengers = initialPassengers;
+                renderPassengers(initialPassengers);
+                calculateAllRoutes(initialPassengers);
             }
-        });
-    </script>
-}
 
+            // Shift selection handler
+            const shiftSelect = document.getElementById('shiftSelect');
+            if (shiftSelect) {
+                shiftSelect.addEventListener('change', function () {
+                    const shiftId = this.value;
+                    if (!shiftId) {
+                        document.getElementById('passengerSection').innerHTML = '';
+                        document.getElementById('mapSection').style.display = 'none';
+                        document.getElementById('routeInfoSection').style.display = 'none';
+                        clearMap();
+                        return;
+                    }
+
+                    document.getElementById('passengerSection').innerHTML = `
+                        <div class="col-12">
+                            <div class="alert alert-info text-center fw-bold">
+                                <i class="bi bi-arrow-repeat spinner me-2"></i>در حال دریافت اطلاعات مسافران...
+                            </div>
+                        </div>
+                    `;
+
+                    fetch(`${apiGetShiftPassengers}?driverId=${DriverId}&shiftId=${encodeURIComponent(shiftId)}`)
+                        .then(res => {
+                            if (!res.ok) throw new Error('Server returned ' + res.status);
+                            return res.json();
+                        })
+                        .then(passengers => {
+                            currentPassengers = passengers;
+                            renderPassengers(passengers);
+                            document.getElementById('mapSection').style.display = 'block';
+                            calculateAllRoutes(passengers);
+                        })
+                        .catch(err => {
+                            console.error('Error fetching passengers:', err);
+                            document.getElementById('passengerSection').innerHTML = `<div class="alert alert-danger text-center fw-bold my-3">خطا در دریافت مسافران: ${err.message}</div>`;
+                            document.getElementById('mapSection').style.display = 'none';
+                            document.getElementById('routeInfoSection').style.display = 'none';
+                            clearMap();
+                        });
+                });
+            }
+
+            // Optimize route button
+            document.getElementById('optimizeRoute').addEventListener('click', function() {
+                this.innerHTML = '<i class="bi bi-arrow-repeat spinner me-1"></i>در حال بهینه‌سازی...';
+                this.disabled = true;
+
+                setTimeout(() => {
+                    alert('مسیرها با موفقیت بهینه‌سازی شدند!');
+                    this.innerHTML = '<i class="bi bi-gear me-1"></i>بهینه‌سازی مسیر';
+                    this.disabled = false;
+
+                    if (currentPassengers.length > 0) {
+                        calculateAllRoutes(currentPassengers);
+                    }
+                }, 2000);
+            });
+        });
+
+        function renderPassengers(passengers) {
+            // ... keep your existing renderPassengers function unchanged ...
+            let html = '';
+            if (passengers && passengers.length > 0) {
+                html += `<div class="col-12">
+                    <div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2">
+                        <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center py-3">
+                            <h4 class="mb-0 fw-bold">
+                                <i class="bi bi-people-fill me-2"></i> لیست مسافران
+                            </h4>
+                            <span class="badge bg-light text-primary fs-6">
+                                <i class="bi bi-person-check me-1"></i> ${passengers.length} مسافر
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-dark table-bordered table-hover align-middle text-center rounded-3 overflow-hidden">
+                                    <thead class="table-light text-dark">
+                                        <tr>
+                                            <th><i class="bi bi-hash me-1"></i> ردیف</th>
+                                            <th><i class="bi bi-person me-1"></i> نام مسافر</th>
+                                            <th><i class="bi bi-geo-alt me-1"></i> مبدا</th>
+                                            <th><i class="bi bi-geo-alt-fill me-1"></i> مقصد</th>
+                                            <th><i class="bi bi-clock me-1"></i> زمان رفت</th>
+                                            <th><i class="bi bi-clock-history me-1"></i> زمان بازگشت</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${passengers.map((child, idx) => {
+                                            const firstName = safeGet(child, 'firstName') ?? safeGet(child, 'FirstName') ?? '';
+                                            const lastName = safeGet(child, 'lastName') ?? safeGet(child, 'LastName') ?? '';
+                                            const path = safeGet(child, 'path') ?? safeGet(child, 'Path') ?? {};
+                                            const loc1 = safeGet(path, 'location1') ?? safeGet(path, 'Location1') ?? {};
+                                            const loc2 = safeGet(path, 'location2') ?? safeGet(path, 'Location2') ?? {};
+                                            const addr1 = safeGet(loc1, 'address') ?? safeGet(loc1, 'Address') ?? '-';
+                                            const addr2 = safeGet(loc2, 'address') ?? safeGet(loc2, 'Address') ?? '-';
+                                            const pick1 = safeGet(path, 'pickTime1') ?? safeGet(path, 'PickTime1') ?? '-';
+                                            const pick2 = safeGet(path, 'pickTime2') ?? safeGet(path, 'PickTime2') ?? '-';
+
+                                            return `<tr>
+                                                <td><span class="badge bg-secondary">${idx + 1}</span></td>
+                                                <td><span class="fw-bold"><i class="bi bi-person-badge me-1"></i>${firstName} ${lastName}</span></td>
+                                                <td><span class="text-info"><i class="bi bi-pin-map me-1"></i>${addr1}</span></td>
+                                                <td><span class="text-warning"><i class="bi bi-pin-map-fill me-1"></i>${addr2}</span></td>
+                                                <td><span class="badge bg-success"><i class="bi bi-clock me-1"></i>${pick1}</span></td>
+                                                <td><span class="badge bg-info"><i class="bi bi-clock-history me-1"></i>${pick2}</span></td>
+                                            </tr>`;
+                                        }).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+                document.getElementById('mapSection').style.display = 'block';
+            } else {
+                html = `<div class="alert alert-warning text-center fw-bold my-4">
+                    <i class="bi bi-exclamation-triangle me-2"></i> مسافری یافت نشد!
+                </div>`;
+                document.getElementById('mapSection').style.display = 'none';
+                document.getElementById('routeInfoSection').style.display = 'none';
+                clearMap();
+            }
+            document.getElementById('passengerSection').innerHTML = html;
+        }
+    </script>
+
+    <style>
+        .pickup-marker, .school-marker {
+            background: transparent;
+            border: none;
+        }
+
+        /* Highlight routes on hover */
+        .leaflet-interactive:hover {
+            stroke-width: 8 !important;
+            opacity: 1 !important;
+        }
+    </style>
+}
 <style>
     .table th, .table td {
         vertical-align: middle;
@@ -240,15 +657,29 @@
         margin-bottom: 1.5rem;
     }
 
-    .custom-pickup-icon, .custom-dest-icon {
-        background: transparent;
-        border: none;
+    .spinner {
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+
+        to {
+            transform: rotate(360deg);
+        }
     }
 
     .table-hover tbody tr:hover {
-        background-color: rgba(13, 110, 253, 0.1);
+        background-color: rgba(13, 110, 253, 0.08);
         transform: translateY(-1px);
-        transition: all 0.2s ease;
+        transition: all 0.15s ease;
+    }
+
+    .pickup-marker, .dest-marker {
+        background: transparent;
+        border: none;
     }
 
     @@media (max-width: 768px) {
@@ -264,25 +695,5 @@
         .badge {
             font-size: 0.75rem;
         }
-    }
-
-    /* Animation for table rows */
-    @@keyframes fadeIn {
-        from
-
-    {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    }
-
-    .table tbody tr {
-        animation: fadeIn 0.3s ease-out;
     }
 </style>

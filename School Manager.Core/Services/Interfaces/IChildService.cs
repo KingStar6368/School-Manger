@@ -19,7 +19,7 @@ namespace School_Manager.Core.Services.Interfaces
         /// </summary>
         /// <param name="queryable"></param>
         /// <returns></returns>
-        public Task<List<ChildInfo>> SearchChild(SearchDto filter);
+        public Task<SearchChildDto> SearchChild(SearchDto filter);
         /// <summary>
         /// لیست دانش آموزان پرداخت نشده
         /// </summary>

@@ -311,11 +311,11 @@ namespace School_Manager.Core.Services.Implemetations
 
             return result;
         }
-
-        public async Task<List<ChildInfo>> SearchChild(SearchDto filter)
+        public async Task<SearchChildDto> SearchChild(SearchDto filter)
         {
             var query = _unitOfWork.GetRepository<Child>().FindAll();
 
+            // Apply filters
             if (!string.IsNullOrEmpty(filter.FirstName))
                 query = query.Where(p => p.FirstName.Contains(filter.FirstName));
 
@@ -328,15 +328,51 @@ namespace School_Manager.Core.Services.Implemetations
             if (!string.IsNullOrEmpty(filter.Mobile))
                 query = query.Where(p => p.ParentNavigation.UserNavigation.Mobile.Contains(filter.Mobile));
 
+            // Include ALL related data in one query
             var result = await query
                 .Include(x => x.DriverChilds)
                     .ThenInclude(dc => dc.DriverShiftNavigation)
                         .ThenInclude(ds => ds.DriverNavigation)
-                .Include(x=>x.ServiceContracts)
-                    .ThenInclude(x=>x.Bills)
+                            .ThenInclude(d => d.Cars) // Include cars for driver info
+                .Include(x => x.ServiceContracts)
+                    .ThenInclude(x => x.Bills)
+                .Include(x => x.ParentNavigation)
+                .Include(x => x.SchoolNavigation) // Include school directly
                 .ToListAsync();
 
-            return _mapper.Map<List<ChildInfo>>(result);
+            var mappedChildren = _mapper.Map<List<ChildInfo>>(result);
+
+            // Extract data from already loaded entities (no additional DB queries)
+            var drivers = result
+                .SelectMany(c => c.DriverChilds)
+                .Where(dc => dc.DriverShiftNavigation?.DriverNavigation != null)
+                .Select(dc => dc.DriverShiftNavigation.DriverNavigation)
+                .Distinct()
+                .ToList();
+
+            var schools = result
+                .Select(c => c.SchoolNavigation)
+                .Where(s => s != null)
+                .Distinct()
+                .ToList();
+
+            var parents = result
+                .Select(c => c.ParentNavigation)
+                .Where(p => p != null)
+                .Distinct()
+                .ToList();
+
+            var mappedDrivers = _mapper.Map<List<DriverDto>>(drivers);
+            var mappedSchools = _mapper.Map<List<SchoolDto>>(schools);
+            var mappedParents = _mapper.Map<List<ParentDto>>(parents);
+
+            return new SearchChildDto()
+            {
+                ChildInfos = mappedChildren,
+                Drivers = mappedDrivers,
+                Parents = mappedParents,
+                Schools = mappedSchools
+            };
         }
         public async Task<List<ChildInfo>> GetNonPaidChildren()
         {
