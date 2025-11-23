@@ -144,8 +144,8 @@ namespace School_Manger.Controllers.Admin
             var child = _childService.GetChild(Id);
             var parent = _parentService.GetParentWithChild(Id);
             ControllerExtensions.AddObject(this, "Path", child.Path);
-            ControllerExtensions.AddKey(this, "ChildId", Id);
-            ControllerExtensions.AddKey(this, "ParentId", Id);
+            ControllerExtensions.AddKey(this, "ChildId", child.Id);
+            ControllerExtensions.AddKey(this, "ParentId", parent.Id);
             return View(
             new BillCalViewModel()
             {
