@@ -169,4 +169,11 @@ namespace School_Manager.Core.ViewModels.FModels
         public List<ParentDto> Parents { get; set; } = new();
         public List<SchoolDto> Schools { get; set; } = new();
     }
+    public class DebtorsDto
+    {
+        public List<ChildInfo> Children { get; set; } = new();
+        public List<DriverDto> Drivers { get; set; } = new();
+        public List<SchoolDto> Schools { get; set; } = new();
+        public List<ParentDto> Parents { get; set; } = new();
+    }
 }

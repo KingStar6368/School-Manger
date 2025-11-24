@@ -108,5 +108,10 @@ namespace School_Manager.Core.Services.Interfaces
         /// </summary>
         /// <returns>لست رانندگان</returns>
         Task<List<DriverDto>> GetDriverFree(long shiftId);
+        /// <summary>
+        /// دریافت اطلاعات کلی بده کاران
+        /// </summary>
+        /// <returns></returns>
+        Task<DebtorsDto> GetDebtors();
     }
 }

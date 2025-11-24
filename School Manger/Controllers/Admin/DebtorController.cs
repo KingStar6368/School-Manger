@@ -38,7 +38,7 @@ namespace School_Manger.Controllers.Admin
         }
         public async Task<IActionResult> Index()
         {
-            return View("Index");
+            return View("Index", await _childService.GetDebtors());
         }
         [HttpPost]
         public async Task<IActionResult> SendWarningSms(string selectedParentIds)

@@ -1,20 +1,15 @@
 ﻿@using School_Manager.Core.Services.Interfaces
 @using School_Manager.Core.ViewModels.FModels
 @using School_Manger.Extension;
-@inject IParentService _parentService
-@inject IChildService _childService
-@inject ISchoolService _schoolService
-@inject IDriverService _driverService
-@inject IBillService _billService
-@inject IContractService _contractService
-@inject ISMSLogService _SMSLogService
-@inject IUserService _UserService
+@inject IUserService _UserService;
+@inject ISMSLogService _SMSLogService;
+@model DebtorsDto
 @{
     ViewData["Title"] = "لیست بدهکاران";
     Layout = "_AdminLayout";
 
     // Get debtors data
-    var debtors = await _childService.GetNonPaidChildren();
+    var debtors = Model.Children;
 
     // Group children by parent and calculate totals
     var parentsDict = new Dictionary<long, ParentDto>();
@@ -23,18 +18,18 @@
     decimal totalDebt = 0;
     foreach (var child in debtors)
     {
-        var parent = _parentService.GetParentWithChild(child.Id);
+        var parent = Model.Parents.Where(parent => parent.Children.Any(c => c.Id == child.Id)).FirstOrDefault(); /* _parentService.GetParentWithChild(child.Id) */
         if (parent != null)
         {
             if (!parentsDict.ContainsKey(parent.Id))
             {
-                parentsDict[parent.Id] = _parentService.GetParent(parent.Id);
+                parentsDict[parent.Id] = parent /* _parentService.GetParent(parent.Id) */;
                 childrenByParent[parent.Id] = new List<ChildInfo>();
             }
             childrenByParent[parent.Id].Add(child);
 
             // Calculate total debt for this child
-            var childBills = (await _billService.GetChildBills(child.Id))
+            var childBills = child.Bills
                 .Where(b => b.BillExpiredTime < DateTime.Now &&
                            !b.HasPaid);
 
@@ -57,7 +52,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h5 class="card-title">مجموع بدهی‌ها</h5>
-                            <h3 class="mb-0">@totalDebt.ToString("N0") تومان</h3>
+                            <h3 class="mb-0">@totalDebt.ToString("N0") ریال</h3>
                         </div>
                         <div class="bg-white bg-opacity-25 p-3 rounded-circle">
                             <i class="bi bi-currency-dollar fs-2"></i>
@@ -150,7 +145,7 @@
 
                                 foreach (var child in children)
                                 {
-                                    var childBills = (await _billService.GetChildBills(child.Id))
+                                    var childBills = child.Bills
                                     .Where(b => b.BillExpiredTime < DateTime.Now &&
                                     !b.HasPaid);
 
@@ -171,7 +166,7 @@
                                     </td>
                                     <td class="fw-bold">@parent.ParentFirstName @parent.ParentLastName</td>
                                     <td>
-                                        <span class="badge bg-danger fs-6">@parentTotalDebt.ToString("N0") تومان</span>
+                                        <span class="badge bg-danger fs-6">@parentTotalDebt.ToString("N0") ریال</span>
                                     </td>
                                     <td>
                                         <span class="badge bg-info">@children.Count فرزند</span>
@@ -220,8 +215,8 @@
                                                     <tbody>
                                                         @foreach (var child in children)
                                                         {
-                                                            var driver = _childService.GetChildDriver(child.Id);
-                                                            var childBills = (await _billService.GetChildBills(child.Id))
+                                                            var driver = Model.Drivers.Where(x=>x.Id == child.DriverId).FirstOrDefault()@*  _childService.GetChildDriver(child.Id) *@;
+                                                            var childBills = child.Bills@*  (await _billService.GetChildBills(child.Id)) *@
                                                             .Where(b => b.BillExpiredTime < DateTime.Now &&
                                                             !b.HasPaid);
 
@@ -244,7 +239,7 @@
                                                                 <td>
                                                                     @if (child.SchoolId != 0)
                                                                     {
-                                                                        @_schoolService.GetSchool((long)child.SchoolId).Name
+                                                                        @Model.Schools.Where(x => x.Id == child.SchoolId).FirstOrDefault().Name;
                                                                     }
                                                                     else
                                                                     {
@@ -298,7 +293,7 @@
                                                                                                 </td>
                                                                                                 <td>@bill.Name</td>
                                                                                                 <td>
-                                                                                                    <span class="fw-bold">@remainingAmount.ToString("N0") تومان</span>
+                                                                                                    <span class="fw-bold">@remainingAmount.ToString("N0") ریال</span>
                                                                                                     <small class="text-muted d-block">از @bill.TotalPrice.ToString("N0")</small>
                                                                                                 </td>
                                                                                                 <td>@bill.BillExpiredTimePer</td>

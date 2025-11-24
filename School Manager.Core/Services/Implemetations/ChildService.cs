@@ -386,5 +386,65 @@ namespace School_Manager.Core.Services.Implemetations
 
             return _mapper.Map<List<ChildInfo>>(ds);
         }
+        public async Task<DebtorsDto> GetDebtors()
+        {
+            var currentTime = DateTime.Now;
+
+            var query = _unitOfWork.GetRepository<Child>().FindAll()
+                .Where(child => child.ServiceContracts
+                    .Any(contract => contract.Bills
+                        .Any(bill =>
+                            bill.EstimateTime < currentTime &&
+                            bill.PayBills.Sum(p => p.PayNavigation.Price) < bill.Price)));
+
+            // Include ALL related data in one query with correct navigation path
+            var result = await query
+                .Include(x => x.DriverChilds)
+                    .ThenInclude(dc => dc.DriverShiftNavigation)
+                        .ThenInclude(ds => ds.DriverNavigation)
+                            .ThenInclude(d => d.Cars) // Include cars for driver info
+                .Include(x => x.ServiceContracts)
+                    .ThenInclude(sc => sc.Bills)
+                        .ThenInclude(b => b.PayBills)
+                            .ThenInclude(pb => pb.PayNavigation)
+                .Include(x => x.ParentNavigation)
+                .Include(x => x.SchoolNavigation)
+                .ToListAsync();
+
+            // Map children
+            var mappedChildren = _mapper.Map<List<ChildInfo>>(result);
+
+            // Extract data from already loaded entities (no additional DB queries)
+            var drivers = result
+                .SelectMany(c => c.DriverChilds)
+                .Where(dc => dc.DriverShiftNavigation?.DriverNavigation != null)
+                .Select(dc => dc.DriverShiftNavigation.DriverNavigation)
+                .Distinct()
+                .ToList();
+
+            var schools = result
+                .Select(c => c.SchoolNavigation)
+                .Where(s => s != null)
+                .Distinct()
+                .ToList();
+
+            var parents = result
+                .Select(c => c.ParentNavigation)
+                .Where(p => p != null)
+                .Distinct()
+                .ToList();
+
+            var mappedDrivers = _mapper.Map<List<DriverDto>>(drivers);
+            var mappedSchools = _mapper.Map<List<SchoolDto>>(schools);
+            var mappedParents = _mapper.Map<List<ParentDto>>(parents);
+
+            return new DebtorsDto()
+            {
+                Children = mappedChildren,
+                Drivers = mappedDrivers,
+                Parents = mappedParents,
+                Schools = mappedSchools
+            };
+        }
     }
 }
