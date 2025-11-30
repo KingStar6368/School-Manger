@@ -54,17 +54,24 @@ namespace School_Manger.Controllers.Admin
 
             foreach(long parentId in parentIds)
             {
-                var User = _UserService.GetUserByParent(parentId);
-                if (!_SMSService.Send(User.Mobile, $"خانواد گرامی لطفا قبض فرزند خود را پرداخت کنید \n لینک سامانه {_appConfigService.WebAddress()}"))
-                    ControllerExtensions.ShowError(this, "خطا", $"مشکلی در ارسال پیام پیش آمده کد خانواده{parentId}");
-                else
+                try
                 {
-                    _SMSLogService.CreateSMSLog(new SMSLogDto()
+                    var User = _UserService.GetUserByParent(parentId);
+                    if (!_SMSService.Send(User.Mobile, $"خانواد گرامی لطفا قبض فرزند خود را پرداخت کنید \n لینک سامانه {_appConfigService.WebAddress()}"))
+                        ControllerExtensions.ShowError(this, "خطا", $"مشکلی در ارسال پیام پیش آمده کد خانواده{parentId}");
+                    else
                     {
-                        UserId = User.Id,
-                        type = SMSType.Warnning,
-                        SMSTime = DateTime.Now
-                    });
+                        _SMSLogService.CreateSMSLog(new SMSLogDto()
+                        {
+                            UserId = User.Id,
+                            type = SMSType.Warnning,
+                            SMSTime = DateTime.Now
+                        });
+                    }
+                }
+                catch(Exception ex)
+                {
+                    ControllerExtensions.ShowWarning(this, $"مشکلی در ارسال پیام پیش آمده کد خانواده{parentId}", ex.Message);
                 }
             }
 

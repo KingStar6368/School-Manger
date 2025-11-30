@@ -1,4 +1,5 @@
 ﻿using IPE.SmsIrClient;
+using IPE.SmsIrClient.Exceptions;
 using IPE.SmsIrClient.Models.Requests;
 using IPE.SmsIrClient.Models.Results;
 using Microsoft.Extensions.Hosting;
@@ -52,8 +53,19 @@ namespace SMS.Base
 
         public bool Send(string Phone, string Message)
         {
-            SmsIrResult result = SMS.BulkSend(appConfigService.SMSLine(), Message, new string[] {Phone});
-            return result.Status == 1;
+            try
+            {
+                SmsIrResult result = SMS.BulkSend(appConfigService.SMSLine(), Message, new string[] { Phone });
+                return result.Status == 1;
+            }
+            catch (LogicalException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<bool> Send2All(string[] Phones, string Message)
