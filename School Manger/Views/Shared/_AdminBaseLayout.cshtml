@@ -17,21 +17,11 @@
 </head>
 <body>
 
-    @{
-        Notification notification = null;
-        if (TempData["Notification"] is string jsonNotification)
-        {
-            notification = JsonSerializer.Deserialize<Notification>(jsonNotification);
-        }
-    }
-
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-
-    @await Html.PartialAsync("_NotificationPartial", notification);
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

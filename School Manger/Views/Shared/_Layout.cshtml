@@ -1,4 +1,5 @@
 ﻿@using System.Text.Json
+@using System.Collections.Generic
 <!DOCTYPE html>
 <html dir="rtl" lang="fa">
     <head>
@@ -18,10 +19,31 @@
     <body>
 
         @{
-            Notification notification = null;
-            if (TempData["Notification"] is string jsonNotification)
+            // Build a single list of notifications from TempData (supports old single key and new list key)
+            List<Notification> notifications = new List<Notification>();
+
+            if (TempData["Notifications"] is string jsonNotifications && !string.IsNullOrEmpty(jsonNotifications))
             {
-                notification = JsonSerializer.Deserialize<Notification>(jsonNotification);
+                try
+                {
+                    notifications = JsonSerializer.Deserialize<List<Notification>>(jsonNotifications) ?? new List<Notification>();
+                }
+                catch
+                {
+                    notifications = new List<Notification>();
+                }
+            }
+            else if (TempData["Notification"] is string jsonNotification && !string.IsNullOrEmpty(jsonNotification))
+            {
+                try
+                {
+                    var single = JsonSerializer.Deserialize<Notification>(jsonNotification);
+                    if (single != null) notifications.Add(single);
+                }
+                catch
+                {
+                    // ignore
+                }
             }
         }
 
@@ -35,7 +57,7 @@
         @await Html.PartialAsync("_Footer")
 
         <!-- Render notification partial here -->
-        @await Html.PartialAsync("_NotificationPartial", notification)
+        @await Html.PartialAsync("_NotificationPartial", notifications)
 
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -50,14 +72,13 @@
             $(document).ready(function() {
                 // Initialize Persian datepicker for all elements with class 'persian-date'
                 $('.persian-date').persianDatepicker({
-                    observer: true,  // Automatically detects new date inputs added dynamically
+                    observer: true,
                     format: 'YYYY/MM/DD',
                     altField: '.gregorian-date',
-                    altFormat: 'X',  // Unix timestamp
+                    altFormat: 'X',
                     autoClose: true
                 });
 
-                // Notification close functionality
                 function closeNotification(notificationElement) {
                     notificationElement.style.animation = 'slideOut 0.5s forwards';
                     setTimeout(() => {
@@ -69,8 +90,7 @@
 
                 // Close notification when X is clicked - using event delegation
                 document.addEventListener('click', function(e) {
-                    if (e.target.classList.contains('close-notification') ||
-                        e.target.closest('.close-notification')) {
+                    if (e.target.classList.contains('close-notification') || e.target.closest('.close-notification')) {
                         const notification = e.target.closest('.notification');
                         if (notification) {
                             closeNotification(notification);
@@ -78,12 +98,14 @@
                     }
                 });
 
-                // Auto-close notification after 5 seconds
-                const notification = document.querySelector('.notification');
-                if (notification) {
-                    setTimeout(() => {
-                        closeNotification(notification);
-                    }, 5000);
+                // Auto-close notifications after 5 seconds
+                const notifications = document.querySelectorAll('.notification');
+                if (notifications && notifications.length) {
+                    notifications.forEach((notif) => {
+                        setTimeout(() => {
+                            closeNotification(notif);
+                        }, 5000);
+                    });
                 }
             });
         </script>

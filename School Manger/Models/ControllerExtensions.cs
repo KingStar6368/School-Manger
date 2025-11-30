@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using System.Collections.Generic;
 
 public static class ControllerExtensions
 {
@@ -36,9 +37,30 @@ public static class ControllerExtensions
         }
     }
 
+    // Append a notification into a list stored in TempData under the key "Notifications".
+    public static void AddNotification(this Controller controller, Notification notification)
+    {
+        var list = new List<Notification>();
+        if (controller.TempData["Notifications"] is string json && !string.IsNullOrEmpty(json))
+        {
+            try
+            {
+                var existing = JsonSerializer.Deserialize<List<Notification>>(json);
+                if (existing != null)
+                    list = existing;
+            }
+            catch
+            {
+                list = new List<Notification>();
+            }
+        }
+
+        list.Add(notification);
+        controller.TempData["Notifications"] = JsonSerializer.Serialize(list);
+    }
+
     public static void ShowSuccess(this Controller controller, string title, string message)
     {
-        controller.TempData["Notification"] = "";
         var notification = new Notification
         {
             Type = NotificationType.Success,
@@ -46,13 +68,11 @@ public static class ControllerExtensions
             Message = message
         };
 
-        // Serialize to JSON
-        controller.TempData["Notification"] = JsonSerializer.Serialize(notification);
+        controller.AddNotification(notification);
     }
 
     public static void ShowWarning(this Controller controller, string title, string message)
     {
-        controller.TempData["Notification"] = "";
         var notification = new Notification
         {
             Type = NotificationType.Warning,
@@ -60,13 +80,11 @@ public static class ControllerExtensions
             Message = message
         };
 
-        // Serialize to JSON
-        controller.TempData["Notification"] = JsonSerializer.Serialize(notification);
+        controller.AddNotification(notification);
     }
 
     public static void ShowError(this Controller controller, string title, string message)
     {
-        controller.TempData["Notification"] = "";
         var notification = new Notification
         {
             Type = NotificationType.Error,
@@ -74,7 +92,6 @@ public static class ControllerExtensions
             Message = message
         };
 
-        // Serialize to JSON
-        controller.TempData["Notification"] = JsonSerializer.Serialize(notification);
+        controller.AddNotification(notification);
     }
 }

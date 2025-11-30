@@ -1,7 +1,9 @@
 ﻿@using System.Text.Json
+@using System.Collections.Generic
 @{
     Layout = "_AdminBaseLayout";
 }
+
 
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
@@ -49,10 +51,34 @@
 </head>
 <body>
     @{
-        Notification notification = null;
-        if (TempData["Notification"] is string jsonNotification)
+        List<Notification> notifications = null;
+        if (TempData["Notifications"] is string jsonNotifications && !string.IsNullOrEmpty(jsonNotifications))
         {
-            notification = JsonSerializer.Deserialize<Notification>(jsonNotification);
+            try
+            {
+                notifications = JsonSerializer.Deserialize<List<Notification>>(jsonNotifications);
+            }
+            catch
+            {
+                notifications = new List<Notification>();
+            }
+        }
+        else if (TempData["Notification"] is string jsonNotification && !string.IsNullOrEmpty(jsonNotification))
+        {
+            try
+            {
+                var single = JsonSerializer.Deserialize<Notification>(jsonNotification);
+                notifications = single != null ? new List<Notification> { single } : new List<Notification>();
+            }
+            catch
+            {
+                notifications = new List<Notification>();
+            }
+        }
+
+        if (notifications == null)
+        {
+            notifications = new List<Notification>();
         }
     }
 
@@ -166,7 +192,7 @@
     </div>
 
 
-    @await Html.PartialAsync("_NotificationPartial", notification);
+    @await Html.PartialAsync("_NotificationPartial", notifications);
 
     <script>
         $(document).ready(function() {
@@ -178,6 +204,37 @@
                 altFormat: 'X',  // Unix timestamp
                 autoClose: true
             });
+
+            // Notification close functionality
+            function closeNotification(notificationElement) {
+                notificationElement.style.animation = 'slideOut 0.5s forwards';
+                setTimeout(() => {
+                    if (notificationElement.parentNode) {
+                        notificationElement.remove();
+                    }
+                }, 500);
+            }
+
+            // Close notification when X is clicked - using event delegation
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('close-notification') ||
+                    e.target.closest('.close-notification')) {
+                    const notification = e.target.closest('.notification');
+                    if (notification) {
+                        closeNotification(notification);
+                    }
+                }
+            });
+
+            // Auto-close notifications after 5 seconds
+            const notifications = document.querySelectorAll('.notification');
+            if (notifications && notifications.length) {
+                notifications.forEach((notif) => {
+                    setTimeout(() => {
+                        closeNotification(notif);
+                    }, 5000);
+                });
+            }
         });
     </script>
 
@@ -194,4 +251,4 @@
     }
 </body>
     @await RenderSectionAsync("Scripts", required: false)
-</html> 
+</html>
