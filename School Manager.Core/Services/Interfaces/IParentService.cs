@@ -25,6 +25,11 @@ namespace School_Manager.Core.Services.Interfaces
         /// <returns></returns>
         Task<List<ParentDto>> GetNonPiadParents();
         /// <summary>
+        /// دریافت والدین بدون فرزند
+        /// </summary>
+        /// <returns></returns>
+        Task<List<ParentDto>> GetParentsWithNoChildren();
+        /// <summary>
         /// گرفتن یک والد
         /// </summary>
         /// <param name="Id">کد والد</param>

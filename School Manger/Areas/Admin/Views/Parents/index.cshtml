@@ -77,6 +77,11 @@
                 <i class="bi bi-list-ul me-2"></i>لیست والدین
             </h4>
             <div>
+                <form asp-action="SendSMSNonChildern">
+                    <button type="submit" class="btn btn-warning btn-sm">
+                        <i class="bi bi-send me-1"></i>ارسال پیام اخطار برای خانواده های بدونه فرزند
+                    </button>
+                </form>
                 <form asp-controller="Excel" asp-action="ExportParentIndex">
                     <button class="btn btn-light btn-sm me-2">
                         <i class="bi bi-download me-1"></i>خروجی

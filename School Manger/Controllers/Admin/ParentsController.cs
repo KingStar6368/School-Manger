@@ -57,7 +57,7 @@ namespace School_Manger.Controllers.Admin
         public async Task<IActionResult> Index()
         {
             var Parents = await _parentService.GetParents();
-            return View(Parents);
+            return View("Index",Parents);
         }
         public IActionResult Details(long id)
         {
@@ -532,6 +532,32 @@ namespace School_Manger.Controllers.Admin
                     StatusCode = 500
                 };
             }
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendSMSNonChildern()
+        {
+            var NonChildParents = await _parentService.GetParentsWithNoChildren();
+            bool error = false;
+            foreach (var parent in NonChildParents)
+            {
+                try
+                {
+                    var User = _userService.GetUserByParent(parent.Id);
+                    if (!_smsService.Send(User.Mobile, $"خانواد گرامی لطفا فرزند خود را در سیستم ثبت نام کنید \n لینک سامانه {_appConfigService.WebAddress()}"))
+                    {
+                        ControllerExtensions.ShowError(this, "خطا", $"مشکلی در ارسال پیام پیش آمده کد خانواده{parent.Id}");
+                        error = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    error = true;
+                    ControllerExtensions.ShowWarning(this, $"مشکلی در ارسال پیام پیش آمده کد خانواده{parent.Id}", ex.Message);
+                }
+            }
+            if(error == false)
+                ControllerExtensions.ShowSuccess(this,"موفق", "پیامک ها ارسال شد");
+            return await Index();
         }
     }
 }
