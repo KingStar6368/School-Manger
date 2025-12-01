@@ -163,20 +163,30 @@ namespace School_Manager.Core.Services.Implemetations
             return _mapper.Map<List<ParentDto>>(result);
         }
 
-        public async Task<List<ParentDto>> GetNonPiadParents()
+        public async Task<List<ParentDto>> GetNonPiadParents(bool withDetail = false)
         {
-            var ds = await _unitOfWork.GetRepository<Parent>()
-                .Query(parent => parent
-                    .Children
-                    .Any(child => child.ServiceContracts
-                    .Any(contract => contract.Bills
-                        .Any(bill =>
-                            bill.EstimateTime < DateTime.Now &&
-                            bill.PayBills.Sum(p => p.PayNavigation.Price) < bill.Price))))
-                .ToListAsync();
+            var query = _unitOfWork.GetRepository<Parent>()
+                .Query(parent =>
+                    parent.Children.Any(child =>
+                        child.ServiceContracts.Any(contract =>
+                            contract.Bills.Any(bill =>
+                                bill.EstimateTime < DateTime.Now &&
+                                bill.PayBills.Sum(p => p.PayNavigation.Price) < bill.Price))));
 
-            return _mapper.Map<List<ParentDto>>(ds);
+            if (withDetail)
+            {
+                query = query
+                    .Include(c => c.Children)
+                        .ThenInclude(s => s.ServiceContracts)
+                            .ThenInclude(b => b.Bills)
+                                .ThenInclude(p => p.PayBills);
+            }
+
+            var parents = await query.ToListAsync();
+
+            return _mapper.Map<List<ParentDto>>(parents);
         }
+
 
         public ParentDto GetParentWithChild(long ChildId)
         {

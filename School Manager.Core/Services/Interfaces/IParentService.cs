@@ -22,8 +22,11 @@ namespace School_Manager.Core.Services.Interfaces
         /// <summary>
         /// لیست خانواده های که قبض فرزنده پرداخت نشده دارند
         /// </summary>
+        /// <param name="withDetail">
+        /// نیاز به اطلاعات بیشتر؟
+        /// </param>
         /// <returns></returns>
-        Task<List<ParentDto>> GetNonPiadParents();
+        Task<List<ParentDto>> GetNonPiadParents(bool withDetail = false);
         /// <summary>
         /// دریافت والدین بدون فرزند
         /// </summary>

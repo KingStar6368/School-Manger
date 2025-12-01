@@ -1,0 +1,1179 @@
+﻿@using School_Manger.Models.PageView
+@model AdminSms;
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "پنل پیامک";
+}
+
+<style>
+    :root {
+        --primary: #3498db;
+        --success: #2ecc71;
+        --warning: #f39c12;
+        --danger: #e74c3c;
+        --info: #17a2b8;
+        --light: #f8f9fa;
+        --dark: #343a40;
+    }
+
+    .sms-panel {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        direction: rtl;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        margin-bottom: 25px;
+        overflow: hidden;
+        transition: transform 0.3s;
+    }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+    .card-header {
+        border-radius: 10px 10px 0 0 !important;
+        padding: 20px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+        .card-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--dark);
+    }
+
+        .form-label .bi {
+            font-size: 1.1rem;
+        }
+
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 12px 15px;
+        transition: all 0.3s;
+        font-size: 0.95rem;
+    }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.2);
+        }
+
+    .btn {
+        border-radius: 8px;
+        padding: 12px 25px;
+        font-weight: 600;
+        transition: all 0.3s;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-size: 0.95rem;
+    }
+
+        .btn i {
+            font-size: 1.1rem;
+        }
+
+    .btn-sm {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), #2980b9);
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, var(--primary));
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+    .btn-success {
+        background: linear-gradient(135deg, var(--success), #27ae60);
+    }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #27ae60, var(--success));
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+
+    .btn-warning {
+        background: linear-gradient(135deg, var(--warning), #e67e22);
+    }
+
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #e67e22, var(--warning));
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+        }
+
+    .btn-danger {
+        background: linear-gradient(135deg, var(--danger), #c0392b);
+    }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c0392b, var(--danger));
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+    .btn-info {
+        background: linear-gradient(135deg, var(--info), #148f77);
+    }
+
+        .btn-info:hover {
+            background: linear-gradient(135deg, #148f77, var(--info));
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
+        }
+
+    .table-container {
+        overflow-x: auto;
+        margin-top: 20px;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        background: white;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        min-width: 800px;
+    }
+
+    th {
+        background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+        padding: 18px 15px;
+        text-align: right;
+        font-weight: 700;
+        color: var(--dark);
+        border-bottom: 2px solid #dee2e6;
+        white-space: nowrap;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+        th:first-child {
+            border-top-right-radius: 8px;
+        }
+
+        th:last-child {
+            border-top-left-radius: 8px;
+        }
+
+    td {
+        padding: 16px 15px;
+        border-bottom: 1px solid #e9ecef;
+        vertical-align: middle;
+        transition: background-color 0.2s;
+    }
+
+    tr:hover td {
+        background-color: rgba(52, 152, 219, 0.04);
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    .selected-row td {
+        background-color: rgba(52, 152, 219, 0.1) !important;
+    }
+
+    .select-all-checkbox {
+        margin-left: 10px;
+        transform: scale(1.2);
+    }
+
+    .table-actions {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85em;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .badge-warning {
+        background: linear-gradient(135deg, var(--warning), #e67e22);
+        color: white;
+    }
+
+    .badge-success {
+        background: linear-gradient(135deg, var(--success), #27ae60);
+        color: white;
+    }
+
+    .badge-primary {
+        background: linear-gradient(135deg, var(--primary), #2980b9);
+        color: white;
+    }
+
+    .sms-form-section {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 25px;
+        border-radius: 10px;
+        margin-top: 25px;
+        border: 1px solid #e0e0e0;
+    }
+
+    .recipient-info {
+        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        padding: 15px 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-right: 4px solid var(--primary);
+        display: none;
+    }
+
+        .recipient-info.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    textarea.form-control {
+        min-height: 140px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+
+    .tab-container {
+        margin-top: 30px;
+    }
+
+    .nav-tabs {
+        border-bottom: 2px solid #dee2e6;
+        display: flex;
+        gap: 5px;
+    }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            background-color: #f8f9fa;
+        }
+
+            .nav-tabs .nav-link:hover {
+                color: var(--primary);
+                background-color: #e9ecef;
+            }
+
+            .nav-tabs .nav-link.active {
+                background: linear-gradient(135deg, var(--primary), #2980b9);
+                color: white;
+                box-shadow: 0 -2px 10px rgba(52, 152, 219, 0.2);
+            }
+
+    .tab-content {
+        padding: 25px 0;
+    }
+
+    .debt-amount {
+        font-weight: bold;
+        color: var(--danger);
+        /* display: flex; */
+        align-items: center;
+        /* gap: 8px; */
+    }
+
+    .mobile-number {
+        direction: ltr;
+        text-align: left;
+        font-family: 'Courier New', monospace;
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    .selection-counter {
+        background: linear-gradient(135deg, var(--primary), #2980b9);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .stats-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        border: 1px solid #e0e0e0;
+        text-align: center;
+        transition: all 0.3s;
+    }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .stats-card .count {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .stats-card .label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+    .action-buttons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        color: #6c757d;
+    }
+
+        .empty-state .icon {
+            font-size: 4rem;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+    .form-control-with-icon {
+        position: relative;
+    }
+
+        .form-control-with-icon .bi {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+
+        .form-control-with-icon .form-control {
+            padding-left: 45px;
+        }
+
+    @@media (max-width: 768px) {
+        .card-body {
+            padding: 20px;
+        }
+
+        .table-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .nav-tabs .nav-link {
+            flex: 1;
+            justify-content: center;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .checkbox-cell {
+        width: 50px;
+        text-align: center;
+    }
+
+        .checkbox-cell input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+    .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+    }
+
+    .status-active {
+        background-color: var(--success);
+    }
+
+    .status-inactive {
+        background-color: var(--danger);
+    }
+</style>
+
+<div class="sms-panel">
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <i class="bi bi-chat-left-text-fill fs-4"></i>
+            <h1 class="text-white mb-0">پنل مدیریت پیامک</h1>
+        </div>
+
+        <div class="card-body">
+            <!-- آمار سریع -->
+            <div class="row mb-4">
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="stats-card">
+                        <i class="bi bi-people-fill icon"></i>
+                        <div class="count">@Model.NonPaidParent.Count()</div>
+                        <div class="label">والدین بدهکار</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="stats-card">
+                        <i class="bi bi-person-x-fill icon"></i>
+                        <div class="count">@Model.NonChildern.Count()</div>
+                        <div class="label">والدین بدون فرزند</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="stats-card">
+                        <i class="bi bi-phone-fill icon"></i>
+                        <div class="count">@Model.Users.Count()</div>
+                        <div class="label">کاربران فعال</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="stats-card">
+                        <i class="bi bi-cash-coin icon"></i>
+                        <div class="count">
+                            @{
+                                var totalDebt = Model.NonPaidParent.Sum(p =>
+                                p.Children.Where(c => c.Bills != null)
+                                .Sum(x => x.Bills.Where(b => !b.HasPaid && b.BillExpiredTime >= DateTime.Now)
+                                .Sum(b => b.TotalPrice)));
+                            }
+                            @totalDebt.ToString("N0")
+                        </div>
+                        <div class="label">ریال بدهی کل</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- فرم ارسال پیامک -->
+            <div class="sms-form-section">
+                <h4 class="mb-4">
+                    <i class="bi bi-send-fill text-primary me-2"></i>
+                    ارسال پیامک جدید
+                </h4>
+
+                <div class="recipient-info" id="recipientInfo">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span id="selectedCount" class="fw-bold">0 نفر انتخاب شده‌اند</span>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="clearSelection()">
+                            <i class="bi bi-trash me-1"></i>پاک کردن انتخاب‌ها
+                        </button>
+                    </div>
+                    <div class="mt-2 text-secondary" id="selectedIds">
+                        <i class="bi bi-info-circle me-1"></i>
+                        شناسه‌های انتخاب شده: -
+                    </div>
+                </div>
+
+                <form id="smsForm">
+                    <div class="form-group">
+                        <label for="mobileNumbers" class="form-label">
+                            <i class="bi bi-telephone-fill"></i>
+                            شماره تلفن‌های مقصد (برای ارسال انفرادی)
+                        </label>
+                        <div class="form-control-with-icon">
+                            <i class="bi bi-phone"></i>
+                            <input type="text" id="mobileNumbers" class="form-control" placeholder="مثال: 09123456789, 09351234567" />
+                        </div>
+                        <small class="text-muted mt-1 d-block">
+                            <i class="bi bi-info-circle me-1"></i>
+                            شماره‌ها را با کاما جدا کنید
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="messageText" class="form-label">
+                            <i class="bi bi-chat-left-text-fill"></i>
+                            متن پیام
+                        </label>
+                        <textarea id="messageText" class="form-control" rows="5" placeholder="متن پیام خود را وارد کنید..." required></textarea>
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="text-muted">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                حداکثر 160 کاراکتر
+                            </small>
+                            <small id="charCount" class="text-muted fw-bold">0/160</small>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-primary" onclick="sendToSelected()">
+                            <i class="bi bi-send-check"></i>
+                            ارسال به افراد انتخاب شده
+                        </button>
+                        <button type="button" class="btn btn-success" onclick="sendToAllUnpaid()">
+                            <i class="bi bi-people-fill"></i>
+                            ارسال به همه بدهکاران
+                        </button>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-send-plus"></i>
+                            ارسال به شماره‌های وارد شده
+                        </button>
+                        <button type="button" class="btn btn-info" onclick="previewMessage()">
+                            <i class="bi bi-eye-fill"></i>
+                            پیش‌نمایش پیام
+                        </button>
+                        <button type="button" class="btn btn-info">
+                            <i class="bi bi-eye-fill"></i>
+                            ارسال به همه مشتریان
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- تب‌ها برای نمایش جداول -->
+            <div class="tab-container">
+                <ul class="nav nav-tabs" id="smsTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="unpaid-tab" data-bs-toggle="tab" data-bs-target="#unpaid" type="button" role="tab">
+                            <i class="bi bi-cash-coin me-1"></i>
+                            والدین بدهکار
+                            <span class="badge badge-warning ms-2">@Model.NonPaidParent.Count()</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="nonchildren-tab" data-bs-toggle="tab" data-bs-target="#nonchildren" type="button" role="tab">
+                            <i class="bi bi-person-x me-1"></i>
+                            والدین بدون فرزند
+                            <span class="badge badge-success ms-2">@Model.NonChildern.Count()</span>
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="smsTabContent">
+                    <!-- تب والدین بدهکار -->
+                    <div class="tab-pane fade show active" id="unpaid" role="tabpanel">
+                        <div class="table-actions">
+                            <button type="button" class="btn btn-sm btn-primary" onclick="selectAll('unpaid')">
+                                <i class="bi bi-check-all"></i>
+                                <input type="checkbox" class="select-all-checkbox" id="selectAllUnpaid"> انتخاب همه
+                            </button>
+                            <button type="button" class="btn btn-sm btn-success" onclick="sendToSelected()">
+                                <i class="bi bi-send"></i>
+                                ارسال به انتخاب شده‌ها
+                            </button>
+                            <button type="button" class="btn btn-sm btn-warning" onclick="exportSelected('unpaid')">
+                                <i class="bi bi-download"></i>
+                                خروجی انتخاب‌ها
+                            </button>
+                            <span class="selection-counter" id="unpaidSelectionCount">
+                                <i class="bi bi-check-circle"></i>
+                                0 انتخاب شده
+                            </span>
+                        </div>
+
+                        <div class="table-container">
+                            @if (Model.NonPaidParent.Any())
+                            {
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="checkbox-cell">انتخاب</th>
+                                            <th width="80px">کد</th>
+                                            <th>نام و نام خانوادگی</th>
+                                            <th>کد ملی</th>
+                                            <th>شماره تلفن</th>
+                                            <th>بدهی</th>
+                                            <th>وضعیت</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var parent in Model.NonPaidParent)
+                                        {
+                                            var mobile = Model.Users.FirstOrDefault(x => x.UserName == parent.ParentNationalCode)?.Mobile ?? "ندارد";
+                                            var debt = parent.Children.Where(c => c.Bills != null).Sum(x => x.Bills.Where(b => !b.HasPaid && b.BillExpiredTime >= DateTime.Now).Select(b => b.TotalPrice).Sum());
+                                            var hasMobile = !string.IsNullOrEmpty(mobile) && mobile != "ندارد";
+
+                                            <tr data-id="@parent.Id" data-mobile="@mobile" data-name="@parent.ParentFirstName @parent.ParentLastName" data-debt="@debt">
+                                                <td class="checkbox-cell">
+                                                    <input type="checkbox" class="row-selector" data-type="unpaid" value="@parent.Id">
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-primary">@parent.Id</span>
+                                                </td>
+                                                <td>
+                                                    <i class="bi bi-person-circle me-2 text-primary"></i>
+                                                    @parent.ParentFirstName @parent.ParentLastName
+                                                </td>
+                                                <td>
+                                                    <i class="bi bi-card-text me-2 text-secondary"></i>
+                                                    @parent.ParentNationalCode
+                                                </td>
+                                                <td class="mobile-number">
+                                                    <i class="bi bi-phone me-2 @(hasMobile ? "text-success" : "text-danger")"></i>
+                                                    @mobile
+                                                </td>
+                                                <td class="debt-amount">
+                                                    <i class="bi bi-cash-stack"></i>
+                                                    @debt.ToString("N0") ریال
+                                                </td>
+                                                <td>
+                                                    <span class="status-indicator @(hasMobile ? "status-active" : "status-inactive")"></span>
+                                                    @(hasMobile ? "فعال" : "غیرفعال")
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <div class="empty-state">
+                                    <i class="bi bi-emoji-smile icon"></i>
+                                    <h4>هیچ والد بدهکاری یافت نشد</h4>
+                                    <p class="text-muted">همه والدین حساب خود را تسویه کرده‌اند.</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- تب والدین بدون فرزند -->
+                    <div class="tab-pane fade" id="nonchildren" role="tabpanel">
+                        <div class="table-actions">
+                            <button type="button" class="btn btn-sm btn-primary" onclick="selectAll('nonchildren')">
+                                <i class="bi bi-check-all"></i>
+                                <input type="checkbox" class="select-all-checkbox" id="selectAllNonchildren"> انتخاب همه
+                            </button>
+                            <button type="button" class="btn btn-sm btn-success" onclick="sendToSelected()">
+                                <i class="bi bi-send"></i>
+                                ارسال به انتخاب شده‌ها
+                            </button>
+                            <button type="button" class="btn btn-sm btn-warning" onclick="exportSelected('nonchildren')">
+                                <i class="bi bi-download"></i>
+                                خروجی انتخاب‌ها
+                            </button>
+                            <span class="selection-counter" id="nonchildrenSelectionCount">
+                                <i class="bi bi-check-circle"></i>
+                                0 انتخاب شده
+                            </span>
+                        </div>
+
+                        <div class="table-container">
+                            @if (Model.NonChildern.Any())
+                            {
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="checkbox-cell">انتخاب</th>
+                                            <th width="80px">کد</th>
+                                            <th>نام و نام خانوادگی</th>
+                                            <th>کد ملی</th>
+                                            <th>شماره تلفن</th>
+                                            <th>وضعیت</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var parent in Model.NonChildern)
+                                        {
+                                            var mobile = Model.Users.FirstOrDefault(x => x.UserName == parent.ParentNationalCode)?.Mobile ?? "ندارد";
+                                            var hasMobile = !string.IsNullOrEmpty(mobile) && mobile != "ندارد";
+
+                                            <tr data-id="@parent.Id" data-mobile="@mobile" data-name="@parent.ParentFirstName @parent.ParentLastName">
+                                                <td class="checkbox-cell">
+                                                    <input type="checkbox" class="row-selector" data-type="nonchildren" value="@parent.Id">
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-primary">@parent.Id</span>
+                                                </td>
+                                                <td>
+                                                    <i class="bi bi-person-circle me-2 text-primary"></i>
+                                                    @parent.ParentFirstName @parent.ParentLastName
+                                                </td>
+                                                <td>
+                                                    <i class="bi bi-card-text me-2 text-secondary"></i>
+                                                    @parent.ParentNationalCode
+                                                </td>
+                                                <td class="mobile-number">
+                                                    <i class="bi bi-phone me-2 @(hasMobile ? "text-success" : "text-danger")"></i>
+                                                    @mobile
+                                                </td>
+                                                <td>
+                                                    <span class="status-indicator @(hasMobile ? "status-active" : "status-inactive")"></span>
+                                                    @(hasMobile ? "فعال" : "غیرفعال")
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <div class="empty-state">
+                                    <i class="bi bi-emoji-smile icon"></i>
+                                    <h4>هیچ والد بدون فرزندی یافت نشد</h4>
+                                    <p class="text-muted">همه والدین حداقل یک فرزند ثبت شده دارند.</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ذخیره‌سازی افراد انتخاب شده
+    let selectedParents = [];
+
+    // آپدیت شمارنده کاراکترها
+    document.getElementById('messageText').addEventListener('input', function() {
+        const charCount = this.value.length;
+        const charCountElement = document.getElementById('charCount');
+        charCountElement.textContent = `${charCount}/160`;
+
+        if (charCount > 160) {
+            charCountElement.style.color = 'var(--danger)';
+            charCountElement.innerHTML = `<i class="bi bi-exclamation-triangle me-1"></i>${charCount}/160`;
+        } else if (charCount > 140) {
+            charCountElement.style.color = 'var(--warning)';
+        } else {
+            charCountElement.style.color = 'var(--success)';
+        }
+    });
+
+    // مدیریت انتخاب ردیف‌ها
+    document.querySelectorAll('.row-selector').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const row = this.closest('tr');
+            const id = this.value;
+            const type = this.getAttribute('data-type');
+
+            if (this.checked) {
+                row.classList.add('selected-row');
+                row.querySelector('td:nth-child(2) .badge').style.background = 'linear-gradient(135deg, var(--success), #27ae60)';
+
+                // اضافه کردن به لیست انتخاب‌ها
+                if (!selectedParents.includes(id)) {
+                    selectedParents.push(id);
+                }
+            } else {
+                row.classList.remove('selected-row');
+                row.querySelector('td:nth-child(2) .badge').style.background = 'linear-gradient(135deg, var(--primary), #2980b9)';
+
+                // حذف از لیست انتخاب‌ها
+                const index = selectedParents.indexOf(id);
+                if (index > -1) {
+                    selectedParents.splice(index, 1);
+                }
+
+                // آپدیت چک‌باکس انتخاب همه
+                const selectAllCheckbox = document.getElementById(`selectAll${type.charAt(0).toUpperCase() + type.slice(1)}`);
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.checked = false;
+                }
+            }
+
+            updateSelectionUI();
+        });
+    });
+
+    // انتخاب همه در یک تب
+    function selectAll(type) {
+        const checkboxes = document.querySelectorAll(`.row-selector[data-type="${type}"]`);
+        const selectAllCheckbox = document.getElementById(`selectAll${type.charAt(0).toUpperCase() + type.slice(1)}`);
+        const isChecked = !selectAllCheckbox.checked;
+
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+            const event = new Event('change');
+            checkbox.dispatchEvent(event);
+        });
+
+        selectAllCheckbox.checked = isChecked;
+    }
+
+    // آپدیت رابط کاربری انتخاب‌ها
+    function updateSelectionUI() {
+        const unpaidCount = document.querySelectorAll('.row-selector[data-type="unpaid"]:checked').length;
+        const nonchildrenCount = document.querySelectorAll('.row-selector[data-type="nonchildren"]:checked').length;
+
+        document.getElementById('unpaidSelectionCount').innerHTML = `<i class="bi bi-check-circle"></i>${unpaidCount} انتخاب شده`;
+        document.getElementById('nonchildrenSelectionCount').innerHTML = `<i class="bi bi-check-circle"></i>${nonchildrenCount} انتخاب شده`;
+
+        // نمایش اطلاعات انتخاب شده
+        const recipientInfo = document.getElementById('recipientInfo');
+        const selectedCount = document.getElementById('selectedCount');
+        const selectedIds = document.getElementById('selectedIds');
+
+        if (selectedParents.length > 0) {
+            recipientInfo.classList.add('show');
+            selectedCount.innerHTML = `<i class="bi bi-check-circle-fill text-success me-2"></i>${selectedParents.length} نفر انتخاب شده‌اند`;
+            selectedIds.innerHTML = `<i class="bi bi-info-circle me-1"></i>شناسه‌های انتخاب شده: ${selectedParents.join(', ')}`;
+        } else {
+            recipientInfo.classList.remove('show');
+            selectedIds.innerHTML = `<i class="bi bi-info-circle me-1"></i>شناسه‌های انتخاب شده: -`;
+        }
+    }
+
+    // پاک کردن انتخاب‌ها
+    function clearSelection() {
+        if (selectedParents.length === 0) {
+            showToast('warning', 'هیچ آیتمی انتخاب نشده است.');
+            return;
+        }
+
+        if (confirm(`آیا از پاک کردن ${selectedParents.length} انتخاب اطمینان دارید؟`)) {
+            selectedParents = [];
+            document.querySelectorAll('.row-selector:checked').forEach(checkbox => {
+                checkbox.checked = false;
+                const row = checkbox.closest('tr');
+                row.classList.remove('selected-row');
+                row.querySelector('td:nth-child(2) .badge').style.background = 'linear-gradient(135deg, var(--primary), #2980b9)';
+            });
+
+            document.querySelectorAll('.select-all-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+
+            updateSelectionUI();
+            showToast('success', 'همه انتخاب‌ها پاک شدند.');
+        }
+    }
+
+    // ارسال به افراد انتخاب شده
+    function sendToSelected() {
+        if (selectedParents.length === 0) {
+            showToast('warning', 'لطفاً حداقل یک نفر را انتخاب کنید.');
+            return;
+        }
+
+        const message = document.getElementById('messageText').value.trim();
+        if (!message) {
+            showToast('warning', 'لطفاً متن پیام را وارد کنید.');
+            return;
+        }
+
+        if (message.length > 160) {
+            showToast('danger', 'متن پیام نباید بیشتر از 160 کاراکتر باشد.');
+            return;
+        }
+
+        // در اینجا می‌توانید کد ارسال پیامک را اضافه کنید
+        // selectedParents شامل لیست IDهای انتخاب شده است
+        console.log('ارسال پیام به افراد انتخاب شده:', selectedParents);
+        console.log('متن پیام:', message);
+
+        // نمایش پیام موفقیت
+        showToast('success', `پیام به ${selectedParents.length} نفر ارسال خواهد شد.`);
+
+        // شبیه‌سازی ارسال
+        simulateSending(selectedParents.length);
+    }
+
+    // ارسال به همه بدهکاران
+    function sendToAllUnpaid() {
+        const unpaidCheckboxes = document.querySelectorAll('.row-selector[data-type="unpaid"]');
+        const unpaidIds = Array.from(unpaidCheckboxes).map(cb => cb.value);
+        const message = document.getElementById('messageText').value.trim();
+
+        if (!message) {
+            showToast('warning', 'لطفاً متن پیام را وارد کنید.');
+            return;
+        }
+
+        if (message.length > 160) {
+            showToast('danger', 'متن پیام نباید بیشتر از 160 کاراکتر باشد.');
+            return;
+        }
+
+        if (unpaidIds.length === 0) {
+            showToast('info', 'هیچ والد بدهکاری وجود ندارد.');
+            return;
+        }
+
+        if (confirm(`آیا می‌خواهید پیام را به همه ${unpaidIds.length} والد بدهکار ارسال کنید؟`)) {
+            console.log('ارسال پیام به همه بدهکاران:', unpaidIds);
+            console.log('متن پیام:', message);
+
+            showToast('success', `پیام به ${unpaidIds.length} والد بدهکار ارسال خواهد شد.`);
+
+            // شبیه‌سازی ارسال
+            simulateSending(unpaidIds.length);
+        }
+    }
+
+    // پیش‌نمایش پیام
+    function previewMessage() {
+        const message = document.getElementById('messageText').value.trim();
+        if (!message) {
+            showToast('warning', 'لطفاً متن پیام را وارد کنید.');
+            return;
+        }
+
+        const preview = `
+            <div class="alert alert-info">
+                <h5><i class="bi bi-eye-fill me-2"></i>پیش‌نمایش پیام</h5>
+                <hr>
+                <div style="white-space: pre-wrap; font-family: 'Courier New', monospace; background: white; padding: 15px; border-radius: 5px; border: 1px solid #ccc; margin: 10px 0;">
+                    ${message}
+                </div>
+                <div class="text-end">
+                    <small class="text-muted">تعداد کاراکتر: ${message.length}/160</small>
+                </div>
+            </div>
+        `;
+
+        // نمایش در مدال
+        showModal('پیش‌نمایش پیام', preview);
+    }
+
+    // خروجی گرفتن از انتخاب‌ها
+    function exportSelected(type) {
+        const checkboxes = document.querySelectorAll(`.row-selector[data-type="${type}"]:checked`);
+        const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+
+        if (selectedIds.length === 0) {
+            showToast('warning', 'هیچ آیتمی انتخاب نشده است.');
+            return;
+        }
+
+        const content = selectedIds.join('\n');
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `selected-${type}-${new Date().toISOString().slice(0,10)}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showToast('success', `فایل با ${selectedIds.length} آیتم دانلود شد.`);
+    }
+
+    // ارسال به شماره‌های وارد شده
+    document.getElementById('smsForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const mobileNumbers = document.getElementById('mobileNumbers').value.trim();
+        const message = document.getElementById('messageText').value.trim();
+
+        if (!message) {
+            showToast('warning', 'لطفاً متن پیام را وارد کنید.');
+            return;
+        }
+
+        if (message.length > 160) {
+            showToast('danger', 'متن پیام نباید بیشتر از 160 کاراکتر باشد.');
+            return;
+        }
+
+        if (!mobileNumbers && selectedParents.length === 0) {
+            showToast('warning', 'لطفاً شماره تلفن‌ها را وارد کنید یا افراد را از جدول انتخاب کنید.');
+            return;
+        }
+
+        // در اینجا کد ارسال پیامک را اضافه کنید
+        console.log('شماره‌ها:', mobileNumbers);
+        console.log('متن پیام:', message);
+
+        showToast('success', 'پیام با موفقیت ارسال خواهد شد.');
+
+        // شبیه‌سازی ارسال
+        const count = mobileNumbers ? mobileNumbers.split(',').length : selectedParents.length;
+        simulateSending(count);
+    });
+
+    // شبیه‌سازی فرآیند ارسال
+    function simulateSending(count) {
+        const btn = event?.target || document.querySelector('.btn-primary');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `<i class="bi bi-hourglass-split"></i> در حال ارسال...`;
+        btn.disabled = true;
+
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += 10;
+            if (progress >= 100) {
+                clearInterval(interval);
+                btn.innerHTML = `<i class="bi bi-check-circle"></i> ارسال شد!`;
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }, 2000);
+            }
+        }, 100);
+    }
+
+    // نمایش نوتیفیکیشن
+    function showToast(type, message) {
+        // اگر توست‌بوت استرپ موجود است از آن استفاده کنید
+        if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+            const toastElement = document.createElement('div');
+            toastElement.className = `toast align-items-center text-white bg-${type} border-0`;
+            toastElement.setAttribute('role', 'alert');
+            toastElement.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi bi-${getToastIcon(type)} me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+
+            document.body.appendChild(toastElement);
+            const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+            toast.show();
+
+            toastElement.addEventListener('hidden.bs.toast', function () {
+                document.body.removeChild(toastElement);
+            });
+        } else {
+            // نمایش ساده آلرت
+            alert(message);
+        }
+    }
+
+    function getToastIcon(type) {
+        switch(type) {
+            case 'success': return 'check-circle-fill';
+            case 'warning': return 'exclamation-triangle-fill';
+            case 'danger': return 'x-circle-fill';
+            case 'info': return 'info-circle-fill';
+            default: return 'info-circle-fill';
+        }
+    }
+
+    // نمایش مدال
+    function showModal(title, content) {
+        const modalId = 'customModal';
+        let modal = document.getElementById(modalId);
+
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = modalId;
+            modal.className = 'modal fade';
+            modal.tabIndex = -1;
+            modal.innerHTML = `
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title"></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body"></div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">بستن</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        modal.querySelector('.modal-title').innerHTML = title;
+        modal.querySelector('.modal-body').innerHTML = content;
+
+        // استفاده از بوت استرپ مدال اگر موجود باشد
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+        } else {
+            // نمایش ساده
+            modal.style.display = 'block';
+            modal.style.background = 'rgba(0,0,0,0.5)';
+            modal.querySelector('.btn-close').onclick = () => modal.style.display = 'none';
+            modal.querySelector('.btn-secondary').onclick = () => modal.style.display = 'none';
+        }
+    }
+
+    // مقداردهی اولیه
+    document.addEventListener('DOMContentLoaded', function() {
+        updateSelectionUI();
+
+        // فعال کردن تب‌ها
+        const triggerTabList = [].slice.call(document.querySelectorAll('#smsTabs button'));
+        triggerTabList.forEach(function (triggerEl) {
+            triggerEl.addEventListener('click', function (event) {
+                event.preventDefault();
+                const tabTrigger = new bootstrap.Tab(triggerEl);
+                tabTrigger.show();
+            });
+        });
+    });
+</script>

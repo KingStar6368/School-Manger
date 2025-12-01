@@ -1,0 +1,1238 @@
+﻿@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "گزارش مشکل";
+}
+@Html.AntiForgeryToken();
+<style>
+    :root {
+        --primary: #3498db;
+        --secondary: #6c757d;
+        --success: #2ecc71;
+        --danger: #e74c3c;
+        --warning: #f39c12;
+        --info: #17a2b8;
+        --light: #f8f9fa;
+        --dark: #343a40;
+    }
+
+    .report-page {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        direction: rtl;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 30px 0;
+    }
+
+    .report-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+        overflow: hidden;
+        border: none;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(50, 50, 93, 0.15), 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+    .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 0 !important;
+        padding: 30px;
+        border-bottom: none;
+    }
+
+        .card-header h1 {
+            color: white;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .card-header .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+
+    .card-body {
+        padding: 40px;
+    }
+
+    .form-group {
+        margin-bottom: 30px;
+    }
+
+    .form-label {
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.1rem;
+    }
+
+        .form-label .bi {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+    .form-control, .form-select {
+        border: 2px solid #e3e6f0;
+        border-radius: 12px;
+        padding: 15px 20px;
+        font-size: 1rem;
+        transition: all 0.3s;
+        background-color: #f8f9fc;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.15);
+            background-color: white;
+        }
+
+    textarea.form-control {
+        min-height: 180px;
+        resize: vertical;
+        line-height: 1.6;
+    }
+
+    .form-control-with-icon {
+        position: relative;
+    }
+
+        .form-control-with-icon .bi {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 1.3rem;
+        }
+
+        .form-control-with-icon .form-control,
+        .form-control-with-icon .form-select {
+            padding-left: 60px;
+        }
+
+    .btn {
+        border-radius: 12px;
+        padding: 15px 35px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        min-width: 180px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        }
+
+    .btn-secondary {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+    }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #5a6268 0%, #343a40 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(108, 117, 125, 0.2);
+        }
+
+    .btn-success {
+        background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        color: white;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 40px;
+        flex-wrap: wrap;
+    }
+
+    .char-counter {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+
+        .char-counter .count {
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background-color: #f8f9fa;
+        }
+
+    .priority-badges {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .priority-badge {
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 2px solid transparent;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        min-width: 150px;
+        justify-content: center;
+    }
+
+        .priority-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .priority-badge.active {
+            border-color: currentColor;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+    .priority-low {
+        background-color: rgba(46, 204, 113, 0.1);
+        color: #27ae60;
+        border-color: #2ecc71;
+    }
+
+    .priority-medium {
+        background-color: rgba(243, 156, 18, 0.1);
+        color: #d68910;
+        border-color: #f39c12;
+    }
+
+    .priority-high {
+        background-color: rgba(231, 76, 60, 0.1);
+        color: #c0392b;
+        border-color: #e74c3c;
+    }
+
+    .priority-critical {
+        background-color: rgba(155, 89, 182, 0.1);
+        color: #8e44ad;
+        border-color: #9b59b6;
+    }
+
+    .screenshot-upload {
+        border: 3px dashed #e3e6f0;
+        border-radius: 15px;
+        padding: 40px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        background-color: #f8f9fc;
+        margin-top: 20px;
+    }
+
+        .screenshot-upload:hover {
+            border-color: var(--primary);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .screenshot-upload.dragover {
+            border-color: var(--success);
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+
+        .screenshot-upload .bi {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+    .screenshot-preview {
+        margin-top: 20px;
+        display: none;
+    }
+
+        .screenshot-preview img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+    .contact-info {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 25px;
+        border-radius: 15px;
+        margin-top: 40px;
+        border-right: 5px solid var(--primary);
+    }
+
+        .contact-info h5 {
+            color: var(--dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+        padding: 10px 15px;
+        background: white;
+        border-radius: 10px;
+        transition: all 0.3s;
+    }
+
+        .contact-item:hover {
+            transform: translateX(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-item .bi {
+            font-size: 1.3rem;
+            color: var(--primary);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 10px;
+        }
+
+    .progress-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: transparent;
+        z-index: 9999;
+        display: none;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        width: 0%;
+        transition: width 0.3s;
+    }
+
+    .success-message {
+        text-align: center;
+        padding: 50px 30px;
+        display: none;
+    }
+
+        .success-message .bi {
+            font-size: 5rem;
+            color: var(--success);
+            margin-bottom: 20px;
+            animation: bounce 1s infinite alternate;
+        }
+
+    @@keyframes bounce {
+        from {
+            transform: translateY(0);
+        }
+
+        to {
+            transform: translateY(-15px);
+        }
+    }
+
+    .faq-section {
+        margin-top: 50px;
+        padding-top: 40px;
+        border-top: 2px solid #e3e6f0;
+    }
+
+    .faq-item {
+        margin-bottom: 20px;
+        border: 1px solid #e3e6f0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .faq-question {
+        padding: 20px;
+        background: #f8f9fc;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        color: var(--dark);
+        transition: all 0.3s;
+    }
+
+        .faq-question:hover {
+            background: #e9ecef;
+        }
+
+    .faq-answer {
+        padding: 0 20px;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+
+    .faq-item.active .faq-answer {
+        padding: 20px;
+        max-height: 500px;
+    }
+
+    .faq-item.active .faq-question .bi-chevron-down {
+        transform: rotate(180deg);
+    }
+
+    @@media (max-width: 768px) {
+        .report-page {
+            padding: 15px;
+        }
+
+        .card-body {
+            padding: 25px 20px;
+        }
+
+        .card-header {
+            padding: 20px;
+        }
+
+            .card-header h1 {
+                font-size: 1.8rem;
+            }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+
+        .priority-badge {
+            min-width: calc(50% - 10px);
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .priority-badge {
+            min-width: 100%;
+        }
+
+        .contact-item {
+            flex-direction: column;
+            text-align: center;
+            gap: 10px;
+        }
+    }
+
+    .required-star {
+        color: var(--danger);
+        margin-right: 5px;
+    }
+
+    .info-text {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-top: 5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+</style>
+
+<div class="report-page">
+    <!-- نوار پیشرفت -->
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <div class="card report-card">
+                    <div class="card-header">
+                        <div>
+                            <h1>
+                                <i class="bi bi-bug-fill"></i>
+                                گزارش مشکل یا باگ
+                            </h1>
+                            <p class="subtitle">
+                                در صورت بروز هرگونه مشکل، خطا یا باگ در سیستم، از طریق این فرم آن را با ما در میان بگذارید.
+                                تیم پشتیبانی در اسرع وقت مشکل شما را بررسی و رفع خواهد کرد.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- فرم گزارش -->
+                        <form id="reportForm" method="post" enctype="multipart/form-data">
+                            <!-- عنوان مشکل -->
+                            <div class="form-group">
+                                <label for="issueTitle" class="form-label">
+                                    <i class="bi bi-card-heading"></i>
+                                    عنوان مشکل
+                                    <span class="required-star">*</span>
+                                </label>
+                                <div class="form-control-with-icon">
+                                    <i class="bi bi-pencil-square"></i>
+                                    <input type="text" id="issueTitle" class="form-control"
+                                           placeholder="مثال: خطا در ثبت پرداخت - صفحه ادمین" required>
+                                </div>
+                                <div class="info-text">
+                                    <i class="bi bi-info-circle"></i>
+                                    عنوانی واضح و مختصر برای مشکل خود وارد کنید
+                                </div>
+                            </div>
+
+                            <!-- اولویت مشکل -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="bi bi-flag-fill"></i>
+                                    اولویت مشکل
+                                    <span class="required-star">*</span>
+                                </label>
+                                <div class="priority-badges">
+                                    <div class="priority-badge priority-low" data-priority="low">
+                                        <i class="bi bi-arrow-down-circle"></i>
+                                        کم
+                                    </div>
+                                    <div class="priority-badge priority-medium active" data-priority="medium">
+                                        <i class="bi bi-arrow-right-circle"></i>
+                                        متوسط
+                                    </div>
+                                    <div class="priority-badge priority-high" data-priority="high">
+                                        <i class="bi bi-arrow-up-circle"></i>
+                                        بالا
+                                    </div>
+                                    <div class="priority-badge priority-critical" data-priority="critical">
+                                        <i class="bi bi-exclamation-triangle"></i>
+                                        بحرانی
+                                    </div>
+                                </div>
+                                <input type="hidden" id="issuePriority" value="medium" required>
+                            </div>
+
+                            <!-- نوع مشکل -->
+                            <div class="form-group">
+                                <label for="issueType" class="form-label">
+                                    <i class="bi bi-tags-fill"></i>
+                                    نوع مشکل
+                                    <span class="required-star">*</span>
+                                </label>
+                                <div class="form-control-with-icon">
+                                    <i class="bi bi-funnel"></i>
+                                    <select id="issueType" class="form-select" required>
+                                        <option value="">انتخاب کنید</option>
+                                        <option value="bug">باگ نرم‌افزاری</option>
+                                        <option value="ui">مشکل رابط کاربری</option>
+                                        <option value="performance">مشکل عملکردی</option>
+                                        <option value="security">مشکل امنیتی</option>
+                                        <option value="database">مشکل پایگاه داده</option>
+                                        <option value="payment">مشکل پرداخت</option>
+                                        <option value="other">سایر</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- صفحه یا بخش مربوطه -->
+                            <div class="form-group">
+                                <label for="issuePage" class="form-label">
+                                    <i class="bi bi-window"></i>
+                                    صفحه یا بخش مربوطه
+                                </label>
+                                <div class="form-control-with-icon">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <input type="text" id="issuePage" class="form-control"
+                                           placeholder="مثال: صفحه پنل مدیریت - بخش پیامک">
+                                </div>
+                            </div>
+
+                            <!-- توضیحات کامل -->
+                            <div class="form-group">
+                                <label for="issueDescription" class="form-label">
+                                    <i class="bi bi-chat-left-text-fill"></i>
+                                    توضیحات کامل مشکل
+                                    <span class="required-star">*</span>
+                                </label>
+                                <textarea id="issueDescription" class="form-control"
+                                          placeholder="لطفاً مشکل را به طور کامل شرح دهید. مراحل بازسازی مشکل، پیام خطا (در صورت وجود) و هر اطلاعات مرتبط دیگر را ذکر کنید."
+                                          required></textarea>
+                                <div class="char-counter">
+                                    <span class="text-muted">
+                                        <i class="bi bi-text-paragraph"></i>
+                                        هرچه توضیحات دقیق‌تر باشد، رفع مشکل سریع‌تر انجام می‌شود
+                                    </span>
+                                    <span class="count" id="descriptionCount">0 کاراکتر</span>
+                                </div>
+                            </div>
+
+                            <!-- مراحل بازسازی -->
+                            <div class="form-group">
+                                <label for="reproductionSteps" class="form-label">
+                                    <i class="bi bi-list-ol"></i>
+                                    مراحل بازسازی مشکل
+                                </label>
+                                <textarea id="reproductionSteps" class="form-control" rows="4"
+                                          placeholder="مرحله ۱: وارد پنل مدیریت شوید...
+مرحله ۲: به بخش پیامک بروید...
+مرحله ۳: روی دکمه ارسال کلیک کنید...
+مرحله ۴: خطای 'Connection failed' نمایش داده می‌شود"></textarea>
+                                <div class="info-text">
+                                    <i class="bi bi-lightbulb"></i>
+                                    مراحل بازسازی مشکل را به ترتیب و به صورت واضح بیان کنید
+                                </div>
+                            </div>
+
+                            <!-- آپلود تصویر -->
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <i class="bi bi-image-fill"></i>
+                                    ضمیمه کردن تصویر (اختیاری)
+                                </label>
+                                <div class="screenshot-upload" id="screenshotUpload">
+                                    <i class="bi bi-cloud-arrow-up"></i>
+                                    <h5>تصویر مشکل را اینجا رها کنید یا کلیک کنید</h5>
+                                    <p class="text-muted">حداکثر حجم: 5MB • فرمت‌های مجاز: JPG, PNG, GIF</p>
+                                    <input type="file" id="screenshotInput" accept="image/*" style="display: none;">
+                                </div>
+                                <div class="screenshot-preview" id="screenshotPreview">
+                                    <img id="previewImage" src="" alt="پیش‌نمایش تصویر">
+                                    <div class="mt-3">
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="removeScreenshot()">
+                                            <i class="bi bi-trash"></i> حذف تصویر
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- اطلاعات تماس -->
+                            <div class="form-group">
+                                <label for="contactEmail" class="form-label">
+                                    <i class="bi bi-envelope-fill"></i>
+                                    ایمیل برای پیگیری (اختیاری)
+                                </label>
+                                <div class="form-control-with-icon">
+                                    <i class="bi bi-at"></i>
+                                    <input type="email" id="contactEmail" class="form-control"
+                                           placeholder="example@domain.com">
+                                </div>
+                                <div class="info-text">
+                                    <i class="bi bi-shield-check"></i>
+                                    در صورت وارد کردن ایمیل، پاسخ و پیگیری مشکل را دریافت خواهید کرد
+                                </div>
+                            </div>
+
+                            <!-- دکمه‌های اقدام -->
+                            <div class="action-buttons">
+                                <button type="submit" class="btn btn-primary" id="submitBtn">
+                                    <i class="bi bi-send-fill"></i>
+                                    ارسال گزارش
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                                    <i class="bi bi-eraser-fill"></i>
+                                    پاک کردن فرم
+                                </button>
+                                <button type="button" class="btn btn-success" onclick="saveDraft()">
+                                    <i class="bi bi-save-fill"></i>
+                                    ذخیره پیش‌نویس
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- پیام موفقیت -->
+                        <div class="success-message" id="successMessage">
+                            <i class="bi bi-check-circle-fill"></i>
+                            <h3>گزارش شما با موفقیت ارسال شد!</h3>
+                            <p class="text-muted mt-3">
+                                کد پیگیری گزارش: <strong id="trackingCode">REP-2024-001</strong>
+                            </p>
+                            <p class="mt-3">
+                                تیم پشتیبانی در اسرع وقت مشکل شما را بررسی خواهد کرد.
+                                در صورت وارد کردن ایمیل، نتیجه بررسی برای شما ارسال خواهد شد.
+                            </p>
+                            <button class="btn btn-primary mt-4" onclick="submitAnother()">
+                                <i class="bi bi-plus-circle"></i>
+                                ارسال گزارش جدید
+                            </button>
+                        </div>
+
+                        <!-- اطلاعات تماس -->
+                        <div class="contact-info">
+                            <h5>
+                                <i class="bi bi-headset"></i>
+                                راه‌های ارتباطی دیگر
+                            </h5>
+                            <div class="contact-item">
+                                <i class="bi bi-telephone"></i>
+                                <div>
+                                    <strong>تلفن پشتیبانی:</strong>
+                                    <div class="mt-1">۰۲۱-۱۲۳۴۵۶۷۸</div>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="bi bi-envelope"></i>
+                                <div>
+                                    <strong>ایمیل پشتیبانی:</strong>
+                                    <div class="mt-1">support@schoolmanager.ir</div>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="bi bi-clock"></i>
+                                <div>
+                                    <strong>ساعات کاری پشتیبانی:</strong>
+                                    <div class="mt-1">شنبه تا چهارشنبه: ۸ صبح تا ۵ عصر</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- سوالات متداول -->
+                        <div class="faq-section">
+                            <h4 class="mb-4">
+                                <i class="bi bi-question-circle-fill text-primary me-2"></i>
+                                سوالات متداول
+                            </h4>
+
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span>پس از ارسال گزارش، چه مدت طول می‌کشد تا مشکل رفع شود؟</span>
+                                    <i class="bi bi-chevron-down"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p class="mb-0">
+                                        مدت زمان رفع مشکل بستگی به پیچیدگی آن دارد. مشکلات ساده معمولاً در عرض ۲۴-۴۸ ساعت و مشکلات پیچیده‌تر ممکن است تا یک هفته زمان ببرد. در صورت بحرانی بودن مشکل، تیم فوری آن را بررسی خواهد کرد.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span>چگونه می‌توانم از وضعیت گزارش خود مطلع شوم؟</span>
+                                    <i class="bi bi-chevron-down"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p class="mb-0">
+                                        پس از ارسال گزارش، یک کد پیگیری دریافت خواهید کرد. در صورت وارد کردن ایمیل، مراحل بررسی و نتیجه نهایی برای شما ارسال خواهد شد. همچنین می‌توانید از طریق تلفن پشتیبانی با ذکر کد پیگیری، از وضعیت گزارش خود مطلع شوید.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span>آیا اطلاعات شخصی من محفوظ خواهد ماند؟</span>
+                                    <i class="bi bi-chevron-down"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p class="mb-0">
+                                        بله، تمامی اطلاعات شخصی شما مطابق با قوانین حریم خصوصی محافظت می‌شود. اطلاعات گزارش‌های مشکل تنها برای تیم پشتیبانی و توسعه قابل دسترسی است و در اختیار هیچ شخص یا سازمان دیگری قرار نمی‌گیرد.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="faq-item">
+                                <div class="faq-question">
+                                    <span>چه نوع مشکلاتی را می‌توانم گزارش دهم؟</span>
+                                    <i class="bi bi-chevron-down"></i>
+                                </div>
+                                <div class="faq-answer">
+                                    <p class="mb-0">
+                                        می‌توانید هرگونه مشکل فنی، خطا، باگ، مشکل عملکردی، مشکل رابط کاربری، مشکل امنیتی، یا پیشنهاد بهبود را از طریق این فرم گزارش دهید. حتی مشکلات کوچک نیز برای ما اهمیت دارند.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // مدیریت اولویت‌ها
+    document.querySelectorAll('.priority-badge').forEach(badge => {
+        badge.addEventListener('click', function() {
+            document.querySelectorAll('.priority-badge').forEach(b => {
+                b.classList.remove('active');
+            });
+            this.classList.add('active');
+            document.getElementById('issuePriority').value = this.getAttribute('data-priority');
+        });
+    });
+
+    // شمارنده کاراکترها
+    const descriptionTextarea = document.getElementById('issueDescription');
+    if (descriptionTextarea) {
+        descriptionTextarea.addEventListener('input', function() {
+            const charCount = this.value.length;
+            const countElement = document.getElementById('descriptionCount');
+            if (countElement) {
+                countElement.textContent = `${charCount} کاراکتر`;
+                countElement.style.color = charCount > 5000 ? 'var(--danger)' :
+                                          charCount > 3000 ? 'var(--warning)' : 'var(--success)';
+            }
+        });
+    }
+
+    // مدیریت آپلود تصویر
+    const screenshotUpload = document.getElementById('screenshotUpload');
+    const screenshotInput = document.getElementById('screenshotInput');
+    const screenshotPreview = document.getElementById('screenshotPreview');
+    const previewImage = document.getElementById('previewImage');
+
+    if (screenshotUpload && screenshotInput) {
+        screenshotUpload.addEventListener('click', () => screenshotInput.click());
+
+        screenshotInput.addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+
+                // اعتبارسنجی فایل
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+                if (file.size > maxSize) {
+                    showMessage('حجم تصویر نباید بیشتر از 5 مگابایت باشد.', 'danger');
+                    this.value = '';
+                    return;
+                }
+
+                if (!validTypes.includes(file.type)) {
+                    showMessage('فقط فرمت‌های JPG, PNG, GIF مجاز هستند.', 'danger');
+                    this.value = '';
+                    return;
+                }
+
+                // نمایش پیش‌نمایش
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (previewImage) previewImage.src = e.target.result;
+                    if (screenshotPreview) screenshotPreview.style.display = 'block';
+                    if (screenshotUpload) screenshotUpload.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    function removeScreenshot() {
+        if (screenshotInput) screenshotInput.value = '';
+        if (screenshotPreview) screenshotPreview.style.display = 'none';
+        if (screenshotUpload) screenshotUpload.style.display = 'block';
+    }
+
+    // Drag and drop
+    if (screenshotUpload) {
+        screenshotUpload.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+
+        screenshotUpload.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+        });
+
+        screenshotUpload.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            if (e.dataTransfer.files.length && screenshotInput) {
+                screenshotInput.files = e.dataTransfer.files;
+                screenshotInput.dispatchEvent(new Event('change'));
+            }
+        });
+    }
+
+    // مدیریت FAQ
+    document.querySelectorAll('.faq-question').forEach(question => {
+        question.addEventListener('click', function() {
+            this.closest('.faq-item').classList.toggle('active');
+        });
+    });
+
+    // ارسال فرم
+    const reportForm = document.getElementById('reportForm');
+    if (reportForm) {
+        reportForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!validateForm()) return;
+
+            // ایجاد FormData
+            const formData = new FormData();
+            formData.append('Title', document.getElementById('issueTitle').value.trim());
+            formData.append('Priority', document.getElementById('issuePriority').value);
+            formData.append('IssueType', document.getElementById('issueType').value);
+            formData.append('Page', document.getElementById('issuePage').value.trim());
+            formData.append('Description', document.getElementById('issueDescription').value.trim());
+            formData.append('ReproductionSteps', document.getElementById('reproductionSteps').value.trim());
+            formData.append('ContactEmail', document.getElementById('contactEmail').value.trim());
+
+            // اضافه کردن فایل
+            if (screenshotInput && screenshotInput.files[0]) {
+                formData.append('Screenshot', screenshotInput.files[0]);
+            }
+
+            // اضافه کردن توکن ضد جعل
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            if (token) {
+                formData.append('__RequestVerificationToken', token);
+            }
+
+            // نمایش نوار پیشرفت
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (progressContainer) progressContainer.style.display = 'block';
+            if (progressBar) progressBar.style.width = '0%';
+
+            const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> در حال ارسال...';
+            }
+
+            try {
+                // ارسال درخواست
+                const response = await fetch('/Admin/Report/SubmitReport', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // بررسی وضعیت
+                if (response.status === 415) {
+                    throw new Error('نوع محتوای ارسالی پشتیبانی نمی‌شود.');
+                }
+
+                if (!response.ok) {
+                    throw new Error(`خطای سرور: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // نمایش موفقیت
+                    const trackingCodeEl = document.getElementById('trackingCode');
+                    const successMessage = document.getElementById('successMessage');
+
+                    if (trackingCodeEl) trackingCodeEl.textContent = result.trackingCode;
+                    if (reportForm) reportForm.style.display = 'none';
+                    if (successMessage) successMessage.style.display = 'block';
+
+                    showMessage(result.message, 'success');
+                    await clearDraft();
+                } else {
+                    showMessage(result.message || 'خطا در ارسال گزارش', 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage(error.message || 'خطا در ارتباط با سرور', 'danger');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
+                if (progressContainer) progressContainer.style.display = 'none';
+            }
+        });
+    }
+
+    // اعتبارسنجی فرم
+    function validateForm() {
+        const title = document.getElementById('issueTitle');
+        const type = document.getElementById('issueType');
+        const description = document.getElementById('issueDescription');
+
+        if (!title || !title.value.trim()) {
+            showMessage('لطفاً عنوان مشکل را وارد کنید.', 'warning');
+            title?.focus();
+            return false;
+        }
+
+        if (!type || !type.value) {
+            showMessage('لطفاً نوع مشکل را انتخاب کنید.', 'warning');
+            type?.focus();
+            return false;
+        }
+
+        if (!description || !description.value.trim()) {
+            showMessage('لطفاً توضیحات مشکل را وارد کنید.', 'warning');
+            description?.focus();
+            return false;
+        }
+
+        if (description.value.trim().length < 20) {
+            showMessage('توضیحات مشکل باید حداقل ۲۰ کاراکتر باشد.', 'warning');
+            description.focus();
+            return false;
+        }
+
+        return true;
+    }
+
+    // پاک کردن فرم
+    function clearForm() {
+        if (confirm('آیا از پاک کردن تمام اطلاعات فرم اطمینان دارید؟')) {
+            if (reportForm) reportForm.reset();
+            document.querySelectorAll('.priority-badge').forEach(badge => {
+                badge.classList.remove('active');
+            });
+            const mediumBadge = document.querySelector('.priority-badge[data-priority="medium"]');
+            if (mediumBadge) mediumBadge.classList.add('active');
+            document.getElementById('issuePriority').value = 'medium';
+            removeScreenshot();
+            const countElement = document.getElementById('descriptionCount');
+            if (countElement) {
+                countElement.textContent = '0 کاراکتر';
+                countElement.style.color = 'var(--success)';
+            }
+            showMessage('فرم با موفقیت پاک شد.', 'info');
+        }
+    }
+
+    // ذخیره پیش‌نویس (با رفع مشکل Tracking Prevention)
+    async function saveDraft() {
+        try {
+            const formData = {
+                title: document.getElementById('issueTitle')?.value.trim() || '',
+                priority: document.getElementById('issuePriority')?.value || 'medium',
+                issueType: document.getElementById('issueType')?.value || '',
+                page: document.getElementById('issuePage')?.value.trim() || '',
+                description: document.getElementById('issueDescription')?.value.trim() || '',
+                reproductionSteps: document.getElementById('reproductionSteps')?.value.trim() || '',
+                contactEmail: document.getElementById('contactEmail')?.value.trim() || ''
+            };
+
+            // ذخیره در localStorage (راه‌حل بهتر برای جلوگیری از Tracking Prevention)
+            localStorage.setItem('bugReportDraft', JSON.stringify(formData));
+            showMessage('پیش‌نویس ذخیره شد.', 'success');
+
+            // همچنین در session سرور ذخیره کن (اختیاری)
+            try {
+                await fetch('/Admin/Report/SaveDraft', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+            } catch (serverError) {
+                console.log('Could not save draft to server, using localStorage only');
+            }
+
+        } catch (error) {
+            console.error('Error saving draft:', error);
+            showMessage('خطا در ذخیره پیش‌نویس', 'danger');
+        }
+    }
+
+    // بارگذاری پیش‌نویس
+    async function loadDraft() {
+        try {
+            // ابتدا از localStorage بخوان
+            const localDraft = localStorage.getItem('bugReportDraft');
+            if (localDraft) {
+                const draft = JSON.parse(localDraft);
+                applyDraftData(draft);
+                return;
+            }
+
+            // اگر localStorage خالی بود، از سرور بخوان
+            const response = await fetch('/Admin/Report/GetDraft');
+            if (response.ok) {
+                const result = await response.json();
+                if (result.success && result.draft) {
+                    applyDraftData(result.draft);
+                }
+            }
+        } catch (error) {
+            console.error('Error loading draft:', error);
+        }
+    }
+
+    // اعمال داده‌های پیش‌نویس
+    function applyDraftData(draft) {
+        if (!draft) return;
+
+        const titleInput = document.getElementById('issueTitle');
+        const priorityInput = document.getElementById('issuePriority');
+        const typeInput = document.getElementById('issueType');
+        const pageInput = document.getElementById('issuePage');
+        const descInput = document.getElementById('issueDescription');
+        const stepsInput = document.getElementById('reproductionSteps');
+        const emailInput = document.getElementById('contactEmail');
+
+        if (titleInput) titleInput.value = draft.title || '';
+        if (priorityInput) priorityInput.value = draft.priority || 'medium';
+        if (typeInput) typeInput.value = draft.issueType || '';
+        if (pageInput) pageInput.value = draft.page || '';
+        if (descInput) descInput.value = draft.description || '';
+        if (stepsInput) stepsInput.value = draft.reproductionSteps || '';
+        if (emailInput) emailInput.value = draft.contactEmail || '';
+
+        // آپدیت اولویت بصری
+        document.querySelectorAll('.priority-badge').forEach(badge => {
+            badge.classList.remove('active');
+            if (badge.getAttribute('data-priority') === draft.priority) {
+                badge.classList.add('active');
+            }
+        });
+
+        // آپدیت شمارنده
+        const countElement = document.getElementById('descriptionCount');
+        if (countElement && descInput) {
+            const charCount = descInput.value.length;
+            countElement.textContent = `${charCount} کاراکتر`;
+            countElement.style.color = charCount > 5000 ? 'var(--danger)' :
+                                     charCount > 3000 ? 'var(--warning)' : 'var(--success)';
+        }
+    }
+
+    // پاک کردن پیش‌نویس
+    async function clearDraft() {
+        try {
+            localStorage.removeItem('bugReportDraft');
+            await fetch('/Admin/Report/ClearDraft', { method: 'POST' });
+        } catch (error) {
+            console.error('Error clearing draft:', error);
+        }
+    }
+
+    // ارسال گزارش جدید
+    function submitAnother() {
+        const reportForm = document.getElementById('reportForm');
+        const successMessage = document.getElementById('successMessage');
+
+        if (reportForm) reportForm.style.display = 'block';
+        if (successMessage) successMessage.style.display = 'none';
+        clearForm();
+    }
+
+    // نمایش پیام
+    function showMessage(message, type) {
+        // استفاده از SweetAlert2 اگر موجود باشد یا toast
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: type,
+                title: message,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        } else if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+            const toastElement = document.createElement('div');
+            toastElement.className = `toast align-items-center text-white bg-${type}`;
+            toastElement.setAttribute('role', 'alert');
+            toastElement.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi bi-${getMessageIcon(type)} me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            document.body.appendChild(toastElement);
+            const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+            toast.show();
+            toastElement.addEventListener('hidden.bs.toast', function() {
+                document.body.removeChild(toastElement);
+            });
+        } else {
+            alert(message);
+        }
+    }
+
+    function getMessageIcon(type) {
+        const icons = {
+            'success': 'check-circle-fill',
+            'warning': 'exclamation-triangle-fill',
+            'danger': 'x-circle-fill',
+            'info': 'info-circle-fill'
+        };
+        return icons[type] || 'info-circle-fill';
+    }
+
+    // راه‌اندازی ذخیره خودکار
+    let autoSaveTimeout;
+    function setupAutoSave() {
+        const inputs = ['issueTitle', 'issueDescription', 'issueType', 'issuePage', 'contactEmail', 'reproductionSteps'];
+        inputs.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener('input', () => {
+                    clearTimeout(autoSaveTimeout);
+                    autoSaveTimeout = setTimeout(() => {
+                        const title = document.getElementById('issueTitle')?.value.trim();
+                        const description = document.getElementById('issueDescription')?.value.trim();
+                        if (title && description && description.length >= 5) {
+                            saveDraft();
+                        }
+                    }, 2000);
+                });
+            }
+        });
+    }
+
+    // راه‌اندازی اولیه
+    document.addEventListener('DOMContentLoaded', function() {
+        // حذف لینک CSS مشکل‌دار
+        const cssLinks = document.querySelectorAll('link[href*="School_Manger.styles.css"]');
+        cssLinks.forEach(link => link.remove());
+
+        // راه‌اندازی ذخیره خودکار
+        setupAutoSave();
+
+        // بارگذاری پیش‌نویس
+        setTimeout(loadDraft, 1000);
+
+        // فعال‌سازی شمارنده
+        if (descriptionTextarea) {
+            descriptionTextarea.dispatchEvent(new Event('input'));
+        }
+
+        // رفع مشکل Tracking Prevention برای localStorage
+        if (typeof localStorage === 'undefined') {
+            console.warn('localStorage not available due to Tracking Prevention');
+            // استفاده از cookies به عنوان fallback
+            document.cookie = "bugReportDraft=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }
+    });
+</script>

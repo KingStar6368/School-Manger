@@ -47,4 +47,10 @@ namespace School_Manger.Models.PageView
         public ParentDto Parent { get; set; }
         public UserType Type { get; set; }
     }
+    public class AdminSms
+    {
+        public List<ParentDto> NonPaidParent { get; set; } = new List<ParentDto>();
+        public List<ParentDto> NonChildern { get; set; } = new List<ParentDto>();
+        public List<UserDTO> Users { get; set; } = new List<UserDTO>();
+    }
 }
