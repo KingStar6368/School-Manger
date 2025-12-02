@@ -548,7 +548,7 @@
                     </div>
                 </div>
 
-                <form id="smsForm">
+                <form id="smsForm" asp-action="SendSms" method="post">
                     <div class="form-group">
                         <label for="mobileNumbers" class="form-label">
                             <i class="bi bi-telephone-fill"></i>
@@ -556,7 +556,7 @@
                         </label>
                         <div class="form-control-with-icon">
                             <i class="bi bi-phone"></i>
-                            <input type="text" id="mobileNumbers" class="form-control" placeholder="مثال: 09123456789, 09351234567" />
+                            <input type="text" id="mobileNumbers" name="mobiles" class="form-control" placeholder="مثال: 09123456789, 09351234567" />
                         </div>
                         <small class="text-muted mt-1 d-block">
                             <i class="bi bi-info-circle me-1"></i>
@@ -569,7 +569,7 @@
                             <i class="bi bi-chat-left-text-fill"></i>
                             متن پیام
                         </label>
-                        <textarea id="messageText" class="form-control" rows="5" placeholder="متن پیام خود را وارد کنید..." required></textarea>
+                        <textarea id="messageText" name="Message" class="form-control" rows="5" placeholder="متن پیام خود را وارد کنید..." required></textarea>
                         <div class="d-flex justify-content-between align-items-center mt-2">
                             <small class="text-muted">
                                 <i class="bi bi-exclamation-circle me-1"></i>
@@ -596,7 +596,7 @@
                             <i class="bi bi-eye-fill"></i>
                             پیش‌نمایش پیام
                         </button>
-                        <button type="button" class="btn btn-info">
+                        <button type="button" class="btn btn-info" onclick="SendToAll()">
                             <i class="bi bi-eye-fill"></i>
                             ارسال به همه مشتریان
                         </button>
@@ -941,7 +941,12 @@
         showToast('success', `پیام به ${selectedParents.length} نفر ارسال خواهد شد.`);
 
         // شبیه‌سازی ارسال
-        simulateSending(selectedParents.length);
+        Submit();
+    }
+
+    // ارسال به همه
+    function SendToAll(){
+        document.getElementById('mobiles').value = 'All';
     }
 
     // ارسال به همه بدهکاران
@@ -972,7 +977,7 @@
             showToast('success', `پیام به ${unpaidIds.length} والد بدهکار ارسال خواهد شد.`);
 
             // شبیه‌سازی ارسال
-            simulateSending(unpaidIds.length);
+            Submit();
         }
     }
 
@@ -1055,28 +1060,24 @@
 
         // شبیه‌سازی ارسال
         const count = mobileNumbers ? mobileNumbers.split(',').length : selectedParents.length;
-        simulateSending(count);
+        Submit();
     });
 
     // شبیه‌سازی فرآیند ارسال
-    function simulateSending(count) {
-        const btn = event?.target || document.querySelector('.btn-primary');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = `<i class="bi bi-hourglass-split"></i> در حال ارسال...`;
-        btn.disabled = true;
-
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += 10;
-            if (progress >= 100) {
-                clearInterval(interval);
-                btn.innerHTML = `<i class="bi bi-check-circle"></i> ارسال شد!`;
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }, 2000);
-            }
-        }, 100);
+    function Submit() {
+         const formData = new FormData();
+        formData.append('mobiles', document.getElementById('mobileNumbers').value.trim());
+        formData.append('Message', document.getElementById('messageText').value);
+        try {
+                // ارسال درخواست
+                const response = await fetch('/Admin/Sms/SendSms', {
+                    method: 'POST',
+                    body: formData
+                });
+        }
+        catch (error) {
+            console.error(error);
+        }
     }
 
     // نمایش نوتیفیکیشن

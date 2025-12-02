@@ -70,8 +70,19 @@ namespace SMS.Base
 
         public async Task<bool> Send2All(string[] Phones, string Message)
         {
-            SmsIrResult result = await SMS.BulkSendAsync(appConfigService.SMSLine(), Message, Phones);
-            return result.Status == 1;
+            try
+            {
+                SmsIrResult result = await SMS.BulkSendAsync(appConfigService.SMSLine(), Message, Phones);
+                return result.Status == 1;
+            }
+            catch (LogicalException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<bool> Send2Grup(string[] Phones, string Message)
