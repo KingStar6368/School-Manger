@@ -3,6 +3,7 @@ using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.IOC;
 using School_Manger.Class;
+using School_Manger.Models;
 using School_Manger.PaymentService;
 using SMS.Base;
 using SMS.TempLinkService;
@@ -39,6 +40,9 @@ builder.Services.AddHostedService<PaymentControl>(provider =>
         provider.GetRequiredService<ILogger<PaymentControl>>()
     )
 );
+builder.Services.AddSingleton<ISmsQueue, SmsQueue>();
+builder.Services.AddHostedService<SmsBackgroundService>();
+
 //Container.Register(builder.Services);
 var app = builder.Build();
 app.UseSession();

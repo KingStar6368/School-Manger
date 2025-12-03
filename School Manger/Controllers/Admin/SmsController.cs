@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
+using School_Manger.Models;
 using School_Manger.Models.PageView;
 using SMS.Base;
 using System.Threading.Tasks;
@@ -13,11 +14,13 @@ namespace School_Manger.Controllers.Admin
         private IParentService ParentService;
         private IUserService UserService;
         private ISMSService SMSService;
-        public SmsController(IParentService parentService,IUserService userService,ISMSService sMSService)
+        private readonly ISmsQueue _smsQueue;
+        public SmsController(IParentService parentService,IUserService userService,ISMSService sMSService, ISmsQueue smsQueue)
         {
             ParentService = parentService;
             UserService = userService;
             SMSService = sMSService;
+            _smsQueue = smsQueue;
         }
         public async Task<IActionResult> Index()
         {
@@ -43,43 +46,37 @@ namespace School_Manger.Controllers.Admin
                 Users = users
             });
         }
-        private Task<bool> SendAllTask; // to do handel task 
         [HttpPost]
-        public async Task<IActionResult> SendSms(string mobiles,string Message)
+        public async Task<IActionResult> SendSms(string mobiles, string Message)
         {
-            if (mobiles == "All" && (SendAllTask == null || SendAllTask.IsCompleted))
+            if (mobiles == "All")
             {
-                SendAllTask = SendAll(Message);
-                SendAllTask.Start();
+                if (_smsQueue.IsBusy)
+                {
+                    ControllerExtensions.ShowError(this, "درحال ارسال", "درخواست قبلی هنوز ادامه دارد.");
+                }
+                else
+                {
+                    _smsQueue.Enqueue(Message);
+                    ControllerExtensions.ShowSuccess(this, "ارسال شروع شد", "پیامک‌ها در پس‌ زمینه ارسال می‌شوند.");
+                }
             }
             else
             {
-                string[] mobile = mobiles.Split(',');
                 try
                 {
-                    SMSService.Send2All(mobile, Message);
+                    var mobileList = mobiles.Split(',');
+                    SMSService.Send2All(mobileList, Message);
+
+                    ControllerExtensions.ShowSuccess(this, "موفق", "پیامک‌ها ارسال شدند");
                 }
                 catch (Exception ex)
                 {
-                    ControllerExtensions.ShowError(this, $"خطا در ارسال", $"{ex.Message}");
+                    ControllerExtensions.ShowError(this, "خطا", ex.Message);
                 }
-                ControllerExtensions.ShowSuccess(this, "موفق", "عملیات به پایان رسید");
             }
+
             return await Index();
-        }
-        public async Task<bool> SendAll(string Message)
-        {
-            List<string> Mobiles = UserService.GetAllParents().Select(x=>x.Mobile).ToList();
-            try
-            {
-                SMSService.Send2All(Mobiles.ToArray(), Message);
-            }
-            catch(Exception ex)
-            {
-                ControllerExtensions.ShowError(this, $"خطا در ارسال", $"{ex.Message}");
-            }
-            ControllerExtensions.ShowSuccess(this, "موفق", "عملیات به پایان رسید");
-            return true;
         }
     }
 }
