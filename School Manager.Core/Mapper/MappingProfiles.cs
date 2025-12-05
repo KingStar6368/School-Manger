@@ -151,6 +151,7 @@ namespace School_Manager.Core.Mapper
                 {
                     BillRef = billId
                 }).ToList()));
+            CreateMap<Pay, PayDto>();
             #endregion
             #region PayBill
             CreateMap<PayBill, PayBillDto>()

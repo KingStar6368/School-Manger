@@ -1,5 +1,6 @@
 ﻿using DNTPersianUtils.Core;
 using School_Manager.Core.Utilities;
+using School_Manager.Domain.Entities.Catalog.Enums;
 
 namespace School_Manager.Core.ViewModels.FModels
 {
@@ -151,5 +152,25 @@ namespace School_Manager.Core.ViewModels.FModels
     {
         public long BillId { get; set; }
         public long ServiceContractRef { get; set; }
+    }
+    public class PayDto
+    {
+        public long Id { get; set; }
+        /// <summary>
+        /// مبلغ پرداخت
+        /// </summary>
+        public long Price { get; set; }
+        /// <summary>
+        /// تاریخ پرداخت
+        /// </summary>
+        public DateTime BecomingTime { get; set; }
+        /// <summary>
+        /// نحوه پرداخت
+        /// </summary>
+        public PayType PayType { get; set; }
+        /// <summary>
+        /// شماره ارجاع
+        /// </summary>
+        public string? TrackingCode { get; set; }
     }
 }

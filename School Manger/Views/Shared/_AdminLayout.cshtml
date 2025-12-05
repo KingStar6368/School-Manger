@@ -1,27 +1,40 @@
-﻿@using System.Text.Json
+﻿@* _AdminLayout.cshtml (MAIN LAYOUT WITH SIDEBAR) *@
+@using System.Text.Json
 @using System.Collections.Generic
-@{
-    Layout = "_AdminBaseLayout";
-}
-
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="utf-8" />
     <title>@ViewData["Title"] - پنل مدیریت</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/School_Manger.styles.css" asp-append-version="true" />
+    <link href="~/css/persian-datepicker.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
         .sidebar {
             height: 100vh;
             background-color: #1a1a1a;
             position: fixed;
             width: 250px;
             transition: all 0.3s;
+            z-index: 1000;
+            overflow-y: auto;
+            border-left: 1px solid #343a40;
         }
 
             .sidebar .nav-link {
                 color: #adb5bd;
                 border-right: 3px solid transparent;
+                padding: 10px 15px;
+                margin-bottom: 5px;
+                border-radius: 0 5px 5px 0;
             }
 
                 .sidebar .nav-link:hover, .sidebar .nav-link.active {
@@ -32,21 +45,63 @@
 
         .main-content {
             margin-right: 250px;
-            padding: 20px;
+            padding: 15px;
             transition: all 0.3s;
+            width: calc(100% - 250px);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-color: #1a1a1a;
         }
 
         .top-navbar {
             background-color: #212529;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            border-bottom: 1px solid #343a40;
+        }
+
+        /* When sidebar is collapsed */
+        .sidebar.collapsed {
+            margin-right: -250px;
+        }
+
+        .main-content.expanded {
+            margin-right: 0;
+            width: 100%;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .sidebar {
+                margin-right: -250px;
+            }
+
+                .sidebar.show {
+                    margin-right: 0;
+                }
+
+            .main-content {
+                margin-right: 0;
+                width: 100%;
+                padding: 10px;
+            }
+        }
+
+        /* Prevent horizontal scroll */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
+        /* Fix for container-fluid inside main-content */
+        .main-content .container-fluid {
+            padding-right: 0;
+            padding-left: 0;
+            max-width: 100%;
         }
     </style>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     @RenderSection("Styles", required: false)
 </head>
 <body>
@@ -82,7 +137,6 @@
         }
     }
 
-    @ViewContext.RouteData.Values["Controller"].ToString()
     <div class="d-flex">
         <!-- Sidebar -->
         <div class="sidebar p-3">
@@ -90,17 +144,13 @@
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Parents" ? "active" : "")" href="/Admin/Parents">
-                        <i class="bi bi-people-fill me-2"></i> والدین
+                        <i class="bi bi-person-arms-up me-2"></i> والدین
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a style="pointer-events:none;cursor:not-allowed;" class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "ParentContract" ? "active" : "")" href="/Admin/ParentContract">
-                        <i class="bi bi-file-earmark-text me-2"></i> قرارداد والدین
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a style="pointer-events:none;cursor:not-allowed;" class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Student" ? "active" : "")" href="/Admin/Student">
-                        <i class="bi bi-mortarboard-fill me-2"></i> دانش آموزان
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Pays") ? "active" : "")"
+                       asp-area="Admin" asp-controller="Pays" asp-action="Index">
+                        <i class="bi bi-credit-card me-2"></i> پرداختی‌ها
                     </a>
                 </li>
                 <li class="nav-item">
@@ -120,36 +170,31 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Debtor" ? "active" : "")" href="/Admin/Debtor">
-                        <i class="bi bi-cash-stack me-2"></i> بدهکاران
+                        <i class="bi bi-cash-coin me-2"></i> بدهکاران
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a style="pointer-events:none;cursor:not-allowed;" class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "DriverContract" ? "active" : "")" href="/Admin/DriverContract">
-                        <i class="bi bi-file-earmark-text me-2"></i> قرارداد رانندگان
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Sms") ? "active" : "")"
+                       asp-area="Admin" asp-controller="Sms" asp-action="Index">
+                        <i class="bi bi-chat-left-text me-2"></i> پنل پیامک
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/ParentUser") ? "active" : "")"
                        asp-area="Admin" asp-controller="UserManagement" asp-action="Parents">
-                        <i class="bi bi-person-vcard me-2"></i> یوزر والدین
+                        <i class="bi bi-person-plus me-2"></i> کاربر والدین
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/DriverUser") ? "active" : "")"
                        asp-area="Admin" asp-controller="UserManagement" asp-action="Drivers">
-                        <i class="bi bi-person-vcard me-2"></i> یوزر رانندگان
+                        <i class="bi bi-person-badge me-2"></i> کاربر رانندگان
                     </a>
                 </li>
-        @*         <li class="nav-item">
-                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/AssignD2S") ? "active" : "")"
-                       asp-area="Admin" asp-controller="AssignD2S" asp-action="Index">
-                        <i class="bi bi-person-vcard me-2"></i> اختصاص دادن راننده به دانش آموز
-                    </a>
-                </li> *@
                 <li class="nav-item">
                     <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Tariff") ? "active" : "")"
                        asp-area="Admin" asp-controller="Tariff" asp-action="Index">
-                        <i class="bi bi-gear-fill me-2"></i> تنظیمات تعرفه
+                        <i class="bi bi-currency-exchange me-2"></i> تنظیمات تعرفه
                     </a>
                 </li>
                 <li class="nav-item">
@@ -158,24 +203,30 @@
                         <i class="bi bi-gear-fill me-2"></i> تنظیمات
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link @(Context.Request.Path.StartsWithSegments("/Admin/Report") ? "active" : "")"
+                       asp-area="Admin" asp-controller="Report" asp-action="Index">
+                        <i class="bi bi-graph-up me-2"></i> گزارش
+                    </a>
+                </li>
             </ul>
         </div>
 
         <!-- Main Content -->
-        <div class="main-content w-100">
+        <div class="main-content">
             <!-- Top Navbar -->
-            <nav class="navbar top-navbar mb-4">
+            <nav class="navbar navbar-dark top-navbar mb-3">
                 <div class="container-fluid">
-                    <button class="btn btn-dark" id="sidebarToggle">
+                    <button class="btn btn-dark border-secondary" id="sidebarToggle">
                         <i class="bi bi-list"></i>
                     </button>
                     <div class="d-flex align-items-center">
                         <span class="text-white me-3">مدیر سیستم</span>
                         <div class="dropdown">
-                            <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <button class="btn btn-dark border-secondary dropdown-toggle" type="button" data-toggle="dropdown">
                                 <i class="bi bi-person-circle"></i>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-right">
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> پروفایل</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-left me-2"></i> خروج</a></li>
                             </ul>
@@ -185,23 +236,28 @@
             </nav>
 
             <!-- Page Content -->
-            <div class="container-fluid">
+            <div class="container-fluid px-0">
                 @RenderBody()
             </div>
         </div>
     </div>
 
+    @await Html.PartialAsync("_NotificationPartial", notifications)
 
-    @await Html.PartialAsync("_NotificationPartial", notifications);
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/persian-date.min.js"></script>
+    <script src="~/js/persian-datepicker.min.js"></script>
 
     <script>
         $(document).ready(function() {
             // Initialize Persian datepicker for all elements with class 'persian-date'
             $('.persian-date').persianDatepicker({
-                observer: true,  // Automatically detects new date inputs added dynamically
+                observer: true,
                 format: 'YYYY/MM/DD',
                 altField: '.gregorian-date',
-                altFormat: 'X',  // Unix timestamp
+                altFormat: 'X',
                 autoClose: true
             });
 
@@ -235,20 +291,31 @@
                     }, 5000);
                 });
             }
-        });
-    </script>
 
-    @section Scripts {
-        <script>
             // Toggle sidebar
             $('#sidebarToggle').click(function() {
-                $('.sidebar').toggleClass('active');
-                $('.main-content').toggleClass('active');
+                $('.sidebar').toggleClass('collapsed');
+                $('.main-content').toggleClass('expanded');
             });
-        </script>
 
-        @await RenderSectionAsync("PageScripts", required: false)
-    }
-</body>
+            // Responsive sidebar for mobile
+            function handleResponsive() {
+                if ($(window).width() < 768) {
+                    $('.sidebar').addClass('collapsed');
+                    $('.main-content').addClass('expanded');
+                } else {
+                    $('.sidebar').removeClass('collapsed');
+                    $('.main-content').removeClass('expanded');
+                }
+            }
+
+            // Handle window resize
+            $(window).resize(handleResponsive);
+            handleResponsive(); // Initial call
+        });
+    </script>
+    @RenderSection("PageScripts", required: false)
+
     @await RenderSectionAsync("Scripts", required: false)
+</body>
 </html>

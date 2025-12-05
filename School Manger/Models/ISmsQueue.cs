@@ -37,24 +37,31 @@ namespace School_Manger.Models
     {
         private readonly ILogger<SmsBackgroundService> _logger;
         private readonly ISmsQueue _smsQueue;
-        private readonly IUserService _userService;
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly ISMSService _smsService;
 
         public SmsBackgroundService(
             ILogger<SmsBackgroundService> logger,
             ISmsQueue smsQueue,
-            IUserService userService,
+            IServiceScopeFactory scopeFactory,
             ISMSService smsService)
         {
             _logger = logger;
             _smsQueue = smsQueue;
-            _userService = userService;
+            _scopeFactory = scopeFactory;
             _smsService = smsService;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("SMS Background Worker Started.");
+
+            using var scope = _scopeFactory.CreateScope();
+            var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+
+            string[] mobiles = userService.GetAllParents()
+                                          .Select(x => x.Mobile)
+                                          .ToArray();
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -64,26 +71,23 @@ namespace School_Manger.Models
                     {
                         _smsQueue.SetBusy(true);
 
-                        var mobiles = _userService.GetAllParents()
-                            .Select(x => x.Mobile)
-                            .ToArray();
-
-                        _smsService.Send2All(mobiles, message);
-
-                        _logger.LogInformation("SMS sent to all parents.");
+                        await _smsService.Send2All(mobiles, message);
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, "Error sending SMS.");
+                        _logger.LogError(ex, "Error sending SMS");
                     }
                     finally
                     {
                         _smsQueue.SetBusy(false);
                     }
                 }
-
-                await Task.Delay(1000, stoppingToken);
+                else
+                {
+                    await Task.Delay(1000, stoppingToken);
+                }
             }
         }
     }
+
 }

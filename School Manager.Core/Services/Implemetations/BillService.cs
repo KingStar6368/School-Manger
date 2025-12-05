@@ -357,5 +357,29 @@ namespace School_Manager.Core.Services.Implemetations
             }
         }
 
+        public async Task<List<PayDto>> GetAllPays()
+        {
+            var ds = await _unitOfWork.GetRepository<Pay>().Query().ToListAsync();
+            return _mapper.Map<List<PayDto>>(ds);
+        }
+
+        public async Task<List<BillDto>> GetBillsFromPay(long Id)
+        {
+            var ds = await _unitOfWork.GetRepository<ServiceContract>()
+                .Query(s =>
+                    s.Bills.Any(b =>
+                        b.PayBills.Any(p =>
+                            p.Id == Id)))
+                .Select(x =>
+                    x.Bills.SelectMany(b=>b.PayBills)
+                ).ToListAsync();
+            return _mapper.Map<List<BillDto>>(ds);                
+        }
+
+        public PayDto GetPay(long id)
+        {
+            var ds = _unitOfWork.GetRepository<Pay>().Query(x => x.Id == id).ToList();
+            return _mapper.Map<PayDto>(ds);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manger.Models;
@@ -9,6 +10,8 @@ using System.Threading.Tasks;
 namespace School_Manger.Controllers.Admin
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
+
     public class SmsController : Controller
     {
         private IParentService ParentService;

@@ -1,4 +1,5 @@
 ﻿using School_Manager.Core.ViewModels.FModels;
+using School_Manager.Domain.Entities.Catalog.Operation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,5 +67,23 @@ namespace School_Manager.Core.Services.Interfaces
         /// <param name="bill">قبض پیش پرداخت</param>
         /// <returns></returns>
         SavePreBillResult CreatePreBill(CreatePreBillDto bill);
+        /// <summary>
+        /// دریافت پرداختی ها
+        /// </summary>
+        /// <returns></returns>
+        Task<List<PayDto>> GetAllPays();
+        /// <summary>
+        /// دریافت قبض ها از طریق پرداختی
+        /// </summary>
+        /// <param name="Id">کد پرداختی</param>
+        /// <returns></returns>
+        Task<List<BillDto>> GetBillsFromPay(long Id);
+        /// <summary>
+        /// دریافت پرداخت با کد
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        PayDto GetPay(long id);
+        
     }
 }

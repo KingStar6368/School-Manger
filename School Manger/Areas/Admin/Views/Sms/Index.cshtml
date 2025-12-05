@@ -515,7 +515,7 @@
                             @{
                                 var totalDebt = Model.NonPaidParent.Sum(p =>
                                 p.Children.Where(c => c.Bills != null)
-                                .Sum(x => x.Bills.Where(b => !b.HasPaid && b.BillExpiredTime >= DateTime.Now)
+                                .Sum(x => x.Bills.Where(b => !b.HasPaid && b.BillExpiredTime <= DateTime.Now)
                                 .Sum(b => b.TotalPrice)));
                             }
                             @totalDebt.ToString("N0")
@@ -664,7 +664,7 @@
                                         @foreach (var parent in Model.NonPaidParent)
                                         {
                                             var mobile = Model.Users.FirstOrDefault(x => x.UserName == parent.ParentNationalCode)?.Mobile ?? "ندارد";
-                                            var debt = parent.Children.Where(c => c.Bills != null).Sum(x => x.Bills.Where(b => !b.HasPaid && b.BillExpiredTime >= DateTime.Now).Select(b => b.TotalPrice).Sum());
+                                            var debt = parent.Children.Where(c => c.Bills != null).Sum(x => x.Bills.Where(b => !b.HasPaid && b.BillExpiredTime < DateTime.Now).Select(b => b.TotalPrice).Sum());
                                             var hasMobile = !string.IsNullOrEmpty(mobile) && mobile != "ندارد";
 
                                             <tr data-id="@parent.Id" data-mobile="@mobile" data-name="@parent.ParentFirstName @parent.ParentLastName" data-debt="@debt">
@@ -946,7 +946,8 @@
 
     // ارسال به همه
     function SendToAll(){
-        document.getElementById('mobiles').value = 'All';
+        document.getElementById('mobileNumbers').value = 'All';
+        Submit();
     }
 
     // ارسال به همه بدهکاران
@@ -1064,7 +1065,7 @@
     });
 
     // شبیه‌سازی فرآیند ارسال
-    function Submit() {
+    async function Submit() {
          const formData = new FormData();
         formData.append('mobiles', document.getElementById('mobileNumbers').value.trim());
         formData.append('Message', document.getElementById('messageText').value);

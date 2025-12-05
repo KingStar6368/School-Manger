@@ -1,0 +1,938 @@
+﻿@using Microsoft.AspNetCore.Html
+@using School_Manager.Core.ViewModels.FModels
+@using School_Manager.Domain.Entities.Catalog.Enums
+@using School_Manger.Extension;
+@model List<PayDto>
+@{
+    ViewData["Title"] = "لیست پرداختی‌ها";
+    Layout = "_AdminLayout";
+    int counter = 1;
+    decimal totalAmount = 0;
+    decimal cashTotal = 0;
+    decimal posTotal = 0;
+    decimal internetTotal = 0;
+    var cashCount = 0;
+    var posCount = 0;
+    var internetCount = 0;
+}
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="fas fa-receipt me-2"></i>لیست پرداختی‌ها
+        </h5>
+        <span class="badge bg-light text-primary fs-6">
+            تعداد: @Model.Count
+        </span>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card-header bg-light">
+        <form id="filterForm" method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">نوع پرداخت</label>
+                <select name="payType" class="form-select" id="payTypeFilter">
+                    <option value="">همه</option>
+                    <option value="1">نقدی</option>
+                    <option value="2">پوز</option>
+                    <option value="3">اینترنتی</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">بازه مبلغ</label>
+                <div class="input-group">
+                    <input type="number" name="minAmount" class="form-control" placeholder="حداقل" id="minAmount" min="0">
+                    <span class="input-group-text">تا</span>
+                    <input type="number" name="maxAmount" class="form-control" placeholder="حداکثر" id="maxAmount" min="0">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">تاریخ از</label>
+                <div class="input-group">
+                    <input type="text" name="fromDate" class="form-control persian-datepicker" placeholder="1403/01/01" id="fromDate">
+                    <span class="input-group-text" id="fromDateIcon"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">تاریخ تا</label>
+                <div class="input-group">
+                    <input type="text" name="toDate" class="form-control persian-datepicker" placeholder="1403/12/29" id="toDate">
+                    <span class="input-group-text" id="toDateIcon"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">جستجوی کد رهگیری</label>
+                <input type="text" name="trackingCode" class="form-control" placeholder="کد رهگیری..." id="trackingCode">
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary me-2">
+                    <i class="fas fa-filter me-1"></i>اعمال فیلتر
+                </button>
+                <button type="button" class="btn btn-outline-secondary" id="resetFilters">
+                    <i class="fas fa-times me-1"></i>پاک کردن فیلترها
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card-body p-0">
+        @if (Model.Any())
+        {
+            <!-- Filters Summary -->
+            <div class="alert alert-info m-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>
+                        <i class="fas fa-info-circle me-2"></i>
+                        <span id="filterSummary">نمایش تمامی رکوردها</span>
+                    </span>
+                    <span class="badge bg-primary" id="recordCount">@Model.Count رکورد</span>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0" id="paymentsTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="80" class="text-center sortable" data-sort="id">#</th>
+                            <th class="sortable" data-sort="price">مبلغ</th>
+                            <th class="sortable" data-sort="type">نوع پرداخت</th>
+                            <th class="sortable" data-sort="date">تاریخ پرداخت</th>
+                            <th>کد رهگیری</th>
+                            <th width="150" class="text-center">عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pay in Model)
+                        {
+                            totalAmount += pay.Price;
+
+                            // Calculate totals by payment type
+                            switch (pay.PayType)
+                            {
+                                case PayType.Cash:
+                                    cashTotal += pay.Price;
+                                    cashCount++;
+                                    break;
+                                case PayType.Pos:
+                                    posTotal += pay.Price;
+                                    posCount++;
+                                    break;
+                                case PayType.Internet:
+                                    internetTotal += pay.Price;
+                                    internetCount++;
+                                    break;
+                            }
+
+                            <tr class="payment-row"
+                                data-id="@pay.Id"
+                                data-price="@pay.Price"
+                                data-type="@((int)pay.PayType)"
+                                data-date="@pay.BecomingTime.ToString("yyyy-MM-dd")"
+                                data-persian-date="@pay.BecomingTime.ToPersianString()"
+                                data-tracking="@pay.TrackingCode">
+                                <td class="text-center fw-bold">
+                                    <span class="badge bg-secondary">@counter</span>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-success">
+                                        @pay.Price.ToString("N0") ریال
+                                    </span>
+                                </td>
+                                <td>
+                                    @GetPayTypeBadge(pay.PayType)
+                                </td>
+                                <td>
+                                    @if (pay.BecomingTime != default)
+                                    {
+                                        <span>@pay.BecomingTime.ToPersianString()</span>
+                                        <br />
+                                        <small class="text-muted">@pay.BecomingTime.ToString("HH:mm")</small>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">---</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(pay.TrackingCode))
+                                    {
+                                        <code class="bg-light px-2 py-1 rounded tracking-code">@pay.TrackingCode</code>
+                                        <button class="btn btn-sm btn-link text-primary copy-tracking"
+                                                data-code="@pay.TrackingCode"
+                                                title="کپی کد رهگیری">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">---</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-outline-primary"
+                                            data-bs-toggle="tooltip"
+                                            title="مشاهده جزئیات"
+                                            onclick="showDetails(@pay.Id)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success"
+                                            data-bs-toggle="tooltip"
+                                            title="چاپ فیش"
+                                            onclick="printReceipt(@pay.Id)">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-info"
+                                            data-bs-toggle="tooltip"
+                                            title="دانلود رسید"
+                                            onclick="downloadReceipt(@pay.Id)">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            counter++;
+                        }
+                    </tbody>
+                    <tfoot class="table-secondary">
+                        <tr>
+                            <th colspan="2" class="text-end">جمع کل:</th>
+                            <th colspan="4" class="text-start fw-bold text-primary" id="filteredTotal">
+                                @totalAmount.ToString("N0") ریال
+                            </th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <div class="card bg-info bg-opacity-10 border-info">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted">تعداد پرداختی‌ها</h6>
+                            <h3 class="text-info" id="filteredCount">@Model.Count</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success bg-opacity-10 border-success">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted">مجموع مبلغ</h6>
+                            <h3 class="text-success" id="filteredAmount">@totalAmount.ToString("N0") ریال</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-primary bg-opacity-10 border-primary">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted">میانگین</h6>
+                            <h3 class="text-primary" id="filteredAverage">@((Model.Count > 0 ? (totalAmount / Model.Count) : 0).ToString("N0")) ریال</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning bg-opacity-10 border-warning">
+                        <div class="card-body text-center">
+                            <h6 class="text-muted">بیشترین مبلغ</h6>
+                            <h3 class="text-warning" id="filteredMax">@(Model.Any() ? Model.Max(p => p.Price).ToString("N0") : "0") ریال</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Type Breakdown -->
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0"><i class="fas fa-chart-pie me-2"></i>تجزیه بر اساس نوع پرداخت</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <canvas id="paymentTypeChart" height="150"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="list-group">
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <span class="badge bg-success me-2">نقدی</span>
+                                        <small class="text-muted">(@cashCount پرداخت)</small>
+                                    </span>
+                                    <span>@cashTotal.ToString("N0") ریال</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <span class="badge bg-primary me-2">پوز</span>
+                                        <small class="text-muted">(@posCount پرداخت)</small>
+                                    </span>
+                                    <span>@posTotal.ToString("N0") ریال</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <span class="badge bg-info me-2">اینترنتی</span>
+                                        <small class="text-muted">(@internetCount پرداخت)</small>
+                                    </span>
+                                    <span>@internetTotal.ToString("N0") ریال</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-receipt fa-4x text-muted mb-3"></i>
+                <h5 class="text-muted">پرداختی‌ای یافت نشد</h5>
+                <p class="text-muted">هیچ رکورد پرداختی در سیستم ثبت نشده است.</p>
+                <a href="#" class="btn btn-primary mt-2">
+                    <i class="fas fa-plus me-1"></i>افزودن پرداخت جدید
+                </a>
+            </div>
+        }
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            <div>
+                <div class="btn-group">
+                    <button class="btn btn-outline-secondary" id="exportExcel">
+                        <i class="fas fa-file-excel me-1"></i>خروجی Excel
+                    </button>
+                    <button class="btn btn-outline-secondary" id="exportPdf">
+                        <i class="fas fa-file-pdf me-1"></i>خروجی PDF
+                    </button>
+                    <button class="btn btn-outline-secondary" id="printReport">
+                        <i class="fas fa-print me-1"></i>چاپ گزارش
+                    </button>
+                </div>
+            </div>
+            <div>
+                <span class="text-muted me-3">نمایش</span>
+                <select class="form-select form-select-sm d-inline-block w-auto" id="pageSize">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <span class="text-muted me-3">رکورد در صفحه</span>
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-sm mb-0" id="pagination">
+                    <!-- Pagination will be generated by JavaScript -->
+                </ul>
+            </nav>
+        </div>
+    }
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">جزئیات پرداخت</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="paymentDetails">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public IHtmlContent GetPayTypeBadge(PayType payType)
+    {
+        string badgeClass = "badge bg-secondary";
+        string icon = "";
+        string displayText = "";
+
+        switch (payType)
+        {
+            case PayType.Cash:
+                badgeClass = "badge bg-success";
+                icon = "<i class='fas fa-money-bill-wave me-1'></i>";
+                displayText = "نقدی";
+                break;
+            case PayType.Pos:
+                badgeClass = "badge bg-primary";
+                icon = "<i class='fas fa-credit-card me-1'></i>";
+                displayText = "پوز";
+                break;
+            case PayType.Internet:
+                badgeClass = "badge bg-info";
+                icon = "<i class='fas fa-globe me-1'></i>";
+                displayText = "اینترنتی";
+                break;
+        }
+
+        return Html.Raw($"<span class='{badgeClass}'>{icon}{displayText}</span>");
+    }
+}
+
+@section Scripts {
+    <!-- Add Persian Datepicker from a reliable CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker/dist/css/persian-datepicker.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/persian-date/dist/persian-date.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker/dist/js/persian-datepicker.min.js"></script>
+
+
+    <!-- Add Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Initialize tooltips
+        $(function () {
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        });
+
+        // Initialize Persian Datepickers
+        $(document).ready(function() {
+            // Set default dates (current Persian month)
+            const today = new persianDate();
+            const firstDayOfMonth = new persianDate().startOf('month');
+
+            const todayFormatted = today.format('YYYY/MM/DD');
+            const firstDayFormatted = firstDayOfMonth.format('YYYY/MM/DD');
+
+            // Initialize datepickers
+        $('#fromDate').persianDatepicker({
+            format: 'YYYY/MM/DD',
+            autoClose: true,
+            onSelect: function(unix) {
+                let val = new persianDate(unix).format('YYYY/MM/DD');
+                $('#fromDate').val(toEnglishDigits(val)).trigger('change');
+            }
+        });
+
+        $('#toDate').persianDatepicker({
+            format: 'YYYY/MM/DD',
+            autoClose: true,
+            onSelect: function(unix) {
+                let val = new persianDate(unix).format('YYYY/MM/DD');
+                $('#toDate').val(toEnglishDigits(val)).trigger('change');
+            }
+        });
+                function toEnglishDigits(str) {
+            return str.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+        }
+
+            $('#fromDate, #toDate').on('change', function () {
+                filterTable();
+            });
+
+            // Set default values after datepicker initialization
+            setTimeout(() => {
+                $('#fromDate').val(firstDayFormatted).trigger('change');
+                $('#toDate').val(todayFormatted).trigger('change');
+            }, 100);
+
+            // Add click handlers for calendar icons
+            $('#fromDateIcon').click(function() {
+                $('#fromDate').focus();
+            });
+
+            $('#toDateIcon').click(function() {
+                $('#toDate').focus();
+            });
+
+            // Initialize other components
+            updateFilterSummary();
+            updatePagination();
+
+            @if (Model.Any())
+            {
+                    <text>initializeChart();</text>
+            }
+
+            // Apply initial filter
+            filterTable();
+        });
+
+        // Simple function to validate Persian date format
+        function isValidPersianDate(dateStr) {
+            if (!dateStr) return false;
+            const regex = /^1[3-4]\d{2}\/(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])$/;
+            return regex.test(dateStr);
+        }
+
+        // Convert Persian date string to comparable format (for filtering)
+        function persianDateToComparable(dateStr) {
+            if (!dateStr) return null;
+
+            // Convert Persian digits to English
+            dateStr = dateStr.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+
+            // Expect format YYYY/MM/DD
+            const parts = dateStr.split('/');
+            if (parts.length !== 3) return null;
+
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]);
+            const day = parseInt(parts[2]);
+
+            if (!year || !month || !day) return null;
+
+            // Convert Persian (Jalali) to a comparable number
+            return (year * 10000) + (month * 100) + day;
+        }
+
+
+        // Copy tracking code functionality
+        $(document).on('click', '.copy-tracking', function() {
+            const code = $(this).data('code');
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = $(this);
+                const originalHtml = btn.html();
+                btn.html('<i class="fas fa-check"></i>').addClass('text-success');
+                setTimeout(() => {
+                    btn.html(originalHtml).removeClass('text-success');
+                }, 2000);
+            });
+        });
+
+        // Reset filters
+        $('#resetFilters').click(function() {
+            $('#filterForm')[0].reset();
+
+            // Reset to default Persian dates
+            const today = new persianDate();
+            const firstDayOfMonth = new persianDate().startOf('month');
+
+            const todayFormatted = today.format('YYYY/MM/DD');
+            const firstDayFormatted = firstDayOfMonth.format('YYYY/MM/DD');
+
+            $('#fromDate').val(firstDayFormatted).trigger('change');
+            $('#toDate').val(todayFormatted).trigger('change');
+
+            updateFilterSummary();
+            filterTable();
+        });
+
+        // Update filter summary
+        function updateFilterSummary() {
+            let summary = 'نمایش تمامی رکوردها';
+            const payType = $('#payTypeFilter').val();
+            const minAmount = $('#minAmount').val();
+            const maxAmount = $('#maxAmount').val();
+            const fromDate = $('#fromDate').val();
+            const toDate = $('#toDate').val();
+            const trackingCode = $('#trackingCode').val();
+
+            const filters = [];
+
+            if (payType) {
+                const payTypeText = getPayTypeText(payType);
+                filters.push(`نوع: ${payTypeText}`);
+            }
+            if (minAmount) filters.push(`حداقل مبلغ: ${parseInt(minAmount).toLocaleString()} ریال`);
+            if (maxAmount) filters.push(`حداکثر مبلغ: ${parseInt(maxAmount).toLocaleString()} ریال`);
+            if (fromDate && isValidPersianDate(fromDate)) filters.push(`از تاریخ: ${fromDate}`);
+            if (toDate && isValidPersianDate(toDate)) filters.push(`تا تاریخ: ${toDate}`);
+            if (trackingCode) filters.push(`کد رهگیری: ${trackingCode}`);
+
+            if (filters.length > 0) {
+                summary = `فیلترهای اعمال شده: ${filters.join(' | ')}`;
+            }
+
+            $('#filterSummary').text(summary);
+        }
+
+        function getPayTypeText(value) {
+            switch(value) {
+                case '1': return 'نقدی';
+                case '2': return 'پوز';
+                case '3': return 'اینترنتی';
+                default: return 'همه';
+            }
+        }
+
+        // Client-side filtering
+        function filterTable() {
+            const payType = $('#payTypeFilter').val();
+            const minAmount = parseFloat($('#minAmount').val()) || 0;
+            const maxAmount = parseFloat($('#maxAmount').val()) || Infinity;
+            const fromDate = $('#fromDate').val();
+            const toDate = $('#toDate').val();
+            const trackingCode = $('#trackingCode').val().toLowerCase();
+
+            // Convert Persian dates to comparable format
+            const fromDateComparable = persianDateToComparable(fromDate);
+            const toDateComparable = persianDateToComparable(toDate);
+
+            let visibleCount = 0;
+            let filteredTotal = 0;
+            let filteredMax = 0;
+
+            $('.payment-row').each(function() {
+                const row = $(this);
+                const rowPayType = row.data('type').toString();
+                const rowPrice = parseFloat(row.data('price'));
+                const rowPersianDate = row.data('persian-date'); // Get Persian date from data attribute
+                const rowTracking = row.data('tracking') ? row.data('tracking').toString().toLowerCase() : '';
+
+                let show = true;
+
+                // Filter by payment type
+                if (payType && rowPayType !== payType) show = false;
+
+                // Filter by amount range
+                if (rowPrice < minAmount || rowPrice > maxAmount) show = false;
+
+                // Filter by date range (using Persian dates)
+                // Filter by date range
+                const rowDateComparable = persianDateToComparable(rowPersianDate);
+
+                if (fromDateComparable && rowDateComparable < fromDateComparable)
+                    show = false;
+
+                if (toDateComparable && rowDateComparable > toDateComparable)
+                    show = false;
+
+
+                // Filter by tracking code
+                if (trackingCode && !rowTracking.includes(trackingCode)) show = false;
+
+                if (show) {
+                    visibleCount++;
+                    filteredTotal += rowPrice;
+                    if (rowPrice > filteredMax) filteredMax = rowPrice;
+                }
+
+                row.toggle(show);
+            });
+
+            // Update summary badge
+            $('#recordCount').text(visibleCount + ' رکورد');
+            updateFilterSummary();
+            updatePagination();
+
+            // Update footer total
+            $('#filteredTotal').text(filteredTotal.toLocaleString() + ' ریال');
+
+            // Update summary cards
+            $('#filteredCount').text(visibleCount);
+            $('#filteredAmount').text(filteredTotal.toLocaleString() + ' ریال');
+            $('#filteredAverage').text(visibleCount > 0 ? Math.round(filteredTotal / visibleCount).toLocaleString() + ' ریال' : '0 ریال');
+            $('#filteredMax').text(filteredMax.toLocaleString() + ' ریال');
+        }
+
+        // Sort table
+        let currentSort = { column: 'id', direction: 'asc' };
+
+        $('.sortable').click(function() {
+            const column = $(this).data('sort');
+            const direction = currentSort.column === column && currentSort.direction === 'asc' ? 'desc' : 'asc';
+
+            sortTable(column, direction);
+            currentSort = { column, direction };
+
+            // Update sort indicators
+            $('.sortable').removeClass('sorted-asc sorted-desc');
+            $(this).addClass(`sorted-${direction}`);
+        });
+
+        function sortTable(column, direction) {
+            const rows = $('.payment-row:visible').get();
+
+            rows.sort(function(a, b) {
+                let aVal, bVal;
+
+                switch(column) {
+                    case 'id':
+                        aVal = parseInt($(a).data('id'));
+                        bVal = parseInt($(b).data('id'));
+                        break;
+                    case 'price':
+                        aVal = parseFloat($(a).data('price'));
+                        bVal = parseFloat($(b).data('price'));
+                        break;
+                    case 'type':
+                        aVal = $(a).data('type');
+                        bVal = $(b).data('type');
+                        break;
+                    case 'date':
+                        aVal = $(a).data('date');
+                        bVal = $(b).data('date');
+                        break;
+                    default:
+                        return 0;
+                }
+
+                if (direction === 'asc') {
+                    return aVal > bVal ? 1 : -1;
+                } else {
+                    return aVal < bVal ? 1 : -1;
+                }
+            });
+
+            const tbody = $('#paymentsTable tbody');
+            tbody.children('.payment-row').remove();
+            tbody.append(rows);
+
+            // Re-number the rows
+            $('.payment-row:visible').each(function(index) {
+                $(this).find('.badge.bg-secondary').text(index + 1);
+            });
+
+            updatePagination();
+        }
+
+        // Pagination
+        let pageSize = 10;
+        let currentPage = 1;
+
+        function updatePagination() {
+            const visibleRows = $('.payment-row:visible');
+            const totalPages = Math.ceil(visibleRows.length / pageSize);
+
+            if (totalPages <= 1) {
+                $('#pagination').hide();
+                showPage(1);
+                return;
+            }
+
+            $('#pagination').show().empty();
+
+            // Previous button
+            const prevLi = $('<li>').addClass('page-item').toggleClass('disabled', currentPage === 1);
+            const prevLink = $('<a>').addClass('page-link').attr('href', '#').html('&laquo;').click(function(e) {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage);
+                }
+            });
+            prevLi.append(prevLink);
+            $('#pagination').append(prevLi);
+
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+
+            for (let i = startPage; i <= endPage; i++) {
+                const li = $('<li>').addClass('page-item').toggleClass('active', i === currentPage);
+                const link = $('<a>').addClass('page-link').attr('href', '#').text(i).click(function(e) {
+                    e.preventDefault();
+                    currentPage = i;
+                    showPage(currentPage);
+                });
+                li.append(link);
+                $('#pagination').append(li);
+            }
+
+            // Next button
+            const nextLi = $('<li>').addClass('page-item').toggleClass('disabled', currentPage === totalPages);
+            const nextLink = $('<a>').addClass('page-link').attr('href', '#').html('&raquo;').click(function(e) {
+                e.preventDefault();
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+            });
+            nextLi.append(nextLink);
+            $('#pagination').append(nextLi);
+
+            showPage(currentPage);
+        }
+
+        function showPage(page) {
+            const visibleRows = $('.payment-row:visible');
+            const startIndex = (page - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+
+            $('.payment-row').hide();
+            visibleRows.slice(startIndex, endIndex).show();
+        }
+
+        // Initialize chart
+        function initializeChart() {
+            const ctx = document.getElementById('paymentTypeChart');
+            if (!ctx) return;
+
+            const data = {
+                labels: ['نقدی', 'پوز', 'اینترنتی'],
+                datasets: [{
+                    data: [@cashTotal, @posTotal, @internetTotal],
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.8)',
+                        'rgba(0, 123, 255, 0.8)',
+                        'rgba(23, 162, 184, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgb(40, 167, 69)',
+                        'rgb(0, 123, 255)',
+                        'rgb(23, 162, 184)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.raw.toLocaleString() + ' ریال';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Export functions
+        $('#exportExcel').click(function() {
+            const params = new URLSearchParams();
+            $('#filterForm').serializeArray().forEach(item => {
+                if (item.value) {
+                    params.append(item.name, item.value);
+                }
+            });
+            window.location.href = '/Pays/ExportExcel?' + params.toString();
+        });
+
+        $('#exportPdf').click(function() {
+            const params = new URLSearchParams();
+            $('#filterForm').serializeArray().forEach(item => {
+                if (item.value) {
+                    params.append(item.name, item.value);
+                }
+            });
+            window.location.href = '/Pays/ExportPdf?' + params.toString();
+        });
+
+        $('#printReport').click(function() {
+            window.print();
+        });
+
+        // Change page size
+        $('#pageSize').change(function() {
+            pageSize = parseInt($(this).val());
+            currentPage = 1;
+            updatePagination();
+        });
+
+        // Show payment details
+        function showDetails(id) {
+            // Load details via AJAX
+            $.get('/Pays/Details/' + id, function(data) {
+                $('#paymentDetails').html(data);
+                $('#detailsModal').modal('show');
+            });
+        }
+
+        function printReceipt(id) {
+            window.open('/Pays/Print/' + id, '_blank');
+        }
+
+        function downloadReceipt(id) {
+            window.location.href = '/Pays/DownloadReceipt/' + id;
+        }
+
+        // Apply filters on form submit
+        $('#filterForm').submit(function(e) {
+            e.preventDefault();
+            filterTable();
+        });
+
+        // Real-time filtering on input change
+        $('#payTypeFilter, #minAmount, #maxAmount, #trackingCode').on('input change', function() {
+            filterTable();
+        });
+    </script>
+
+    <style>
+        /* Datepicker styles */
+        .pwt-btn {
+            font-family: inherit !important;
+        }
+
+        .pwt-datepicker {
+            z-index: 1060 !important;
+        }
+
+        .table th {
+            font-weight: 600;
+            background-color: #f8f9fa;
+        }
+
+            .table th.sortable {
+                cursor: pointer;
+                position: relative;
+            }
+
+                .table th.sortable:hover {
+                    background-color: #e9ecef;
+                }
+
+            .table th.sorted-asc:after {
+                content: " ↑";
+                color: #007bff;
+            }
+
+            .table th.sorted-desc:after {
+                content: " ↓";
+                color: #007bff;
+            }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 123, 255, 0.05);
+        }
+
+        .card {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .badge {
+            font-size: 0.85em;
+            padding: 5px 10px;
+        }
+
+        code {
+            font-family: 'Courier New', monospace;
+            direction: ltr;
+            display: inline-block;
+        }
+
+        .pagination .page-link {
+            margin: 0 2px;
+            border-radius: 5px;
+        }
+
+        .copy-tracking {
+            padding: 2px 5px;
+            font-size: 0.8em;
+        }
+
+        .persian-datepicker {
+            direction: ltr;
+            text-align: right;
+        }
+
+        @@media print {
+            .card-header, .card-footer, .btn, .modal, #filterForm, .summary-cards, .payment-type-breakdown {
+                display: none !important;
+            }
+
+            .card {
+                border: none;
+                box-shadow: none;
+            }
+
+            .table {
+                border: 1px solid #dee2e6;
+            }
+        }
+    </style>
+}
