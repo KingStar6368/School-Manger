@@ -117,5 +117,24 @@ namespace KingZarinPal
         public string fee_type { get; set; }
         public int fee { get; set; }
     }
+    public class InquiryRequst
+    {
+        public InquiryRequst(string merchant_id,string authority)
+        {
+            MerchantId = merchant_id;
+            Authority = authority;
+        }
+        [JsonPropertyName("merchant_id")]
+        public string MerchantId { get; set; }
+        [JsonPropertyName("authority")]
+        public string Authority { get; set; }
+    }
+    public class InquiryResponse
+    {
+        [JsonProperty("status")]
+        public string Status { get; set; }
+        [JsonProperty("code")]
+        public int Code { get; set; }
+    }
     #endregion
 }

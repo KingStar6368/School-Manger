@@ -27,6 +27,13 @@
 
     <!-- Filter Section -->
     <div class="card-header bg-light">
+        <form asp-action="Inquiry" method="post">
+            <div>
+                <input placeholder="Autority" id="autority" maxlength="36" min="0" />
+                <button type="button" onclick="TransactionInquiry()">استعلام با کد رهگیری</button>
+                <input id="Reuslt" style="display:none;" readonly="readonly"/>
+            </div>
+        </form>
         <form id="filterForm" method="get" class="row g-3">
             <div class="col-md-3">
                 <label class="form-label">نوع پرداخت</label>
@@ -477,6 +484,32 @@
             return (year * 10000) + (month * 100) + day;
         }
 
+        async function TransactionInquiry()
+        {
+            const formData = new FormData();
+            let autority = document.getElementById('autority').value;
+            formData.append('autority', autority);
+            try {
+                // ارسال درخواست
+                const response = await fetch('/Admin/Pays/Inquiry', {
+                    method: 'POST',
+                    body: formData
+                });
+                if(response == 100){
+                    document.getElementById('Reuslt').value = 'پرداخت شده';
+                }
+                else if(response == 0){
+                    document.getElementById('Reuslt').value = 'خطا دوباره امتحان کنید';
+                }
+                else{
+                    document.getElementById('Reuslt').value = 'پرداخت نشده';
+                }
+                document.getElementById('Reuslt').style.display = "inline";
+            }
+            catch (error) {
+                console.error(error);
+            }
+        }
 
         // Copy tracking code functionality
         $(document).on('click', '.copy-tracking', function() {

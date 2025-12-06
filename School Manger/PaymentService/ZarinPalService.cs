@@ -1,5 +1,6 @@
 ﻿using Dto.Payment;
 using KingZarinPal;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1.Ocsp;
 using School_Manager.Core.Services.Interfaces;
@@ -18,6 +19,8 @@ namespace School_Manger.PaymentService
         Task<string> TestRequestPaymentAsync(int amount, string description, string CallbackUrl, string PayEmail, string mobile = null);
         Task<int> VerfiyPaymentAsync(int amount, string Authority);
         Task<int> TestVerfiyPaymentAsync(int amount, string Authority);
+        Task<int> TransactionInquiry(string authority);
+        Task<int> TestTransactionInquiry(string authority);
     }
 
     public class ZarinPalService : IZarinPalService
@@ -117,6 +120,25 @@ namespace School_Manger.PaymentService
             return StatusCode;
         }
 
+        #endregion
+
+        #region Transaction Inquiry
+        public async Task<int> TransactionInquiry(string authority)
+        {
+            KingZarinPal.SendData<InquiryRequst, InquiryResponse> sendData =
+                    new KingZarinPal.SendData<InquiryRequst, InquiryResponse>(Url + "pg/v4/payment/inquiry.json"
+                    , new InquiryRequst(_merchantId, authority));
+            var response = await sendData.Post();
+            return response.Code;
+        }
+        public async Task<int> TestTransactionInquiry(string authority)
+        {
+            KingZarinPal.SendData<InquiryRequst, InquiryResponse> sendData =
+                    new KingZarinPal.SendData<InquiryRequst, InquiryResponse>(TestUrl + "pg/v4/payment/inquiry.json"
+                    , new InquiryRequst(_merchantId, authority));
+            var response = await sendData.Post();
+            return response.Code;
+        }
         #endregion
     }
 }
