@@ -30,7 +30,7 @@
         <form asp-action="Inquiry" method="post">
             <div>
                 <input placeholder="Autority" id="autority" maxlength="36" min="0" />
-                <button type="button" onclick="TransactionInquiry()">استعلام با کد رهگیری</button>
+                <button type="button" class="btn btn-primary me-2" id="Inquiry" onclick="TransactionInquiry()">استعلام با کد رهگیری</button>
                 <input id="Reuslt" style="display:none;" readonly="readonly"/>
             </div>
         </form>
@@ -486,25 +486,33 @@
 
         async function TransactionInquiry()
         {
+            document.getElementById('Reuslt').style.display = "none";
+            document.getElementById('Inquiry').style.backgroundColor = 'blue';
             const formData = new FormData();
             let autority = document.getElementById('autority').value;
             formData.append('autority', autority);
             try {
                 // ارسال درخواست
-                const response = await fetch('/Admin/Pays/Inquiry', {
+                fetch('/Admin/Pays/Inquiry', {
                     method: 'POST',
                     body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data == 100){
+                        document.getElementById('Reuslt').value = 'پرداخت شده';
+                        document.getElementById('Inquiry').style.backgroundColor = 'green';
+                    }
+                    else if(data == 0){
+                        document.getElementById('Reuslt').value = 'خطا دوباره امتحان کنید';
+                        document.getElementById('Inquiry').style.backgroundColor = 'red';
+                    }
+                    else{
+                        document.getElementById('Reuslt').value = 'کد رهگیری یافت نشد';
+                        document.getElementById('Inquiry').style.backgroundColor = 'red';
+                    }
+                    document.getElementById('Reuslt').style.display = "inline";
                 });
-                if(response == 100){
-                    document.getElementById('Reuslt').value = 'پرداخت شده';
-                }
-                else if(response == 0){
-                    document.getElementById('Reuslt').value = 'خطا دوباره امتحان کنید';
-                }
-                else{
-                    document.getElementById('Reuslt').value = 'پرداخت نشده';
-                }
-                document.getElementById('Reuslt').style.display = "inline";
             }
             catch (error) {
                 console.error(error);
