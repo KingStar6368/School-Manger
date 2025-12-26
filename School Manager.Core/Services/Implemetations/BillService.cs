@@ -381,5 +381,25 @@ namespace School_Manager.Core.Services.Implemetations
             var ds = _unitOfWork.GetRepository<Pay>().Query(x => x.Id == id).ToList();
             return _mapper.Map<PayDto>(ds);
         }
+
+        public async Task<List<BillDto>> SearchBill(SearchDto searchDto)
+        {
+            var query = _unitOfWork.GetRepository<Bill>().FindAll();
+            if (searchDto.StartDate != null)
+                query = query.Where(x => x.EstimateTime >= searchDto.StartDate);
+            if (searchDto.EndDate != null)
+                query = query.Where(x => x.EstimateTime <= searchDto.EndDate);
+            if (searchDto.MonthInt != null)
+                query = query.Where(x => x.EstimateTime.Month == searchDto.MonthInt);
+            query = query.Include(x => x.PayBills).ThenInclude(x => x.PayNavigation);
+
+            var ds = await query.ToListAsync();
+            var mapped = _mapper.Map<List<BillDto>>(ds);
+
+            if (searchDto.HasPaid != null)
+                mapped = mapped.Where(x => x.HasPaid == searchDto.HasPaid).ToList();
+
+            return mapped;
+        }
     }
 }

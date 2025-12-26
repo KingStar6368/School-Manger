@@ -84,6 +84,8 @@ namespace School_Manager.Core.Services.Interfaces
         /// <param name="id"></param>
         /// <returns></returns>
         PayDto GetPay(long id);
+
+        Task<List<BillDto>> SearchBill(SearchDto searchDto);
         
     }
 }

@@ -130,6 +130,24 @@ namespace School_Manger.Extension
             throw new FormatException("Invalid input. Use Persian format yyyy/MM/dd.");
         }
 
+        public static int ShamsiMonthToMiladiMonth(int shamsiMonth)
+        {
+            var pc = new PersianCalendar();
+
+            // Get current Shamsi year
+            int shamsiYear = pc.GetYear(DateTime.Now);
+
+            // Convert Shamsi date → Miladi
+            DateTime miladiDate = pc.ToDateTime(
+                shamsiYear,
+                shamsiMonth,
+                1,
+                0, 0, 0, 0
+            );
+
+            return miladiDate.Month;
+        }
+
         public static (string Persian, DateTime Miladi) ConvertAuto(DateTime miladi)
         {
             return (ToPersianString(miladi), miladi);

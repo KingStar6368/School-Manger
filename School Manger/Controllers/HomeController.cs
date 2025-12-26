@@ -70,7 +70,10 @@ namespace School_Manger.Controllers
         {
             return View("Index");
         }
-
+        public IActionResult SelectPage()
+        {
+            return View("SelectPage");
+        }
         [HttpPost]
         public IActionResult SignIn(string PhoneNumber)
         {

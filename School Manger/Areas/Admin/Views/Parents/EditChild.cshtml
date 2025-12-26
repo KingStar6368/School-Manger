@@ -82,7 +82,7 @@
                         <label class="form-label fw-bold">
                             <i class="bi bi-building me-1"></i>مدرسه (اختیاری)
                         </label>
-                        <input type="number" name="SchoolRef" class="form-control bg-dark text-white border-secondary" value="@Model.SchoolRef" />
+                        <input type="number" id="SchoolId" name="SchoolRef" class="form-control bg-dark text-white border-secondary" value="@Model.SchoolRef" />
                     </div>
 
                     <!-- Location Summary -->
@@ -517,6 +517,8 @@
                     }).addTo(map).bindPopup('<div class="text-center"><i class="bi bi-building-fill text-danger me-1"></i><strong>موقعیت دوم (مقصد)</strong></div>').openPopup();
 
                     document.getElementById('SchoolRef').value = Id;
+                    document.getElementById('SchoolId').value = Id;
+                    alert(Id);
                     GetShifts(parseInt(Id));
                     updateLocation2Display();
                 } else {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
+using School_Manger.Extension;
 using System.Threading.Tasks;
 
 namespace School_Manger.Controllers.Admin
@@ -13,11 +14,13 @@ namespace School_Manger.Controllers.Admin
         private IParentService parentService;
         private IChildService childService;
         private IDriverService driverService;
-        public SearchController(IChildService childService, IDriverService driverService,IParentService parentService)
+        private IBillService billService;
+        public SearchController(IChildService childService, IDriverService driverService,IParentService parentService,IBillService billService)
         {
             this.childService = childService;
             this.driverService = driverService;
             this.parentService = parentService;
+            this.billService = billService;
         }
         [HttpGet]
         public IActionResult Index()
@@ -39,5 +42,13 @@ namespace School_Manger.Controllers.Admin
         {
             return View(await childService.SearchChild(searchDto));
         }
+        [HttpPost]
+        public async Task<IActionResult> BilPays(SearchDto searchDto)
+        {
+            if(searchDto.MonthInt != null)
+                searchDto.MonthInt = DateConverter.ShamsiMonthToMiladiMonth((int)searchDto.MonthInt);
+            return View(await billService.SearchBill(searchDto));
+        }
+
     }
 }

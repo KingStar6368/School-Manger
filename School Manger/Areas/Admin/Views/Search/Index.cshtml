@@ -36,6 +36,7 @@
                     </button>
                 </div>
             </form>
+
             @* جستجو خانواده *@
             <form method="post" id="ParentPnl" asp-action="Parent" style="visibility:visible;display:none">
                 <div class="row mb-4">
@@ -62,6 +63,7 @@
                     </button>
                 </div>
             </form>
+
             @* جستجو دانش آموزان *@
             <form method="post" id="ChildPnl" asp-action="Child" style="visibility:visible;display:inline">
                 <div class="row mb-4">
@@ -84,6 +86,53 @@
                     </button>
                 </div>
             </form>
+
+            @* جستجو قبض ها *@
+            <form method="post" id="BillPnl" style="visibility:visible;display:none" asp-action="BilPays" style="visibility:visible;display:inline">
+                <div class="row mb-4">
+                    <div class="col-sm-6">
+                        <label class="form-label fw-bold"><i class="bi bi-calendar me-1"></i> تاریخ شروع</label>
+                        <input name="StartDate" type="date" class="form-control" />
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label fw-bold"><i class="bi bi-calendar me-1"></i> تاریخ پایان</label>
+                        <input name="EndDate" type="date" class="form-control" />
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-sm-4">
+                        <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> وضعیت پرداخت</label>
+                        <select name="HasPaid" class="form-select">
+                            <option value="">همه</option>
+                            <option value="true">پرداخت شده</option>
+                            <option value="false">پرداخت نشده</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="form-label fw-bold"><i class="bi bi-calendar-month me-1"></i> ماه</label>
+                        <select name="MonthInt" class="form-select">
+                            <option value="">انتخاب ماه</option>
+                            <option value="1">فروردین</option>
+                            <option value="2">اردیبهشت</option>
+                            <option value="3">خرداد</option>
+                            <option value="4">تیر</option>
+                            <option value="5">مرداد</option>
+                            <option value="6">شهریور</option>
+                            <option value="7">مهر</option>
+                            <option value="8">آبان</option>
+                            <option value="9">آذر</option>
+                            <option value="10">دی</option>
+                            <option value="11">بهمن</option>
+                            <option value="12">اسفند</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row justify-content-center container">
+                    <button type="submit" class="col-4 btn btn-warning fw-bold">
+                        <i class="bi bi-search me-2"></i> جستجوی قبض‌ها
+                    </button>
+                </div>
+            </form>
         </div>
         <div class="container row col-md-4 mt-4">
             <div class="input-group">
@@ -94,6 +143,7 @@
                     <option value="Child" selected><i class="bi bi-person"></i> دانش آموزان</option>
                     <option value="Parent"><i class="bi bi-people"></i> خانواده</option>
                     <option value="Driver"><i class="bi bi-steering-wheel"></i> راننده</option>
+                    <option value="Bill"><i class="bi bi-receipt"></i> قبض‌ها</option>
                 </select>
             </div>
         </div>
@@ -119,26 +169,33 @@
 </div>
 @section Scripts {
     <script>
+              // Panel switcher
         const ParentPnl = document.getElementById('ParentPnl');
         const ChildPnl = document.getElementById('ChildPnl');
         const DriverPnl = document.getElementById('DriverPnl');
+        const BillPnl = document.getElementById('BillPnl');
 
         document.getElementById('PDropBox').addEventListener('change', function() {
             const Selectedvalue = this.value;
+
+            // Hide all panels
+            ParentPnl.style.display = "none";
+            ChildPnl.style.display = "none";
+            DriverPnl.style.display = "none";
+            BillPnl.style.display = "none";
+
+            // Show selected panel
             if(Selectedvalue == "Driver"){
-                ParentPnl.style.display = "none";
-                ChildPnl.style.display = "none";
                 DriverPnl.style.display = "inline";
             }
-            if(Selectedvalue == "Parent"){
-                DriverPnl.style.display = "none";
-                ChildPnl.style.display = "none";
+            else if(Selectedvalue == "Parent"){
                 ParentPnl.style.display = "inline";
             }
-            if(Selectedvalue == "Child"){
-                ParentPnl.style.display = "none";
-                DriverPnl.style.display = "none";
+            else if(Selectedvalue == "Child"){
                 ChildPnl.style.display = "inline";
+            }
+            else if(Selectedvalue == "Bill"){
+                BillPnl.style.display = "inline";
             }
         });
     </script>

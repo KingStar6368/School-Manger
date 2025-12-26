@@ -1,57 +1,56 @@
-﻿@using School_Manager.Core.Services.Interfaces
-@using School_Manager.Core.ViewModels.FModels
-@inject ISchoolService SchoolService
-@inject IBillService BillService
-@inject IDriverService DriverService
-@inject IParentService ParentService
-@model SearchChildDto
+﻿@model List<School_Manager.Core.ViewModels.FModels.BillDto>
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "🔎 جستجو پیشرفته راننده";
+    ViewData["Title"] = "🔎 جستجو پیشرفته قبض‌ها";
 
-    long NonBillChild = Model.ChildInfos.Where(x => x.Bills == null || x.Bills.Count <= 0).Count();
-    long NonDriverChild = Model.ChildInfos.Where(x => x.DriverId == null || x.DriverId <= 0).Count();
-    long AssingedDriverChild = Model.ChildInfos.Where(x => x.DriverId != null && x.DriverId > 0).Count();
+    // محاسبات آماری
+    long totalBills = Model.Count;
+    long paidBills = Model.Count(x => x.HasPaid);
+    long unpaidBills = Model.Count(x => !x.HasPaid);
+    long totalAmount = Model.Sum(x => x.TotalPrice);
+    long paidAmount = Model.Sum(x => x.PaidPrice);
+    long remainingAmount = totalAmount - paidAmount;
 }
 <!-- Statistics Cards -->
 <div class="row mb-4">
     <div class="col-md-3 mb-3">
         <div class="card bg-primary text-white shadow-sm border-0">
             <div class="card-body text-center">
-                <i class="bi bi-people fs-1 d-block mb-2"></i>
-                <h4 class="mb-1">@Model.ChildInfos.Count</h4>
-                <p class="mb-0">تعداد دانش آموزان</p>
+                <i class="bi bi-receipt fs-1 d-block mb-2"></i>
+                <h4 class="mb-1">@totalBills</h4>
+                <p class="mb-0">تعداد قبض‌ها</p>
             </div>
         </div>
     </div>
     <div class="col-md-3 mb-3">
         <div class="card bg-success text-white shadow-sm border-0">
             <div class="card-body text-center">
-                <i class="bi bi-person-check fs-1 d-block mb-2"></i>
-                <h4 class="mb-1">@AssingedDriverChild</h4>
-                <p class="mb-0">اختصاص داده شده ها</p>
+                <i class="bi bi-check-circle fs-1 d-block mb-2"></i>
+                <h4 class="mb-1">@paidBills</h4>
+                <p class="mb-0">پرداخت شده</p>
             </div>
         </div>
     </div>
     <div class="col-md-3 mb-3">
         <div class="card bg-warning text-dark shadow-sm border-0">
             <div class="card-body text-center">
-                <i class="bi bi-person-x fs-1 d-block mb-2"></i>
-                <h4 class="mb-1">@NonDriverChild</h4>
-                <p class="mb-0">اختصاص داده نشده ها</p>
+                <i class="bi bi-clock-history fs-1 d-block mb-2"></i>
+                <h4 class="mb-1">@unpaidBills</h4>
+                <p class="mb-0">پرداخت نشده</p>
             </div>
         </div>
     </div>
     <div class="col-md-3 mb-3">
-        <div class="card bg-danger text-white shadow-sm border-0">
+        <div class="card bg-info text-white shadow-sm border-0">
             <div class="card-body text-center">
-                <i class="bi bi-person-x fs-1 d-block mb-2"></i>
-                <h4 class="mb-1">@NonBillChild</h4>
-                <p class="mb-0">دانش آموزان بدون قبض</p>
+                <i class="bi bi-cash-coin fs-1 d-block mb-2"></i>
+                <h4 class="mb-1">@remainingAmount.ToString("N0") تومان</h4>
+                <p class="mb-0">مانده قابل وصول</p>
             </div>
         </div>
     </div>
 </div>
+
 <div class="card bg-dark text-white shadow-lg rounded-4 border-primary border-2">
     <div class="card-header bg-primary bg-gradient d-flex justify-content-between align-items-center">
         <h4 class="mb-0 fw-bold">
@@ -138,7 +137,7 @@
             </form>
 
             @* جستجو قبض ها *@
-            <form method="post" id="BillPnl" style="visibility:visible;display:none" asp-action="BilPays" style="visibility:visible;display:inline">
+            <form method="post" id="BillPnl" asp-action="BilPays" style="visibility:visible;display:inline">
                 <div class="row mb-4">
                     <div class="col-sm-6">
                         <label class="form-label fw-bold"><i class="bi bi-calendar me-1"></i> تاریخ شروع</label>
@@ -184,157 +183,172 @@
                 </div>
             </form>
         </div>
+
         <div class="container row col-md-4 mt-4">
             <div class="input-group">
                 <span class="input-group-text bg-primary text-white">
                     <i class="bi bi-funnel"></i>
                 </span>
                 <select class="form-select rounded-start" id="PDropBox">
-                    <option value="Child" selected><i class="bi bi-person"></i> دانش آموزان</option>
+                    <option value="Child"><i class="bi bi-person"></i> دانش آموزان</option>
                     <option value="Parent"><i class="bi bi-people"></i> خانواده</option>
                     <option value="Driver"><i class="bi bi-steering-wheel"></i> راننده</option>
-                    <option value="Bill" ><i class="bi bi-receipt"></i> قبض‌ها</option>
+                    <option value="Bill" selected><i class="bi bi-receipt"></i> قبض‌ها</option>
                 </select>
             </div>
         </div>
 
         <!-- Filter Controls -->
         <div class="row mt-4 mb-3">
-            <div class="col-md-3 mb-2">
+            <div class="col-md-4 mb-2">
                 <div class="input-group">
                     <span class="input-group-text bg-info text-white">
-                        <i class="bi bi-funnel"></i>
+                        <i class="bi bi-search"></i>
                     </span>
-                    <input type="text" class="form-control" id="globalSearch" placeholder="جستجوی کلی...">
+                    <input type="text" class="form-control" id="globalSearch" placeholder="جستجوی کلی در قبض‌ها...">
                 </div>
             </div>
-            <div class="col-md-2 mb-2">
-                <select class="form-select" id="paymentStatusFilter">
-                    <option value="">وضعیت پرداختی</option>
+            <div class="col-md-3 mb-2">
+                <select class="form-select" id="statusFilter">
+                    <option value="">فیلتر وضعیت</option>
                     <option value="paid">پرداخت شده</option>
                     <option value="unpaid">پرداخت نشده</option>
+                    <option value="expired">منقضی شده</option>
                 </select>
             </div>
-            <div class="col-md-2 mb-2">
-                <select class="form-select" id="driverStatusFilter">
-                    <option value="">وضعیت راننده</option>
-                    <option value="assigned">دارای راننده</option>
-                    <option value="unassigned">بدون راننده</option>
+            <div class="col-md-3 mb-2">
+                <select class="form-select" id="typeFilter">
+                    <option value="">فیلتر نوع قبض</option>
+                    <option value="normal">عادی</option>
+                    <option value="special">خاص</option>
                 </select>
             </div>
-            <div class="col-md-2 mb-2">
-                <select class="form-select" id="billStatusFilter">
-                    <option value="">وضعیت قبض</option>
-                    <option value="hasBills">دارای قبض</option>
-                    <option value="noBills">بدون قبض</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-2 d-flex gap-2">
+            <div class="col-md-2 mb-2 d-flex gap-2">
                 <button class="btn btn-outline-warning flex-fill" id="resetFilters">
                     <i class="bi bi-arrow-clockwise me-1"></i>بازنشانی
-                </button>
-                <button class="btn btn-outline-info flex-fill" id="exportResults">
-                    <i class="bi bi-download me-1"></i>خروجی
                 </button>
             </div>
         </div>
 
         <div class="table-responsive mt-4">
-            <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden" id="studentsTable">
+            <table class="table table-dark table-hover table-bordered align-middle text-center rounded-3 overflow-hidden" id="billsTable">
                 <thead class="table-light text-dark">
                     <tr>
                         <th><i class="bi bi-hash me-1"></i> ردیف</th>
-                        <th><i class="bi bi-person-badge me-1"></i> نام کامل والد</th>
-                        <th><i class="bi bi-person me-1"></i> نام</th>
-                        <th><i class="bi bi-person me-1"></i> نام خانوادگی</th>
-                        <th><i class="bi bi-credit-card me-1"></i> کدملی</th>
-                        <th><i class="bi bi-cash-coin me-1"></i> وضعیت پرداختی</th>
-                        <th><i class="bi bi-receipt me-1"></i> تعداد قبض</th>
-                        <th><i class="bi bi-steering-wheel me-1"></i> راننده</th>
-                        <th><i class="bi bi-building me-1"></i> مدرسه</th>
+                        <th><i class="bi bi-receipt me-1"></i> عنوان قبض</th>
+                        <th><i class="bi bi-file-text me-1"></i> نوع قبض</th>
+                        <th><i class="bi bi-cash-stack me-1"></i> مبلغ کل</th>
+                        <th><i class="bi bi-cash-coin me-1"></i> پرداخت شده</th>
+                        <th><i class="bi bi-clock me-1"></i> مانده</th>
+                        <th><i class="bi bi-info-circle me-1"></i> وضعیت</th>
+                        <th><i class="bi bi-calendar-x me-1"></i> تاریخ انقضا</th>
+                        <th><i class="bi bi-calendar-check me-1"></i> تاریخ پرداخت</th>
                         <th><i class="bi bi-gear me-1"></i> عملیات</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 0; i < Model.ChildInfos.Count; i++)
+                    @for (int i = 0; i < Model.Count; i++)
                     {
-                        var SelectedModel = Model.ChildInfos[i];
-                        var Parent = Model.Parents.Where(x => x.Children.Any(c => c.Id == SelectedModel.Id)).FirstOrDefault();
-                        var driver = SelectedModel.DriverId > 0 ? Model.Drivers.FirstOrDefault(x => x.Id == SelectedModel.DriverId) : null;
-                        var bills = Model.ChildInfos[i].Bills;
-                        string PFullName = $"{Parent.ParentFirstName} {Parent.ParentLastName}";
-                        <tr data-payment="@(!bills.Any(x => !x.HasPaid) ? "paid" : "unpaid")"
-                            data-driver="@(SelectedModel.DriverId > 0 ? "assigned" : "unassigned")"
-                            data-bills="@(bills.Count > 0 ? "hasBills" : "noBills")">
+                        var bill = Model[i];
+                        var remaining = bill.TotalPrice - bill.PaidPrice;
+                        var isExpired = DateTime.Now > bill.BillExpiredTime;
+                        var statusClass = bill.HasPaid ? "success" : (isExpired ? "danger" : "warning");
+                        var statusText = bill.HasPaid ? "پرداخت شده" : (isExpired ? "منقضی شده" : "در انتظار پرداخت");
+
+                        <tr data-status="@(bill.HasPaid ? "paid" : "unpaid")"
+                            data-type="@bill.TypeOfBill?.ToLower()"
+                            data-expired="@isExpired.ToString().ToLower()">
                             <td>@(i + 1)</td>
-                            <td>@PFullName</td>
-                            <td>@SelectedModel.FirstName</td>
-                            <td>@SelectedModel.LastName</td>
-                            <td>@SelectedModel.NationalCode</td>
+                            <td>@bill.Name</td>
                             <td>
-                                @if (!bills.Any(x => !x.HasPaid))
-                                {
-                                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>پرداخت شده</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>پرداخت نشده</span>
-                                }
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-tag me-1"></i>@bill.TypeOfBill
+                                </span>
                             </td>
                             <td>
-                                @{
-                                    int BillCount = bills.Count;
-                                    if (BillCount > 0)
-                                    {
-                                        <span class="badge bg-info"><i class="bi bi-receipt me-1"></i>@BillCount</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger"><i class="bi bi-exclamation-triangle me-1"></i>قبضی صادر نشده</span>
-                                    }
-                                }
+                                <span class="badge bg-info">
+                                    <i class="bi bi-currency-dollar me-1"></i>@bill.TotalPrice.ToString("N0") تومان
+                                </span>
                             </td>
                             <td>
-                                @if (SelectedModel.DriverId > 0)
+                                @if (bill.PaidPrice > 0)
                                 {
-                                    <span class='text-white badge bg-info'>
-                                        <i class='bi bi-dash-circle'></i>@(driver.Name + " " + driver.LastName)
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle me-1"></i>@bill.PaidPrice.ToString("N0") تومان
                                     </span>
                                 }
                                 else
                                 {
-                                    <span class='text-white badge bg-warning'>
-                                        <i class='bi bi-dash-circle'></i>راننده ندارد
+                                    <span class="badge bg-secondary">
+                                        <i class="bi bi-x-circle me-1"></i>پرداخت نشده
                                     </span>
                                 }
                             </td>
-                            <td>@(SelectedModel.SchoolId.HasValue? Model.Schools.FirstOrDefault(x => x.Id == SelectedModel.SchoolId).Name:"<span class='text-muted'><i class='bi bi-dash-circle'></i> ندارد</span>")</td>
+                            <td>
+                                @if (remaining > 0)
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-clock-history me-1"></i>@remaining.ToString("N0") تومان
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle me-1"></i>صفر
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge bg-@statusClass">
+                                    <i class="bi bi-@(bill.HasPaid ? "check-circle" : isExpired ? "exclamation-triangle" : "clock") me-1"></i>
+                                    @statusText
+                                </span>
+                            </td>
+                            <td>
+                                @if (isExpired)
+                                {
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-calendar-x me-1"></i>@bill.BillExpiredTimePer
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-white">
+                                        <i class="bi bi-calendar me-1"></i>@bill.BillExpiredTimePer
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                @if (bill.PaidTime.HasValue)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-calendar-check me-1"></i>@bill.PaidTime.Value.ToString("yyyy/MM/dd")
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        <i class="bi bi-dash-circle me-1"></i>---
+                                    </span>
+                                }
+                            </td>
                             <td>
                                 <div class="d-flex flex-wrap gap-1 justify-content-center">
-                                    @if (SelectedModel.DriverId > 0)
+                                    @if (!bill.HasPaid && !isExpired)
                                     {
-                                        <form asp-controller="Driver" asp-action="Details" class="d-inline">
-                                            <input type="hidden" name="id" value="@SelectedModel.DriverId" />
-                                            <button class="btn btn-sm btn-outline-info" type="submit" title="نمایش راننده">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                        </form>
-                                    }
-                                    @if (SelectedModel.SchoolId.HasValue)
-                                    {
-                                        <form asp-controller="School" asp-action="Details" class="d-inline">
-                                            <input type="hidden" name="id" value="@SelectedModel.SchoolId" />
-                                            <button class="btn btn-sm btn-outline-primary" type="submit" title="نمایش مدرسه">
-                                                <i class="bi bi-building"></i>
-                                            </button>
-                                        </form>
-                                    }
-                                    <form asp-controller="Parents" asp-action="CreateBill" method="post" class="d-inline">
-                                        <input name="ChildId" type="hidden" value="@SelectedModel.Id" />
-                                        <button class="btn btn-sm btn-outline-warning" type="submit" title="صدور قبض">
-                                            <i class="bi bi-file-earmark-plus"></i>
+                                        <button class="btn btn-sm btn-outline-success" onclick="payBill(@bill.Id)" title="ثبت پرداخت">
+                                            <i class="bi bi-credit-card"></i>
                                         </button>
-                                    </form>
+                                    }
+                                    <button class="btn btn-sm btn-outline-info" onclick="showBillDetails(@bill.Id)" title="جزئیات قبض">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-warning" onclick="printBill(@bill.Id)" title="چاپ قبض">
+                                        <i class="bi bi-printer"></i>
+                                    </button>
+                                    <a href="@Url.Action("Edit", "Bill", new { id = bill.Id })" class="btn btn-sm btn-outline-primary" title="ویرایش">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -347,8 +361,12 @@
         <div class="row mt-3">
             <div class="col-12">
                 <div class="alert alert-info d-flex justify-content-between align-items-center">
-                    <span id="resultsCount">نمایش @Model.ChildInfos.Count مورد از @Model.ChildInfos.Count نتیجه</span>
-                    <span id="selectedCount" class="badge bg-primary">0 مورد انتخاب شده</span>
+                    <span id="resultsCount">نمایش @Model.Count مورد از @Model.Count نتیجه</span>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-primary">مجموع مبلغ: @totalAmount.ToString("N0") تومان</span>
+                        <span class="badge bg-success">پرداخت شده: @paidAmount.ToString("N0") تومان</span>
+                        <span class="badge bg-warning">مانده: @remainingAmount.ToString("N0") تومان</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -357,7 +375,7 @@
 
 @section Scripts {
     <script>
-             // Panel switcher
+        // Panel switcher
         const ParentPnl = document.getElementById('ParentPnl');
         const ChildPnl = document.getElementById('ChildPnl');
         const DriverPnl = document.getElementById('DriverPnl');
@@ -387,53 +405,25 @@
             }
         });
 
-        // Filter functionality
+        // Filter functionality for bills
         document.addEventListener('DOMContentLoaded', function() {
-            const table = document.getElementById('studentsTable');
+            const table = document.getElementById('billsTable');
             const tbody = table.querySelector('tbody');
             const rows = tbody.querySelectorAll('tr');
             const globalSearch = document.getElementById('globalSearch');
-            const paymentFilter = document.getElementById('paymentStatusFilter');
-            const driverFilter = document.getElementById('driverStatusFilter');
-            const billFilter = document.getElementById('billStatusFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const typeFilter = document.getElementById('typeFilter');
             const resetBtn = document.getElementById('resetFilters');
-            const exportBtn = document.getElementById('exportResults');
             const resultsCount = document.getElementById('resultsCount');
-            const selectedCount = document.getElementById('selectedCount');
-
-            let selectedRows = new Set();
-
-            // Add row selection functionality
-            rows.forEach(row => {
-                row.addEventListener('click', function(e) {
-                    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'I' || e.target.tagName === 'INPUT') {
-                        return;
-                    }
-
-                    this.classList.toggle('table-active');
-                    const rowId = this.querySelector('td:first-child').textContent;
-
-                    if (this.classList.contains('table-active')) {
-                        selectedRows.add(rowId);
-                    } else {
-                        selectedRows.delete(rowId);
-                    }
-
-                    updateSelectedCount();
-                });
-            });
-
-            function updateSelectedCount() {
-                selectedCount.textContent = `${selectedRows.size} مورد انتخاب شده`;
-            }
 
             function filterRows() {
                 const globalSearchTerm = globalSearch.value.toLowerCase();
-                const paymentValue = paymentFilter.value;
-                const driverValue = driverFilter.value;
-                const billValue = billFilter.value;
+                const statusValue = statusFilter.value;
+                const typeValue = typeFilter.value;
 
                 let visibleCount = 0;
+                let totalAmount = 0;
+                let paidAmount = 0;
 
                 rows.forEach(row => {
                     let showRow = true;
@@ -446,99 +436,142 @@
                         }
                     }
 
-                    // Payment filter
-                    if (paymentValue && row.dataset.payment !== paymentValue) {
-                        showRow = false;
+                    // Status filter
+                    if (statusValue) {
+                        if (statusValue === 'paid' && row.dataset.status !== 'paid') {
+                            showRow = false;
+                        }
+                        if (statusValue === 'unpaid' && row.dataset.status !== 'unpaid') {
+                            showRow = false;
+                        }
+                        if (statusValue === 'expired' && row.dataset.expired !== 'true') {
+                            showRow = false;
+                        }
                     }
 
-                    // Driver filter
-                    if (driverValue && row.dataset.driver !== driverValue) {
-                        showRow = false;
-                    }
-
-                    // Bill filter
-                    if (billValue && row.dataset.bills !== billValue) {
+                    // Type filter
+                    if (typeValue && row.dataset.type !== typeValue) {
                         showRow = false;
                     }
 
                     if (showRow) {
                         row.style.display = '';
                         visibleCount++;
+
+                        // Calculate amounts from visible rows
+                        const cells = row.querySelectorAll('td');
+                        const totalPrice = parseInt(cells[3].querySelector('.badge').textContent.replace(/[^0-9]/g, ''));
+                        const paidPrice = cells[4].querySelector('.badge') ?
+                            parseInt(cells[4].querySelector('.badge').textContent.replace(/[^0-9]/g, '')) || 0 : 0;
+
+                        totalAmount += totalPrice;
+                        paidAmount += paidPrice;
                     } else {
                         row.style.display = 'none';
                     }
                 });
 
-                updateResultsCount(visibleCount);
+                updateResultsCount(visibleCount, totalAmount, paidAmount);
             }
 
-            function updateResultsCount(visibleCount) {
-                resultsCount.textContent = `نمایش ${visibleCount} مورد از ${rows.length} نتیجه`;
+            function updateResultsCount(visibleCount, totalAmount, paidAmount) {
+                const remainingAmount = totalAmount - paidAmount;
+                resultsCount.innerHTML = `
+                    <span>نمایش ${visibleCount} مورد از ${rows.length} نتیجه</span>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-primary">مجموع: ${totalAmount.toLocaleString()} تومان</span>
+                        <span class="badge bg-success">پرداخت: ${paidAmount.toLocaleString()} تومان</span>
+                        <span class="badge bg-warning">مانده: ${remainingAmount.toLocaleString()} تومان</span>
+                    </div>
+                `;
             }
 
             function resetFilters() {
                 globalSearch.value = '';
-                paymentFilter.value = '';
-                driverFilter.value = '';
-                billFilter.value = '';
-                selectedRows.clear();
+                statusFilter.value = '';
+                typeFilter.value = '';
 
                 rows.forEach(row => {
                     row.style.display = '';
-                    row.classList.remove('table-active');
                 });
 
-                updateResultsCount(rows.length);
-                updateSelectedCount();
+                // Recalculate totals from all rows
+                let totalAmount = 0;
+                let paidAmount = 0;
+
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    const totalPrice = parseInt(cells[3].querySelector('.badge').textContent.replace(/[^0-9]/g, ''));
+                    const paidPrice = cells[4].querySelector('.badge') ?
+                        parseInt(cells[4].querySelector('.badge').textContent.replace(/[^0-9]/g, '')) || 0 : 0;
+
+                    totalAmount += totalPrice;
+                    paidAmount += paidPrice;
+                });
+
+                updateResultsCount(rows.length, totalAmount, paidAmount);
             }
 
-            function exportResults() {
-                const visibleRows = Array.from(rows).filter(row => row.style.display !== 'none');
-                const exportData = visibleRows.map(row => {
+            // Initialize totals calculation
+            function initializeTotals() {
+                let totalAmount = 0;
+                let paidAmount = 0;
+
+                rows.forEach(row => {
                     const cells = row.querySelectorAll('td');
-                    return {
-                        rowNumber: cells[0].textContent,
-                        parentName: cells[1].textContent,
-                        firstName: cells[2].textContent,
-                        lastName: cells[3].textContent,
-                        nationalCode: cells[4].textContent,
-                        paymentStatus: cells[5].textContent.trim(),
-                        billCount: cells[6].textContent.trim(),
-                        driver: cells[7].textContent.trim(),
-                        school: cells[8].textContent.trim()
-                    };
+                    const totalPrice = parseInt(cells[3].querySelector('.badge').textContent.replace(/[^0-9]/g, ''));
+                    const paidPrice = cells[4].querySelector('.badge') ?
+                        parseInt(cells[4].querySelector('.badge').textContent.replace(/[^0-9]/g, '')) || 0 : 0;
+
+                    totalAmount += totalPrice;
+                    paidAmount += paidPrice;
                 });
 
-                // Create CSV content
-                let csvContent = "ردیف,نام والد,نام,نام خانوادگی,کدملی,وضعیت پرداختی,تعداد قبض,راننده,مدرسه\n";
-
-                exportData.forEach(row => {
-                    csvContent += `"${row.rowNumber}","${row.parentName}","${row.firstName}","${row.lastName}","${row.nationalCode}","${row.paymentStatus}","${row.billCount}","${row.driver}","${row.school}"\n`;
-                });
-
-                // Create and download file
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                const url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', `نتایج_جستجو_${new Date().toLocaleDateString('fa-IR')}.csv`);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                updateResultsCount(rows.length, totalAmount, paidAmount);
             }
 
             // Event listeners
             globalSearch.addEventListener('input', filterRows);
-            paymentFilter.addEventListener('change', filterRows);
-            driverFilter.addEventListener('change', filterRows);
-            billFilter.addEventListener('change', filterRows);
+            statusFilter.addEventListener('change', filterRows);
+            typeFilter.addEventListener('change', filterRows);
             resetBtn.addEventListener('click', resetFilters);
-            exportBtn.addEventListener('click', exportResults);
 
-            // Initialize results count
-            updateResultsCount(rows.length);
+            // Initialize
+            initializeTotals();
         });
+
+        // Bill operations functions
+        function payBill(billId) {
+            if (confirm('آیا از ثبت پرداخت این قبض اطمینان دارید؟')) {
+                // Implement payment logic here
+                fetch(`/Admin/Bill/Pay/${billId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert(data.message || 'خطا در ثبت پرداخت');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('خطا در ارتباط با سرور');
+                });
+            }
+        }
+
+        function showBillDetails(billId) {
+            window.open(`/Admin/Bill/Details/${billId}`, '_blank');
+        }
+
+        function printBill(billId) {
+            window.open(`/Admin/Bill/Print/${billId}`, '_blank');
+        }
     </script>
 
     <style>
@@ -558,6 +591,21 @@
 
         #globalSearch {
             direction: rtl;
+        }
+
+        .badge {
+            font-size: 0.85em;
+        }
+
+        /* Responsive table */
+        @@media (max-width: 768px) {
+            .table-responsive {
+                font-size: 0.85em;
+            }
+
+            .badge {
+                font-size: 0.75em;
+            }
         }
     </style>
 }
