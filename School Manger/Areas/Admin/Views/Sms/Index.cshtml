@@ -1,4 +1,5 @@
-﻿@using School_Manger.Models.PageView
+﻿@using School_Manager.Core.ViewModels.FModels
+@using School_Manger.Models.PageView
 @model AdminSms;
 @{
     Layout = "_AdminLayout";
@@ -661,40 +662,47 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var parent in Model.NonPaidParent)
+                                        @foreach (ParentDto parent in Model.NonPaidParent)
                                         {
-                                            var mobile = Model.Users.FirstOrDefault(x => x.UserName == parent.ParentNationalCode)?.Mobile ?? "ندارد";
-                                            var debt = parent.Children.Where(c => c.Bills != null).Sum(x => x.Bills.Where(b => !b.HasPaid && b.BillExpiredTime < DateTime.Now).Select(b => b.TotalPrice).Sum());
-                                            var hasMobile = !string.IsNullOrEmpty(mobile) && mobile != "ندارد";
+                                            try
+                                            {
+                                                var mobile = Model.Users.FirstOrDefault(x => x.UserName == parent.ParentNationalCode)?.Mobile ?? "ندارد";
+                                                var debt = parent.Children.Where(c => c.Bills != null).Sum(x => x.Bills.Where(b => !b.HasPaid && b.BillExpiredTime < DateTime.Now).Select(b => b.TotalPrice).Sum());
+                                                var hasMobile = !string.IsNullOrEmpty(mobile) && mobile != "ندارد";
 
-                                            <tr data-id="@parent.Id" data-mobile="@mobile" data-name="@parent.ParentFirstName @parent.ParentLastName" data-debt="@debt">
-                                                <td class="checkbox-cell">
-                                                    <input type="checkbox" class="row-selector" data-type="unpaid" value="@parent.Id">
-                                                </td>
-                                                <td>
-                                                    <span class="badge badge-primary">@parent.Id</span>
-                                                </td>
-                                                <td>
-                                                    <i class="bi bi-person-circle me-2 text-primary"></i>
-                                                    @parent.ParentFirstName @parent.ParentLastName
-                                                </td>
-                                                <td>
-                                                    <i class="bi bi-card-text me-2 text-secondary"></i>
-                                                    @parent.ParentNationalCode
-                                                </td>
-                                                <td class="mobile-number">
-                                                    <i class="bi bi-phone me-2 @(hasMobile ? "text-success" : "text-danger")"></i>
-                                                    @mobile
-                                                </td>
-                                                <td class="debt-amount">
-                                                    <i class="bi bi-cash-stack"></i>
-                                                    @debt.ToString("N0") ریال
-                                                </td>
-                                                <td>
-                                                    <span class="status-indicator @(hasMobile ? "status-active" : "status-inactive")"></span>
-                                                    @(hasMobile ? "فعال" : "غیرفعال")
-                                                </td>
-                                            </tr>
+                                                <tr data-id="@parent.Id" data-mobile="@mobile" data-name="@parent.ParentFirstName @parent.ParentLastName" data-debt="@debt">
+                                                    <td class="checkbox-cell">
+                                                        <input type="checkbox" class="row-selector" data-type="unpaid" value="@parent.Id">
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge badge-primary">@parent.Id</span>
+                                                    </td>
+                                                    <td>
+                                                        <i class="bi bi-person-circle me-2 text-primary"></i>
+                                                        @parent.ParentFirstName @parent.ParentLastName
+                                                    </td>
+                                                    <td>
+                                                        <i class="bi bi-card-text me-2 text-secondary"></i>
+                                                        @parent.ParentNationalCode
+                                                    </td>
+                                                    <td class="mobile-number">
+                                                        <i class="bi bi-phone me-2 @(hasMobile ? "text-success" : "text-danger")"></i>
+                                                        @mobile
+                                                    </td>
+                                                    <td class="debt-amount">
+                                                        <i class="bi bi-cash-stack"></i>
+                                                        @debt.ToString("N0") ریال
+                                                    </td>
+                                                    <td>
+                                                        <span class="status-indicator @(hasMobile ? "status-active" : "status-inactive")"></span>
+                                                        @(hasMobile ? "فعال" : "غیرفعال")
+                                                    </td>
+                                                </tr>
+                                            }
+                                            catch
+                                            {
+
+                                            }
                                         }
                                     </tbody>
                                 </table>
@@ -746,35 +754,42 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var parent in Model.NonChildern)
+                                        @foreach (ParentDto parent in Model.NonChildern)
                                         {
-                                            var mobile = Model.Users.FirstOrDefault(x => x.UserName == parent.ParentNationalCode)?.Mobile ?? "ندارد";
-                                            var hasMobile = !string.IsNullOrEmpty(mobile) && mobile != "ندارد";
+                                            try
+                                            {
+                                                var mobile = Model.Users.FirstOrDefault(x => x.UserName == parent.ParentNationalCode)?.Mobile ?? "ندارد";
+                                                var hasMobile = !string.IsNullOrEmpty(mobile) && mobile != "ندارد";
 
-                                            <tr data-id="@parent.Id" data-mobile="@mobile" data-name="@parent.ParentFirstName @parent.ParentLastName">
-                                                <td class="checkbox-cell">
-                                                    <input type="checkbox" class="row-selector" data-type="nonchildren" value="@parent.Id">
-                                                </td>
-                                                <td>
-                                                    <span class="badge badge-primary">@parent.Id</span>
-                                                </td>
-                                                <td>
-                                                    <i class="bi bi-person-circle me-2 text-primary"></i>
-                                                    @parent.ParentFirstName @parent.ParentLastName
-                                                </td>
-                                                <td>
-                                                    <i class="bi bi-card-text me-2 text-secondary"></i>
-                                                    @parent.ParentNationalCode
-                                                </td>
-                                                <td class="mobile-number">
-                                                    <i class="bi bi-phone me-2 @(hasMobile ? "text-success" : "text-danger")"></i>
-                                                    @mobile
-                                                </td>
-                                                <td>
-                                                    <span class="status-indicator @(hasMobile ? "status-active" : "status-inactive")"></span>
-                                                    @(hasMobile ? "فعال" : "غیرفعال")
-                                                </td>
-                                            </tr>
+                                                <tr data-id="@parent.Id" data-mobile="@mobile" data-name="@parent.ParentFirstName @parent.ParentLastName">
+                                                    <td class="checkbox-cell">
+                                                        <input type="checkbox" class="row-selector" data-type="nonchildren" value="@parent.Id">
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge badge-primary">@parent.Id</span>
+                                                    </td>
+                                                    <td>
+                                                        <i class="bi bi-person-circle me-2 text-primary"></i>
+                                                        @parent.ParentFirstName @parent.ParentLastName
+                                                    </td>
+                                                    <td>
+                                                        <i class="bi bi-card-text me-2 text-secondary"></i>
+                                                        @parent.ParentNationalCode
+                                                    </td>
+                                                    <td class="mobile-number">
+                                                        <i class="bi bi-phone me-2 @(hasMobile ? "text-success" : "text-danger")"></i>
+                                                        @mobile
+                                                    </td>
+                                                    <td>
+                                                        <span class="status-indicator @(hasMobile ? "status-active" : "status-inactive")"></span>
+                                                        @(hasMobile ? "فعال" : "غیرفعال")
+                                                    </td>
+                                                </tr>
+                                            }
+                                            catch
+                                            {
+
+                                            }
                                         }
                                     </tbody>
                                 </table>

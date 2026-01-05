@@ -39,7 +39,9 @@ namespace School_Manger.Controllers.Admin
             List<UserDTO> users = new List<UserDTO>();
             foreach (var id in parentIds)
             {
-                users.Add(UserService.GetUserByParent(id));
+                var value = UserService.GetUserByParent(id);
+                if(value != null)
+                    users.Add(value);
             }
 
             return View("Index",new AdminSms
