@@ -53,4 +53,9 @@ namespace School_Manger.Models.PageView
         public List<ParentDto> NonChildern { get; set; } = new List<ParentDto>();
         public List<UserDTO> Users { get; set; } = new List<UserDTO>();
     }
+    public class AdminSerachBill
+    {
+        public ChildInfo Child { get; set; }
+        public BillDto Bill { get; set; }
+    }
 }

@@ -1,4 +1,7 @@
-﻿@model List<School_Manager.Core.ViewModels.FModels.BillDto>
+﻿@using School_Manager.Core.Services.Interfaces
+@using School_Manger.Extension
+@model List<School_Manager.Core.ViewModels.FModels.BillDto>
+@inject IBillService BillService
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "🔎 جستجو پیشرفته قبض‌ها";
@@ -236,6 +239,7 @@
                     <tr>
                         <th><i class="bi bi-hash me-1"></i> ردیف</th>
                         <th><i class="bi bi-receipt me-1"></i> عنوان قبض</th>
+                        <th><i class="bi bi-receipt me-1"></i> نام و نام خانوادگی</th>
                         <th><i class="bi bi-file-text me-1"></i> نوع قبض</th>
                         <th><i class="bi bi-cash-stack me-1"></i> مبلغ کل</th>
                         <th><i class="bi bi-cash-coin me-1"></i> پرداخت شده</th>
@@ -249,109 +253,121 @@
                 <tbody>
                     @for (int i = 0; i < Model.Count; i++)
                     {
-                        var bill = Model[i];
-                        var remaining = bill.TotalPrice - bill.PaidPrice;
-                        var isExpired = DateTime.Now > bill.BillExpiredTime;
-                        var statusClass = bill.HasPaid ? "success" : (isExpired ? "danger" : "warning");
-                        var statusText = bill.HasPaid ? "پرداخت شده" : (isExpired ? "منقضی شده" : "در انتظار پرداخت");
+                        @try
+                        {
 
-                        <tr data-status="@(bill.HasPaid ? "paid" : "unpaid")"
-                            data-type="@bill.TypeOfBill?.ToLower()"
-                            data-expired="@isExpired.ToString().ToLower()">
-                            <td>@(i + 1)</td>
-                            <td>@bill.Name</td>
-                            <td>
-                                <span class="badge bg-secondary">
-                                    <i class="bi bi-tag me-1"></i>@bill.TypeOfBill
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge bg-info">
-                                    <i class="bi bi-currency-dollar me-1"></i>@bill.TotalPrice.ToString("N0") تومان
-                                </span>
-                            </td>
-                            <td>
-                                @if (bill.PaidPrice > 0)
-                                {
-                                    <span class="badge bg-success">
-                                        <i class="bi bi-check-circle me-1"></i>@bill.PaidPrice.ToString("N0") تومان
-                                    </span>
-                                }
-                                else
-                                {
+                            var bill = Model[i];
+                            var remaining = bill.TotalPrice - bill.PaidPrice;
+                            var isExpired = DateTime.Now > bill.BillExpiredTime;
+                            var statusClass = bill.HasPaid ? "success" : (isExpired ? "danger" : "warning");
+                            var statusText = (bill.HasPaid ? "پرداخت شده" : (isExpired ? "منقضی شده" : "در انتظار پرداخت"));
+
+                            <tr data-status="@(bill.HasPaid ? "paid" : "unpaid")"
+                                data-type="@bill.TypeOfBill?.ToLower()"
+                                data-expired="@isExpired.ToString().ToLower()">
+                                <td>@(i + 1)</td>
+                                <td>@bill.Name</td>
+                                <td>@BillService.GetFullNameByBillId(bill.Id)</td>
+                                <td>
                                     <span class="badge bg-secondary">
-                                        <i class="bi bi-x-circle me-1"></i>پرداخت نشده
+                                        <i class="bi bi-tag me-1"></i>@bill.TypeOfBill
                                     </span>
-                                }
-                            </td>
-                            <td>
-                                @if (remaining > 0)
-                                {
-                                    <span class="badge bg-warning text-dark">
-                                        <i class="bi bi-clock-history me-1"></i>@remaining.ToString("N0") تومان
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">
+                                        <i class="bi bi-currency-dollar me-1"></i>@bill.TotalPrice.ToString("N0") تومان
                                     </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-success">
-                                        <i class="bi bi-check-circle me-1"></i>صفر
-                                    </span>
-                                }
-                            </td>
-                            <td>
-                                <span class="badge bg-@statusClass">
-                                    <i class="bi bi-@(bill.HasPaid ? "check-circle" : isExpired ? "exclamation-triangle" : "clock") me-1"></i>
-                                    @statusText
-                                </span>
-                            </td>
-                            <td>
-                                @if (isExpired)
-                                {
-                                    <span class="badge bg-danger">
-                                        <i class="bi bi-calendar-x me-1"></i>@bill.BillExpiredTimePer
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="text-white">
-                                        <i class="bi bi-calendar me-1"></i>@bill.BillExpiredTimePer
-                                    </span>
-                                }
-                            </td>
-                            <td>
-                                @if (bill.PaidTime.HasValue)
-                                {
-                                    <span class="badge bg-success">
-                                        <i class="bi bi-calendar-check me-1"></i>@bill.PaidTime.Value.ToString("yyyy/MM/dd")
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">
-                                        <i class="bi bi-dash-circle me-1"></i>---
-                                    </span>
-                                }
-                            </td>
-                            <td>
-                                <div class="d-flex flex-wrap gap-1 justify-content-center">
-                                    @if (!bill.HasPaid && !isExpired)
+                                </td>
+                                <td>
+                                    @if (bill.PaidPrice > 0)
                                     {
-                                        <button class="btn btn-sm btn-outline-success" onclick="payBill(@bill.Id)" title="ثبت پرداخت">
-                                            <i class="bi bi-credit-card"></i>
-                                        </button>
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i>@bill.PaidPrice.ToString("N0") تومان
+                                        </span>
                                     }
-                                    <button class="btn btn-sm btn-outline-info" onclick="showBillDetails(@bill.Id)" title="جزئیات قبض">
-                                        <i class="bi bi-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-warning" onclick="printBill(@bill.Id)" title="چاپ قبض">
-                                        <i class="bi bi-printer"></i>
-                                    </button>
-                                    <a href="@Url.Action("Edit", "Bill", new { id = bill.Id })" class="btn btn-sm btn-outline-primary" title="ویرایش">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-x-circle me-1"></i>پرداخت نشده
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (remaining > 0)
+                                    {
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="bi bi-clock-history me-1"></i>@remaining.ToString("N0") تومان
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i>صفر
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="badge bg-@statusClass">
+                                        <i class="bi bi-@(bill.HasPaid ? "check-circle" : isExpired ? "exclamation-triangle" : "clock") me-1"></i>
+                                        @statusText
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (isExpired)
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-calendar-x me-1"></i>@bill.BillExpiredTimePer
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-white">
+                                            <i class="bi bi-calendar me-1"></i>@bill.BillExpiredTimePer
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (bill.HasPaid && bill.PaidTime.HasValue)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-calendar-check me-1"></i>@bill.PaidTime.Value.ToPersianString()
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-dash-circle me-1"></i>---
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-1 justify-content-center">
+                                        @if (!bill.HasPaid && !isExpired)
+                                        {
+                                            <button class="btn btn-sm btn-outline-success" onclick="payBill(@bill.Id)" title="ثبت پرداخت">
+                                                <i class="bi bi-credit-card"></i>
+                                            </button>
+                                        }
+                                        <button class="btn btn-sm btn-outline-info" onclick="showBillDetails(@bill.Id)" title="جزئیات قبض">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-warning" onclick="printBill(@bill.Id)" title="چاپ قبض">
+                                            <i class="bi bi-printer"></i>
+                                        </button>
+                                        <a href="@Url.Action("Edit", "Bill", new { id = bill.Id })" class="btn btn-sm btn-outline-primary" title="ویرایش">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        catch (Exception ex)
+                        {
+                            <tr>
+                                @ex.Message
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>

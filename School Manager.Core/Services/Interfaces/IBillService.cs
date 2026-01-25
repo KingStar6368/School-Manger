@@ -86,6 +86,13 @@ namespace School_Manager.Core.Services.Interfaces
         PayDto GetPay(long id);
 
         Task<List<BillDto>> SearchBill(SearchDto searchDto);
-        
+
+        /// <summary>
+        /// دریافت نام کامل دانش آموز از طریق کد قبض
+        /// </summary>
+        /// <param name="billid"></param>
+        string GetFullNameByBillId(long billid);
+
+
     }
 }

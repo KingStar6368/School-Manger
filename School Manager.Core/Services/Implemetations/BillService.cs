@@ -371,9 +371,9 @@ namespace School_Manager.Core.Services.Implemetations
                         b.PayBills.Any(p =>
                             p.Id == Id)))
                 .Select(x =>
-                    x.Bills.SelectMany(b=>b.PayBills)
+                    x.Bills.SelectMany(b => b.PayBills)
                 ).ToListAsync();
-            return _mapper.Map<List<BillDto>>(ds);                
+            return _mapper.Map<List<BillDto>>(ds);
         }
 
         public PayDto GetPay(long id)
@@ -384,7 +384,7 @@ namespace School_Manager.Core.Services.Implemetations
 
         public async Task<List<BillDto>> SearchBill(SearchDto searchDto)
         {
-            var query = _unitOfWork.GetRepository<Bill>().FindAll();
+            var query = _unitOfWork.GetRepository<Bill>().FindAll().Where(x => !x.IsDeleted && x.ServiceContractNavigation != null);
             if (searchDto.StartDate != null)
                 query = query.Where(x => x.EstimateTime >= searchDto.StartDate);
             if (searchDto.EndDate != null)
@@ -400,6 +400,18 @@ namespace School_Manager.Core.Services.Implemetations
                 mapped = mapped.Where(x => x.HasPaid == searchDto.HasPaid).ToList();
 
             return mapped;
+        }
+        public string GetFullNameByBillId(long billid)
+        {
+            var ds = _unitOfWork.GetRepository<Bill>().Query(x => x.Id == billid)
+                .Include(x => x.ServiceContractNavigation)
+                .ThenInclude(x => x.ChildNavigation)
+                .Select(x => x.ServiceContractNavigation)
+                .Select(x => x.ChildNavigation)
+                .FirstOrDefault();
+            var testds = _unitOfWork.GetRepository<Bill>().Query(x => x.Id == billid).ToList();
+            var mapped = _mapper.Map<ChildInfo>(ds);
+            return $"{mapped.FirstName} {mapped.LastName}";
         }
     }
 }
