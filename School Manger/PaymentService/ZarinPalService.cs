@@ -60,7 +60,8 @@ namespace School_Manger.PaymentService
         }
         public async Task<string> TestRequestPaymentAsync(int amount, string description, string CallbackUrl, string PayEmail, string mobile = null)
         {
-
+            if (string.IsNullOrEmpty(mobile))
+                mobile = "09300000001";
             var result = new KingZarinPal.DtoRequest()
             {
                 CallbackUrl = CallbackUrl,

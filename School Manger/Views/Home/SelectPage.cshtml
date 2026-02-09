@@ -1,51 +1,123 @@
-﻿@{
+﻿@using SMS.Base
+@inject IAppConfigService configService
+@{
     Layout = "_Layout";
     ViewData["Title"] = "ورود به سیستم حمل و نقل مدرسه سرویس یار";
 }
 
-<div class="container-fluid d-flex justify-content-center align-items-center vh-100 bg-gradient-dark">
-    <div class="card glass-morphism shadow-xl" style="width: 100%; max-width: 650px; border: none;">
-        <div class="card-body p-5">
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 bg-gradient-dark px-2">
+    <div class="card glass-morphism shadow-xl" style="width: 100%; max-width: 650px; border: none; margin: 0.5rem 0;">
+        <div class="card-body p-3 p-sm-4">
             <!-- Header -->
-            <div class="text-center mb-5">
-                <div class="logo-container mb-4">
-                    <i class="bi bi-bus-front fs-1 text-gradient-primary mb-3"></i>
+            <div class="text-center mb-4">
+                <div class="logo-container mb-3">
+                    <i class="bi bi-bus-front text-gradient-primary" style="font-size: 2.8rem"></i>
                 </div>
-                <h1 class="fw-bold text-white mb-2">سرویس یار</h1>
-                <p class="text-light fs-5 mb-0">سامانه حمل و نقل مدرسه</p>
-                <div class="divider my-4"></div>
-                <p class="text-light-50 fs-6">لطفا نقش خود را انتخاب کنید</p>
+                <h1 class="fw-bold text-white mb-2" style="font-size: 1.8rem">سرویس یار</h1>
+                <p class="text-light mb-0" style="font-size: 1rem">سامانه حمل و نقل مدرسه</p>
+                <div class="divider my-3 mx-auto" style="width: 80%"></div>
+                <p class="text-light-50 mb-0" style="font-size: 0.9rem">لطفا نقش خود را انتخاب کنید</p>
             </div>
 
-            <!-- Role Selection -->
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <a asp-action="Login" class="card role-card bg-dark text-white text-center border-0 p-4 h-100 hover-lift transition-all">
-                        <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                            <div class="icon-wrapper bg-primary-20 p-4 rounded-circle mb-4">
-                                <i class="bi bi-people-fill fs-2 text-primary"></i>
+            <!-- Role Selection - Stack vertically on mobile -->
+            <div class="row g-3 justify-content-center">
+                <!-- Parent Card -->
+                <div class="col-12">
+                    <a asp-action="Login" class="card role-card bg-dark text-white border-0 p-3 hover-lift transition-all">
+                        <div class="row g-0 align-items-center">
+                            <div class="col-3 col-sm-2 col-md-3 text-center">
+                                <div class="icon-wrapper bg-primary-20 rounded-circle d-inline-flex align-items-center justify-content-center"
+                                     style="width: 60px; height: 60px;">
+                                    <i class="bi bi-people-fill text-primary" style="font-size: 1.5rem"></i>
+                                </div>
                             </div>
-                            <h3 class="fw-bold mb-3">والدین</h3>
-                            <p class="text-light-50 mb-0">مدیریت سرویس و پیگیری دانش‌آموز</p>
-                            <div class="mt-4">
-                                <span class="btn btn-sm btn-outline-primary rounded-pill px-3">ورود</span>
+                            <div class="col-7 col-sm-8 col-md-6">
+                                <div class="card-body p-0 p-sm-2">
+                                    <h3 class="fw-bold mb-1" style="font-size: 1.1rem">والدین</h3>
+                                    <p class="text-light-50 mb-0" style="font-size: 0.85rem; line-height: 1.4">
+                                        مدیریت سرویس و پیگیری دانش‌آموز
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-2 col-sm-2 col-md-3 text-center">
+                                <span class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1" style="font-size: 0.8rem">
+                                    ورود
+                                </span>
                             </div>
                         </div>
                     </a>
                 </div>
 
-                <div class="col-md-6">
-                    <a asp-action="Login" asp-controller="Driver" class="card role-card bg-dark text-white text-center border-0 p-4 h-100 hover-lift transition-all">
-                        <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                            <div class="icon-wrapper bg-success-20 p-4 rounded-circle mb-4">
-                                <i class="bi bi-car-front fs-2 text-success"></i>
+                <!-- Driver Card -->
+                <div class="col-12">
+                    <a asp-action="Login" asp-controller="Driver" class="card role-card bg-dark text-white border-0 p-3 hover-lift transition-all">
+                        <div class="row g-0 align-items-center">
+                            <div class="col-3 col-sm-2 col-md-3 text-center">
+                                <div class="icon-wrapper bg-success-20 rounded-circle d-inline-flex align-items-center justify-content-center"
+                                     style="width: 60px; height: 60px;">
+                                    <i class="bi bi-car-front text-success" style="font-size: 1.5rem"></i>
+                                </div>
                             </div>
-                            <h3 class="fw-bold mb-3">رانندگان</h3>
-                            <p class="text-light-50 mb-0">مدیریت مسیر و گزارش‌گیری سفر</p>
-                            <div class="mt-4">
-                                <span class="btn btn-sm btn-outline-success rounded-pill px-3">ورود</span>
+                            <div class="col-7 col-sm-8 col-md-6">
+                                <div class="card-body p-0 p-sm-2">
+                                    <h3 class="fw-bold mb-1" style="font-size: 1.1rem">رانندگان</h3>
+                                    <p class="text-light-50 mb-0" style="font-size: 0.85rem; line-height: 1.4">
+                                        مدیریت مسیر و گزارش‌گیری سفر
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-2 col-sm-2 col-md-3 text-center">
+                                <span class="btn btn-sm btn-outline-success rounded-pill px-3 py-1" style="font-size: 0.8rem">
+                                    ورود
+                                </span>
                             </div>
                         </div>
+                    </a>
+                </div>
+
+                <!-- Admin Card (Demo only) -->
+                @if (configService.IsDemo())
+                {
+                    <div class="col-12">
+                        <a asp-action="DemoAdmin" class="card role-card bg-dark text-white border-0 p-3 hover-lift transition-all">
+                            <div class="row g-0 align-items-center">
+                                <div class="col-3 col-sm-2 col-md-3 text-center">
+                                    <div class="icon-wrapper bg-warning-20 rounded-circle d-inline-flex align-items-center justify-content-center"
+                                         style="width: 60px; height: 60px;">
+                                        <i class="bi bi-shield-check text-warning" style="font-size: 1.5rem"></i>
+                                    </div>
+                                </div>
+                                <div class="col-7 col-sm-8 col-md-6">
+                                    <div class="card-body p-0 p-sm-2">
+                                        <h3 class="fw-bold mb-1" style="font-size: 1.1rem">مدیریت</h3>
+                                        <p class="text-light-50 mb-0" style="font-size: 0.85rem; line-height: 1.4">
+                                            مدیریت و گزارش‌گیری سیستم
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="col-2 col-sm-2 col-md-3 text-center">
+                                    <span class="btn btn-sm btn-outline-warning rounded-pill px-3 py-1" style="font-size: 0.8rem">
+                                        ورود
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+
+            <!-- Additional Information -->
+            <div class="text-center mt-4 pt-2">
+                <p class="text-light-30 mb-0" style="font-size: 0.75rem">
+                    <i class="bi bi-info-circle me-1"></i>
+                    برای ورود، روی نقش مورد نظر کلیک کنید
+                </p>
+                <div class="mt-2 d-flex justify-content-center gap-3">
+                    <a href="#" class="text-light-50 text-decoration-none" style="font-size: 0.75rem">
+                        <i class="bi bi-question-circle me-1"></i>راهنما
+                    </a>
+                    <a href="#" class="text-light-50 text-decoration-none" style="font-size: 0.75rem">
+                        <i class="bi bi-telephone me-1"></i>پشتیبانی
                     </a>
                 </div>
             </div>
@@ -56,10 +128,10 @@
 <style>
     /* Custom Dark Theme Variables */
     :root {
-     
         --primary-color: #6c63ff;
         --primary-dark: #5952d4;
         --success-color: #00d4aa;
+        --warning-color: #ffc107;
         --text-light: #f8f9fa;
         --text-light-50: #adb5bd;
         --text-light-30: #6c757d;
@@ -69,11 +141,12 @@
     .bg-gradient-dark {
         background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-dark) 100%);
         min-height: 100vh;
+        padding: 1rem !important;
     }
 
     /* Glass Morphism Effect */
     .glass-morphism {
-        background: rgba(25, 25, 40, 0.8);
+        background: rgba(25, 25, 40, 0.9);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -85,16 +158,18 @@
         transition: all 0.3s ease;
         border: 1px solid rgba(255, 255, 255, 0.05);
         cursor: pointer;
+        height: auto;
+        min-height: 80px;
     }
 
         .role-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-3px);
             border-color: rgba(108, 99, 255, 0.3);
-            box-shadow: 0 10px 25px rgba(108, 99, 255, 0.15);
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.15);
         }
 
     .hover-lift:hover {
-        transform: translateY(-5px);
+        transform: translateY(-3px);
     }
 
     .transition-all {
@@ -103,16 +178,14 @@
 
     /* Icon Wrapper */
     .icon-wrapper {
-        width: 80px;
-        height: 80px;
+        transition: all 0.3s ease;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s ease;
     }
 
     .role-card:hover .icon-wrapper {
-        transform: scale(1.1);
+        transform: scale(1.05);
     }
 
     /* Text Gradients */
@@ -140,8 +213,8 @@
         background-color: rgba(0, 212, 170, 0.15);
     }
 
-    .bg-dark-2 {
-        background-color: var(--bg-dark);
+    .bg-warning-20 {
+        background-color: rgba(255, 193, 7, 0.15);
     }
 
     .text-light {
@@ -157,29 +230,83 @@
     }
 
     /* Responsive Adjustments */
-    @@media (max-width: 768px) {
-        .card-body {
-            padding: 2rem !important;
-        }
-
-        .role-card {
-            margin-bottom: 1rem;
-        }
-
-        .icon-wrapper {
-            width: 70px;
-            height: 70px;
-            padding: 1rem !important;
-        }
-    }
-
     @@media (max-width: 576px) {
         .card-body {
-            padding: 1.5rem !important;
+            padding: 1rem !important;
         }
 
         h1 {
-            font-size: 1.75rem;
+            font-size: 1.6rem !important;
+        }
+
+        .logo-container i {
+            font-size: 2.5rem !important;
+        }
+
+        .role-card {
+            padding: 0.75rem !important;
+        }
+
+        .icon-wrapper {
+            width: 50px !important;
+            height: 50px !important;
+        }
+
+            .icon-wrapper i {
+                font-size: 1.3rem !important;
+            }
+
+        .btn-sm {
+            padding: 0.25rem 0.75rem !important;
+            font-size: 0.75rem !important;
+        }
+    }
+
+    @@media (min-width: 768px) {
+        .role-card {
+            height: 120px;
+        }
+
+        .icon-wrapper {
+            width: 70px !important;
+            height: 70px !important;
+        }
+
+            .icon-wrapper i {
+                font-size: 1.8rem !important;
+            }
+    }
+
+    /* Extra small devices */
+    @@media (max-width: 360px) {
+        .bg-gradient-dark {
+            padding: 0.5rem !important;
+        }
+
+        .card-body {
+            padding: 0.75rem !important;
+        }
+
+        .role-card {
+            padding: 0.5rem !important;
+            min-height: 70px;
+        }
+
+        .icon-wrapper {
+            width: 45px !important;
+            height: 45px !important;
+        }
+
+            .icon-wrapper i {
+                font-size: 1.2rem !important;
+            }
+
+        h3 {
+            font-size: 1rem !important;
+        }
+
+        p {
+            font-size: 0.8rem !important;
         }
     }
 
@@ -197,6 +324,27 @@
         to {
             opacity: 1;
             transform: translateY(0);
+        }
+    }
+
+    /* Touch-friendly buttons */
+    .btn {
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Improve touch targets on mobile */
+    @@media (max-width: 768px) {
+        a {
+            min-height: 44px; /* Minimum touch target size */
+            display: flex;
+            align-items: center;
+        }
+
+        .btn {
+            min-width: 60px;
         }
     }
 </style>

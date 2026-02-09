@@ -43,7 +43,7 @@
             <div class="card bg-success text-white shadow-sm border-0">
                 <div class="card-body text-center">
                     <i class="bi bi-star-fill fs-1 d-block mb-2"></i>
-                    <h4 class="mb-1">@Model.Average(s => s.Rate).ToString("0.0")</h4>
+                    <h4 class="mb-1">@if(Model.Count > 0) @Model.Average(s => s.Rate).ToString("0.0")</h4>
                     <p class="mb-0">میانگین امتیاز</p>
                 </div>
             </div>

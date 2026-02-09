@@ -234,11 +234,11 @@ namespace School_Manger.Controllers
                     {
                         Id = UseRref,
                         FirstName = firstName,
-                        LastName=lastName,
-                        UserName=nationalCode,
+                        LastName = lastName,
+                        UserName = nationalCode,
                         PasswordHash = password,
                         Mobile = ControllerExtensions.GetKey<string>(this, "PhoneNumber"),
-                        IsActive=true,
+                        IsActive = true,
                     });
                 }
                 long ParentRef = _PService.CreateParent(new ParentCreateDto()
@@ -402,7 +402,11 @@ namespace School_Manger.Controllers
                 return ParentMenu();
             }
             int Amount = (int)(bill.TotalPrice - bill.PaidPrice) / 10; //Remove Last 0 Must be toman
-            var respance = await zarinPalService.RequestPaymentAsync(Amount, "پرداخت قبض " + bill.Name, settingService.Get("PayUrl"), settingService.Get("PayEmail"), settingService.Get("PayMobile"));
+            string respance = null;
+            if (AppConfigService.IsDemo())
+                respance = await zarinPalService.TestRequestPaymentAsync(Amount, "پرداخت قبض " + bill.Name, settingService.Get("PayUrl"), settingService.Get("PayEmail"), settingService.Get("PayMobile"));
+            else
+                respance = await zarinPalService.RequestPaymentAsync(Amount, "پرداخت قبض " + bill.Name, settingService.Get("PayUrl"), settingService.Get("PayEmail"), settingService.Get("PayMobile"));
             if (!string.IsNullOrEmpty(respance))
             {
                 PaymentService.Add(new PayData()
@@ -413,7 +417,10 @@ namespace School_Manger.Controllers
                         bill.Id
                     }
                 });
-                return Redirect($"https://www.zarinpal.com/pg/StartPay/{respance}");
+                if (AppConfigService.IsDemo())
+                    return Redirect($"https://sandbox.zarinpal.com/pg/StartPay/{respance}");
+                else
+                    return Redirect($"https://www.zarinpal.com/pg/StartPay/{respance}");
             }
             ControllerExtensions.ShowError(this, "خطا", "مشکلی در انتفال به درگاه شده لطفا بعدا امتحان کنید");
             return ParentMenu();
@@ -440,6 +447,13 @@ namespace School_Manger.Controllers
                     StatusCode = 500
                 };
             }
+        }
+        [HttpGet]
+        public async Task<IActionResult> DemoAdmin()
+        {
+            if (!AppConfigService.IsDemo())
+                return BadRequest();
+            return await Login("0521744407", "Admin");
         }
     }
 }

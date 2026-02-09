@@ -18,7 +18,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication("CookieAuth")
     .AddCookie("CookieAuth", options =>
     {
-        options.Cookie.Name = "YourAppCookie";
+        options.Cookie.Name = "SchoolManger";
         options.LoginPath = "/Home/Login";
         options.AccessDeniedPath = "/Home/AccessDenied";
     });
