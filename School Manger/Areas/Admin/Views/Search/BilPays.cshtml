@@ -1,7 +1,7 @@
 ﻿@using School_Manager.Core.Services.Interfaces
 @using School_Manger.Extension
+@inject ISchoolService SchoolService
 @model List<School_Manager.Core.ViewModels.FModels.BillDto>
-@inject IBillService BillService
 @{
     Layout = "_AdminLayout";
     ViewData["Title"] = "🔎 جستجو پیشرفته قبض‌ها";
@@ -239,14 +239,16 @@
                     <tr>
                         <th><i class="bi bi-hash me-1"></i> ردیف</th>
                         <th><i class="bi bi-receipt me-1"></i> عنوان قبض</th>
-                        <th><i class="bi bi-receipt me-1"></i> نام و نام خانوادگی</th>
-                        <th><i class="bi bi-file-text me-1"></i> نوع قبض</th>
+                        <th><i class="bi bi-file-text me-1"></i> نام و نام خانوادگی</th>
+                        <th><i class="bi bi-calendar-check me-1"></i> کد ملی</th>
+                        <th><i class="bi bi-clock me-1"></i> مدرسه</th>
+                        @* <th><i class="bi bi-file-text me-1"></i> نوع قبض</th> *@
                         <th><i class="bi bi-cash-stack me-1"></i> مبلغ کل</th>
-                        <th><i class="bi bi-cash-coin me-1"></i> پرداخت شده</th>
-                        <th><i class="bi bi-clock me-1"></i> مانده</th>
+                        @* <th><i class="bi bi-cash-coin me-1"></i> پرداخت شده</th> *@
+                        @* <th><i class="bi bi-clock me-1"></i> مانده</th> *@
                         <th><i class="bi bi-info-circle me-1"></i> وضعیت</th>
                         <th><i class="bi bi-calendar-x me-1"></i> تاریخ انقضا</th>
-                        <th><i class="bi bi-calendar-check me-1"></i> تاریخ پرداخت</th>
+                        @* <th><i class="bi bi-calendar-check me-1"></i> تاریخ پرداخت</th> *@
                         <th><i class="bi bi-gear me-1"></i> عملیات</th>
                     </tr>
                 </thead>
@@ -267,44 +269,13 @@
                                 data-expired="@isExpired.ToString().ToLower()">
                                 <td>@(i + 1)</td>
                                 <td>@bill.Name</td>
-                                <td>@BillService.GetFullNameByBillId(bill.Id)</td>
-                                <td>
-                                    <span class="badge bg-secondary">
-                                        <i class="bi bi-tag me-1"></i>@bill.TypeOfBill
-                                    </span>
-                                </td>
+                                <td>@bill.ChildNavigation.FirstName @bill.ChildNavigation.LastName</td>
+                                <td>@bill.ChildNavigation.NationalCode</td>
+                                <td>@SchoolService.GetSchool((long)bill.ChildNavigation.SchoolId).Name</td>
                                 <td>
                                     <span class="badge bg-info">
                                         <i class="bi bi-currency-dollar me-1"></i>@bill.TotalPrice.ToString("N0") تومان
                                     </span>
-                                </td>
-                                <td>
-                                    @if (bill.PaidPrice > 0)
-                                    {
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-check-circle me-1"></i>@bill.PaidPrice.ToString("N0") تومان
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary">
-                                            <i class="bi bi-x-circle me-1"></i>پرداخت نشده
-                                        </span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (remaining > 0)
-                                    {
-                                        <span class="badge bg-warning text-dark">
-                                            <i class="bi bi-clock-history me-1"></i>@remaining.ToString("N0") تومان
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-check-circle me-1"></i>صفر
-                                        </span>
-                                    }
                                 </td>
                                 <td>
                                     <span class="badge bg-@statusClass">
@@ -323,20 +294,6 @@
                                     {
                                         <span class="text-white">
                                             <i class="bi bi-calendar me-1"></i>@bill.BillExpiredTimePer
-                                        </span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (bill.HasPaid && bill.PaidTime.HasValue)
-                                    {
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-calendar-check me-1"></i>@bill.PaidTime.Value.ToPersianString()
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary">
-                                            <i class="bi bi-dash-circle me-1"></i>---
                                         </span>
                                     }
                                 </td>

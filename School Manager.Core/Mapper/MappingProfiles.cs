@@ -28,8 +28,9 @@ namespace School_Manager.Core.Mapper
                 .ForMember(dest => dest.PaidPrice, opt => opt.MapFrom<PaidPriceResolver>())
                 .ForMember(dest => dest.PaidTime, opt => opt.MapFrom<PaidTimeResolver>())
                 .ForMember(dest => dest.HasPaid, opt => opt.MapFrom<HasPaidResolver>())
-                .ForMember(dest => dest.Status, opt => opt.MapFrom<StatusResolver>());
-                
+                .ForMember(dest => dest.Status, opt => opt.MapFrom<StatusResolver>())
+                .ForMember(dest => dest.ChildNavigation, opt => opt.MapFrom(src =>src.ServiceContractNavigation.ChildNavigation));
+
             CreateMap<BillCreateDto, Bill>()
                 .ForMember(dest => dest.Type,opt=>opt.MapFrom(src=>(BillType)src.Type));
             CreateMap<BillUpdateDto, Bill>()
@@ -66,11 +67,11 @@ namespace School_Manager.Core.Mapper
             #endregion
             #region Child
             CreateMap<Child, ChildInfo>()
-                .ForMember(dest => dest.DriverId,opt => opt.MapFrom<ActiveDriverIdResolver>())
-                .ForMember(dest => dest.SchoolId,opt => opt.MapFrom(src => src.SchoolRef))
-                .ForMember(dest => dest.Class,opt => opt.MapFrom(src => src.Class.GetDisplayName()))
-                .ForMember(dest => dest.ClassEnum,opt => opt.MapFrom(src => src.Class))
-                .ForMember(dest => dest.Path,opt => opt.MapFrom(src => src.LocationPairs.FirstOrDefault(i => i.IsActive)))
+                .ForMember(dest => dest.DriverId, opt => opt.MapFrom<ActiveDriverIdResolver>())
+                .ForMember(dest => dest.SchoolId, opt => opt.MapFrom(src => src.SchoolRef))
+                .ForMember(dest => dest.Class, opt => opt.MapFrom(src => src.Class.GetDisplayName()))
+                .ForMember(dest => dest.ClassEnum, opt => opt.MapFrom(src => src.Class))
+                .ForMember(dest => dest.Path, opt => opt.MapFrom(src => src.LocationPairs.FirstOrDefault(i => i.IsActive)))
                 .ForMember(dest => dest.Bills, opt => opt.MapFrom(src => src.ServiceContracts.Where(sc => sc.IsActive).SelectMany(sc => sc.Bills)))
                 .ForMember(dest => dest.HasPaid, opt => opt.MapFrom(src => src.ServiceContracts
                                 .Where(sc => sc.IsActive)

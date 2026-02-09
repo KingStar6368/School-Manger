@@ -393,6 +393,8 @@ namespace School_Manager.Core.Services.Implemetations
                 query = query.Where(x => x.EstimateTime.Month == searchDto.MonthInt);
             query = query.Include(x => x.PayBills).ThenInclude(x => x.PayNavigation);
 
+            query = query.Include(x => x.ServiceContractNavigation).ThenInclude(x => x.ChildNavigation);
+
             var ds = await query.ToListAsync();
             var mapped = _mapper.Map<List<BillDto>>(ds);
 

@@ -53,6 +53,7 @@ namespace School_Manager.Core.ViewModels.FModels
         /// تاریخ انقضای فرار داد
         /// </summary>
         public string BillExpiredTimePer { get; set; }
+        public virtual ChildInfo ChildNavigation { get; set; }
     }
     public class BillInstallmentDto
     {
