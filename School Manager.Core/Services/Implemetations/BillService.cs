@@ -398,7 +398,7 @@ namespace School_Manager.Core.Services.Implemetations
             query = query.Include(x => x.ServiceContractNavigation).ThenInclude(x => x.ChildNavigation);
 
             query = query
-        .OrderByDescending(x => x.CreatedOn)
+        .OrderByDescending(x => x.EstimateTime)
         .Skip((searchDto.Page - 1) * searchDto.PageSize)
         .Take(searchDto.PageSize);
 

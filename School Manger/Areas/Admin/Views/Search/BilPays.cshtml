@@ -2,6 +2,7 @@
 @using School_Manager.Core.ViewModels.FModels
 @using School_Manger.Extension
 @inject ISchoolService SchoolService
+@inject IParentService ParentService
 @model List<School_Manager.Core.ViewModels.FModels.BillDto>
 @{
     Layout = "_AdminLayout";
@@ -338,22 +339,9 @@
                                 </td>
                                 <td>
                                     <div class="d-flex flex-wrap gap-1 justify-content-center">
-                                        @if (!bill.HasPaid && !isExpired)
-                                        {
-                                            <button class="btn btn-sm btn-outline-success" onclick="payBill(@bill.Id)" title="ثبت پرداخت">
-                                                <i class="bi bi-credit-card"></i>
-                                            </button>
-                                        }
-                                        <button class="btn btn-sm btn-outline-info" onclick="showBillDetails(@bill.Id)" title="جزئیات قبض">
+                                        <button class="btn btn-sm btn-outline-info" onclick="showBillDetails(@(ParentService.GetParentWithChild(bill.ChildNavigation.Id).Id))" title="جزئیات قبض">
                                             <i class="bi bi-eye"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-warning" onclick="printBill(@bill.Id)" title="چاپ قبض">
-                                            <i class="bi bi-printer"></i>
-                                        </button>
-                                        <a href="@Url.Action("Edit", "Bill", new { id = bill.Id })" class="btn btn-sm btn-outline-primary" title="ویرایش">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-
                                     </div>
                                 </td>
                             </tr>
@@ -575,8 +563,8 @@
             }
         }
 
-        function showBillDetails(billId) {
-            window.open(`/Admin/Bill/Details/${billId}`, '_blank');
+        function showBillDetails(parentid) {
+            window.open(`/Admin/Parents/Details/${parentid}`, '_blank');
         }
 
         function printBill(billId) {

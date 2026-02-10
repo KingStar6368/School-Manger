@@ -57,7 +57,7 @@ namespace School_Manger.Controllers.Admin
             if (dto.MonthInt != null)
                 dto.MonthInt = DateConverter.ShamsiMonthToMiladiMonth((int)dto.MonthInt);
             var result = await billService.SearchBill(dto);
-            return PartialView("_BillRows", result);
+            return PartialView("_BillRows", (dto.Page,result));
         }
     }
 }

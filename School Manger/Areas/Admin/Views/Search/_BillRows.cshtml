@@ -1,18 +1,19 @@
 ﻿@using School_Manager.Core.Services.Interfaces
 @using School_Manager.Core.ViewModels.FModels
-@model List<BillDto>
+@model (int,List<BillDto>)
+@inject IParentService ParentService
 @inject ISchoolService SchoolService
 
-@for (int i = 0; i < Model.Count; i++)
+@for (int i = 0; i < Model.Item2.Count; i++)
 {
-    var bill = Model[i];
+    var bill = Model.Item2[i];
     var isExpired = DateTime.Now > bill.BillExpiredTime;
     var statusClass = bill.HasPaid ? "success" : (isExpired ? "danger" : "warning");
     var statusText = bill.HasPaid ? "پرداخت شده" : (isExpired ? "منقضی شده" : "در انتظار پرداخت");
 
     <tr data-status="@(bill.HasPaid ? "paid" : "unpaid")"
         data-expired="@isExpired.ToString().ToLower()">
-        <td>-</td>
+        <td>@(((Model.Item1 * 20) - 20)+(i+1))</td>
         <td>@bill.Name</td>
         <td>@bill.ChildNavigation.FirstName @bill.ChildNavigation.LastName</td>
         <td>@bill.ChildNavigation.NationalCode</td>
@@ -44,22 +45,9 @@
         </td>
         <td>
             <div class="d-flex flex-wrap gap-1 justify-content-center">
-                @if (!bill.HasPaid && !isExpired)
-                {
-                    <button class="btn btn-sm btn-outline-success" onclick="payBill(@bill.Id)" title="ثبت پرداخت">
-                        <i class="bi bi-credit-card"></i>
-                    </button>
-                }
-                <button class="btn btn-sm btn-outline-info" onclick="showBillDetails(@bill.Id)" title="جزئیات قبض">
+                <button class="btn btn-sm btn-outline-info" onclick="showBillDetails(@(ParentService.GetParentWithChild(bill.ChildNavigation.Id).Id))" title="جزئیات قبض">
                     <i class="bi bi-eye"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-warning" onclick="printBill(@bill.Id)" title="چاپ قبض">
-                    <i class="bi bi-printer"></i>
-                </button>
-                <a href="@Url.Action("Edit", "Bill", new { id = bill.Id })" class="btn btn-sm btn-outline-primary" title="ویرایش">
-                    <i class="bi bi-pencil"></i>
-                </a>
-
             </div>
         </td>
     </tr>
