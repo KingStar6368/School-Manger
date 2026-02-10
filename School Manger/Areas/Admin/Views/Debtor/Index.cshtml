@@ -92,7 +92,7 @@
                 </form>
                 <form id="sendWarningForm" asp-controller="Debtor" asp-action="SendWarningSms" method="post" class="d-inline">
                     <input type="hidden" id="selectedParentIds" name="selectedParentIds" value="" />
-                    <button type="submit" class="btn btn-warning btn-sm" id="sendWarningBtn" disabled>
+                    <button type="submit" onclick="return confirm('آیا از ارسال پیام اخطار برای والدین انتخاب شده اطمینان دارید؟');" class="btn btn-warning btn-sm" id="sendWarningBtn" disabled>
                         <i class="bi bi-send me-1"></i>ارسال پیام اخطار برای انتخاب شده ها
                         <span id="selectedCount" class="badge bg-dark ms-1">0</span>
                     </button>
