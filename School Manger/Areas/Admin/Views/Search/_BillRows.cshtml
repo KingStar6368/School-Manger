@@ -1,0 +1,66 @@
+﻿@using School_Manager.Core.Services.Interfaces
+@using School_Manager.Core.ViewModels.FModels
+@model List<BillDto>
+@inject ISchoolService SchoolService
+
+@for (int i = 0; i < Model.Count; i++)
+{
+    var bill = Model[i];
+    var isExpired = DateTime.Now > bill.BillExpiredTime;
+    var statusClass = bill.HasPaid ? "success" : (isExpired ? "danger" : "warning");
+    var statusText = bill.HasPaid ? "پرداخت شده" : (isExpired ? "منقضی شده" : "در انتظار پرداخت");
+
+    <tr data-status="@(bill.HasPaid ? "paid" : "unpaid")"
+        data-expired="@isExpired.ToString().ToLower()">
+        <td>-</td>
+        <td>@bill.Name</td>
+        <td>@bill.ChildNavigation.FirstName @bill.ChildNavigation.LastName</td>
+        <td>@bill.ChildNavigation.NationalCode</td>
+        <td>@SchoolService.GetSchool((long)bill.ChildNavigation.SchoolId).Name</td>
+        <td>
+            <span class="badge bg-info">
+                <i class="bi bi-currency-dollar me-1"></i>@bill.TotalPrice.ToString("N0") ریال
+            </span>
+        </td>
+        <td>
+            <span class="badge bg-@statusClass">
+                <i class="bi bi-@(bill.HasPaid ? "check-circle" : isExpired ? "exclamation-triangle" : "clock") me-1"></i>
+                @statusText
+            </span>
+        </td>
+        <td>
+            @if (isExpired)
+            {
+                <span class="badge bg-danger">
+                    <i class="bi bi-calendar-x me-1"></i>@bill.BillExpiredTimePer
+                </span>
+            }
+            else
+            {
+                <span class="text-white">
+                    <i class="bi bi-calendar me-1"></i>@bill.BillExpiredTimePer
+                </span>
+            }
+        </td>
+        <td>
+            <div class="d-flex flex-wrap gap-1 justify-content-center">
+                @if (!bill.HasPaid && !isExpired)
+                {
+                    <button class="btn btn-sm btn-outline-success" onclick="payBill(@bill.Id)" title="ثبت پرداخت">
+                        <i class="bi bi-credit-card"></i>
+                    </button>
+                }
+                <button class="btn btn-sm btn-outline-info" onclick="showBillDetails(@bill.Id)" title="جزئیات قبض">
+                    <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-warning" onclick="printBill(@bill.Id)" title="چاپ قبض">
+                    <i class="bi bi-printer"></i>
+                </button>
+                <a href="@Url.Action("Edit", "Bill", new { id = bill.Id })" class="btn btn-sm btn-outline-primary" title="ویرایش">
+                    <i class="bi bi-pencil"></i>
+                </a>
+
+            </div>
+        </td>
+    </tr>
+}

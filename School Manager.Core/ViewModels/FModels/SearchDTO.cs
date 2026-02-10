@@ -29,5 +29,11 @@ namespace School_Manager.Core.ViewModels.FModels
         /// شماره ماه مثال 9 آذر ماه
         /// </summary>
         public int? MonthInt { get; set; }
+        public string? BillName { get; set; }
+
+        // Pagination
+        public int Page { get; set; } = 1;   // شماره صفحه
+        public int PageSize { get; set; } = 20;
+
     }
 }

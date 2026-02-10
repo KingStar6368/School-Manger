@@ -49,10 +49,10 @@ namespace School_Manger.PaymentService
         {
             var result = await _payment.Request(new Dto.Payment.DtoRequest()
             {
-                Mobile = string.IsNullOrEmpty(mobile.Trim()) ? null : mobile,
+                Mobile = null,//string.IsNullOrEmpty(mobile.Trim()) ? null : mobile,
                 CallbackUrl = CallbackUrl,
                 Description = description,
-                Email = PayEmail,
+                Email = null,
                 Amount = ((amount) + ((amount * 5) / 1000)), //Amount is Toman  Amount + 0.5% for Fee
                 MerchantId = _merchantId,
             }, ZarinPal.Class.Payment.Mode.zarinpal);

@@ -1,4 +1,5 @@
 ﻿@using School_Manager.Core.Services.Interfaces
+@using School_Manager.Core.ViewModels.FModels
 @using School_Manger.Extension
 @inject ISchoolService SchoolService
 @model List<School_Manager.Core.ViewModels.FModels.BillDto>
@@ -140,15 +141,18 @@
             </form>
 
             @* جستجو قبض ها *@
+            @* جستجو قبض ها *@
             <form method="post" id="BillPnl" asp-action="BilPays" style="visibility:visible;display:inline">
                 <div class="row mb-4">
                     <div class="col-sm-6">
                         <label class="form-label fw-bold"><i class="bi bi-calendar me-1"></i> تاریخ شروع</label>
-                        <input name="StartDate" type="date" class="form-control" />
+                        <input name="StartDate" type="date" class="form-control"
+                               value="@(ViewBag.SearchDto?.StartDate?.ToString("yyyy-MM-dd"))" />
                     </div>
                     <div class="col-sm-6">
                         <label class="form-label fw-bold"><i class="bi bi-calendar me-1"></i> تاریخ پایان</label>
-                        <input name="EndDate" type="date" class="form-control" />
+                        <input name="EndDate" type="date" class="form-control"
+                               value="@(ViewBag.SearchDto?.EndDate?.ToString("yyyy-MM-dd"))" />
                     </div>
                 </div>
                 <div class="row mb-4">
@@ -156,27 +160,62 @@
                         <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> وضعیت پرداخت</label>
                         <select name="HasPaid" class="form-select">
                             <option value="">همه</option>
-                            <option value="true">پرداخت شده</option>
-                            <option value="false">پرداخت نشده</option>
+                            @if (ViewBag.SearchDto?.HasPaid == true)
+                            {
+                                <option value="true" selected>پرداخت شده</option>
+                                <option value="false">پرداخت نشده</option>
+                            }
+                            else if (ViewBag.SearchDto?.HasPaid == false)
+                            {
+                                <option value="true">پرداخت شده</option>
+                                <option value="false" selected>پرداخت نشده</option>
+                            }
+                            else
+                            {
+                                <option value="true">پرداخت شده</option>
+                                <option value="false">پرداخت نشده</option>
+                            }
                         </select>
                     </div>
                     <div class="col-sm-4">
                         <label class="form-label fw-bold"><i class="bi bi-calendar-month me-1"></i> ماه</label>
                         <select name="MonthInt" class="form-select">
                             <option value="">انتخاب ماه</option>
-                            <option value="1">فروردین</option>
-                            <option value="2">اردیبهشت</option>
-                            <option value="3">خرداد</option>
-                            <option value="4">تیر</option>
-                            <option value="5">مرداد</option>
-                            <option value="6">شهریور</option>
-                            <option value="7">مهر</option>
-                            <option value="8">آبان</option>
-                            <option value="9">آذر</option>
-                            <option value="10">دی</option>
-                            <option value="11">بهمن</option>
-                            <option value="12">اسفند</option>
+                            @{
+                                var monthValue = ViewBag.SearchDto?.MonthInt - 2;
+                                var monthOptions = new Dictionary<int, string>
+                                                        {
+                                                        {1, "فروردین"},
+                                                        {2, "اردیبهشت"},
+                                                        {3, "خرداد"},
+                                                        {4, "تیر"},
+                                                        {5, "مرداد"},
+                                                        {6, "شهریور"},
+                                                        {7, "مهر"},
+                                                        {8, "آبان"},
+                                                        {9, "آذر"},
+                                                        {10, "دی"},
+                                                        {11, "بهمن"},
+                                                        {12, "اسفند"}
+                                                        };
+                            }
+                            @foreach (var month in monthOptions)
+                            {
+                                if (month.Key == monthValue)
+                                {
+                                    <option value="@month.Key" selected>@month.Value</option>
+                                }
+                                else
+                                {
+                                    <option value="@month.Key">@month.Value</option>
+                                }
+                            }
                         </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> نام قبض</label>
+                        <input name="BillName" type="text" class="form-control price-separator"
+                               value="@ViewBag.SearchDto?.BillName" />
                     </div>
                 </div>
                 <div class="row justify-content-center container">
@@ -252,7 +291,7 @@
                         <th><i class="bi bi-gear me-1"></i> عملیات</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="billTableBody">
                     @for (int i = 0; i < Model.Count; i++)
                     {
                         @try
@@ -274,7 +313,7 @@
                                 <td>@SchoolService.GetSchool((long)bill.ChildNavigation.SchoolId).Name</td>
                                 <td>
                                     <span class="badge bg-info">
-                                        <i class="bi bi-currency-dollar me-1"></i>@bill.TotalPrice.ToString("N0") تومان
+                                        <i class="bi bi-currency-dollar me-1"></i>@bill.TotalPrice.ToString("N0") ریال
                                     </span>
                                 </td>
                                 <td>
@@ -328,6 +367,11 @@
                     }
                 </tbody>
             </table>
+            <div class="text-center mt-3">
+                <button id="loadMoreBtn" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-down-circle"></i> بارگذاری بیشتر
+                </button>
+            </div>
         </div>
 
         <!-- Results Counter -->
@@ -348,6 +392,8 @@
 
 @section Scripts {
     <script>
+   
+
         // Panel switcher
         const ParentPnl = document.getElementById('ParentPnl');
         const ChildPnl = document.getElementById('ChildPnl');
@@ -382,7 +428,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const table = document.getElementById('billsTable');
             const tbody = table.querySelector('tbody');
-            const rows = tbody.querySelectorAll('tr');
+            const rows = document.querySelectorAll('#billsTable tbody tr');
+
             const globalSearch = document.getElementById('globalSearch');
             const statusFilter = document.getElementById('statusFilter');
             const typeFilter = document.getElementById('typeFilter');
@@ -431,17 +478,15 @@
                         row.style.display = '';
                         visibleCount++;
 
-                        // Calculate amounts from visible rows
-                        const cells = row.querySelectorAll('td');
-                        const totalPrice = parseInt(cells[3].querySelector('.badge').textContent.replace(/[^0-9]/g, ''));
-                        const paidPrice = cells[4].querySelector('.badge') ?
-                            parseInt(cells[4].querySelector('.badge').textContent.replace(/[^0-9]/g, '')) || 0 : 0;
+                        const totalPrice = parseInt(row.dataset.total || 0);
+                        const paidPrice = parseInt(row.dataset.paid || 0);
 
                         totalAmount += totalPrice;
                         paidAmount += paidPrice;
                     } else {
                         row.style.display = 'none';
                     }
+
                 });
 
                 updateResultsCount(visibleCount, totalAmount, paidAmount);
@@ -473,13 +518,10 @@
                 let paidAmount = 0;
 
                 rows.forEach(row => {
-                    const cells = row.querySelectorAll('td');
-                    const totalPrice = parseInt(cells[3].querySelector('.badge').textContent.replace(/[^0-9]/g, ''));
-                    const paidPrice = cells[4].querySelector('.badge') ?
-                        parseInt(cells[4].querySelector('.badge').textContent.replace(/[^0-9]/g, '')) || 0 : 0;
+                    row.style.display = '';
 
-                    totalAmount += totalPrice;
-                    paidAmount += paidPrice;
+                    totalAmount += parseInt(row.dataset.total || 0);
+                    paidAmount += parseInt(row.dataset.paid || 0);
                 });
 
                 updateResultsCount(rows.length, totalAmount, paidAmount);
@@ -491,13 +533,8 @@
                 let paidAmount = 0;
 
                 rows.forEach(row => {
-                    const cells = row.querySelectorAll('td');
-                    const totalPrice = parseInt(cells[3].querySelector('.badge').textContent.replace(/[^0-9]/g, ''));
-                    const paidPrice = cells[4].querySelector('.badge') ?
-                        parseInt(cells[4].querySelector('.badge').textContent.replace(/[^0-9]/g, '')) || 0 : 0;
-
-                    totalAmount += totalPrice;
-                    paidAmount += paidPrice;
+                    totalAmount += parseInt(row.dataset.total || 0);
+                    paidAmount += parseInt(row.dataset.paid || 0);
                 });
 
                 updateResultsCount(rows.length, totalAmount, paidAmount);
@@ -545,6 +582,37 @@
         function printBill(billId) {
             window.open(`/Admin/Bill/Print/${billId}`, '_blank');
         }
+              let page = 1;
+        let loading = false;
+
+        document.getElementById("loadMoreBtn").addEventListener("click", function () {
+            if (loading) return;
+            loading = true;
+            page++;
+
+            const form = document.getElementById("BillPnl");
+            const formData = new FormData(form);
+            formData.append("Page", page);
+
+            fetch('/Admin/Search/LoadMoreBills', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => r.text())
+            .then(html => {
+                if (html.trim() === "") {
+                    document.getElementById("loadMoreBtn").disabled = true;
+                    document.getElementById("loadMoreBtn").innerText = "مورد دیگری وجود ندارد";
+                    return;
+                }
+
+                document.getElementById("billTableBody")
+                    .insertAdjacentHTML("beforeend", html);
+            })
+            .catch(err => console.error(err))
+            .finally(() => loading = false);
+        });
+
     </script>
 
     <style>
