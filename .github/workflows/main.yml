@@ -1,0 +1,17 @@
+name: Windows Build
+on: [push]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        os: [windows-latest]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build on Windows
+      run: |
+        echo "Running on Windows runner"
+        Get-ComputerInfo | Select-Object WindowsProductName, WindowsVersion
