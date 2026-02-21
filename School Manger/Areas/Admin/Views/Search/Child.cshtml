@@ -159,6 +159,26 @@
                         </select>
                     </div>
                     <div class="col-sm-4">
+                        <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> نام قبض</label>
+                        @* <input name="BillName" type="text" class="form-control price-separator" /> *@
+                        <select name="BillName" class="form-select">
+                            <option value="">انتخاب ماه</option>
+                            <option value="پیش پرداخت">پیش پرداخت</option>
+                            <option value="فروردین">فروردین</option>
+                            <option value="اردیبهشت">اردیبهشت</option>
+                            <option value="خرداد">خرداد</option>
+                            <option value="تیر">تیر</option>
+                            <option value="مرداد">مرداد</option>
+                            <option value="شهریور">شهریور</option>
+                            <option value="مهر">مهر</option>
+                            <option value="آبان">آبان</option>
+                            <option value="آذر">آذر</option>
+                            <option value="دی">دی</option>
+                            <option value="بهمن">بهمن</option>
+                            <option value="اسفند">اسفند</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
                         <label class="form-label fw-bold"><i class="bi bi-calendar-month me-1"></i> ماه</label>
                         <select name="MonthInt" class="form-select">
                             <option value="">انتخاب ماه</option>
@@ -175,10 +195,6 @@
                             <option value="11">بهمن</option>
                             <option value="12">اسفند</option>
                         </select>
-                    </div>
-                    <div class="col-sm-4">
-                        <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> نام قبض</label>
-                        <input name="BillName" type="text" class="form-control price-separator" />
                     </div>
                 </div>
                 <div class="row justify-content-center container">
@@ -259,7 +275,7 @@
                         <th><i class="bi bi-gear me-1"></i> عملیات</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="ChildTableBody">
                     @for (int i = 0; i < Model.ChildInfos.Count; i++)
                     {
                         var SelectedModel = Model.ChildInfos[i];
@@ -345,6 +361,11 @@
                     }
                 </tbody>
             </table>
+            <div class="text-center mt-3">
+                <button id="loadMoreBtn" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-down-circle"></i> بارگذاری بیشتر
+                </button>
+            </div>
         </div>
 
         <!-- Results Counter -->
@@ -543,6 +564,37 @@
             // Initialize results count
             updateResultsCount(rows.length);
         });
+        let page = 1;
+        let loading = false;
+
+        document.getElementById("loadMoreBtn").addEventListener("click", function () {
+            if (loading) return;
+            loading = true;
+            page++;
+
+            const form = document.getElementById("ChildPnl");
+            const formData = new FormData(form);
+            formData.append("Page", page);
+
+            fetch('/Admin/Search/LoadMoreChildren', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => r.text())
+            .then(html => {
+                if (html.trim() === "") {
+                    document.getElementById("loadMoreBtn").disabled = true;
+                    document.getElementById("loadMoreBtn").innerText = "مورد دیگری وجود ندارد";
+                    return;
+                }
+
+                document.getElementById("ChildTableBody")
+                    .insertAdjacentHTML("beforeend", html);
+            })
+            .catch(err => console.error(err))
+            .finally(() => loading = false);
+        });
+
     </script>
 
     <style>

@@ -391,8 +391,8 @@ namespace School_Manager.Core.Services.Implemetations
                 query = query.Where(x => x.EstimateTime <= searchDto.EndDate);
             if (searchDto.MonthInt != null)
                 query = query.Where(x => x.EstimateTime.Month == searchDto.MonthInt);
-            if(!string.IsNullOrEmpty(searchDto.BillName))
-                query = query.Where(x=>x.Name == searchDto.BillName);
+            if (!string.IsNullOrEmpty(searchDto.BillName))
+                query = query.Where(x => x.Name.Trim().Contains(searchDto.BillName.Trim()));
             query = query.Include(x => x.PayBills).ThenInclude(x => x.PayNavigation);
 
             query = query.Include(x => x.ServiceContractNavigation).ThenInclude(x => x.ChildNavigation);

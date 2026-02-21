@@ -9,6 +9,7 @@ using School_Manager.Domain.Entities.Catalog.Operation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,10 +34,10 @@ namespace School_Manager.Core.Services.Implemetations
         {
             var ds = _unitOfWork.GetRepository<Driver>()
                 .Query()
-                .Include(x=>x.DriverShifts).ThenInclude(x=>x.Passenger).ThenInclude(x=>x.ChildNavigation)
+                //.Include(x => x.DriverShifts).ThenInclude(x => x.Passenger).ThenInclude(x => x.ChildNavigation)
                 .Include(x => x.Cars)
-                .Include(x => x.Passanger).ThenInclude(x => x.ChildNavigation)
-                .FirstOrDefault(x=>x.Id == Id /*&& x.Passanger.Any(y=>y.IsEnabled)*/);
+            .Include(x => x.Passanger).ThenInclude(x => x.ChildNavigation)
+            .FirstOrDefault(x => x.Id == Id /*&& x.Passanger.Any(y=>y.IsEnabled)*/);
             return _mapper.Map<DriverDto>(ds);
         }
 

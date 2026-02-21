@@ -338,6 +338,9 @@ namespace School_Manager.Core.Services.Implemetations
                     .ThenInclude(x => x.Bills)
                 .Include(x => x.ParentNavigation)
                 .Include(x => x.SchoolNavigation) // Include school directly
+                .OrderByDescending(x => x.CreatedOn)
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
                 .ToListAsync();
 
             var mappedChildren = _mapper.Map<List<ChildInfo>>(result);

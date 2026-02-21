@@ -109,6 +109,26 @@
                         </select>
                     </div>
                     <div class="col-sm-4">
+                        <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> نام قبض</label>
+                        @* <input name="BillName" type="text" class="form-control price-separator" /> *@
+                        <select name="BillName" class="form-select">
+                            <option value="">انتخاب ماه</option>
+                            <option value="پیش پرداخت">پیش پرداخت</option>
+                            <option value="فروردین">فروردین</option>
+                            <option value="اردیبهشت">اردیبهشت</option>
+                            <option value="خرداد">خرداد</option>
+                            <option value="تیر">تیر</option>
+                            <option value="مرداد">مرداد</option>
+                            <option value="شهریور">شهریور</option>
+                            <option value="مهر">مهر</option>
+                            <option value="آبان">آبان</option>
+                            <option value="آذر">آذر</option>
+                            <option value="دی">دی</option>
+                            <option value="بهمن">بهمن</option>
+                            <option value="اسفند">اسفند</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
                         <label class="form-label fw-bold"><i class="bi bi-calendar-month me-1"></i> ماه</label>
                         <select name="MonthInt" class="form-select">
                             <option value="">انتخاب ماه</option>
@@ -126,10 +146,7 @@
                             <option value="12">اسفند</option>
                         </select>
                     </div>
-                    <div class="col-sm-4">
-                        <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> نام قبض</label>
-                        <input name="BillName" type="text" class="form-control price-separator" />
-                    </div>
+                 
                 </div>
                 <div class="row justify-content-center container">
                     <button type="submit" class="col-4 btn btn-warning fw-bold">

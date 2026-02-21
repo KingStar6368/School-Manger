@@ -1,0 +1,87 @@
+﻿@using School_Manager.Core.ViewModels.FModels
+@model (int,SearchChildDto)
+@{
+}
+@for (int i = 0; i < Model.Item2.ChildInfos.Count; i++)
+{
+    var SelectedModel = Model.Item2.ChildInfos[i];
+    var Parent = Model.Item2.Parents.Where(x => x.Children.Any(c => c.Id == SelectedModel.Id)).FirstOrDefault();
+    var driver = SelectedModel.DriverId > 0 ? Model.Item2.Drivers.FirstOrDefault(x => x.Id == SelectedModel.DriverId) : null;
+    var bills = Model.Item2.ChildInfos[i].Bills;
+    string PFullName = $"{Parent.ParentFirstName} {Parent.ParentLastName}";
+    <tr data-payment="@(!bills.Any(x => !x.HasPaid) ? "paid" : "unpaid")"
+        data-driver="@(SelectedModel.DriverId > 0 ? "assigned" : "unassigned")"
+        data-bills="@(bills.Count > 0 ? "hasBills" : "noBills")">
+        <td>@(((Model.Item1 * 20)-20)+(i + 1))</td>
+        <td>@PFullName</td>
+        <td>@SelectedModel.FirstName</td>
+        <td>@SelectedModel.LastName</td>
+        <td>@SelectedModel.NationalCode</td>
+        <td>
+            @if (!bills.Any(x => !x.HasPaid))
+            {
+                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>پرداخت شده</span>
+            }
+            else
+            {
+                <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>پرداخت نشده</span>
+            }
+        </td>
+        <td>
+            @{
+                int BillCount = bills.Count;
+                if (BillCount > 0)
+                {
+                    <span class="badge bg-info"><i class="bi bi-receipt me-1"></i>@BillCount</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger"><i class="bi bi-exclamation-triangle me-1"></i>قبضی صادر نشده</span>
+                }
+            }
+        </td>
+        <td>
+            @if (SelectedModel.DriverId > 0)
+            {
+                <span class='text-white badge bg-info'>
+                    <i class='bi bi-dash-circle'></i>@(driver.Name + " " + driver.LastName)
+                </span>
+            }
+            else
+            {
+                <span class='text-white badge bg-warning'>
+                    <i class='bi bi-dash-circle'></i>راننده ندارد
+                </span>
+            }
+        </td>
+        <td>@(SelectedModel.SchoolId.HasValue? Model.Item2.Schools.FirstOrDefault(x => x.Id == SelectedModel.SchoolId).Name:"<span class='text-muted'><i class='bi bi-dash-circle'></i> ندارد</span>")</td>
+        <td>
+            <div class="d-flex flex-wrap gap-1 justify-content-center">
+                @if (SelectedModel.DriverId > 0)
+                {
+                    <form asp-controller="Driver" asp-action="Details" class="d-inline">
+                        <input type="hidden" name="id" value="@SelectedModel.DriverId" />
+                        <button class="btn btn-sm btn-outline-info" type="submit" title="نمایش راننده">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </form>
+                }
+                @if (SelectedModel.SchoolId.HasValue)
+                {
+                    <form asp-controller="School" asp-action="Details" class="d-inline">
+                        <input type="hidden" name="id" value="@SelectedModel.SchoolId" />
+                        <button class="btn btn-sm btn-outline-primary" type="submit" title="نمایش مدرسه">
+                            <i class="bi bi-building"></i>
+                        </button>
+                    </form>
+                }
+                <form asp-controller="Parents" asp-action="CreateBill" method="post" class="d-inline">
+                    <input name="ChildId" type="hidden" value="@SelectedModel.Id" />
+                    <button class="btn btn-sm btn-outline-warning" type="submit" title="صدور قبض">
+                        <i class="bi bi-file-earmark-plus"></i>
+                    </button>
+                </form>
+            </div>
+        </td>
+    </tr>
+}

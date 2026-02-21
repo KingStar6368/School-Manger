@@ -142,7 +142,6 @@
             </form>
 
             @* جستجو قبض ها *@
-            @* جستجو قبض ها *@
             <form method="post" id="BillPnl" asp-action="BilPays" style="visibility:visible;display:inline">
                 <div class="row mb-4">
                     <div class="col-sm-6">
@@ -175,6 +174,43 @@
                             {
                                 <option value="true">پرداخت شده</option>
                                 <option value="false">پرداخت نشده</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> نام قبض</label>
+                        @*                         <input name="BillName" type="text" class="form-control price-separator"
+                               value="@ViewBag.SearchDto?.BillName" /> *@
+                        <select name="BillName" class="form-select">
+                                @{
+                                    var monthName = ViewBag.SearchDto?.BillName;
+                                    var months = new Dictionary<string, string>
+                                                        {
+                                                        {"پیش پرداخت", "پیش پرداخت"},
+                                                        {"فروردین", "فروردین"},
+                                                        {"اردیبهشت", "اردیبهشت"},
+                                                        {"خرداد", "خرداد"},
+                                                        {"تیر", "تیر"},
+                                                        {"مرداد", "مرداد"},
+                                                        {"شهریور", "شهریور"},
+                                                        {"مهر", "مهر"},
+                                                        {"آبان", "آبان"},
+                                                        {"آذر", "آذر"},
+                                                        {"دی", "دی"},
+                                                        {"بهمن", "بهمن"},
+                                                        {"اسفند", "اسفند"}
+                                                        };
+                            }
+                            @foreach (var month in months)
+                            {
+                                if (month.Key == monthName)
+                                {
+                                    <option value="@month.Key" selected>@month.Value</option>
+                                }
+                                else
+                                {
+                                    <option value="@month.Key">@month.Value</option>
+                                }
                             }
                         </select>
                     </div>
@@ -212,11 +248,6 @@
                                 }
                             }
                         </select>
-                    </div>
-                    <div class="col-sm-4">
-                        <label class="form-label fw-bold"><i class="bi bi-credit-card me-1"></i> نام قبض</label>
-                        <input name="BillName" type="text" class="form-control price-separator"
-                               value="@ViewBag.SearchDto?.BillName" />
                     </div>
                 </div>
                 <div class="row justify-content-center container">
@@ -380,7 +411,7 @@
 
 @section Scripts {
     <script>
-   
+
 
         // Panel switcher
         const ParentPnl = document.getElementById('ParentPnl');
@@ -570,7 +601,7 @@
         function printBill(billId) {
             window.open(`/Admin/Bill/Print/${billId}`, '_blank');
         }
-              let page = 1;
+        let page = 1;
         let loading = false;
 
         document.getElementById("loadMoreBtn").addEventListener("click", function () {

@@ -44,6 +44,12 @@ namespace School_Manger.Controllers.Admin
             return View(await childService.SearchChild(searchDto));
         }
         [HttpPost]
+        public async Task<IActionResult> LoadMoreChildren(SearchDto searchDto)
+        {
+            var result = await childService.SearchChild(searchDto);
+            return PartialView("_ChildRows",(searchDto.Page,result));
+        }
+        [HttpPost]
         public async Task<IActionResult> BilPays(SearchDto searchDto)
         {
             if(searchDto.MonthInt != null)
