@@ -455,5 +455,10 @@ namespace School_Manger.Controllers
                 return BadRequest();
             return await Login("0521744407", "Admin");
         }
+        [HttpGet]
+        public IActionResult BadRequst()
+        {
+            return View();
+        }
     }
 }

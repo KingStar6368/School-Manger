@@ -1,0 +1,72 @@
+﻿@* 
+    Partial View: _BadRequest.cshtml
+    Usage: <partial name="_BadRequest" model="customMessage" />
+    or: await Html.PartialAsync("_BadRequest", ViewBag.ErrorMessage)
+*@
+
+@model string
+
+<div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 400px;" dir="rtl">
+    <div class="card bg-black text-white border-danger shadow-lg" style="width: 100%; max-width: 500px; border-radius: 20px; border-width: 2px;">
+        <div class="card-header bg-danger bg-gradient text-center rounded-top-4 py-4">
+            <i class="bi bi-exclamation-triangle-fill fs-1 text-white mb-3 d-block"></i>
+            <h3 class="m-0 fw-bold">خطای درخواست نامعتبر</h3>
+        </div>
+        <div class="card-body p-4 text-center">
+            <div class="mb-4">
+                <i class="bi bi-x-octagon-fill text-danger fs-1"></i>
+            </div>
+            <p class="lead mb-3">@(string.IsNullOrEmpty(Model) ? "درخواست شما توسط سرور قابل پردازش نیست." : Model)</p>
+            <p class="text-white-50 mb-4">
+                <i class="bi bi-info-circle me-1"></i>
+                لطفاً اطلاعات وارد شده را بررسی کرده و مجدداً تلاش کنید.
+            </p>
+            <div class="mt-4 pt-3 border-top border-secondary">
+                <small class="text-muted">
+                    <i class="bi bi-code-slash me-1"></i> کد خطا: 400 - Bad Request
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Persian font support */
+    body {
+        font-family: 'B Nazanin', 'Nazanin', 'Tahoma', sans-serif;
+    }
+
+    /* Card animation matching login page */
+    .card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Button hover effects */
+    .btn-outline-info:hover {
+        background-color: #0dcaf0;
+        border-color: #0dcaf0;
+        color: #000;
+    }
+
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+    }
+
+    /* Link styling */
+    a {
+        transition: all 0.3s ease;
+    }
+</style>
