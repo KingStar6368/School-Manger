@@ -4,6 +4,7 @@ using School_Manager.Core.Services.Implemetations;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Entities.Catalog.Operation;
+using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models;
 using School_Manger.Models.PageView;
@@ -53,10 +54,12 @@ namespace School_Manger.Controllers.Admin
             };
             return View("Details", admindashbord);
         }
+        [DisableInDemoAttribute]
         public IActionResult Create()
         {
             return View();
         }
+        [DisableInDemoAttribute]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(DriverDto driver, long UserRef)
@@ -98,6 +101,7 @@ namespace School_Manger.Controllers.Admin
             ControllerExtensions.ShowSuccess(this, "موفق", "راننده با موفقعیت اضافه شد");
             return View(driver);
         }
+        [DisableInDemoAttribute]
         public IActionResult DeletePassanger(long ChildId, long DriverId)
         {
             _childService.RemoveDriverFromChild(ChildId, DriverId);

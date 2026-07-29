@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Entities.Catalog.Enums;
+using School_Manger.Class;
 using SMS.Base;
 using System.Threading.Tasks;
 
@@ -40,6 +41,7 @@ namespace School_Manger.Controllers.Admin
         {
             return View("Index", await _childService.GetDebtors());
         }
+        [DisableInDemoAttribute]
         [HttpPost]
         public async Task<IActionResult> SendWarningSms(string selectedParentIds)
         {

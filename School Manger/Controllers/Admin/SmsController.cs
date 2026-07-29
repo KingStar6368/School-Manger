@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
+using School_Manger.Class;
 using School_Manger.Models;
 using School_Manger.Models.PageView;
 using SMS.Base;
@@ -51,6 +52,7 @@ namespace School_Manger.Controllers.Admin
                 Users = users
             });
         }
+        [DisableInDemoAttribute]
         [HttpPost]
         public async Task<IActionResult> SendSms(string mobiles, string Message)
         {

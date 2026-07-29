@@ -87,6 +87,7 @@ namespace School_Manger.Controllers.Admin
             Child.Bills = _billService.GetChildBills(ChildId).Result;
             return View("CreateBill", Child);
         }
+        [DisableInDemoAttribute]
         [HttpPost]
         public IActionResult SendBillMessage(long ChildId)
         {
@@ -94,6 +95,7 @@ namespace School_Manger.Controllers.Admin
             _smsService.Send(_userService.GetUserByParent(ParentId).Mobile, _tempLink.GenerateBillTempLink(ParentId, ChildId));
             return CreateBill(ChildId);
         }
+        [DisableInDemoAttribute]
         [HttpPost]
         public IActionResult MakeBill(long ChildId, string Name, long TotalPrice, string StartTime, string EndTime, string Estimate, string IsPerBill)
         {
@@ -168,6 +170,7 @@ namespace School_Manger.Controllers.Admin
             data.Bills = _billService.Create(data.Installment);
             return View("BillCal", data);
         }
+        [DisableInDemoAttribute]
         [HttpPost]
         public IActionResult BillCal(BillInstallmentDto data)
         {
@@ -296,7 +299,7 @@ namespace School_Manger.Controllers.Admin
 
             return File(pdfBytes, "application/pdf", "Contract2.pdf");
         }
-
+        [DisableInDemoAttribute]
         [HttpPost]
         public IActionResult PayBill(long ChildId, long BillId, string TrackCode, string PaymentType, long PaidPrice, string PiadTime)
         {
@@ -332,6 +335,7 @@ namespace School_Manger.Controllers.Admin
             ControllerExtensions.ShowSuccess(this, "موفق", "پرداخت انجام شد");
             return CreateBill(ChildId);
         }
+        [DisableInDemoAttribute]
         public IActionResult DeleteBill(long Id, long secondId)
         {
             try
@@ -347,6 +351,7 @@ namespace School_Manger.Controllers.Admin
             }
             return CreateBill(secondId);
         }
+        [DisableInDemoAttribute]
         public IActionResult DeleteChild(long Id, long PId)
         {
             try
@@ -362,6 +367,7 @@ namespace School_Manger.Controllers.Admin
             }
             return Details(PId);
         }
+        [DisableInDemoAttribute]
         [HttpGet]
         public IActionResult EditBill(long billId, long childId)
         {
@@ -371,7 +377,7 @@ namespace School_Manger.Controllers.Admin
             ViewBag.ChildId = childId;
             return View("EditBill", bill);
         }
-
+        [DisableInDemoAttribute]
         [HttpPost]
         public IActionResult EditBill(long billId, long childId, BillUpdateDto model, string EstimateTime, string type)
         {
@@ -400,6 +406,7 @@ namespace School_Manger.Controllers.Admin
                 return View("EditBill", bill);
             }
         }
+        [DisableInDemoAttribute]
         [HttpGet]
         public async Task<IActionResult> UpdateChild(long id, long parentId)
         {
@@ -453,7 +460,7 @@ namespace School_Manger.Controllers.Admin
             ViewBag.Schools = await _schoolService.GetSchools();
             return View("EditChild", model);
         }
-
+        [DisableInDemoAttribute]
         [HttpPost]
         public async Task<IActionResult> UpdateChild(ChildUpdateDto model, long parentId, string BirthDate, string ShiftId)
         {
@@ -533,6 +540,7 @@ namespace School_Manger.Controllers.Admin
                 };
             }
         }
+        [DisableInDemoAttribute]
         [HttpPost]
         public async Task<IActionResult> SendSMSNonChildern()
         {

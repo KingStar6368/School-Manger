@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
+using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models;
 using School_Manger.Models.PageView;
@@ -45,6 +46,7 @@ namespace School_Manger.Controllers.Admin
             };
             return View("Index",Dashbrod);
         }
+        [DisableInDemoAttribute]
         public async Task<IActionResult> AssignDriver(long DriverId, long StudentId)
         {
             var ShiftId = ControllerExtensions.GetKey<long>(this, "ShiftId");

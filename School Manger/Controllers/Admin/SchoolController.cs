@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
+using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models.PageView;
 using System.Threading.Tasks;
@@ -29,12 +30,12 @@ namespace School_Manger.Controllers.Admin
             var Schools = await _schoolService.GetSchools();
             return View("Index", Schools);
         }
-
+        [DisableInDemoAttribute]
         public IActionResult Create()
         {
             return View();
         }
-
+        [DisableInDemoAttribute]
         [HttpPost]
         public IActionResult Create(SchoolDto model)
         {
@@ -65,6 +66,7 @@ namespace School_Manger.Controllers.Admin
             };
             return View("Details", dashbord);
         }
+        [DisableInDemoAttribute]
         public async Task<IActionResult> DeleteSchool(long id)
         {
             try
@@ -80,6 +82,7 @@ namespace School_Manger.Controllers.Admin
             }
             return await Index();
         }
+        [DisableInDemoAttribute]
         [HttpGet]
         public IActionResult EditSchool(long SchoolId)
         {
@@ -95,6 +98,7 @@ namespace School_Manger.Controllers.Admin
                 Rate = school.Rate
             });
         }
+        [DisableInDemoAttribute]
         [HttpPost]
         public IActionResult EditSchool(SchoolUpdateDto model)
         {
@@ -127,7 +131,7 @@ namespace School_Manger.Controllers.Admin
             };
             return View("Shift",dashbord);
         }
-
+        [DisableInDemoAttribute]
         [HttpPost]
         public IActionResult CreateShift(CreateShiftDto model)
         {
@@ -142,7 +146,7 @@ namespace School_Manger.Controllers.Admin
             }
             return RedirectToAction("Shift", new { id = model.SchoolRef });
         }
-
+        [DisableInDemoAttribute]
         [HttpGet]
         public async Task<IActionResult> EditShift(long id)
         {
@@ -160,7 +164,7 @@ namespace School_Manger.Controllers.Admin
             };
             return View("Shift", dashbord);
         }
-
+        [DisableInDemoAttribute]
         [HttpPost]
         public IActionResult UpdateShift(UpdateShiftDto model)
         {
@@ -175,7 +179,7 @@ namespace School_Manger.Controllers.Admin
             }
             return RedirectToAction("Shift", new { id = model.SchoolRef });
         }
-
+        [DisableInDemoAttribute]
         [HttpPost]
         public IActionResult DeleteShift(long id)
         {

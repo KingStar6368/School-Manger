@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
-using System.Threading.Tasks;
-using System.Linq;
+using School_Manger.Class;
 using School_Manger.Extension;
-using Microsoft.AspNetCore.Authorization;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace School_Manger.Controllers.Admin
 {
@@ -21,13 +22,13 @@ namespace School_Manger.Controllers.Admin
             var tariffs = await _tariffService.GetActiveTariff();
             return View(tariffs);
         }
-
+        [DisableInDemoAttribute]
         [HttpGet]
         public IActionResult Create()
         {
             return View(new TariffDto());
         }
-
+        [DisableInDemoAttribute]
         [HttpPost]
         public IActionResult Create(TariffDto model, string StartDate, string EndDate)
         {
@@ -47,7 +48,7 @@ namespace School_Manger.Controllers.Admin
                 return View(model);
             }
         }
-
+        [DisableInDemoAttribute]
         [HttpGet]
         public async Task<IActionResult> Edit(int id, string StartDate, string EndDate)
         {
@@ -56,7 +57,7 @@ namespace School_Manger.Controllers.Admin
             if (tariff == null) return NotFound();
             return View(tariff);
         }
-
+        [DisableInDemoAttribute]
         [HttpPost]
         public IActionResult Edit(TariffDto model, string StartDate, string EndDate)
         {
@@ -76,7 +77,7 @@ namespace School_Manger.Controllers.Admin
                 return View(model);
             }
         }
-
+        [DisableInDemoAttribute]
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -85,7 +86,7 @@ namespace School_Manger.Controllers.Admin
             if (tariff == null) return NotFound();
             return View(tariff);
         }
-
+        [DisableInDemoAttribute]
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {

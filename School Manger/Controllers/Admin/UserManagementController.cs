@@ -4,6 +4,7 @@ using School_Manager.Core.Services.Interfaces;
 using School_Manager.Core.ViewModels.FModels;
 using School_Manager.Domain.Entities.Catalog.Enums;
 using School_Manager.Domain.Entities.Catalog.Operation;
+using School_Manger.Class;
 using School_Manger.Extension;
 using School_Manger.Models.PageView;
 using System.Threading.Tasks;
@@ -40,14 +41,14 @@ namespace School_Manger.Controllers.Admin
             var drivers = await _userService.GetAllAsyncDrivers();
             return View("Drivers", drivers);
         }
-
+        [DisableInDemoAttribute]
         public IActionResult Create(UserType type)
         {
             ViewBag.UserType = type;
             ViewBag.AllShifts = _shiftService.GetAllShifts();
             return View();
         }
-
+        [DisableInDemoAttribute]
         [HttpPost]
         public IActionResult Create(AdminUser Data, string BirthDate, string Last_Digits, string Third, string PChar, string First, long[] SelectedShiftIds)
         {
@@ -138,7 +139,7 @@ namespace School_Manger.Controllers.Admin
                 return View();
             }
         }
-
+        [DisableInDemoAttribute]
         public async Task<IActionResult> DeleteDriver(long Id)
         {
             try
@@ -154,6 +155,7 @@ namespace School_Manger.Controllers.Admin
             }
             return await Drivers();
         }
+        [DisableInDemoAttribute]
         public async Task<IActionResult> DeleteParent(long Id)
         {
             try
@@ -169,6 +171,7 @@ namespace School_Manger.Controllers.Admin
             }
             return await Parents();
         }
+        [DisableInDemoAttribute]
         [HttpGet]
         public IActionResult EditDriver(long UserId, string NationCode)
         {
@@ -210,6 +213,7 @@ namespace School_Manger.Controllers.Admin
                 }
             });
         }
+        [DisableInDemoAttribute]
         [HttpPost]
         public async Task<IActionResult> EditDriver(UserEditDriver Data, string BirthDate)
         {
@@ -251,6 +255,7 @@ namespace School_Manger.Controllers.Admin
             // --- End Driver Shift Update ---
             return await Drivers();
         }
+        [DisableInDemoAttribute]
         [HttpGet]
         public IActionResult EditParent(long UserId, string NationCode)
         {
@@ -281,6 +286,7 @@ namespace School_Manger.Controllers.Admin
                 }
             });
         }
+        [DisableInDemoAttribute]
         [HttpPost]
         public async Task<IActionResult> EditParent(UserEditParent Data)
         {
