@@ -48,6 +48,8 @@ namespace School_Manger.Controllers
         public async Task<IActionResult> DriverPannel(string UserName)
         {
             var driver = driverService.GetDriverNationCode(UserName);
+            if (driver == null)
+                return View("Index");
             var shifts = shiftService.GetAllDriverShifts(driver.Id); // Use mapped ShiftDto list
             DriverDashbord dashbord = new DriverDashbord()
             {

@@ -142,12 +142,16 @@
     </div>
 </div>
 
+@{
+    Model.Passanger.ForEach(x => x.Bills = null);
+    var initpassanger = System.Text.Json.JsonSerializer.Serialize(Model.Passanger != null ? Model.Passanger : new List<School_Manager.Core.ViewModels.FModels.ChildInfo>());
+}
 @section Scripts {
     <script src="~/Leaflet/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
     <script>
-        const initialPassengers = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Passanger != null ? Model.Passanger : new List<School_Manager.Core.ViewModels.FModels.ChildInfo>()));
+        const initialPassengers = @Html.Raw(initpassanger);
         const apiGetShiftPassengers = '/Driver/GetShiftPassengers';
         const apiGetRoute = '/Driver/GetRoute';
         const DriverId = document.getElementById('DriverId').value;
